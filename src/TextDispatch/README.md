@@ -278,6 +278,15 @@ model answered or timed out, and any call that could not be matched to a signatu
 | Nobody came when you asked for backup | Dispatch requested one through LSPDFR; whether a car rolls up is LSPDFR's backup AI. |
 | `/backup` says "requested through the normal channel" | The log names the LSPDFR signatures it found. |
 
+## Licence
+
+MIT — see [LICENSE](../../LICENSE).
+
+That covers TextDispatch and nothing else. RAGE Plugin Hook and LSPDFR are separate works under their
+own licences: they are not included in this project or in any download of it, and this licence does
+not apply to them. The RAGE Plugin Hook SDK is required to build and its terms forbid redistributing
+it, which is why `tools/rph-sdk/` is deliberately not in the repository.
+
 ## Design notes
 
 - **The core never references LSPDFR.** `LspdfrApi` is a reflection bridge, so nothing of theirs is
