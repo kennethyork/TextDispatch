@@ -188,6 +188,10 @@ namespace TextDispatch.Commands
                 case "panic": Panic(); return;
                 case "911": Call911(argument); return;
 
+                // ---------------------------------------------------- the install
+                case "plugins":
+                case "plugin": ShowPlugins(); return;
+
                 // ---------------------------------------------------- the box itself
                 case "pos":
                 case "corner": SetPosition(argument); return;
@@ -986,6 +990,30 @@ namespace TextDispatch.Commands
             _chat.Notice("Showing " + value + " lines.");
         }
 
+        // ------------------------------------------------------------------ the install
+
+        /// <summary>
+        /// What LSPDFR actually loaded, and what it did not.
+        ///
+        /// This gets its own command because the failure it describes is invisible: a plugin one
+        /// folder away from where LSPDFR looks, or one with a dependency it does not have, changes
+        /// how the game loads not at all. The plugin is simply not there, and nothing says so. The
+        /// same report is written to the log, where it survives the game being closed.
+        /// </summary>
+        private void ShowPlugins()
+        {
+            var inventory = PluginInventory.Scan(_api);
+            inventory.WriteToLog();
+
+            foreach (var line in inventory.Detail())
+            {
+                _chat.Notice(line);
+                Log.Line("plugins: " + line);
+            }
+
+            foreach (var warning in inventory.Warnings()) _chat.Error(warning);
+        }
+
         private void Help()
         {
             _chat.Notice("TextDispatch - LSPDFR through a chat box.");
@@ -1003,6 +1031,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest  /cite <name> <offence>");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");
             _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /clear");
+            _chat.Notice("  Install:  /plugins  what LSPDFR actually loaded, and what it did not");
             _chat.Notice("  Open the box with T, or / to start typing a command.");
         }
     }

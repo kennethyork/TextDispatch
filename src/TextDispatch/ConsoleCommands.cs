@@ -242,6 +242,24 @@ namespace TextDispatch
             }
         }
 
+        [ConsoleCommand("tdplugins", Description = "TextDispatch: what LSPDFR actually loaded, and what it did not.")]
+        public static void TdPlugins()
+        {
+            if (Plugin.Api == null) { Game.Console.Print("[TextDispatch] not running."); return; }
+
+            var inventory = Lspdfr.PluginInventory.Scan(Plugin.Api);
+            inventory.WriteToLog();
+
+            foreach (var line in inventory.Detail())
+            {
+                Game.Console.Print("[TextDispatch] " + line);
+                Log.Line("plugins: " + line);
+            }
+
+            foreach (var warning in inventory.Warnings())
+                Game.Console.Print("[TextDispatch] " + warning);
+        }
+
         [ConsoleCommand("tdcallouts", Description = "TextDispatch: list every callout this install has, and log them.")]
         public static void TdCallouts()
         {

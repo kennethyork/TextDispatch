@@ -49,6 +49,25 @@ namespace TextDispatch.Lspdfr
             return "detected, LSPDFR " + version + ", " + _functions.GetMethods(BindingFlags.Public | BindingFlags.Static).Length + " API methods";
         }
 
+        /// <summary>
+        /// The assemblies LSPDFR itself reports as loaded plugins - the only authoritative answer to
+        /// "did it load?". Null when LSPDFR cannot be asked (not visible, or no such method), in
+        /// which case PluginInventory falls back to what the AppDomain holds.
+        /// </summary>
+        public Assembly[] UserPlugins()
+        {
+            Probe();
+            if (!_available) return null;
+
+            try
+            {
+                var method = Select("GetAllUserPlugins", null);
+                if (method == null) return null;
+                return method.Invoke(null, null) as Assembly[];
+            }
+            catch (Exception ex) { Log.Error("lspdfr GetAllUserPlugins", ex); return null; }
+        }
+
         private void Probe()
         {
             if (_available) return;

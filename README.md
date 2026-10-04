@@ -37,7 +37,13 @@ assembly, so every callout you have is announced in text and can be started by n
 
 1. Copy `TextDispatch.dll` into your Grand Theft Auto V **`Plugins\LSPDFR\`** folder.
 2. Launch **RagePluginHook.exe** and load story mode.
-3. Press **T**.
+3. **Go on duty** - press **E** at a police station.
+4. Press **T**.
+
+> **Step 3 is the one that catches people.** LSPDFR loads everything in `Plugins\LSPDFR` when you go
+> on duty, not when the game starts. Until then there is no chat box, no callout pack, no
+> StopThePed - and waiting in story mode changes nothing, however long you wait. If RPH's log has no
+> `Creating plugin:` lines in it, that is why.
 
 > **`Plugins\LSPDFR`, not `Plugins`.** RAGE Plugin Hook gives every plugin it loads its own AppDomain,
 > and a plugin in RPH's AppDomain cannot see LSPDFR's types at all — it runs, it draws, and every call
@@ -110,9 +116,11 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Records | `/mdt` · `/person [name]` · `/plate [plate]` · `/warrant [name]` · `/bolo` · `/arrest` · `/cite <name> <offence>` |
 | Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |
 | The box | `/pos <corner>` · `/margin <px>` · `/ui` · `/font` · `/fontsize` · `/lines` · `/clear` |
+| The install | `/plugins` — what LSPDFR actually loaded, what it did not, and what is sitting in a folder LSPDFR never looks in |
 
 Everything is also drivable from RAGE Plugin Hook's **F4** console — `tdsay`, `tdwho`, `tdstatus`,
-`tdmodels`, `tdkey`, `tdrender`, `tdfont` — so a chat box that will not open is never a dead end.
+`tdmodels`, `tdplugins`, `tdkey`, `tdrender`, `tdfont` — so a chat box that will not open is never a
+dead end.
 
 ## Requirements
 
@@ -148,6 +156,13 @@ from `LSPD_First_Response.Mod.API.Plugin`, so it found the DLL and quietly decli
 1.0.4 is confirmed loading as an LSPDFR plugin, with LSPDFR's API reachable (138 methods found) and
 the chat box rendering once per frame rather than once per game tick. The integration is young and is
 the part most likely to have rough edges. Issues and log excerpts are welcome.
+
+**1.0.12 answers the question that costs the most evenings.** A plugin that is installed in the wrong
+folder, or short of something it depends on, does not fail loudly - it is simply absent, and nothing
+anywhere says so. The plugin now reads every DLL in `Plugins\LSPDFR`, asks LSPDFR which of them it
+loaded, checks what each one refers to, and reports the difference: in the box a few seconds after you
+go on duty, in full in the log, and on demand with `/plugins`. It also finds plugins left in `Plugins\`
+or in `lspdfr\`, where LSPDFR never looks for them at all.
 
 ## Licence
 

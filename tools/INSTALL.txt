@@ -1,0 +1,118 @@
+TextDispatch 1.0.12
+===================
+
+LSPDFR in text: callouts, dispatch and the people in them, through an in-game chat box.
+
+
+INSTALL
+-------
+
+1. Copy TextDispatch.dll into
+
+       <your Grand Theft Auto V folder>\Plugins\LSPDFR\
+
+   Create the LSPDFR folder if it is not there. It has to be Plugins\LSPDFR and not
+   Plugins - see "Why that folder" below.
+
+2. Start the game with RagePluginHook.exe, not the normal launcher.
+
+3. Load story mode, then GO ON DUTY: press E at a police station.
+
+   This is the step that catches people. LSPDFR loads every plugin in
+   Plugins\LSPDFR at the moment you go on duty, and not before. Until then there is
+   no chat box, no callout pack, and nothing in any log - however long you wait in
+   story mode.
+
+4. The box appears saying "TextDispatch loaded. Press T to chat." Press T.
+
+   If you would rather not type in the box, everything also works from Rage Plugin
+   Hook's F4 console: tdsay, tdstatus, tdplugins, tdcallouts, tdmodels, tdfont.
+
+
+IS IT ACTUALLY RUNNING?
+-----------------------
+
+Rage Plugin Hook's log (RagePluginHook.log in the game folder, and a dated copy in
+Logs\) shows what happened:
+
+    LSPDFR: [TRACE] Player went on duty.
+    LSPDFR: Folder is D:\...\plugins\lspdfr
+    LSPDFR: Creating plugin: TextDispatch.Main
+
+No "Creating plugin" lines at all means you have not been on duty yet.
+
+The plugin's own log is Plugins\LSPDFR\textdispatch.log. Its first line says either
+
+    starting; detected, LSPDFR 0.4.9, 138 API methods
+
+or
+
+    starting; not installed
+
+"not installed" means LSPDFR is not visible from where the plugin is running, which
+almost always means the DLL is in Plugins\ instead of Plugins\LSPDFR\.
+
+A few seconds after you go on duty, the log also lists every DLL in Plugins\LSPDFR,
+which of them loaded, which did not, what each one refers to that is not installed,
+and anything sitting where LSPDFR never looks. In the box, /plugins prints the same
+thing.
+
+
+WHY THAT FOLDER
+---------------
+
+RAGE Plugin Hook gives every plugin it loads its own AppDomain, and a plugin in
+RPH's AppDomain cannot see LSPDFR's types at all. It starts, it draws, and every call
+into LSPDFR fails silently. Only Plugins\LSPDFR is loaded by LSPDFR itself, into
+LSPDFR's AppDomain.
+
+For the same reason, a plugin left in the game's lspdfr\ folder - LSPDFR's data
+folder - is never loaded at all: LSPDFR only ever scans Plugins\LSPDFR. /plugins and
+the log report anything found there.
+
+
+THE LOCAL MODEL (OPTIONAL)
+--------------------------
+
+It works with no model at all, on a built-in script, so nothing has to be installed
+for it to be useful. With a local model running it uses that instead. Either way
+nothing leaves your machine - there is no API key and no internet connection.
+
+    Plugins\LSPDFR\TextDispatch.ini
+
+    AiMode=auto          ; auto | llm | scripted
+    AiProvider=ollama    ; ollama | lmstudio
+    AiModel=             ; blank = the first model the server reports
+
+For Ollama: run "ollama serve", and check that "ollama list" shows a model. For LM
+Studio: start its local server. In the F4 console, "tdmodels" asks the server what it
+has and "tdstatus" says which mode is in use.
+
+
+COMMANDS
+--------
+
+Type these in the box, or use "tdsay <text>" from the F4 console.
+
+    help          everything, printed in the box
+    /plugins      what LSPDFR loaded, and what it did not
+    /calls        every callout this install has      /callout <name>  starts one
+    /accept       take the call dispatch announced    /decline  /endcall
+    /r <text>     talk to dispatch on the radio
+    /stop         pull someone over                   /endstop
+    /id  /frisk  /cuff  /detain  /release  /record  /owner  /tow  /transport
+    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /911 <details>
+    /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest  /cite <name> <offence>
+    /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model>
+    /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /clear
+
+Type plain text to speak out loud: the people nearby answer in text, from what is
+actually happening to them - stopped, searched, cuffed, or running.
+
+
+LICENCE
+-------
+
+MIT. See LICENSE. That covers TextDispatch only: RAGE Plugin Hook and LSPDFR are
+separate works under their own licences, and neither is included here or in any
+download of this project.

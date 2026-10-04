@@ -65,6 +65,12 @@ if (Test-Path $stale) {
     }
 }
 
+# Its symbols were left behind by the same old install, and they serve no purpose in Plugins\.
+$staleSymbols = Join-Path $GtaFolder 'Plugins\TextDispatch.pdb'
+if (Test-Path $staleSymbols) {
+    try { Remove-Item $staleSymbols -Force } catch { }
+}
+
 $startup = Join-Path $GtaFolder 'startup.rphs'
 if (Test-Path $startup) {
     $before = @(Get-Content $startup)
@@ -77,7 +83,9 @@ if (Test-Path $startup) {
 }
 
 Write-Host ""
-Write-Host "Launch RagePluginHook.exe, load story mode, then press T in game." -ForegroundColor Cyan
+Write-Host "Launch RagePluginHook.exe, load story mode, then GO ON DUTY (press E at a police station)." -ForegroundColor Cyan
+Write-Host "LSPDFR loads everything in Plugins\LSPDFR at that moment and not before - no callouts, and no" -ForegroundColor Cyan
+Write-Host "chat box, until you are on duty." -ForegroundColor Cyan
 Write-Host "Log: $target\textdispatch.log"   # beside the DLL and the ini
 Write-Host ""
 Write-Host "The log's first lines should say 'detected, LSPDFR 0.4.9'. If they say 'not installed'," -ForegroundColor DarkGray

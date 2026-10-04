@@ -296,6 +296,10 @@ Records are per session. Nothing is written to disk.
 **The box itself**
 `/pos <corner>` · `/margin <px>` · `/ui <scale>` · `/font <name>` · `/fontsize <n>` · `/lines <n>` · `/clear`
 
+**The install**
+`/plugins` - what LSPDFR actually loaded, what it did not, and anything installed where LSPDFR never
+looks. Also written to the log a few seconds after you go on duty, without being asked.
+
 The box sits in the **top-right** by default. An LSPDFR install is crowded and the top-left is the
 most contested patch of screen in the game, so putting a chat box there makes it and whatever else is
 drawing unreadable. `/pos bottom-right` moves it; the choice is saved to the ini.
@@ -321,8 +325,26 @@ While the box is open the game's controls are frozen, so typing `10-97` does not
    dotnet build src\TextDispatch\TextDispatch.csproj -c Debug
    ```
 2. Copy `src\TextDispatch\bin\Debug\TextDispatch.dll` into your GTA V **`Plugins\LSPDFR\`** folder
-   (create it if it is not there).
+   (create it if it is not there). Or run `tools\install-textdispatch.ps1`, which builds it, puts it
+   in the right folder, and cleans up a copy in `Plugins\` if an earlier version left one there.
 3. Launch **RagePluginHook.exe** (not the normal launcher) and load into story mode.
+4. **Go on duty** - press **E** at a police station.
+5. The box appears with `TextDispatch loaded. Press T to chat.` Press **T**.
+
+> **LSPDFR loads `Plugins\LSPDFR` when you go on duty - not when the game starts.** Nothing in that
+> folder runs before then: no callout pack, no StopThePed, no chat box. Waiting in story mode changes
+> nothing, however long you wait, and a plugin folder that seems to do nothing is behaving normally.
+> Pressing **E** at a police station is the step that starts everything. RPH's log shows it:
+>
+> ```
+> [2:02:59.847] LSPDFR: Player went on duty.
+> [2:02:59.857] LSPDFR: Folder is D:\Grand Theft Auto V Legacy\plugins\lspdfr   <- the scan starts here
+> [2:03:00.260] LSPDFR: Creating plugin: _686_Callouts.Main
+> [2:03:03.784] LSPDFR: Creating plugin: TextDispatch.Main
+> ```
+>
+> If RPH's log has no `Creating plugin:` lines at all, you have not been on duty yet. That is the
+> whole answer, and it is not a fault in the plugin.
 
 > **It must be `Plugins\LSPDFR`, not `Plugins`.** RAGE Plugin Hook gives every plugin it loads its
 > own AppDomain, and a plugin in RPH's AppDomain cannot see LSPDFR's types at all. It runs, it draws,
@@ -331,9 +353,8 @@ While the box is open the game's controls are frozen, so typing `10-97` does not
 > whole API reachable. The log says which happened on its first line: `detected, LSPDFR 0.4.9` or
 > `not installed`.
 
-Or run `tools\install-textdispatch.ps1`, which builds it, installs to the right folder, and cleans up
-a copy in `Plugins\` if an earlier version put one there. On first run the plugin writes
-`Plugins\LSPDFR\TextDispatch.ini` next to itself.
+On first run the plugin writes `Plugins\LSPDFR\TextDispatch.ini` next to itself, and logs to
+`Plugins\LSPDFR\textdispatch.log`.
 
 > **Building needs the RPH SDK.** `tools\rph-sdk\RagePluginHook.dll` must exist. It ships inside the
 > official RAGE Plugin Hook download as `SDK\RagePluginHook.dll` — copy it there. The build refuses
@@ -352,6 +373,7 @@ Everything can be driven from RPH's **F4** console, which matters if the box eve
 | `tdstatus` | AI mode, provider, resolved model, box state, log path |
 | `tdscale <n>` `tdfontsize <n>` `tdlines <n>` | Fix the box without a rebuild |
 | `tdcallouts` | List every callout and write it to the log |
+| `tdplugins` | Every DLL in `Plugins\LSPDFR`, which ones loaded, and what is missing |
 
 ## If something is wrong
 
@@ -362,8 +384,16 @@ RPH resolves overloads and finds LSPDFR by reflection, so most failures are reco
 thrown. The log says which LSPDFR methods were found, which callouts were discovered, whether the
 model answered or timed out, and any call that could not be matched to a signature.
 
+A few seconds after you go on duty, the log also gets an `inventory:` section: every DLL in
+`Plugins\LSPDFR`, which ones LSPDFR loaded, which ones it did not, what each one refers to that is not
+installed, and anything installed in `Plugins\` or `lspdfr\` where LSPDFR never looks. `/plugins`
+prints the same thing in the box.
+
 | Symptom | Look at |
 |---|---|
+| **Nothing loaded at all - not this plugin, not the callout packs** | You have not been on duty. Press **E** at a police station: LSPDFR scans `Plugins\LSPDFR` at that moment, and not before it. |
+| A plugin you installed is not in LSPDFR's list | `/plugins` - or `tdplugins` in F4, or the log. It names every DLL in the folder, which ones loaded, and which are in `Plugins\` or `lspdfr\` where LSPDFR never looks for them. |
+| The game crashed after a while on duty | `/plugins` names plugins that refer to an assembly this machine does not have. A pack crashes the game the moment it reaches for one that is really required. |
 | Nothing on screen at all | Is `TextDispatch.dll` in `Plugins\LSPDFR\`? Then read our log and RPH's. |
 | **RPH's log never mentions TextDispatch at all** | If it is in `Plugins\`, move it to `Plugins\LSPDFR\` - RPH is not going to load it into the right AppDomain anyway. |
 | Log says `starting; not installed` | LSPDFR is installed but invisible: the DLL is in `Plugins\` instead of `Plugins\LSPDFR\`. |

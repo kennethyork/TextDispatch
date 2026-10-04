@@ -27,6 +27,7 @@ namespace TextDispatch
         private static Settings _settings;
         private static RecordsLedger _records;
         private static CommandRouter _router;
+        private static PluginInventory _inventory;
         private static bool _rendering;
         private static bool _renderErrorLogged;
         private static bool _controlsFailed;
@@ -36,6 +37,7 @@ namespace TextDispatch
         private static bool _renderReported;
         private static int _startedAt;
         private static string _lastRenderError;
+        private static bool _inventoryReported;
 
         private static bool _running;
         private static GameFiber _fiber;
@@ -51,6 +53,7 @@ namespace TextDispatch
         internal static TextInput Input { get { return _input; } }
         internal static DispatchService Dispatch { get { return _dispatch; } }
         internal static Settings Settings { get { return _settings; } }
+        internal static PluginInventory Inventory { get { return _inventory; } }
 
         /// <summary>
         /// Called by LSPDFR. This must return - LSPDFR is waiting on it - so the tick loop is handed
@@ -99,7 +102,13 @@ namespace TextDispatch
                 Game.RawFrameRender += OnFrameRender;
                 Game.AddConsoleCommands(new Type[] { typeof(ConsoleCommands) });
 
+                // A reload - ReloadAllPlugins in the F4 console, or LSPDFR restarting us - comes
+                // back through here, and both of the deferred checks below have to run again on the
+                // new world rather than be skipped because they already happened once.
                 _startedAt = Environment.TickCount;
+                _renderReported = false;
+                _inventoryReported = false;
+
                 Log.Line("starting; " + _api.Describe() + "; npc speech mode=" + _settings.AiMode +
                          "; appdomain=" + AppDomain.CurrentDomain.FriendlyName);
                 Log.Line("settings: " + Settings.IniPath());
@@ -169,12 +178,38 @@ namespace TextDispatch
                                     ? "  -- THE CHAT BOX IS NOT BEING DRAWN. The plugin loaded, so this is the render path, not the load."
                                     : "  -- the box is being drawn."));
                     }
+
+                    // And a few seconds after that, the other question nobody can answer from
+                    // outside the game: did everything in the plugins folder actually load?
+                    //
+                    // LSPDFR constructs every plugin in one pass around the moment we start, so by
+                    // now the answer is final. Checked once and then dropped - a folder scan on
+                    // every tick would be absurd for something that only changes between sessions.
+                    if (!_inventoryReported && Environment.TickCount - _startedAt > 8000)
+                    {
+                        _inventoryReported = true;
+                        ReportInventory();
+                    }
                 }
                 catch (Exception ex) { Log.Error("tick", ex); }
 
                 // Removing this would hang the game: RPH runs plugins on fibers.
                 GameFiber.Yield();
             }
+        }
+
+        /// <summary>
+        /// Say what loaded, and what did not. A plugin folder that quietly does nothing is the
+        /// single most common way an LSPDFR install is broken, and the reason is never visible from
+        /// inside the game - so it gets said in the box, and written down in full in the log.
+        /// </summary>
+        private static void ReportInventory()
+        {
+            _inventory = PluginInventory.Scan(_api);
+            _inventory.WriteToLog();
+
+            _chat.Notice(_inventory.Headline());
+            foreach (var warning in _inventory.Warnings()) _chat.Error(warning);
         }
 
         private static void DisableGameControls()
