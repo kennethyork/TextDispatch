@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Rage;
 using TextDispatch.Chat;
 using TextDispatch.Dialogue;
 using TextDispatch.Dispatch;
 using TextDispatch.Lspdfr;
+using TextDispatch.Records;
 
 namespace TextDispatch.Commands
 {
@@ -22,14 +24,17 @@ namespace TextDispatch.Commands
         private readonly DispatchService _dispatch;
         private readonly DialogueService _dialogue;
         private readonly Settings _settings;
+        private readonly RecordsLedger _records;
 
-        public CommandRouter(ChatBox chat, LspdfrApi api, DispatchService dispatch, DialogueService dialogue, Settings settings)
+        public CommandRouter(ChatBox chat, LspdfrApi api, DispatchService dispatch, DialogueService dialogue,
+                             Settings settings, RecordsLedger records)
         {
             _chat = chat;
             _api = api;
             _dispatch = dispatch;
             _dialogue = dialogue;
             _settings = settings;
+            _records = records;
         }
 
         public void Handle(string raw)
@@ -141,10 +146,36 @@ namespace TextDispatch.Commands
                 case "id":
                 case "licence":
                 case "license": ShowId(); return;
-                case "record":
-                case "plate": ShowRecord(); return;
+                case "record": ShowRecord(); return;
                 case "owner": ShowOwner(); return;
                 case "zone": ShowZone(); return;
+
+                // ---------------------------------------------------- the car
+                case "lock": LockVehicle(true); return;
+                case "unlock": LockVehicle(false); return;
+                case "engine": Engine(argument); return;
+                case "trunk": OpenDoor(5, "trunk"); return;
+                case "hood": OpenDoor(4, "hood"); return;
+                case "doors":
+                case "shut": ShutDoors(); return;
+                case "repair":
+                case "fix":
+                case "fixveh": RepairVehicle(); return;
+                case "veh":
+                case "spawn": SpawnVehicle(argument); return;
+
+                // ---------------------------------------------------- records terminal
+                case "mdt":
+                case "terminal": RecordsSummary(); return;
+                case "person":
+                case "name": PersonLookup(argument); return;
+                case "plate": PlateLookup(argument); return;
+                case "warrant":
+                case "wants": WarrantLookup(argument); return;
+                case "bolo": Bolo(argument); return;
+                case "arrest": Arrest(argument); return;
+                case "cite":
+                case "ticket": Cite(argument); return;
                 case "pursuit": StartPursuit(); return;
                 case "endpursuit": EndPursuit(); return;
                 case "calledin": CalledIn(); return;
@@ -540,6 +571,284 @@ namespace TextDispatch.Commands
             _chat.Notice("Dispatch shows you at " + zone + ".");
         }
 
+        // ------------------------------------------------------------------ the car
+
+        /// <summary>The vehicle you are sitting in, for things you do to your own car.</summary>
+        private Vehicle MyVehicle()
+        {
+            try
+            {
+                var player = Game.LocalPlayer.Character;
+                return player == null ? null : player.CurrentVehicle;
+            }
+            catch { return null; }
+        }
+
+        private void LockVehicle(bool locked)
+        {
+            var vehicle = SubjectVehicle() ?? MyVehicle();
+            if (vehicle == null) { _chat.Error("No vehicle."); return; }
+
+            string detail;
+            if (!VehicleActions.SetLocked(vehicle, locked, out detail)) { _chat.Error("Could not change the locks."); return; }
+
+            _chat.Me("You", locked ? "lock the car." : "unlock the car.");
+            Log.Line("vehicle: " + detail);
+        }
+
+        private void Engine(string argument)
+        {
+            var vehicle = MyVehicle();
+            if (vehicle == null) { _chat.Error("You are not in a vehicle."); return; }
+
+            bool on = !argument.Equals("off", StringComparison.OrdinalIgnoreCase);
+
+            string detail;
+            if (!VehicleActions.SetEngine(vehicle, on, out detail)) { _chat.Error("Could not change the engine."); return; }
+
+            _chat.Me("You", on ? "start the engine." : "shut the engine off.");
+            Log.Line("vehicle: " + detail);
+        }
+
+        private void OpenDoor(int index, string what)
+        {
+            var vehicle = SubjectVehicle();
+            if (vehicle == null) { _chat.Error("No vehicle in front of you."); return; }
+
+            string detail;
+            if (!VehicleActions.OpenDoor(vehicle, index, out detail)) { _chat.Error("Could not open the " + what + "."); return; }
+
+            _chat.Me("You", "open the " + what + ".");
+            Log.Line("vehicle: " + detail);
+        }
+
+        private void ShutDoors()
+        {
+            var vehicle = SubjectVehicle();
+            if (vehicle == null) { _chat.Error("No vehicle in front of you."); return; }
+
+            string detail;
+            if (!VehicleActions.CloseDoors(vehicle, out detail)) { _chat.Error("Could not shut the doors."); return; }
+
+            _chat.Me("You", "shut the doors.");
+            Log.Line("vehicle: " + detail);
+        }
+
+        private void RepairVehicle()
+        {
+            var vehicle = MyVehicle();
+            if (vehicle == null) { _chat.Error("You are not in a vehicle."); return; }
+
+            string detail;
+            if (!VehicleActions.Repair(vehicle, out detail)) { _chat.Error("Nothing to repair."); return; }
+
+            _chat.Me("You", "give it a quick once-over.");
+            Log.Line("vehicle: " + detail);
+        }
+
+        private void SpawnVehicle(string argument)
+        {
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                _chat.Error("Usage: /veh <model>   e.g. /veh police2, /veh riot, /veh ambulance");
+                return;
+            }
+
+            Vehicle spawned;
+            string detail;
+            if (!VehicleActions.Spawn(argument, out spawned, out detail))
+            {
+                _chat.Error(detail ?? "Could not bring that vehicle.");
+                return;
+            }
+
+            _chat.Notice("Brought you a " + argument + ".");
+            Log.Line("vehicle: " + detail);
+        }
+
+        // ------------------------------------------------------------------ records terminal
+
+        /// <summary>
+        /// The record of whoever you are dealing with, created on first meeting.
+        ///
+        /// The name comes from the same function the chat box uses, so the person the terminal describes
+        /// is the person you have been talking to.
+        /// </summary>
+        private PersonRecord PersonInFront()
+        {
+            var ped = Subject(6f);
+            if (ped == null) return null;
+
+            var handle = unchecked((int)ped.Handle.Value);
+            return _records.EnsurePerson(handle, Identities.NameFor(handle));
+        }
+
+        private void RecordsSummary()
+        {
+            _chat.Notice("On file: " + _records.People.Count + " people, " + _records.Vehicles.Count +
+                         " vehicles, " + _records.Bolos.Count + " BOLOs");
+            _chat.Notice("  you: " + _records.CitationCount + " citations, " + _records.ArrestCount +
+                         " arrests, $" + _records.FinesIssued.ToString("0.00") + " in fines");
+            _chat.Notice("  /person [name]   /plate [plate]   /warrant [name]   /bolo   /arrest   /cite");
+        }
+
+        private void PersonLookup(string argument)
+        {
+            PersonRecord person;
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                person = PersonInFront();
+                if (person == null) { _chat.Error("Nobody close enough, and no name given."); return; }
+            }
+            else
+            {
+                person = _records.FindPerson(argument);
+                if (person == null) { _chat.Error("No record for '" + argument + "'."); return; }
+            }
+
+            _chat.Notice(person.Name + " - " + person.Age + " - " + person.Occupation + " - " + person.HomeZone);
+            _chat.Notice("  " + person.Summary());
+
+            for (int i = 0; i < person.Priors.Count; i++) _chat.Notice("    - prior: " + person.Priors[i]);
+            if (person.Wanted) _chat.Notice("  WARRANT: " + person.WarrantFor);
+            if (person.UnpaidFines > 0) _chat.Notice("  outstanding fines: $" + person.UnpaidFines.ToString("0.00"));
+
+            foreach (var vehicle in _records.Vehicles)
+            {
+                if (!string.Equals(vehicle.OwnerName, person.Name, StringComparison.OrdinalIgnoreCase)) continue;
+                _chat.Notice("  vehicle: " + vehicle.Plate + " - " + vehicle.Model +
+                             (vehicle.ReportedStolen ? "  (reported stolen)" : ""));
+            }
+        }
+
+        private void PlateLookup(string argument)
+        {
+            var plate = argument;
+            string model = null;
+
+            if (string.IsNullOrWhiteSpace(plate))
+            {
+                var vehicle = SubjectVehicle();
+                if (vehicle == null) { _chat.Error("No vehicle in front of you, and no plate given."); return; }
+
+                try { plate = vehicle.LicensePlate; model = vehicle.Model.Name; }
+                catch { }
+            }
+
+            if (string.IsNullOrWhiteSpace(plate)) { _chat.Error("Could not read a plate."); return; }
+
+            var record = _records.EnsureVehicle(plate, model);
+            if (record == null) { _chat.Error("Could not read a plate."); return; }
+
+            _chat.Notice(record.Plate + " - " + record.Model + " - registered to " + record.OwnerName);
+            if (!record.Insured) _chat.Notice("  FLAG: no insurance on file");
+            if (record.ReportedStolen) _chat.Notice("  FLAG: reported stolen");
+
+            var owner = _records.FindPerson(record.OwnerName);
+            if (owner != null && owner.Wanted)
+                _chat.Notice("  FLAG: registered owner has an outstanding warrant");
+        }
+
+        private void WarrantLookup(string argument)
+        {
+            var person = string.IsNullOrWhiteSpace(argument) ? PersonInFront() : _records.FindPerson(argument);
+            if (person == null)
+            {
+                _chat.Error(string.IsNullOrWhiteSpace(argument)
+                    ? "Nobody close enough, and no name given."
+                    : "No record for '" + argument + "'.");
+                return;
+            }
+
+            if (!person.Wanted)
+            {
+                _chat.Notice(person.Name + " - no outstanding warrants.");
+                return;
+            }
+
+            _chat.Notice("WARRANT - " + person.Name + " - " + person.WarrantFor);
+            if (person.Priors.Count > 0) _chat.Notice("  with " + person.Priors.Count + " prior conviction(s) on file");
+        }
+
+        private void Bolo(string argument)
+        {
+            if (string.IsNullOrWhiteSpace(argument) || argument.Equals("list", StringComparison.OrdinalIgnoreCase))
+            {
+                if (_records.Bolos.Count == 0) { _chat.Notice("No active BOLOs."); return; }
+                for (int i = 0; i < _records.Bolos.Count; i++)
+                    _chat.Notice("BOLO - " + _records.Bolos[i].Subject + " - " + _records.Bolos[i].Reason);
+                return;
+            }
+
+            if (argument.StartsWith("clear ", StringComparison.OrdinalIgnoreCase))
+            {
+                var subject = argument.Substring(6).Trim();
+                _chat.Notice(_records.ClearBolo(subject)
+                    ? "BOLO cleared for " + subject + "."
+                    : "No BOLO on file for '" + subject + "'.");
+                return;
+            }
+
+            if (argument.StartsWith("add ", StringComparison.OrdinalIgnoreCase))
+            {
+                var rest = argument.Substring(4).Trim();
+                var split = rest.IndexOf(' ');
+                if (split <= 0) { _chat.Error("Usage: /bolo add <plate or name> <reason>"); return; }
+
+                var subject = rest.Substring(0, split);
+                var reason = rest.Substring(split + 1).Trim();
+
+                _records.AddBolo(subject, reason);
+                _chat.Notice("BOLO entered for " + subject + ": " + reason);
+                return;
+            }
+
+            _chat.Error("Usage: /bolo list  |  /bolo add <plate or name> <reason>  |  /bolo clear <subject>");
+        }
+
+        private void Arrest(string argument)
+        {
+            var inFront = string.IsNullOrWhiteSpace(argument);
+            var person = inFront ? PersonInFront() : _records.FindPerson(argument);
+
+            if (person == null)
+            {
+                _chat.Error(inFront ? "Nobody close enough, and no name given." : "No record for '" + argument + "'.");
+                return;
+            }
+
+            var offence = person.Wanted && !string.IsNullOrEmpty(person.WarrantFor) ? person.WarrantFor : "booking";
+            _chat.Notice(_records.RecordArrest(person, offence));
+
+            // If it is the person standing in front of you, put the cuffs on as well.
+            if (inFront)
+            {
+                var ped = Subject(6f);
+                if (ped != null) _api.ArrestPed(ped);
+            }
+
+            _dispatch.Report(DispatcherIntent.Report, "one in custody and booked");
+        }
+
+        private void Cite(string argument)
+        {
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                _chat.Error("Usage: /cite <name> <offence>   e.g. /cite Reyes speeding");
+                return;
+            }
+
+            var split = argument.IndexOf(' ');
+            var name = split < 0 ? argument : argument.Substring(0, split);
+            var offence = split < 0 ? "traffic offence" : argument.Substring(split + 1).Trim();
+
+            var person = _records.FindPerson(name);
+            if (person == null) { _chat.Error("No record for '" + name + "'."); return; }
+
+            _chat.Notice(_records.IssueCitation(person, offence, 250.0));
+            _dispatch.Report(DispatcherIntent.Report, "citation written for " + offence);
+        }
+
         private void StartPursuit()
         {
             var handle = _api.CreatePursuit();
@@ -684,6 +993,8 @@ namespace TextDispatch.Commands
             _chat.Notice("            /id  /frisk  /cuff  /detain  /release  /record  /owner  /transport");
             _chat.Notice("            (all of those act on the driver you stopped)");
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
+            _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model>");
+            _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest  /cite <name> <offence>");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");
             _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /clear");
             _chat.Notice("  Open the box with T, or / to start typing a command.");

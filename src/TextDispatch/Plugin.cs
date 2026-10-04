@@ -4,6 +4,7 @@ using TextDispatch.Chat;
 using TextDispatch.Commands;
 using TextDispatch.Dialogue;
 using TextDispatch.Lspdfr;
+using TextDispatch.Records;
 
 namespace TextDispatch
 {
@@ -24,6 +25,7 @@ namespace TextDispatch
         private static DispatchService _dispatch;
         private static DialogueService _dialogue;
         private static Settings _settings;
+        private static RecordsLedger _records;
         private static CommandRouter _router;
         private static bool _rendering;
         private static bool _renderErrorLogged;
@@ -71,7 +73,13 @@ namespace TextDispatch
                 _api = new LspdfrApi();
                 _dispatch = new DispatchService(_chat, _api, _settings);
                 _dialogue = new DialogueService(_chat, _api, _settings);
-                _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings);
+
+                // Fixed seed: the same town every session, so somebody the terminal flags as wanted is
+                // still that person tomorrow. The alternative - a fresh population each launch - makes
+                // the records meaningless.
+                _records = RecordsLedger.Populate(20261004);
+
+                _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records);
                 _input = new TextInput(_chat, _router.Handle);
 
                 if (!_input.SetOpenKey(_settings.OpenKey))

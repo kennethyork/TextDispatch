@@ -233,6 +233,36 @@ assembly — and `/callout` starts any of them by name.
 `/ems` (or `/ambulance`, `/medic`) · `/fire` · `/backup [swat|air|state|ems|fire|transport|code2]` ·
 `/zone`
 
+**The car**
+`/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` (or `/fix`) ·
+`/veh <model>`
+
+### The records terminal
+
+GTA World's MDT is a server database - which is exactly why it is the one part of that server's command
+set worth rebuilding here. A database needs no other players.
+
+Thirty-five people and thirty-four vehicles are on file, generated from a **fixed seed**, so the town is
+the same town every session and the person the terminal flags as wanted is still that person tomorrow.
+Anyone you meet in the street is given a record the first time you deal with them - under the same name
+the chat box shows - and keeps it.
+
+| | |
+|---|---|
+| `/mdt` | what is on file, and what you have filed |
+| `/person [name]` | their age, job, district, priors, warrants, fines and vehicles |
+| `/plate [plate]` | registration, insurance, stolen flag, and whether the owner is wanted |
+| `/warrant [name]` | outstanding warrants only |
+| `/bolo` · `/bolo add <plate or name> <reason>` · `/bolo clear <subject>` | file, read and clear BOLOs |
+| `/arrest [name]` | books them; if they are in front of you it also cuffs them |
+| `/cite <name> <offence>` | a $250 citation on their record |
+
+`/person` and `/warrant` with no name describe whoever is in front of you. `/plate` with no plate runs
+the car you have stopped. Name lookups match on part of a name, the way somebody would actually ask -
+`/person Vasquez` finds "Marisol Vasquez".
+
+Records are per session. Nothing is written to disk.
+
 > **`/tow` really takes the vehicle.** LSPDFR has no towing system and there is no tow plugin here to
 > borrow one from, so it does what a tow ends with: the car leaves the world and dispatch says the
 > recovery is arranged. A command that only printed text would be a service pretending to happen.

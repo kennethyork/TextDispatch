@@ -103,6 +103,8 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Calls | `/accept` · `/decline` · `/calls [filter]` · `/callout <name>` · `/endcall` |
 | Stops | `/stop` · `/endstop` · `/tow` · `/id` · `/frisk` · `/cuff` · `/detain` · `/release` · `/record` · `/owner` |
 | Services | `/ems` · `/fire` · `/backup [swat\|air\|state\|ems\|fire\|transport\|code2]` · `/transport` · `/panic` · `/911 <details>` |
+| Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model>` |
+| Records | `/mdt` · `/person [name]` · `/plate [plate]` · `/warrant [name]` · `/bolo` · `/arrest` · `/cite <name> <offence>` |
 | Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |
 | The box | `/pos <corner>` · `/margin <px>` · `/ui` · `/font` · `/fontsize` · `/lines` · `/clear` |
 
