@@ -186,6 +186,28 @@ Type anything and it is spoken where you are standing.
 
 Talk to dispatch with `/r <text>`, or just type a status code.
 
+### Conversations, not one-liners
+
+Replies used to be capped at one short line, and the model was shown only the last six exchanges - about
+two turns, which is why people seemed to forget what they had just said.
+
+- **Twenty lines of history** go to the model now (`AiHistoryLines`), so it knows what it said a moment
+  ago.
+- **Replies are one or two sentences, up to about 45 words**, and it is told to answer *and* keep the
+  exchange going - to deflect, complain, or ask something back.
+- **It is told never to repeat a line it has already used.**
+- **Everyone has a life.** Age, job, district and history come from the same records the terminal reads,
+  so the person who says "I'm a mechanic from Sandy Shores" is the person `/person` describes. Somebody
+  with a warrant knows the police are looking for them, and it colours what they say.
+- **`/me` and `/do` are part of the conversation.** Announcing that you have drawn your baton now reaches
+  the person you are talking to instead of vanishing.
+
+The reply deadline went up to 15 seconds, and the log complains when a reply takes over six - a slow
+machine is exactly how a conversation would quietly fall back to the scripted line again.
+
+> Without a model running there is no conversation to be had: the script answers, and it answers in one
+> line. That is the honest limit of the no-setup path.
+
 ### Orders they actually carry out
 
 Some sentences are not conversation. They are recognised by the plugin - never by the model - and the

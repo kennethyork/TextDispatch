@@ -121,12 +121,16 @@ namespace TextDispatch.Dialogue
         public void Remember(string line)
         {
             Memory.Add(line);
-            if (Memory.Count > 10) Memory.RemoveAt(0);
+
+            // Long enough for a real conversation. Ten lines was roughly two exchanges, which meant
+            // a model was answering without knowing what it had just said.
+            if (Memory.Count > 60) Memory.RemoveAt(0);
         }
 
         /// <summary>The last few lines, oldest first, for the model's transcript.</summary>
         public string Transcript(int lines)
         {
+            if (lines <= 0) lines = 12;
             var start = Math.Max(0, Memory.Count - lines);
             return string.Join("\n", Memory.GetRange(start, Memory.Count - start).ToArray());
         }

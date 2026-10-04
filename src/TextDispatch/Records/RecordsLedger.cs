@@ -27,6 +27,24 @@ namespace TextDispatch.Records
             if (Priors.Count > 0) return Priors.Count + " prior(s)";
             return "no record";
         }
+
+        /// <summary>
+        /// One line describing who this person is, for the conversation prompt.
+        ///
+        /// The point of putting it here rather than in the dialogue code is that the records terminal
+        /// and the conversation describe the same person from the same source - the officer asking
+        /// "who are you" and the terminal saying "34, a mechanic, from Del Perro" are one system, not two.
+        /// </summary>
+        public string CharacterLine()
+        {
+            var line = Age + ", " + (string.IsNullOrEmpty(Occupation) ? "no job on record" : "a " + Occupation.ToLowerInvariant());
+            if (!string.IsNullOrEmpty(HomeZone)) line += ", lives in " + HomeZone;
+
+            if (Wanted) line += ". You know the police are looking for you over " + WarrantFor;
+            else if (Priors.Count > 0) line += ". You have been in trouble before and do not want more of it";
+
+            return line + ".";
+        }
     }
 
     /// <summary>A vehicle on file. The owner link is what makes a plate check worth running.</summary>

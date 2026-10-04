@@ -95,8 +95,14 @@ namespace TextDispatch.Commands
                 case "help": Help(); return;
 
                 // ---------------------------------------------------- roleplay
-                case "me": _chat.Me("You", argument); return;
-                case "do": _chat.Do(argument); return;
+                case "me":
+                    _chat.Me("You", argument);
+                    _dialogue.Note("You " + argument);
+                    return;
+                case "do":
+                    _chat.Do(argument);
+                    _dialogue.Note("(" + argument + ")");
+                    return;
                 case "b":
                 case "ooc": _chat.Write(ChatChannel.Do, "", "(( OOC: " + argument + " ))"); return;
                 case "r":

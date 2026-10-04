@@ -72,13 +72,15 @@ namespace TextDispatch
                 _chat = new ChatBox();
                 _api = new LspdfrApi();
                 _dispatch = new DispatchService(_chat, _api, _settings);
-                _dialogue = new DialogueService(_chat, _api, _settings);
-
                 // Fixed seed: the same town every session, so somebody the terminal flags as wanted is
                 // still that person tomorrow. The alternative - a fresh population each launch - makes
                 // the records meaningless.
+                //
+                // Built before the dialogue service on purpose: the conversation prompt describes the
+                // same person the terminal does, from the same records.
                 _records = RecordsLedger.Populate(20261004);
 
+                _dialogue = new DialogueService(_chat, _api, _settings, _records);
                 _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records);
                 _input = new TextInput(_chat, _router.Handle);
 

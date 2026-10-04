@@ -28,13 +28,23 @@ namespace TextDispatch
         public string AiModel = "";
 
         /// <summary>
-        /// How long a reply may take before the scripted line is used instead. Generous enough for a
-        /// small model on a CPU to finish a short sentence, short enough that a dead server does not
-        /// leave somebody standing mute.
+        /// How long a reply may take before the scripted line is used. Raised with the longer, more
+        /// conversational answers: a two-sentence reply on a CPU takes noticeably longer than a clipped
+        /// one, and falling back would undo the point of asking for a conversation.
         /// </summary>
-        public int AiTimeoutMs = 12000;
-        public int AiMaxTokens = 100;
+        public int AiTimeoutMs = 15000;
+
+        /// <summary>Room for one or two sentences rather than one clipped line.</summary>
+        public int AiMaxTokens = 160;
+
         public float AiTemperature = 0.9f;
+
+        /// <summary>
+        /// How much of the exchange is handed to the model. Six lines is about two exchanges, which is
+        /// not enough for somebody to know what they said a moment ago - the main reason conversations
+        /// felt like unrelated one-liners.
+        /// </summary>
+        public int AiHistoryLines = 20;
 
         /// <summary>Set once, at startup, from AiMode.</summary>
         private bool _useModel;
@@ -109,8 +119,8 @@ namespace TextDispatch
         private static readonly string[] KnownKeys =
         {
             "aimode", "aiprovider", "aiendpoint", "aimodel", "aitimeoutms", "aimaxtokens",
-            "aitemperature", "openkey", "chatposition", "chatmargin", "typingms", "dispatchms",
-            "sayrange", "whisperrange", "shoutrange"
+            "aitemperature", "aihistorylines", "openkey", "chatposition", "chatmargin", "typingms",
+            "dispatchms", "sayrange", "whisperrange", "shoutrange"
         };
 
         public static Settings Load()
@@ -165,6 +175,7 @@ namespace TextDispatch
                         case "aitimeoutms": settings.AiTimeoutMs = AsInt(value, settings.AiTimeoutMs); break;
                         case "aimaxtokens": settings.AiMaxTokens = AsInt(value, settings.AiMaxTokens); break;
                         case "aitemperature": settings.AiTemperature = AsFloat(value, settings.AiTemperature); break;
+                        case "aihistorylines": settings.AiHistoryLines = AsInt(value, settings.AiHistoryLines); break;
                         case "openkey": settings.OpenKey = value; break;
                         case "chatposition": settings.ChatPosition = value; break;
                         case "chatmargin": settings.ChatMargin = AsFloat(value, settings.ChatMargin); break;
@@ -226,6 +237,9 @@ namespace TextDispatch
                     "AiTimeoutMs=" + settings.AiTimeoutMs.ToString(CultureInfo.InvariantCulture),
                     "AiMaxTokens=" + settings.AiMaxTokens.ToString(CultureInfo.InvariantCulture),
                     "AiTemperature=" + settings.AiTemperature.ToString(CultureInfo.InvariantCulture),
+                    "; How much of the conversation to hand the model. Longer means it remembers more,",
+                    "; and costs a little more time per reply.",
+                    "AiHistoryLines=" + settings.AiHistoryLines.ToString(CultureInfo.InvariantCulture),
                     "",
                     "; Which key opens the chat box. Any key name works: T, F6, OemQuestion, Home.",
                     "; Change it if another mod already uses T.",

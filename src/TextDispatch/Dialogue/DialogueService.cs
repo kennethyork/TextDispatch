@@ -4,6 +4,7 @@ using Rage;
 using TextDispatch.Ai;
 using TextDispatch.Chat;
 using TextDispatch.Lspdfr;
+using TextDispatch.Records;
 
 namespace TextDispatch.Dialogue
 {
@@ -24,16 +25,18 @@ namespace TextDispatch.Dialogue
         private readonly LspdfrApi _api;
         private readonly Settings _settings;
         private readonly ReplyPump _pump;
+        private readonly RecordsLedger _records;
 
         private readonly Dictionary<int, Talker> _talkers = new Dictionary<int, Talker>();
         private Talker _target;
 
-        public DialogueService(ChatBox chat, LspdfrApi api, Settings settings)
+        public DialogueService(ChatBox chat, LspdfrApi api, Settings settings, RecordsLedger records)
         {
             _chat = chat;
             _api = api;
             _settings = settings;
             _pump = new ReplyPump(settings);
+            _records = records;
         }
 
         public Talker Target { get { return _target; } }
@@ -92,7 +95,7 @@ namespace TextDispatch.Dialogue
                 () =>
                 {
                     string error;
-                    var reply = NpcPrompt.Ask(_settings, speaker, state, text, out error);
+                    var reply = NpcPrompt.Ask(_settings, speaker, state, CharacterFor(speaker), text, out error);
                     if (reply == null && error != null) Log.Line("npc model: " + error);
                     return reply;
                 },
@@ -129,6 +132,39 @@ namespace TextDispatch.Dialogue
 
             Log.Line("order: " + talker.Name + " '" + ComplyCommands.Describe(order) + "' -> " +
                      (done ? "done (" + detail + ")" : "FAILED (" + detail + ")"));
+        }
+
+        /// <summary>
+        /// Who this person is, for the prompt. Read from the records ledger, so the conversation and the
+        /// terminal describe the same person from the same source.
+        /// </summary>
+        private string CharacterFor(Talker talker)
+        {
+            if (talker == null || _records == null) return null;
+
+            var person = _records.EnsurePerson(talker.Handle, talker.Name);
+            return person == null ? null : person.CharacterLine();
+        }
+
+        /// <summary>
+        /// Record something the player did, without making anybody answer it.
+        ///
+        /// /me and /do are part of what is happening in the scene. Leaving them out of the transcript
+        /// meant somebody could announce that they had just drawn a baton and the conversation would
+        /// carry on as though nothing had happened.
+        /// </summary>
+        public void Note(string line)
+        {
+            if (string.IsNullOrEmpty(line)) return;
+
+            var talker = _target;
+            if (talker == null)
+            {
+                var nearest = _api.NearestPed(_settings.SayRange);
+                if (nearest != null) talker = For(nearest);
+            }
+
+            if (talker != null) talker.Memory.Add(line);
         }
 
         /// <summary>Put a line in the transcript, as the person who said it.</summary>

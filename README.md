@@ -54,6 +54,9 @@ assembly, so every callout you have is announced in text and can be started by n
 - **You can talk to people.** Type at a suspect and they answer in text, from their actual situation:
   stopped, searched, cuffed, caught with something, or running. Each person keeps a name and a
   temperament across the session, so they stay the same character.
+- **Full conversations, not one-liners.** Replies run to a sentence or two, twenty lines of history go
+  to the model so it knows what it just said, and everyone has an age, a job, a district and a history
+  drawn from the same records the terminal reads.
 - **You can give them orders.** `hands up`, `step out of the vehicle`, `look at me`, `don't move`,
   `you can go` - recognised by the plugin rather than the model, and actually carried out. Whether
   they obey follows their temperament, so the reply and the action agree.
