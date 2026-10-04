@@ -20,3 +20,4 @@ tools/rph-sdk/
 /src/OpenDuty.Core/
 /src/OpenDuty.Headless/
 /src/OpenDuty.Adapter.Rph/
+/tools/install.ps1
