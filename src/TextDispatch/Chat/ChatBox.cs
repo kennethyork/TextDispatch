@@ -149,7 +149,21 @@ namespace TextDispatch.Chat
                 scroll = Scroll;
             }
 
-            var resolution = Game.Resolution;
+            // Never trust the reported resolution for layout: if the game answers 0 (or throws),
+            // the box would be sized to nothing and disappear silently - the worst possible way for
+            // this to fail, because it looks identical to "the plugin did not load".
+            float screenWidth = 1920f, screenHeight = 1080f;
+            try
+            {
+                var resolution = Game.Resolution;
+                if (resolution.Width > 0f && resolution.Height > 0f)
+                {
+                    screenWidth = resolution.Width;
+                    screenHeight = resolution.Height;
+                }
+            }
+            catch { }
+
             float scale = UiScale <= 0f ? 1f : UiScale;
             float fontSize = FontSize * scale;
             float lineHeight = fontSize * 1.55f;
@@ -160,7 +174,7 @@ namespace TextDispatch.Chat
             int rows = open ? Math.Max(count + 1, 1) : count;
             if (rows <= 0) return;
 
-            float width = Math.Min(resolution.Width * 0.46f, 820f * scale);
+            float width = Math.Min(screenWidth * 0.46f, 820f * scale);
             float height = rows * lineHeight + 12f;
             float x = 16f;
             float y = 16f;

@@ -95,6 +95,56 @@ namespace TextDispatch
             Game.Console.Print("[TextDispatch] showing " + lines + " lines");
         }
 
+        [ConsoleCommand("tdfont", Description = "TextDispatch: change the chat font if text does not draw. e.g. tdfont Consolas")]
+        public static void TdFont(string value)
+        {
+            if (Plugin.Chat == null) { Game.Console.Print("[TextDispatch] not running."); return; }
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                Game.Console.Print("[TextDispatch] current font: " + Plugin.Chat.FontName);
+                Game.Console.Print("[TextDispatch] usage: tdfont <name>   e.g. tdfont Consolas, tdfont \"Segoe UI\"");
+                return;
+            }
+
+            Plugin.Chat.FontName = value.Trim();
+            Game.Console.Print("[TextDispatch] font is now " + Plugin.Chat.FontName);
+
+            // If the box is not drawing, this is the only way to find a font that does.
+            try
+            {
+                var size = Rage.Graphics.MeasureText("TextDispatch", Plugin.Chat.FontName, Plugin.Chat.FontSize);
+                Game.Console.Print("[TextDispatch] it measures " + size.Width.ToString("0.0") + "x" +
+                                   size.Height.ToString("0.0") +
+                                   (size.Width <= 0f ? "   <-- still not available, try Consolas" : "   <-- good"));
+            }
+            catch (Exception ex) { Game.Console.Print("[TextDispatch] measurement failed: " + ex.Message); }
+
+            Log.Line("font changed to " + Plugin.Chat.FontName + " (not saved to the ini)");
+        }
+
+        [ConsoleCommand("tdrender", Description = "TextDispatch: is the chat box actually being drawn, and did the font load?")]
+        public static void TdRender()
+        {
+            if (Plugin.Chat == null) { Game.Console.Print("[TextDispatch] not running."); return; }
+
+            Game.Console.Print("[TextDispatch] FrameRender callbacks so far: " + Plugin.RenderCalls +
+                               (Plugin.RenderCalls == 0 ? "   <-- NOTHING IS BEING DRAWN" : ""));
+            Game.Console.Print("[TextDispatch] last render error: " + (Plugin.LastRenderError ?? "none"));
+            Game.Console.Print("[TextDispatch] box: " + Plugin.Chat.LineCount + " lines, " +
+                               Plugin.Chat.VisibleLines + " shown, scale " + Plugin.Chat.UiScale +
+                               ", font " + Plugin.Chat.FontName + " " + Plugin.Chat.FontSize);
+
+            try
+            {
+                var size = Rage.Graphics.MeasureText("TextDispatch", Plugin.Chat.FontName, Plugin.Chat.FontSize);
+                Game.Console.Print("[TextDispatch] font measures as " + size.Width.ToString("0.0") + "x" +
+                                   size.Height.ToString("0.0") +
+                                   (size.Width <= 0f ? "   <-- FONT NOT AVAILABLE, try: tdfont Consolas" : ""));
+            }
+            catch (Exception ex) { Game.Console.Print("[TextDispatch] font measurement failed: " + ex.Message); }
+        }
+
         [ConsoleCommand("tdkey", Description = "TextDispatch: which key opens the chat box. e.g. tdkey F6")]
         public static void TdKey(string value)
         {

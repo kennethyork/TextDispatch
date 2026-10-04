@@ -34,12 +34,22 @@ namespace TextDispatch
         private static bool _renderErrorLogged;
         private static bool _controlsFailed;
 
+        // Diagnostics for the one thing that cannot be tested outside the game: is the box drawn?
+        private static int _renderCalls;
+        private static bool _renderReported;
+        private static int _startedAt;
+        private static string _lastRenderError;
+
+        internal static int RenderCalls { get { return _renderCalls; } }
+        internal static string LastRenderError { get { return _lastRenderError; } }
+
         public static ChatBox Chat { get { return _chat; } }
 
         internal static LspdfrApi Api { get { return _api; } }
         internal static CommandRouter Router { get { return _router; } }
         internal static DialogueService Dialogue { get { return _dialogue; } }
         internal static TextInput Input { get { return _input; } }
+
         internal static DispatchService Dispatch { get { return _dispatch; } }
         internal static Settings Settings { get { return _settings; } }
 
@@ -68,6 +78,8 @@ namespace TextDispatch
                 Game.AddConsoleCommands(new Type[] { typeof(ConsoleCommands) });
 
                 Log.Line("starting; " + _api.Describe() + "; npc speech mode=" + _settings.AiMode);
+                _startedAt = Environment.TickCount;
+                ReportDisplay();
 
                 _chat.Notice("TextDispatch loaded. Press " + _settings.OpenKey + " to chat - /help for the commands.");
                 _chat.Notice("Type anything to speak out loud. People nearby answer in text (" +
@@ -91,6 +103,19 @@ namespace TextDispatch
 
                         _dispatch.Update();
                         _dialogue.Update();
+
+                        // Five seconds in, say plainly whether anything is being drawn. This is the
+                        // single question that cannot be answered from outside the game, and it
+                        // should not be left to guesswork.
+                        if (!_renderReported && Environment.TickCount - _startedAt > 5000)
+                        {
+                            _renderReported = true;
+                            Log.Line("render check: the FrameRender callback has fired " + _renderCalls +
+                                     " time(s) in 5s" +
+                                     (_renderCalls == 0
+                                        ? "  -- THE CHAT BOX IS NOT BEING DRAWN. The plugin loaded, so this is the render path, not the load."
+                                        : "  -- the box is being drawn."));
+                        }
                     }
                     catch (Exception ex) { Log.Error("tick", ex); }
 
@@ -121,12 +146,18 @@ namespace TextDispatch
         {
             if (_rendering) return;
             _rendering = true;
+            _renderCalls++;
+
             try
             {
                 _chat.Render(e.Graphics);
             }
             catch (Exception ex)
             {
+                var inner = ex;
+                while (inner.InnerException != null) inner = inner.InnerException;
+                _lastRenderError = inner.GetType().Name + ": " + inner.Message;
+
                 if (!_renderErrorLogged)
                 {
                     _renderErrorLogged = true;
@@ -134,6 +165,32 @@ namespace TextDispatch
                 }
             }
             finally { _rendering = false; }
+        }
+
+        /// <summary>
+        /// Write down what the game reports about its display and fonts, because those are the two
+        /// things most likely to make a working plugin look like a broken one.
+        /// </summary>
+        private static void ReportDisplay()
+        {
+            try
+            {
+                var resolution = Game.Resolution;
+                Log.Line("display: game reports " + resolution.Width.ToString("0") + "x" + resolution.Height.ToString("0") +
+                         (resolution.Width > 0f && resolution.Height > 0f
+                            ? ""
+                            : "  (unusable - layout falls back to 1920x1080)"));
+            }
+            catch (Exception ex) { Log.Error("read resolution", ex); }
+
+            try
+            {
+                var size = Graphics.MeasureText("TextDispatch", _chat.FontName, _chat.FontSize);
+                Log.Line("display: font '" + _chat.FontName + "' measures \"TextDispatch\" as " +
+                         size.Width.ToString("0.0") + "x" + size.Height.ToString("0.0") +
+                         (size.Width <= 0f ? "  -- THE FONT PROBABLY DOES NOT EXIST; try /font Consolas" : ""));
+            }
+            catch (Exception ex) { Log.Error("measure font", ex); }
         }
     }
 }
