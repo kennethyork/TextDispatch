@@ -389,11 +389,19 @@ A few seconds after you go on duty, the log also gets an `inventory:` section: e
 installed, and anything installed in `Plugins\` or `lspdfr\` where LSPDFR never looks. `/plugins`
 prints the same thing in the box.
 
+It keeps two things apart on purpose, because confusing them is worse than saying nothing:
+
+- a **missing dependency**, on a plugin that also failed to load - that is a real problem, and it says so;
+- an **optional integration** that is not installed, on a plugin that loaded fine - that is a feature
+  switched off, which is the common case and not a fault. Reporting those as faults teaches you to
+  ignore the line, so the one time it matters it gets ignored too.
+
 | Symptom | Look at |
 |---|---|
 | **Nothing loaded at all - not this plugin, not the callout packs** | You have not been on duty. Press **E** at a police station: LSPDFR scans `Plugins\LSPDFR` at that moment, and not before it. |
 | A plugin you installed is not in LSPDFR's list | `/plugins` - or `tdplugins` in F4, or the log. It names every DLL in the folder, which ones loaded, and which are in `Plugins\` or `lspdfr\` where LSPDFR never looks for them. |
-| The game crashed after a while on duty | `/plugins` names plugins that refer to an assembly this machine does not have. A pack crashes the game the moment it reaches for one that is really required. |
+| The game crashed after a while on duty | `/plugins` sorts the two cases apart. **Did not load** and **Missing dependency** mean something is actually broken. **Optional integrations not installed** means a feature is switched off and nothing is wrong - a callout pack's StopThePed or Callout Interface link, for instance. |
+| It says a plugin "needs" something | Almost always an optional integration with another pack. Only the **Missing dependency** wording, on a plugin that also did not load, means you have to install something. |
 | Nothing on screen at all | Is `TextDispatch.dll` in `Plugins\LSPDFR\`? Then read our log and RPH's. |
 | **RPH's log never mentions TextDispatch at all** | If it is in `Plugins\`, move it to `Plugins\LSPDFR\` - RPH is not going to load it into the right AppDomain anyway. |
 | Log says `starting; not installed` | LSPDFR is installed but invisible: the DLL is in `Plugins\` instead of `Plugins\LSPDFR\`. |

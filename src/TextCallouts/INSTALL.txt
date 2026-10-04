@@ -40,6 +40,17 @@ THE CALLOUTS
     Officer Needs Assistance  Shots fired, two armed suspects, backup rolling. The hard one.
 
 
+YOUR OWN CALLOUTS
+-----------------
+
+Drop an .xml file in Plugins\LSPDFR\TextCallouts\Custom\ and go on duty: it is offered like any
+other callout. The folder appears on first run with a README.txt listing every field and a worked
+example to copy, so there is nothing to look up online.
+
+A file the pack cannot make sense of is named in Plugins\LSPDFR\textcallouts.log with the reason -
+never skipped in silence.
+
+
 INSTALL
 -------
 
@@ -88,7 +99,8 @@ REQUIREMENTS
 ------------
 
 Grand Theft Auto V (Legacy), RAGE Plugin Hook and LSPDFR 0.4.9 or newer. .NET Framework 4.8.
-Nothing else - no RAGENativeUI, no interaction framework, no external callout libraries.
+Nothing else - no RAGENativeUI, no interaction framework, no external callout libraries. (The only
+assemblies this pack references are LSPD First Response, RagePluginHook and parts of .NET itself.)
 
 RAGE Plugin Hook and LSPDFR are not included and never will be: both are separate works under their
 own licences.

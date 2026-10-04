@@ -46,6 +46,8 @@ Installed side by side, they are one experience:
   * /calls lists all eight alongside LSPDFR's own callouts and any other pack's, and /callout <name>
     starts one on demand, which is the quickest way to see one
   * people in the callouts answer in text when you talk to them
+  * and your own callouts - written as XML files in Plugins\LSPDFR\TextCallouts\Custom\ - are
+    offered exactly like the built-in eight, no compiling involved
 
 None of that is a hard dependency. Each plugin works alone: TextDispatch runs with no callout pack,
 and TextCallouts runs with no text interface - the callout lines simply arrive as normal

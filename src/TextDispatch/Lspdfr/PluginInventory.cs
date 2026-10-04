@@ -465,19 +465,44 @@ namespace TextDispatch.Lspdfr
         {
             var warnings = new List<string>();
 
+            var notLoaded = NotLoaded;
+            if (notLoaded.Count > 0)
+            {
+                var names = new List<string>();
+                foreach (var entry in notLoaded) names.Add(entry.Name);
+                warnings.Add("Did not load: " + string.Join(", ", names.ToArray()) +
+                             ". LSPDFR creates a plugin from every DLL in this folder and these are not among them - " +
+                             "RagePluginHook.log says why, beside each one's own 'Creating plugin:' line (or its absence).");
+            }
+
             foreach (var name in Misplaced)
                 warnings.Add("Wrong folder: " + name + ". LSPDFR only ever scans Plugins\\LSPDFR, so this one never runs - move it there.");
 
-            var broken = new List<string>();
+            // A reference to something absent is a *hint*, not a verdict. In practice these are almost
+            // always optional integrations with another pack - StopThePed's BetterEMS, a callout pack's
+            // Callout Interface link - which switch one feature off and carry on. Warning that they
+            // "crash the game" trains the reader to ignore the line, and then the one time it matters
+            // they will ignore it too. So the two cases are worded differently: a plugin that failed to
+            // load alongside a missing dependency is the likely cause, and that is worth saying plainly.
+            var optional = new List<string>();
+            var fatal = new List<string>();
+
             foreach (var entry in Entries)
             {
                 if (!entry.IsPlugin || entry.Missing.Count == 0) continue;
-                broken.Add(entry.Name + " needs " + string.Join(", ", entry.Missing.ToArray()));
+                var line = entry.Name + " -> " + string.Join(", ", entry.Missing.ToArray());
+                if (entry.IsLoaded) optional.Add(line);
+                else fatal.Add(line);
             }
 
-            if (broken.Count > 0)
-                warnings.Add("Something is missing: " + string.Join("; ", broken.ToArray()) +
-                             ".  Often optional, but a pack crashes the game the moment it reaches for one that is not. /plugins lists them.");
+            if (fatal.Count > 0)
+                warnings.Add("Missing dependency: " + string.Join("; ", fatal.ToArray()) +
+                             " - and those plugins did not load, so this is very probably why.");
+
+            if (optional.Count > 0)
+                warnings.Add("Optional integrations not installed: " + string.Join("; ", optional.ToArray()) +
+                             ".  Those plugins loaded without them; the features they add are simply switched off. " +
+                             "/plugins lists them and the log has the detail.");
 
             return warnings;
         }
@@ -500,7 +525,8 @@ namespace TextDispatch.Lspdfr
             {
                 if (entry.Missing.Count == 0) continue;
                 lines.Add("  " + entry.Name + " refers to: " + string.Join(", ", entry.Missing.ToArray()) +
-                          " (not installed)");
+                          (entry.IsLoaded ? " (not installed; optional integration, feature off)"
+                                          : " (not installed, and this plugin did not load)"));
             }
 
             foreach (var name in Misplaced)
@@ -523,8 +549,10 @@ namespace TextDispatch.Lspdfr
                          " - " + entry.StateWord);
 
                 foreach (var needed in entry.Missing)
-                    Log.Line("inventory:       needs " + needed + ", which is not installed - " +
-                             "optional ones do nothing, required ones crash the game when they are reached for");
+                    Log.Line("inventory:       references " + needed + ", which is not installed - " +
+                             (entry.IsLoaded
+                                 ? "an optional integration; the feature that uses it is switched off"
+                                 : "and this plugin did not load, so this is probably why"));
 
                 foreach (var merged in entry.Merged)
                     Log.Line("inventory:       refers to " + merged + " (obfuscated or merged in; ignored)");

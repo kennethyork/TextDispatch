@@ -11,7 +11,7 @@ metadata, not from memory of what was downloaded.
 | .NET Framework | 4.8 ✓ |
 | RAGENativeUI | 1.9.3.0 ✓ (was wrongly 1.6.3.0 — fixed, see §1) |
 | ScriptHookV | ✗ **not installed** — the one thing ELS needs |
-| LSPDFR plugins | **15** DLLs in `Plugins\LSPDFR`, all load — including **TextCallouts 1.0.0** (new) |
+| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer were put back, and **TextCallouts is now 1.1.0** (your own XML callouts) |
 | ASI mods | 3 installed, **2 load** |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
@@ -159,8 +159,8 @@ RAGE Plugin Hook and LSPDFR also drop these support libraries in the root; none 
 | **SSStuart Callouts** | 0.1.2.0 | CalloutInterfaceAPI ✓ | loads |
 | **StopThePed** | 4.9.5.4 | RAGENativeUI ✓ · *optional*: Ultimate Backup ✓, PoliceSmartRadio ✓, VocalDispatch ✗, PoliceSearch ✗ | loads · **conflicts with PR §1.4** |
 | **Story Callouts** | 0.1.2.0 | CalloutInterfaceAPI ✓ | loads |
-| **TextCallouts** | 1.0.0 | **nothing but LSPDFR and RAGE Plugin Hook** | loads, 8 callouts |
-| **TextDispatch** | 1.0.12.0 | LSPDFR ✓ · *optional*: Ollama ✓, LM Studio | loads, box drawn |
+| **TextCallouts** | 1.1.0 | **nothing but LSPDFR and RAGE Plugin Hook** | loads, 8 callouts + your own XML recipes |
+| **TextDispatch** | 1.0.13 | LSPDFR ✓ · *optional*: Ollama ✓, LM Studio | loads, box drawn |
 | **Traffic Policer** | 7.0.0.0 | Albo1125.Common ✓, RAGENativeUI ✓, scanner audio ✓ (163 files) · *optional*: British Policing Script ✗ | loads (2019 mod — §4) |
 | **Ultimate Backup** | 1.8.7.1 | RAGENativeUI ✓ · *optional*: VocalDispatch ✗, PoliceSearch ✗ | loads · **part of the PR conflict §1.4** |
 | **UnitedCallouts** | 1.5.8.2 | RAGENativeUI ✓ | loads |
@@ -170,10 +170,12 @@ Each plugin's own data folder is installed alongside it: `CompuLite\`, `MizCallo
 `CommonDataFramework\`, `VocalDispatch\` — and the leftovers `686Callouts\`, `EMSmod\` and
 `PoliceSmartRadio\` from the mods below.
 
-**Removed since 17:08, so no longer in the table:** 686 Callouts, External Police Computer and
-PoliceSmartRadio. With RAGENativeUI fixed they were no longer needed to stop the crash; their data
-folders, audio and `EPC\` are still on disk if you want any of them back. **TextCallouts 1.0.0 is now
-installed** — the dependency-free alternative to 686 Callouts, and it collides with nothing.
+**Put back on request:** 686 Callouts 2.1.2.0 (with its 482-file data folder) and External Police
+Computer 2.0.1.0 — with RAGENativeUI fixed at 1.9.3.0, the reason they were removed is gone. 686
+Callouts' `Is ExternalPoliceComputer Running? False` line should now read `True`.
+
+**Still out:** PoliceSmartRadio (its 151-file data folder is on disk), Callout Interface, LSPDFR+,
+BetterEMS and Arrest Manager. All of them are optional integrations for something else.
 
 ### 2.5 Mod content inside `lspdfr\`
 

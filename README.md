@@ -159,6 +159,10 @@ If TextDispatch is installed, each callout's lines are mirrored into the chat bo
 TextDispatch lists them in `/calls` and can start any of them with `/callout <name>` — so the two
 work as one thing while depending on nothing.
 
+Its eight callouts are written in C#; **your own are written in XML** - drop a file in
+`Plugins\LSPDFR\TextCallouts\Custom\`, go on duty, and it is offered like any other callout. A file
+it cannot make sense of is refused with the reason in the log, never ignored.
+
 Install the DLL into `Plugins\LSPDFR\` and go on duty, exactly like TextDispatch:
 [`src/TextCallouts/README.md`](src/TextCallouts/README.md).
 
@@ -194,9 +198,9 @@ from `LSPD_First_Response.Mod.API.Plugin`, so it found the DLL and quietly decli
 the chat box rendering once per frame rather than once per game tick. The integration is young and is
 the part most likely to have rough edges. Issues and log excerpts are welcome.
 
-**TextCallouts 1.0.0** is the new pack described above, in [`src/TextCallouts/`](src/TextCallouts/). It
-is released separately from TextDispatch, which stays at **1.0.12** — nothing in TextDispatch changed
-for it.
+**TextCallouts 1.1.0** is the pack described above, in [`src/TextCallouts/`](src/TextCallouts/) —
+eight callouts, plus **your own callouts written as XML recipes**. It is released separately from
+TextDispatch, which is at **1.0.13** (the inventory wording fix) and does not depend on it.
 
 **1.0.12 answers the question that costs the most evenings.** A plugin that is installed in the wrong
 folder, or short of something it depends on, does not fail loudly - it is simply absent, and nothing

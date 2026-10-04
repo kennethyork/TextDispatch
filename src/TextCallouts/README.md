@@ -51,6 +51,71 @@ blip and acceptance flow are LSPDFR's. The pack supplies the situation, not a pa
 
 ---
 
+## Your own callouts
+
+Adding a callout should not need a compiler. Drop an XML file in
+
+```
+Plugins\LSPDFR\TextCallouts\Custom\
+```
+
+go on duty, and it is offered exactly like the built-in eight - same dispatch announcements, same callout
+blip, same resolution. The folder is created on first run with a `README.txt` describing every field and
+a worked example to copy (`Example-ArmedRobbery.xml.example` - rename it to end in `.xml` to use it).
+
+```xml
+<Callout>
+  <Name>Armed Robbery At The Pier</Name>
+  <Probability>Medium</Probability>
+  <Message>Armed robbery in progress at the pier.</Message>
+  <Advisory>Two males, one of them with a handgun.</Advisory>
+  <Resolution>ArrestOrDeath</Resolution>
+
+  <Distance Min="150" Max="320" Radius="40" />
+
+  <Actors>
+    <Ped Model="a_m_y_musclbeac_01" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL"
+         Ammo="120" Hostile="true" Armor="40" Accuracy="45" />
+    <Ped Model="a_f_y_business_01" Role="Bystander" Cower="true" />
+  </Actors>
+
+  <OnApproach At="30" Hostile="true" />
+
+  <Lines>
+    <Briefing>He is armed and he is still there.</Briefing>
+    <Approach>He has seen you. He is not putting it down.</Approach>
+    <Resolved>The scene is secure.</Resolved>
+  </Lines>
+
+  <Support Ambulance="false" Backup="false" />
+</Callout>
+```
+
+That covers what almost every callout actually is: go somewhere, find people, they react when you
+arrive, it ends when you have dealt with them. Actors can be armed, hostile, cowering, in a vehicle;
+they can flee on foot or in the car (driven by LSPDFR's pursuit AI), give up, or turn on you; and the
+text dispatch says is yours, line by line. `<Resolution>` decides what counts as finished -
+`ArrestOrDeath`, `AnyArrest`, or `Manual` for the callouts with nothing to catch.
+
+**A wrong file is refused with a reason, never ignored.** A misspelled element, a word where a number
+belongs, a flag that is neither true nor false, a `<Ped>` list that is missing entirely - each is named
+in `Plugins\LSPDFR\textcallouts.log` along with the file it came from. A typo that silently did nothing
+would be indistinguishable from the whole feature not working, which is the worst possible outcome for
+something you are meant to edit by hand.
+
+That parser is tested, and the test earned its keep immediately: it caught `ArrestOrDeath` being
+compared against the misspelled literal `arrestoredeath`, which would have refused *every* recipe while
+telling the author to use the value they had already used. It now checks the shipped example parses
+field by field, that eight kinds of malformed file are refused with a useful message, and that ids come
+out usable as type names.
+
+One thing to be straight about: the recipes are turned into real callout types at run time, because
+that is the only thing LSPDFR accepts - `Functions.RegisterCallout` takes a `Type`. That step cannot be
+exercised outside the game, so if it ever fails it will fail loudly in the log, naming the file, and the
+built-in eight are unaffected either way.
+
+---
+
 ## Install
 
 1. Copy `TextCallouts.dll` into your GTA V **`Plugins\LSPDFR\`** folder.
@@ -119,7 +184,10 @@ Two references are needed and neither is committed to this repository:
 
 ## Status
 
-**1.0.0, first release.** It compiles against the real LSPDFR and RAGE Plugin Hook APIs, and the
+**1.1.0 adds your own callouts** - an XML recipe per callout, loaded at run time, with a parser that
+refuses bad files by name instead of ignoring them (see above). **1.0.0** was the first release.
+
+The pack compiles against the real LSPDFR and RAGE Plugin Hook APIs, and the
 built DLL has been checked against LSPDFR's contract — the `Main` type exists, is public, and derives
 from `LSPD_First_Response.Mod.API.Plugin`; all eight callouts are public, concrete, have a
 parameterless constructor and a `[CalloutInfo]` name; and the reference table contains no mod

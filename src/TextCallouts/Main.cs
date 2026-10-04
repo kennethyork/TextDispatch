@@ -67,9 +67,29 @@ namespace TextCallouts
                 catch (Exception ex) { Log.Error("registering " + type.Name, ex); }
             }
 
+            // The player's own, from Plugins\LSPDFR\TextCallouts\Custom - each one a type built at run
+            // time from an XML file. A bad file is named in the log and skipped; the rest still load.
+            var custom = 0;
+            foreach (var type in Custom.CustomCallouts.CalloutTypes())
+            {
+                try
+                {
+                    Functions.RegisterCallout(type);
+                    custom++;
+                }
+                catch (Exception ex) { Log.Error("registering the custom callout " + type.Name, ex); }
+            }
+
             _registered = true;
-            Log.Line("registered " + registered + " of " + CalloutTypes.Length + " callouts");
-            Hud.Say("~g~TextCallouts~s~: " + registered + " callouts available.");
+            Log.Line("registered " + registered + " of " + CalloutTypes.Length + " built-in callouts" +
+                     (custom > 0 ? ", plus " + custom + " of your own" : "") +
+                     (Custom.CustomCallouts.Problems > 0
+                         ? "; " + Custom.CustomCallouts.Problems + " custom file(s) were skipped - see above"
+                         : ""));
+
+            Hud.Say("~g~TextCallouts~s~: " + registered + " callouts" +
+                    (custom > 0 ? " and " + custom + " of your own." : ".") +
+                    (Custom.CustomCallouts.Problems > 0 ? "  (" + Custom.CustomCallouts.Problems + " custom file(s) skipped - textcallouts.log says why.)" : ""));
         }
 
         /// <summary>
@@ -78,32 +98,45 @@ namespace TextCallouts
         /// </summary>
         public static class ConsoleCommands
         {
-            [ConsoleCommand("tcstatus", Description = "TextCallouts: how many callouts are registered, and where the log is.")]
+            [ConsoleCommand("tcstatus", Description = "TextCallouts: what is registered, your own callouts, and where the log is.")]
             public static void Status()
             {
                 Game.Console.Print("[TextCallouts] " + CalloutTypes.Length + " callouts in the pack" +
                                    (_registered ? ", registered." : ", NOT registered yet - go on duty."));
 
-                foreach (var type in CalloutTypes) Game.Console.Print("   " + type.Name);
+                var custom = Custom.CustomCallouts.Count;
+                Game.Console.Print("[TextCallouts] " + custom + " custom callout(s) from your own files" +
+                                   (Custom.CustomCallouts.Problems > 0
+                                       ? ", and " + Custom.CustomCallouts.Problems + " file(s) skipped"
+                                       : ""));
+                Game.Console.Print("[TextCallouts] your folder: " + Custom.CustomCallouts.Folder);
                 Game.Console.Print("[TextCallouts] log: " + Log.Path);
             }
 
-            [ConsoleCommand("tccallouts", Description = "TextCallouts: list what this pack provides.")]
+            [ConsoleCommand("tccallouts", Description = "TextCallouts: list what this pack provides, including your own.")]
             public static void List()
             {
-                foreach (var type in CalloutTypes)
-                {
-                    var name = type.Name;
-                    try
-                    {
-                        var attribute = (CalloutInfoAttribute)Attribute.GetCustomAttribute(type, typeof(CalloutInfoAttribute));
-                        if (attribute != null) name = attribute.Name;
-                    }
-                    catch { }
+                Game.Console.Print("[TextCallouts] in the pack:");
+                foreach (var type in CalloutTypes) Print(type);
 
-                    Game.Console.Print("   " + name + "   (" + type.Name + ")");
-                    Log.Line("callout: " + name);
+                Game.Console.Print("[TextCallouts] yours (" + Custom.CustomCallouts.Folder + "):");
+                var custom = Custom.CustomCallouts.CalloutTypes();
+                if (custom.Length == 0) Game.Console.Print("   none yet - put an .xml file in that folder");
+                foreach (var type in custom) Print(type);
+            }
+
+            private static void Print(Type type)
+            {
+                var name = type.Name;
+                try
+                {
+                    var attribute = (CalloutInfoAttribute)Attribute.GetCustomAttribute(type, typeof(CalloutInfoAttribute));
+                    if (attribute != null) name = attribute.Name;
                 }
+                catch { }
+
+                Game.Console.Print("   " + name);
+                Log.Line("callout: " + name);
             }
         }
     }
