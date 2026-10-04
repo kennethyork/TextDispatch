@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TextCallouts</AssemblyName>
+    <RootNamespace>TextCallouts</RootNamespace>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>TextCallouts</Product>
+    <Description>LSPDFR callouts that need nothing but LSPDFR and RAGE Plugin Hook.</Description>
+
+    <!-- Where LSPDFR lives. Override with -p:GtaFolder="E:\Games\GTAV". -->
+    <GtaFolder Condition="'$(GtaFolder)' == ''">D:\Grand Theft Auto V Legacy</GtaFolder>
+    <LspdfrDll>$(GtaFolder)\plugins\LSPD First Response.dll</LspdfrDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
+    <!-- The native table (Rage.Native.NativeFunction.Natives) is dynamic. -->
+    <Reference Include="Microsoft.CSharp" />
+
+    <!--
+      The RAGE Plugin Hook SDK. Private=false is required by RPH's own terms ("do not include it with
+      your plugins") and by practice: the copy already loaded in the RPH process is the one used at
+      runtime, and its assembly version is 0.0.0.0, so a plugin built against one RPH build loads on
+      another.
+    -->
+    <Reference Include="RagePluginHook">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\tools\rph-sdk\RagePluginHook.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!--
+      LSPDFR itself, for the callout API. A callout pack cannot avoid this one: the entry point has to
+      derive from LSPD_First_Response.Mod.API.Plugin and every callout from
+      LSPD_First_Response.Mod.Callouts.Callout, and deriving from a type needs it at compile time.
+      Private=false - LSPDFR's licence forbids shipping it, and it is already in the game.
+    -->
+    <Reference Include="LSPD First Response">
+      <HintPath>$(LspdfrDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

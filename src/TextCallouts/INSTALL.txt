@@ -1,0 +1,101 @@
+TextCallouts 1.0.0
+==================
+
+LSPDFR callouts that need nothing but LSPDFR and RAGE Plugin Hook.
+
+
+WHAT IT IS
+----------
+
+Eight callouts in the style of the big callout packs, written from scratch, with no dependency on
+StopThePed, Ultimate Backup, CompuLite, Callout Interface, ExternalPoliceComputer, Common Data
+Framework or RAGENativeUI. You can run it on a bare LSPDFR install, and it will not conflict with
+anything, because it never reaches into another plugin.
+
+That is not a claim - it is the assembly's reference table:
+
+    LSPD First Response, RagePluginHook, mscorlib, System, System.Core, System.Drawing, Microsoft.CSharp
+
+Nothing else. Every dependency the big packs have is one this pack does not.
+
+Note: it is *inspired by* packs like 686 Callouts, not a copy of it. All eight callouts, their names
+and their dialogue are original, and none of 686 Callouts' files, text or ideas-in-code are used.
+Keep 686 installed alongside if you like - they do not overlap.
+
+
+THE CALLOUTS
+------------
+
+    Occupied Stolen Vehicle   A stolen car with a driver in it. Try the stop; he runs, and LSPDFR's
+                              own pursuit AI drives him.
+    Reckless Driver           Someone driving badly. Nothing criminal until they see you and run.
+    Domestic Disturbance      Two people, half of them just arguing and half of them not. One may
+                              square up to you.
+    Shoplifting In Progress   On foot, and usually running: a foot pursuit you have to win.
+    Armed Robbery             Armed from the start. Ask for backup before you close in.
+    Two-Car Collision         Nobody to arrest. One injured driver, and an ambulance to call - the
+                              one callout in the pack about helping rather than catching.
+    Suspicious Person         May be nothing at all, may be a burglary suspect who runs. The record
+                              comes back over the radio when you get close.
+    Officer Needs Assistance  Shots fired, two armed suspects, backup rolling. The hard one.
+
+
+INSTALL
+-------
+
+1. Copy TextCallouts.dll into:
+
+       <your Grand Theft Auto V folder>\Plugins\LSPDFR\
+
+2. Start the game with RagePluginHook.exe, load story mode.
+
+3. GO ON DUTY: press E at a police station.
+
+   The callouts are registered at that moment - LSPDFR loads every plugin in Plugins\LSPDFR when you
+   go on duty, and not before. Until then nothing happens, which is normal.
+
+4. Dispatch will start offering them the way it offers any callout. Accept with LSPDFR's own control,
+   or with TextDispatch's /accept if you have it.
+
+
+WITH TEXTDISPATCH
+-----------------
+
+If TextDispatch is installed, this pack finds it and mirrors every line it says into the chat box -
+so the ambulance request, the pursuit call-in and the suspect descriptions turn up as text rather
+than as notifications. That link is done with reflection at runtime: no dependency in either
+direction, and if TextDispatch is not there, nothing breaks - the lines simply appear as
+notifications instead.
+
+TextDispatch also picks the callouts up automatically, because it reads each callout out of the
+assemblies it finds: /calls lists all eight, and /callout <name> starts one on demand, which is the
+quickest way to see one without waiting for dispatch.
+
+
+CHECKING IT
+-----------
+
+Log: Plugins\LSPDFR\textcallouts.log - what was registered, what was accepted, what each callout
+said, and any native that did not resolve.
+
+In the F4 console:
+
+    tcstatus     how many callouts are in the pack, whether they are registered, and the log path
+    tccallouts   list them by their dispatch names
+
+
+REQUIREMENTS
+------------
+
+Grand Theft Auto V (Legacy), RAGE Plugin Hook and LSPDFR 0.4.9 or newer. .NET Framework 4.8.
+Nothing else - no RAGENativeUI, no interaction framework, no external callout libraries.
+
+RAGE Plugin Hook and LSPDFR are not included and never will be: both are separate works under their
+own licences.
+
+
+LICENCE
+-------
+
+MIT. It covers TextCallouts only. RAGE Plugin Hook and LSPDFR are not covered by it and are not
+included in any download of this project.

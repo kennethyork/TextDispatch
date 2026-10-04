@@ -147,6 +147,21 @@ put `RagePluginHook.dll` in `tools\rph-sdk\`. It ships inside the official RAGE 
 [`src/TextDispatch/README.md`](src/TextDispatch/README.md) is the full manual — commands, the AI
 design, traffic stops, callouts, troubleshooting, and the console fallback.
 
+## Also in this repository: TextCallouts
+
+[`src/TextCallouts/`](src/TextCallouts/) is a companion **callout pack** — eight callouts, written
+from scratch, that need **nothing but LSPDFR and RAGE Plugin Hook**: no StopThePed, no Ultimate
+Backup, no CompuLite, no Callout Interface, no Common Data Framework, no RAGENativeUI. Its whole
+reference table is `LSPD First Response`, `RagePluginHook` and the .NET framework, verified by
+reading the built DLL.
+
+If TextDispatch is installed, each callout's lines are mirrored into the chat box automatically, and
+TextDispatch lists them in `/calls` and can start any of them with `/callout <name>` — so the two
+work as one thing while depending on nothing.
+
+Install the DLL into `Plugins\LSPDFR\` and go on duty, exactly like TextDispatch:
+[`src/TextCallouts/README.md`](src/TextCallouts/README.md).
+
 ## Status
 
 Early. **1.0.4 is the first release that loads.** Earlier versions were built as RAGE Plugin Hook
@@ -156,6 +171,10 @@ from `LSPD_First_Response.Mod.API.Plugin`, so it found the DLL and quietly decli
 1.0.4 is confirmed loading as an LSPDFR plugin, with LSPDFR's API reachable (138 methods found) and
 the chat box rendering once per frame rather than once per game tick. The integration is young and is
 the part most likely to have rough edges. Issues and log excerpts are welcome.
+
+**TextCallouts 1.0.0** is the new pack described above, in [`src/TextCallouts/`](src/TextCallouts/). It
+is released separately from TextDispatch, which stays at **1.0.12** — nothing in TextDispatch changed
+for it.
 
 **1.0.12 answers the question that costs the most evenings.** A plugin that is installed in the wrong
 folder, or short of something it depends on, does not fail loudly - it is simply absent, and nothing

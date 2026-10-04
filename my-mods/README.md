@@ -11,7 +11,7 @@ metadata, not from memory of what was downloaded.
 | .NET Framework | 4.8 ✓ |
 | RAGENativeUI | 1.9.3.0 ✓ (was wrongly 1.6.3.0 — fixed, see §1) |
 | ScriptHookV | ✗ **not installed** — the one thing ELS needs |
-| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR`, all load |
+| LSPDFR plugins | **15** DLLs in `Plugins\LSPDFR`, all load — including **TextCallouts 1.0.0** (new) |
 | ASI mods | 3 installed, **2 load** |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
@@ -145,31 +145,35 @@ RAGE Plugin Hook and LSPDFR also drop these support libraries in the root; none 
 |---|---|---|---|---|
 | **Damage Tracker Framework** | 2.0.2 | `Plugins\DamageTrackingFramework.dll` + `DamageTrackerLib.dll` (root) | **required by Policing Redefined** | ✓ RPH loads it at startup (16:43:49) |
 
-### 2.4 LSPDFR plugins — `Plugins\LSPDFR` (17)
+### 2.4 LSPDFR plugins — `Plugins\LSPDFR` (15)
 
 | Plugin | Version | Needs | Status |
 |---|---|---|---|
-| **686 Callouts** | 2.1.2.0 | RAGENativeUI ✓ · *optional*: StopThePed ✓, ExternalPoliceComputer ✓, Riskier Traffic Stops ✓, Callout Interface (removed) | loads |
 | **Common Data Framework** (CDF) | 1.0.0.10 | a record API other plugins use | loads |
 | **CompuLite** | 1.5.2.8 | RAGENativeUI ✓, LiteDB (embedded ✓) · *optional*: Traffic Policer ✓ | loads · **conflicts with PR §1.4** |
-| **External Police Computer** | 2.0.1.0 | Newtonsoft.Json ✓, CDF ✓, IPT.Common ✓, CalloutInterfaceAPI ✓ · *optional*: Callout Interface (removed) | loads |
 | **ManiacCallouts** | 1.3.0.0 | **StopThePed ✓ (required)** | loads |
 | **MizCallouts** | 1.0.1.0 | RAGENativeUI ✓ | loads |
 | **Plain Sight** | 1.1.3.0 | LSPDFR only | loads |
-| **PoliceSmartRadio** | 2.0.0.0 | Albo1125.Common ✓, RAGENativeUI ✓, its data folder ✓ **installed** · *optional*: British Policing Script ✗ | loads (game-version warning, §4) |
 | **Policing Redefined** | 1.0.0.5 | RAGENativeUI ✓, CDF ✓, Damage Tracker ✓ | loads · **conflicts with StopThePed/UB/CompuLite §1.4** |
 | **Riskier Traffic Stops** | 3.4.0.0 | CDF ✓, RAGENativeUI ✓, Newtonsoft.Json ✓ · *optional*: ImmersiveAmbientEvents ✗ | loads |
 | **SSStuart Callouts** | 0.1.2.0 | CalloutInterfaceAPI ✓ | loads |
 | **StopThePed** | 4.9.5.4 | RAGENativeUI ✓ · *optional*: Ultimate Backup ✓, PoliceSmartRadio ✓, VocalDispatch ✗, PoliceSearch ✗ | loads · **conflicts with PR §1.4** |
 | **Story Callouts** | 0.1.2.0 | CalloutInterfaceAPI ✓ | loads |
+| **TextCallouts** | 1.0.0 | **nothing but LSPDFR and RAGE Plugin Hook** | loads, 8 callouts |
 | **TextDispatch** | 1.0.12.0 | LSPDFR ✓ · *optional*: Ollama ✓, LM Studio | loads, box drawn |
 | **Traffic Policer** | 7.0.0.0 | Albo1125.Common ✓, RAGENativeUI ✓, scanner audio ✓ (163 files) · *optional*: British Policing Script ✗ | loads (2019 mod — §4) |
 | **Ultimate Backup** | 1.8.7.1 | RAGENativeUI ✓ · *optional*: VocalDispatch ✗, PoliceSearch ✗ | loads · **part of the PR conflict §1.4** |
 | **UnitedCallouts** | 1.5.8.2 | RAGENativeUI ✓ | loads |
 
-Each plugin's own data folder is installed alongside it: `686Callouts\`, `CompuLite\`, `MizCallouts\`,
+Each plugin's own data folder is installed alongside it: `CompuLite\`, `MizCallouts\`,
 `PolicingRedefined\`, `RiskierTrafficStops\`, `StopThePed\`, `UltimateBackup\`, `UnitedCallouts\`,
-`CommonDataFramework\`, `PoliceSmartRadio\`, `VocalDispatch\`.
+`CommonDataFramework\`, `VocalDispatch\` — and the leftovers `686Callouts\`, `EMSmod\` and
+`PoliceSmartRadio\` from the mods below.
+
+**Removed since 17:08, so no longer in the table:** 686 Callouts, External Police Computer and
+PoliceSmartRadio. With RAGENativeUI fixed they were no longer needed to stop the crash; their data
+folders, audio and `EPC\` are still on disk if you want any of them back. **TextCallouts 1.0.0 is now
+installed** — the dependency-free alternative to 686 Callouts, and it collides with nothing.
 
 ### 2.5 Mod content inside `lspdfr\`
 
