@@ -58,7 +58,7 @@ This is the part that matters, and it is not a prompt:
 
 ## Ollama
 
-`Plugins\TextDispatch.ini`:
+`Plugins\LSPDFR\TextDispatch.ini` (it is written next to the DLL, which lives in `Plugins\LSPDFR`):
 
 ```ini
 AiMode=auto          ; auto | llm | scripted
@@ -247,7 +247,7 @@ While the box is open the game's controls are frozen, so typing `10-97` does not
 
 Or run `tools\install-textdispatch.ps1`, which builds it, installs to the right folder, and cleans up
 a copy in `Plugins\` if an earlier version put one there. On first run the plugin writes
-`Plugins\TextDispatch.ini` next to itself.
+`Plugins\LSPDFR\TextDispatch.ini` next to itself.
 
 > **Building needs the RPH SDK.** `tools\rph-sdk\RagePluginHook.dll` must exist. It ships inside the
 > official RAGE Plugin Hook download as `SDK\RagePluginHook.dll` — copy it there. The build refuses
