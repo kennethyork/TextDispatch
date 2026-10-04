@@ -115,6 +115,15 @@ namespace TextDispatch
                 // Pull the model into memory now rather than on the player's first sentence.
                 Ai.LocalModel.WarmUp(_settings);
 
+                // An RPH notification as well as a chat line.
+                //
+                // The question a player actually has is "did it load?", and until now the only answer
+                // was the chat box itself - which is exactly the thing that is missing when it has not
+                // loaded. LSPDFR does not load these plugins until about half a minute after the
+                // player switch, so pressing T too early looks identical to a broken install.
+                try { Game.DisplayNotification("TextDispatch loaded. Press T to chat."); }
+                catch { }
+
                 _running = true;
                 _fiber = GameFiber.StartNew(Loop, "TextDispatch");
             }
