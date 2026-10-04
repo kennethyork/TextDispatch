@@ -1,0 +1,200 @@
+using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+
+namespace TextDispatch
+{
+    /// <summary>
+    /// Settings, read from TextDispatch.ini next to the plugin. An ini rather than a compiled-in
+    /// constant because the things people will want to change - which model drives the NPCs and the
+    /// dispatcher, and how chat ranges feel - are not things to require a rebuild for.
+    /// </summary>
+    internal sealed class Settings
+    {
+        // ---------------------------------------------------------------- AI
+
+        /// <summary>auto | llm | scripted. "auto" uses a model if one answers, and the script if not.</summary>
+        public string AiMode = "auto";
+
+        /// <summary>ollama | lmstudio | anything else is treated as OpenAI-compatible.</summary>
+        public string AiProvider = "ollama";
+
+        /// <summary>Blank means "whatever the provider defaults to".</summary>
+        public string AiEndpoint = "";
+
+        /// <summary>Blank means "the first model the server reports".</summary>
+        public string AiModel = "";
+
+        /// <summary>
+        /// How long a reply may take before the scripted line is used instead. Generous enough for a
+        /// small model on a CPU to finish a short sentence, short enough that a dead server does not
+        /// leave somebody standing mute.
+        /// </summary>
+        public int AiTimeoutMs = 12000;
+        public int AiMaxTokens = 100;
+        public float AiTemperature = 0.9f;
+
+        /// <summary>Set once, at startup, from AiMode.</summary>
+        private bool _useModel;
+        public bool UseModel { get { return _useModel; } }
+
+        /// <summary>Filled in by the model layer when the server tells us what it has.</summary>
+        public string ResolvedModel;
+
+        /// <summary>
+        /// Decide once whether a model is actually in play. Doing it here means the rest of the
+        /// plugin never has to ask, and a machine with no model running behaves exactly as it did
+        /// before any of this existed.
+        /// </summary>
+        public void Resolve()
+        {
+            if ("llm".Equals(AiMode, StringComparison.OrdinalIgnoreCase)) { _useModel = true; return; }
+            if ("scripted".Equals(AiMode, StringComparison.OrdinalIgnoreCase)) { _useModel = false; return; }
+
+            _useModel = Ai.LocalModel.Available(this);
+            Log.Line("ai mode auto: " + (_useModel
+                ? "a model answered at " + Ai.LocalModel.Endpoint(this)
+                : "no model at " + Ai.LocalModel.Endpoint(this) + " - using the script"));
+        }
+
+        public void ForceMode(string mode)
+        {
+            AiMode = mode;
+            ResolvedModel = null;
+            Resolve();
+        }
+
+        // ---------------------------------------------------------------- speech
+
+        /// <summary>
+        /// Which key opens the chat box. Configurable because T is a popular key - with a few mods
+        /// installed it is entirely possible something else already owns it, and a chat box you
+        /// cannot open is not much of a chat box.
+        /// </summary>
+        public string OpenKey = "T";
+
+        public int TypingMs = 900;                  // NPC "typing" pause
+        public int DispatchMs = 500;                // radio answers come back faster
+        public float SayRange = 15f;
+        public float WhisperRange = 3f;
+        public float ShoutRange = 35f;
+
+        // ---------------------------------------------------------------- load
+
+        public static Settings Load()
+        {
+            var settings = new Settings();
+            try
+            {
+                var path = Path.Combine(PluginFolder(), "TextDispatch.ini");
+                if (!File.Exists(path)) { Write(path, settings); return settings; }
+
+                foreach (var raw in File.ReadAllLines(path))
+                {
+                    var line = raw.Trim();
+                    if (line.Length == 0 || line[0] == ';' || line[0] == '#') continue;
+
+                    var split = line.IndexOf('=');
+                    if (split <= 0) continue;
+
+                    var key = line.Substring(0, split).Trim();
+                    var value = line.Substring(split + 1).Trim();
+                    if (value.Length == 0) continue;
+
+                    switch (key.ToLowerInvariant())
+                    {
+                        case "aimode": settings.AiMode = value; break;
+                        case "aiprovider": settings.AiProvider = value; break;
+                        case "aiendpoint": settings.AiEndpoint = value; break;
+                        case "aimodel": settings.AiModel = value; break;
+                        case "aitimeoutms": settings.AiTimeoutMs = AsInt(value, settings.AiTimeoutMs); break;
+                        case "aimaxtokens": settings.AiMaxTokens = AsInt(value, settings.AiMaxTokens); break;
+                        case "aitemperature": settings.AiTemperature = AsFloat(value, settings.AiTemperature); break;
+                        case "openkey": settings.OpenKey = value; break;
+                        case "typingms": settings.TypingMs = AsInt(value, settings.TypingMs); break;
+                        case "dispatchms": settings.DispatchMs = AsInt(value, settings.DispatchMs); break;
+                        case "sayrange": settings.SayRange = AsFloat(value, settings.SayRange); break;
+                        case "whisperrange": settings.WhisperRange = AsFloat(value, settings.WhisperRange); break;
+                        case "shoutrange": settings.ShoutRange = AsFloat(value, settings.ShoutRange); break;
+                    }
+                }
+            }
+            catch (Exception ex) { Log.Error("settings", ex); }
+
+            return settings;
+        }
+
+        private static void Write(string path, Settings settings)
+        {
+            try
+            {
+                File.WriteAllLines(path, new[]
+                {
+                    "; TextDispatch settings. Delete this file to get the defaults back.",
+                    ";",
+                    "; AiMode: auto     = use a model if one is running, the built-in script if not",
+                    ";         llm      = always use a model",
+                    ";         scripted = never use a model",
+                    "AiMode=" + settings.AiMode,
+                    ";",
+                    "; AiProvider: ollama (default) or lmstudio. Anything else is treated as an",
+                    "; OpenAI-compatible chat server.",
+                    "AiProvider=" + settings.AiProvider,
+                    ";",
+                    "; AiEndpoint: leave blank for the provider default -",
+                    ";   ollama    http://localhost:11434/api/chat",
+                    ";   lmstudio  http://localhost:1234/v1/chat/completions",
+                    "AiEndpoint=" + settings.AiEndpoint,
+                    ";",
+                    "; AiModel: leave blank to use the first model the server reports.",
+                    "; For Ollama that is whatever you have pulled, e.g. llama3.2, qwen2.5, mistral.",
+                    "AiModel=" + settings.AiModel,
+                    "AiTimeoutMs=" + settings.AiTimeoutMs.ToString(CultureInfo.InvariantCulture),
+                    "AiMaxTokens=" + settings.AiMaxTokens.ToString(CultureInfo.InvariantCulture),
+                    "AiTemperature=" + settings.AiTemperature.ToString(CultureInfo.InvariantCulture),
+                    "",
+                    "; Which key opens the chat box. Any key name works: T, F6, OemQuestion, Home.",
+                    "; Change it if another mod already uses T.",
+                    "OpenKey=" + settings.OpenKey,
+                    "",
+                    "; How long an NPC appears to 'type' before answering, in milliseconds.",
+                    "; The real delay scales with the length of the reply, between half and double this.",
+                    "TypingMs=" + settings.TypingMs,
+                    "; Radio answers come back faster than people type.",
+                    "DispatchMs=" + settings.DispatchMs,
+                    "",
+                    "; Chat ranges in metres.",
+                    "SayRange=" + settings.SayRange.ToString(CultureInfo.InvariantCulture),
+                    "WhisperRange=" + settings.WhisperRange.ToString(CultureInfo.InvariantCulture),
+                    "ShoutRange=" + settings.ShoutRange.ToString(CultureInfo.InvariantCulture)
+                });
+            }
+            catch (Exception ex) { Log.Error("write settings", ex); }
+        }
+
+        private static int AsInt(string value, int fallback)
+        {
+            int parsed;
+            return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsed) ? parsed : fallback;
+        }
+
+        private static float AsFloat(string value, float fallback)
+        {
+            float parsed;
+            return float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsed) ? parsed : fallback;
+        }
+
+        /// <summary>Where the plugin DLL lives - the ini sits beside it, not in AppData.</summary>
+        public static string PluginFolder()
+        {
+            try
+            {
+                var location = Assembly.GetExecutingAssembly().Location;
+                if (!string.IsNullOrEmpty(location)) return Path.GetDirectoryName(location);
+            }
+            catch { }
+            return Environment.CurrentDirectory;
+        }
+    }
+}

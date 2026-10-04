@@ -1,0 +1,22 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# RAGE Plugin Hook SDK - third-party, and its terms forbid redistribution.
+# Reference it locally; never commit it.
+tools/rph-sdk/
+
+# Local runtime logs
+*.log
+
+# ---------------------------------------------------------------------------
+# The OpenDuty career framework that already lived in this workspace before
+# TextDispatch was written. It is a separate project and is deliberately not
+# part of this repository. Delete these lines to publish it alongside.
+/ARCHITECTURE.md
+/README.md
+/OpenDuty.sln
+/content/
+/src/OpenDuty.Core/
+/src/OpenDuty.Headless/
+/src/OpenDuty.Adapter.Rph/

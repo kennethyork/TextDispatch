@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TextDispatch</AssemblyName>
+    <RootNamespace>TextDispatch</RootNamespace>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <!-- RPH's native table (Rage.Native.NativeFunction.Natives) is dynamic. -->
+    <Reference Include="Microsoft.CSharp" />
+    <!-- JavaScriptSerializer, for reading the local model's reply. Part of the framework, so
+         nothing extra has to be shipped alongside the plugin. -->
+    <Reference Include="System.Web.Extensions" />
+  </ItemGroup>
+
+  <!--
+    The RAGE Plugin Hook SDK assembly.
+
+    Private=false is legally as well as practically required: RPH's own terms say "do not include it
+    with your plugins", so it must never be copied into our build output - at runtime the copy that
+    is already loaded in the RPH process is used. The assembly's version is 0.0.0.0, so a plugin
+    compiled against one RPH build loads fine on another.
+
+    Put RagePluginHook.dll in tools\rph-sdk\ (it ships inside the official RAGE Plugin Hook download
+    as SDK\RagePluginHook.dll, and is also published as the "RagePluginHook" SDK package).
+  -->
+  <ItemGroup>
+    <Reference Include="RagePluginHook">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\tools\rph-sdk\RagePluginHook.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="RphSdkMissing" BeforeTargets="BeforeBuild"
+          Condition="!Exists('$(MSBuildThisFileDirectory)..\..\tools\rph-sdk\RagePluginHook.dll')">
+    <Error Text="RAGE Plugin Hook SDK not found at tools\rph-sdk\RagePluginHook.dll. Get RAGE Plugin Hook from ragepluginhook.net and copy SDK\RagePluginHook.dll there, then rebuild." />
+  </Target>
+
+</Project>
