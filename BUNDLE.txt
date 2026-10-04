@@ -1,7 +1,7 @@
-LSPDFR IN TEXT — the bundle
-===========================
+bundle %BUNDLE_VERSION%
+=======================
 
-Two plugins that are meant to be installed together:
+LSPDFR in text. Two plugins that are meant to be installed together:
 
     TextDispatch %DISPATCH_VERSION%    the text interface: dispatch, the people in the callouts,
                                        traffic stops, records, all through a chat box

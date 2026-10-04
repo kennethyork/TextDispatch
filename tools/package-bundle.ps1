@@ -1,6 +1,16 @@
 # Packages the bundle release zip: both plugins, the combined install notes and the licence.
 #
-#   powershell -ExecutionPolicy Bypass -File tools\package-bundle.ps1 -Version 1.0.0
+#   powershell -ExecutionPolicy Bypass -File tools\package-bundle.ps1 -Version 1.1.0
+#
+# The naming convention, so that the releases page reads as a list of things rather than sentences:
+#
+#   git tag    bundle-1.1.0
+#   release    bundle 1.1.0
+#   asset      bundle-1.1.0.zip
+#   the notes  BUNDLE.txt, whose title line says "bundle 1.1.0"
+#
+# The bundle has its own version because it is its own thing: it names a *pair* of plugin versions,
+# which move independently of each other.
 
 param(
     [Parameter(Mandatory = $true)][string] $Version,
@@ -33,6 +43,7 @@ $calloutsVersion = [System.Reflection.AssemblyName]::GetAssemblyName($callouts).
 # The install notes state the versions inside, so a download can be identified without opening the DLLs.
 $notes = Join-Path $repo 'BUNDLE.txt'
 $text = [System.IO.File]::ReadAllText($notes)
+$text = $text.Replace('%BUNDLE_VERSION%', $Version)
 $text = $text.Replace('TextDispatch %DISPATCH_VERSION%', "TextDispatch $dispatchVersion")
 $text = $text.Replace('TextCallouts %CALLOUTS_VERSION%', "TextCallouts $calloutsVersion")
 
@@ -44,7 +55,7 @@ try {
     Copy-Item (Join-Path $repo 'LICENSE') $stage
     [System.IO.File]::WriteAllText((Join-Path $stage 'BUNDLE.txt'), $text)
 
-    $zip = Join-Path $OutputDirectory "TextDispatch+TextCallouts-$Version.zip"
+    $zip = Join-Path $OutputDirectory "bundle-$Version.zip"
     if (Test-Path $zip) { Remove-Item $zip -Force }
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip
     Write-Host ("Packaged " + $zip + "  (" + [Math]::Round((Get-Item $zip).Length / 1kb) + " KB)") -ForegroundColor Green
