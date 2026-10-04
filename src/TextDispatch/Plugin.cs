@@ -103,6 +103,7 @@ namespace TextDispatch
                 Log.Line("starting; " + _api.Describe() + "; npc speech mode=" + _settings.AiMode +
                          "; appdomain=" + AppDomain.CurrentDomain.FriendlyName);
                 Log.Line("settings: " + Settings.IniPath());
+                Log.Line("log: " + Log.Path);
                 ReportDisplay();
 
                 _chat.Notice("TextDispatch loaded. Press " + _settings.OpenKey + " to chat - /help for the commands.");

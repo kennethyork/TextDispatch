@@ -78,7 +78,7 @@ if (Test-Path $startup) {
 
 Write-Host ""
 Write-Host "Launch RagePluginHook.exe, load story mode, then press T in game." -ForegroundColor Cyan
-Write-Host "Log: $env:APPDATA\TextDispatch\textdispatch.log"
+Write-Host "Log: $target\textdispatch.log"   # beside the DLL and the ini
 Write-Host ""
 Write-Host "The log's first lines should say 'detected, LSPDFR 0.4.9'. If they say 'not installed'," -ForegroundColor DarkGray
 Write-Host "this plugin is being loaded by RPH instead of LSPDFR and is in the wrong folder." -ForegroundColor DarkGray

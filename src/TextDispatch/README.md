@@ -355,7 +355,8 @@ Everything can be driven from RPH's **F4** console, which matters if the box eve
 
 ## If something is wrong
 
-Log: `%APPDATA%\TextDispatch\textdispatch.log`
+Log: **`Plugins\LSPDFR\textdispatch.log`** - beside the plugin and its ini, not in AppData.
+`tdstatus` prints the exact path it is using.
 
 RPH resolves overloads and finds LSPDFR by reflection, so most failures are recorded rather than
 thrown. The log says which LSPDFR methods were found, which callouts were discovered, whether the
@@ -363,7 +364,7 @@ model answered or timed out, and any call that could not be matched to a signatu
 
 | Symptom | Look at |
 |---|---|
-| Nothing on screen at all | Is `TextDispatch.dll` in `Plugins\`? RPH log, then ours. |
+| Nothing on screen at all | Is `TextDispatch.dll` in `Plugins\LSPDFR\`? Then read our log and RPH's. |
 | **RPH's log never mentions TextDispatch at all** | If it is in `Plugins\`, move it to `Plugins\LSPDFR\` - RPH is not going to load it into the right AppDomain anyway. |
 | Log says `starting; not installed` | LSPDFR is installed but invisible: the DLL is in `Plugins\` instead of `Plugins\LSPDFR\`. |
 | Box draws but T does nothing | `AlwaysReceiveKeyEvents` needs the game in borderless/windowed. |

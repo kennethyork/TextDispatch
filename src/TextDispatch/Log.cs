@@ -17,6 +17,21 @@ namespace TextDispatch
             get
             {
                 if (_path != null) return _path;
+
+                // Beside the plugin, in Plugins\LSPDFR, rather than buried in AppData. That is where
+                // somebody looks for it, and it sits next to the ini and the DLL.
+                try
+                {
+                    var folder = Settings.PluginFolder();
+                    if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                    {
+                        _path = System.IO.Path.Combine(folder, "textdispatch.log");
+                        return _path;
+                    }
+                }
+                catch { }
+
+                // AppData only if the game folder turned out not to be writable.
                 try
                 {
                     var dir = System.IO.Path.Combine(
