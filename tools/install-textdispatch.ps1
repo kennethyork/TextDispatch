@@ -42,6 +42,33 @@ if (-not (Test-Path $plugins)) {
 
 Copy-Item $source (Join-Path $plugins 'TextDispatch.dll') -Force
 Write-Host "Installed TextDispatch.dll -> $plugins" -ForegroundColor Green
+
+# ---------------------------------------------------------------------------------------------
+# RPH loads the plugins named in startup.rphs. On an LSPDFR install that file already exists with
+# an entry for LSPDFR, and RPH loads what it names - a DLL merely sitting in Plugins\ is never
+# loaded, and RPH's log does not mention it at all, which makes it look like the plugin is broken.
+# So the entry is written here too.
+# ---------------------------------------------------------------------------------------------
+$startup = Join-Path $GtaFolder 'startup.rphs'
+$entry = 'LoadPlugin "TextDispatch.dll"'
+
+$lines = @()
+if (Test-Path $startup) { $lines = @(Get-Content $startup) }
+
+if ($lines | Where-Object { $_ -match [regex]::Escape($entry) }) {
+    Write-Host "startup.rphs already loads TextDispatch." -ForegroundColor DarkGray
+} else {
+    if (Test-Path $startup) { Copy-Item $startup "$startup.bak" -Force }
+
+    $updated = [System.Collections.Generic.List[string]]::new()
+    $lines | ForEach-Object { $updated.Add($_) }
+    $updated.Add($entry)
+    [System.IO.File]::WriteAllLines($startup, $updated, (New-Object System.Text.UTF8Encoding($false)))
+
+    Write-Host "Added the plugin to startup.rphs" -ForegroundColor Green
+    if (Test-Path "$startup.bak") { Write-Host "  (previous version saved as startup.rphs.bak)" -ForegroundColor DarkGray }
+}
+
 Write-Host ""
 Write-Host "Launch RagePluginHook.exe, load story mode, then press T in game." -ForegroundColor Cyan
 Write-Host "Log: $env:APPDATA\TextDispatch\textdispatch.log"
