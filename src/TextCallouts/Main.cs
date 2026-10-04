@@ -39,7 +39,7 @@ namespace TextCallouts
         {
             try
             {
-                Functions.OnOnDutyStateChanged += OnDutyStateChanged;
+                Hook();
                 Game.AddConsoleCommands(new[] { typeof(ConsoleCommands) });
 
                 Log.Line("loaded; " + CalloutTypes.Length + " callouts, none of them needing another plugin");
@@ -48,12 +48,38 @@ namespace TextCallouts
             catch (Exception ex) { Log.Error("initialise", ex); }
         }
 
+        /// <summary>
+        /// LSPDFR calls this when the player goes **off duty**, not only at shutdown - and going off
+        /// duty is the common case.
+        ///
+        /// This used to unsubscribe the duty handler, which meant the pack was never told about the
+        /// next duty: its callouts were registered once and then never again, and from then on the
+        /// pack was present in the folder and silent in the callout list. That is the bug behind "my
+        /// plugins did not start". Nothing is unhooked now.
+        /// </summary>
         public override void Finally()
         {
-            try { Functions.OnOnDutyStateChanged -= OnDutyStateChanged; }
-            catch { }
+            Log.Line("LSPDFR called Finally - which happens on going off duty as well as at shutdown, " +
+                     "so the duty handler stays subscribed");
+        }
 
-            Log.Line("unloaded");
+        /// <summary>
+        /// Called when LSPDFR initialises plugins again. Hook() removes before it adds, so being
+        /// called from here, from Initialize(), or from both leaves exactly one subscription.
+        /// </summary>
+        public override void InitializeAgain()
+        {
+            Hook();
+        }
+
+        private static void Hook()
+        {
+            try
+            {
+                Functions.OnOnDutyStateChanged -= OnDutyStateChanged;
+                Functions.OnOnDutyStateChanged += OnDutyStateChanged;
+            }
+            catch (Exception ex) { Log.Error("hooking the duty handler", ex); }
         }
 
         private static void OnDutyStateChanged(bool onDuty)

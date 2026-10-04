@@ -28,17 +28,33 @@ namespace TextDispatch
             TextDispatch.Plugin.Start();
         }
 
+        /// <summary>
+        /// LSPDFR calls this when the player goes **off duty**, and again at shutdown - and it does
+        /// not call Initialize() when they go back on duty.
+        ///
+        /// This used to tear the engine down, which was fatal to the rest of the session: the fiber
+        /// stopped, rendering was unhooked, and the chat box was gone from the moment the player went
+        /// off duty until the game was restarted. The log proved it - "stopping" at 18:29:07 when the
+        /// player went off duty, and nothing after it, while packs that ignore this callback carried
+        /// on working.
+        ///
+        /// So nothing is torn down. Going off duty is a state, not a shutdown: the engine keeps
+        /// running and the services already read the player's duty state from LSPDFR every tick, so
+        /// they go quiet on their own.
+        /// </summary>
         public override void Finally()
         {
-            TextDispatch.Plugin.Stop();
+            Log.Line("LSPDFR called Finally - which happens on going off duty as well as at shutdown, " +
+                     "so the engine is deliberately left running");
         }
 
         /// <summary>
-        /// LSPDFR calls this when it reloads its own configuration. There is nothing to rebuild:
-        /// the engine reads what it needs every tick.
+        /// Called when LSPDFR initialises plugins again. Start() returns immediately if the engine is
+        /// already up, so this is safe whether or not Finally() turned out to mean "off duty".
         /// </summary>
         public override void InitializeAgain()
         {
+            TextDispatch.Plugin.Start();
         }
     }
 }

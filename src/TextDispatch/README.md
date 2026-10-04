@@ -398,6 +398,7 @@ It keeps two things apart on purpose, because confusing them is worse than sayin
 
 | Symptom | Look at |
 |---|---|
+| **The box disappears when you go off duty** | Fixed in 1.0.14. LSPDFR calls a plugin's `Finally()` when you clock off, not only at shutdown, and the engine used to shut itself down there - so the box was gone for the rest of the session, with `stopping` as the last line of the log. |
 | **Nothing loaded at all - not this plugin, not the callout packs** | You have not been on duty. Press **E** at a police station: LSPDFR scans `Plugins\LSPDFR` at that moment, and not before it. |
 | A plugin you installed is not in LSPDFR's list | `/plugins` - or `tdplugins` in F4, or the log. It names every DLL in the folder, which ones loaded, and which are in `Plugins\` or `lspdfr\` where LSPDFR never looks for them. |
 | The game crashed after a while on duty | `/plugins` sorts the two cases apart. **Did not load** and **Missing dependency** mean something is actually broken. **Optional integrations not installed** means a feature is switched off and nothing is wrong - a callout pack's StopThePed or Callout Interface link, for instance. |
@@ -424,6 +425,19 @@ not apply to them. The RAGE Plugin Hook SDK is required to build and its terms f
 it, which is why `tools/rph-sdk/` is deliberately not in the repository.
 
 ## Design notes
+
+### LSPDFR's lifecycle, and why nothing is torn down
+
+LSPDFR calls `Initialize()` when it creates a plugin, and `Finally()` when the player goes **off duty**
+as well as at shutdown. It does not call `Initialize()` again when they go back on duty; if anything it
+calls `InitializeAgain()`.
+
+That pairing looks like a subscription and its cleanup, and it is not one: treating `Finally()` as
+"unload" means the plugin tears itself down every time the player clocks off, which is what killed the
+chat box in 1.0.13 and earlier - the log said `stopping` at the moment of going off duty and nothing
+after it. So `Finally()` now only writes a line to the log, `Stop()` exists for a real unload and is
+deliberately not wired to it, and the engine keeps running across duty changes: its services read the
+player's duty state from LSPDFR every tick and go quiet on their own.
 
 - **Nothing of LSPDFR is bundled, and the API is reached by reflection.** The one compile-time
   reference is the plugin base class LSPDFR instantiates - the same reference every callout pack

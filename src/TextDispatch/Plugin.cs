@@ -140,7 +140,11 @@ namespace TextDispatch
             catch (Exception ex) { Log.Error("startup", ex); }
         }
 
-        /// <summary>Called by LSPDFR when the plugin unloads or reloads.</summary>
+        /// <summary>
+        /// Tear the engine down. Deliberately **not** called from Main.Finally(): LSPDFR calls that
+        /// when the player goes off duty, and stopping there left the chat box dead for the rest of
+        /// the session. It is kept for a real unload, if LSPDFR ever grows one.
+        /// </summary>
         public static void Stop()
         {
             _running = false;

@@ -189,6 +189,13 @@ Two references are needed and neither is committed to this repository:
 
 ## Status
 
+**1.2.2 stops the duty handler being unsubscribed when you go off duty.** LSPDFR calls a plugin's
+`Finally()` when the player clocks off, not only at shutdown, and this pack used to unsubscribe there -
+so it was never told about the next duty and its callouts were registered once and then never again,
+while every other pack re-registered. That is the half of the bug that removing the "register once"
+guard could not fix on its own. Nothing is unhooked now, and `InitializeAgain()` re-arms it exactly
+once.
+
 **1.2.1 registers the callouts on every duty, not just the first.** LSPDFR rebuilds its callout
 registry each time the player goes on duty; this pack registered once, so after an off-duty and back-on
 cycle it had no callouts at all while every other pack re-registered. Fixed, and the log now says
