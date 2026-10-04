@@ -5,7 +5,7 @@ LSPDFR in text. Two plugins that are meant to be installed together:
 
     TextDispatch %DISPATCH_VERSION%    the text interface: dispatch, the people in the callouts,
                                        traffic stops, records, all through a chat box
-    TextCallouts %CALLOUTS_VERSION%    eight callouts, written from scratch, needing nothing but
+    TextCallouts %CALLOUTS_VERSION%    thirteen callouts, written from scratch, needing nothing but
                                        LSPDFR and RAGE Plugin Hook
 
 Both DLLs are in this zip. Neither RAGE Plugin Hook nor LSPDFR is - they are separate works under
@@ -32,7 +32,7 @@ INSTALL
 
 4. The box appears saying "TextDispatch loaded. Press T to chat." Press T.
 
-   TextCallouts registers its eight callouts at the same moment and tells you so on screen.
+   TextCallouts registers its thirteen callouts at the same moment and tells you so on screen.
 
 
 WHAT THEY DO TOGETHER
@@ -40,14 +40,14 @@ WHAT THEY DO TOGETHER
 
 Installed side by side, they are one experience:
 
-  * the eight callouts arrive as radio traffic in the chat box, and you accept or decline by typing
+  * the thirteen callouts arrive as radio traffic in the chat box, and you accept or decline by typing
   * every line a callout says - the ambulance request, the pursuit call-in, the suspect description -
     is mirrored into the chat box instead of a notification box
-  * /calls lists all eight alongside LSPDFR's own callouts and any other pack's, and /callout <name>
+  * /calls lists all thirteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>
     starts one on demand, which is the quickest way to see one
   * people in the callouts answer in text when you talk to them
   * and your own callouts - written as XML files in Plugins\LSPDFR\TextCallouts\Custom\ - are
-    offered exactly like the built-in eight, no compiling involved
+    offered exactly like the built-in thirteen, no compiling involved
 
 None of that is a hard dependency. Each plugin works alone: TextDispatch runs with no callout pack,
 and TextCallouts runs with no text interface - the callout lines simply arrive as normal

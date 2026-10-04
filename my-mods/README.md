@@ -159,7 +159,7 @@ RAGE Plugin Hook and LSPDFR also drop these support libraries in the root; none 
 | **SSStuart Callouts** | 0.1.2.0 | CalloutInterfaceAPI ✓ | loads |
 | **StopThePed** | 4.9.5.4 | RAGENativeUI ✓ · *optional*: Ultimate Backup ✓, PoliceSmartRadio ✓, VocalDispatch ✗, PoliceSearch ✗ | loads · **conflicts with PR §1.4** |
 | **Story Callouts** | 0.1.2.0 | CalloutInterfaceAPI ✓ | loads |
-| **TextCallouts** | 1.1.0 | **nothing but LSPDFR and RAGE Plugin Hook** | loads, 8 callouts + your own XML recipes |
+| **TextCallouts** | 1.2.0 | **nothing but LSPDFR and RAGE Plugin Hook** | loads, 13 callouts + your own XML recipes |
 | **TextDispatch** | 1.0.13 | LSPDFR ✓ · *optional*: Ollama ✓, LM Studio | loads, box drawn |
 | **Traffic Policer** | 7.0.0.0 | Albo1125.Common ✓, RAGENativeUI ✓, scanner audio ✓ (163 files) · *optional*: British Policing Script ✗ | loads (2019 mod — §4) |
 | **Ultimate Backup** | 1.8.7.1 | RAGENativeUI ✓ · *optional*: VocalDispatch ✗, PoliceSearch ✗ | loads · **part of the PR conflict §1.4** |

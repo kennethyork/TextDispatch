@@ -1,5 +1,13 @@
 # Packages the TextCallouts release zip: the plugin, the install notes and the licence.
 #
+# Naming, and RELEASES.md is the authority on it:
+#
+#   git tag    callouts-v1.2.1
+#   release    TextCallouts 1.2.1
+#   asset      TextCallouts-1.2.1.zip
+#
+# The release name carries the product and its version, nothing else - what changed goes in the notes.
+#
 #   powershell -ExecutionPolicy Bypass -File tools\package-textcallouts.ps1 -Version 1.0.0
 
 param(

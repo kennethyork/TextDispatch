@@ -1,6 +1,6 @@
 # TextCallouts
 
-**LSPDFR callouts with no dependencies.** Eight callouts in the style of the big packs, written from
+**LSPDFR callouts with no dependencies.** Thirteen callouts in the style of the big packs, written from
 scratch, needing nothing but LSPDFR and RAGE Plugin Hook — no StopThePed, no Ultimate Backup, no
 CompuLite, no Callout Interface, no ExternalPoliceComputer, no Common Data Framework, no
 RAGENativeUI.
@@ -17,7 +17,7 @@ mscorlib, System, System.Core, System.Drawing, Microsoft.CSharp   the .NET frame
 
 Nothing else — verified by reading the built DLL's reference table, not by hoping.
 
-> It is **inspired by** packs like 686 Callouts, not a copy of it. All eight callouts, their names and
+> It is **inspired by** packs like 686 Callouts, not a copy of it. All thirteen callouts, their names and
 > their dialogue are original work, and no file, string or asset from 686 Callouts is used. Keep 686
 > installed alongside — they do not conflict.
 
@@ -35,6 +35,11 @@ Nothing else — verified by reading the built DLL's reference table, not by hop
 | **Two-Car Collision** | Nobody to arrest. One injured driver and an ambulance to call — the callout about helping rather than catching | EMS takes over |
 | **Suspicious Person** | May be nothing at all, may be a burglary suspect. The record comes back on the radio when you get close, and what he does about it is decided by that | arrest, or you let him go |
 | **Officer Needs Assistance** | Shots fired, two armed suspects, backup rolling | both suspects down or in custody |
+| **Barricaded Suspect** | Held up inside with a handgun and refusing to come out. Rush him and it becomes a shooting; give him time and he may walk out | arrested, down, or he gives up |
+| **Stolen Vehicle, Driver On Foot** | The stolen car is parked up with the driver still in it — and he bails rather than drives | arrested or down |
+| **Public Disturbance** | A fight in the street: two people going at each other, a third watching. They usually scatter when you arrive | both in custody |
+| **Bicycle Theft** | A bike taken from outside a shop and a suspect who rides rather than runs | arrested or down |
+| **Weapons Call, Brandishing** | Armed but not yet hostile. Arrive fast and he panics; hold back and he may put it down | arrested, down, or he surrenders |
 
 Each one is built around LSPDFR's own systems wherever possible: pursuits are LSPDFR pursuits, the
 ambulance and backup come from LSPDFR's backup system, arrest detection is LSPDFR's, and the callout
@@ -59,7 +64,7 @@ Adding a callout should not need a compiler. Drop an XML file in
 Plugins\LSPDFR\TextCallouts\Custom\
 ```
 
-go on duty, and it is offered exactly like the built-in eight - same dispatch announcements, same callout
+go on duty, and it is offered exactly like the built-in thirteen - same dispatch announcements, same callout
 blip, same resolution. The folder is created on first run with a `README.txt` describing every field and
 a worked example to copy (`Example-ArmedRobbery.xml.example` - rename it to end in `.xml` to use it).
 
@@ -112,7 +117,7 @@ out usable as type names.
 One thing to be straight about: the recipes are turned into real callout types at run time, because
 that is the only thing LSPDFR accepts - `Functions.RegisterCallout` takes a `Type`. That step cannot be
 exercised outside the game, so if it ever fails it will fail loudly in the log, naming the file, and the
-built-in eight are unaffected either way.
+built-in thirteen are unaffected either way.
 
 ---
 
@@ -142,7 +147,7 @@ That link is reflection at runtime, so:
 - if TextDispatch is not there, the same lines simply appear as on-screen notifications instead.
 
 TextDispatch also picks these callouts up on its own, because it reads the callout catalogue out of
-the assemblies it finds. So with both installed: `/calls` lists all eight, and `/callout <name>`
+the assemblies it finds. So with both installed: `/calls` lists all thirteen, and `/callout <name>`
 starts one on demand — the quickest way to see a callout without waiting for dispatch to offer it.
 
 ---
@@ -153,7 +158,7 @@ starts one on demand — the quickest way to see a callout without waiting for d
 |---|---|
 | Log | `Plugins\LSPDFR\textcallouts.log` — what registered, what was accepted, every line said, and any native that did not resolve |
 | `tcstatus` (F4) | how many callouts are in the pack, whether they are registered, and the log path |
-| `tccallouts` (F4) | the eight, by their dispatch names |
+| `tccallouts` (F4) | the thirteen, by their dispatch names |
 | `/plugins` (TextDispatch) | confirms it loaded, and that it has no missing dependencies |
 
 Every callout also logs when it opens and closes, with the reason — so "dispatch never called me" and
@@ -184,12 +189,18 @@ Two references are needed and neither is committed to this repository:
 
 ## Status
 
+**1.2.0 adds five callouts** - Barricaded Suspect, Stolen Vehicle (Driver On Foot), Public Disturbance,
+Bicycle Theft and Weapons Call (Brandishing) - which brings the pack to thirteen. Three of them have two
+endings rather than one, decided by how the player plays them rather than by a dice roll that ignores it:
+the barricaded suspect comes out if you give him time, the brawl scatters rather than fights, and the man
+brandishing a weapon keeps it if you close on him too fast.
+
 **1.1.0 adds your own callouts** - an XML recipe per callout, loaded at run time, with a parser that
 refuses bad files by name instead of ignoring them (see above). **1.0.0** was the first release.
 
 The pack compiles against the real LSPDFR and RAGE Plugin Hook APIs, and the
 built DLL has been checked against LSPDFR's contract — the `Main` type exists, is public, and derives
-from `LSPD_First_Response.Mod.API.Plugin`; all eight callouts are public, concrete, have a
+from `LSPD_First_Response.Mod.API.Plugin`; all thirteen callouts are public, concrete, have a
 parameterless constructor and a `[CalloutInfo]` name; and the reference table contains no mod
 assembly (see the check results in the release notes).
 

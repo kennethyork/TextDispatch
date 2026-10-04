@@ -1,4 +1,13 @@
-# Packages the release zip: the plugin, the install notes and the licence.
+# Packages the TextDispatch release zip: the plugin, the install notes and the licence.
+#
+# Naming, and RELEASES.md is the authority on it:
+#
+#   git tag    v1.0.14
+#   release    TextDispatch 1.0.14
+#   asset      TextDispatch-1.0.14.zip
+#
+# The release name carries the product and its version, nothing else - what changed goes in the notes,
+# which is where somebody who clicks the release is already looking.
 #
 #   powershell -ExecutionPolicy Bypass -File tools\package-release.ps1 -Version 1.0.12
 #

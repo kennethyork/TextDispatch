@@ -7,7 +7,7 @@ LSPDFR callouts that need nothing but LSPDFR and RAGE Plugin Hook.
 WHAT IT IS
 ----------
 
-Eight callouts in the style of the big callout packs, written from scratch, with no dependency on
+Thirteen callouts in the style of the big callout packs, written from scratch, with no dependency on
 StopThePed, Ultimate Backup, CompuLite, Callout Interface, ExternalPoliceComputer, Common Data
 Framework or RAGENativeUI. You can run it on a bare LSPDFR install, and it will not conflict with
 anything, because it never reaches into another plugin.
@@ -18,7 +18,7 @@ That is not a claim - it is the assembly's reference table:
 
 Nothing else. Every dependency the big packs have is one this pack does not.
 
-Note: it is *inspired by* packs like 686 Callouts, not a copy of it. All eight callouts, their names
+Note: it is *inspired by* packs like 686 Callouts, not a copy of it. All thirteen callouts, their names
 and their dialogue are original, and none of 686 Callouts' files, text or ideas-in-code are used.
 Keep 686 installed alongside if you like - they do not overlap.
 
@@ -38,6 +38,15 @@ THE CALLOUTS
     Suspicious Person         May be nothing at all, may be a burglary suspect who runs. The record
                               comes back over the radio when you get close.
     Officer Needs Assistance  Shots fired, two armed suspects, backup rolling. The hard one.
+    Barricaded Suspect        Held up inside, armed, refusing to come out. Rush him and it becomes a
+                              shooting; give him time and he may walk out with his hands up.
+    Stolen Vehicle (Foot)     The stolen car is parked with the driver still in it - and he bails
+                              rather than drives.
+    Public Disturbance        A fight in the street: two going at each other, a third watching. They
+                              usually scatter when you arrive, and sometimes they do not.
+    Bicycle Theft             A bike taken from outside a shop and a suspect who rides, not runs.
+    Weapons Call              Armed but not yet hostile. Arrive fast and he panics; hold back and he
+                              may put it down.
 
 
 YOUR OWN CALLOUTS
@@ -79,7 +88,7 @@ direction, and if TextDispatch is not there, nothing breaks - the lines simply a
 notifications instead.
 
 TextDispatch also picks the callouts up automatically, because it reads each callout out of the
-assemblies it finds: /calls lists all eight, and /callout <name> starts one on demand, which is the
+assemblies it finds: /calls lists all thirteen, and /callout <name> starts one on demand, which is the
 quickest way to see one without waiting for dispatch.
 
 

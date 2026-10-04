@@ -18,14 +18,19 @@ namespace TextCallouts
     {
         private static readonly Type[] CalloutTypes =
         {
-            typeof(Callouts.OfficerNeedsAssistance),
-            typeof(Callouts.StolenVehicle),
-            typeof(Callouts.RecklessDriver),
-            typeof(Callouts.DomesticDisturbance),
-            typeof(Callouts.Shoplifting),
             typeof(Callouts.ArmedRobbery),
-            typeof(Callouts.TrafficCollision),
+            typeof(Callouts.BarricadedSuspect),
+            typeof(Callouts.BicycleTheft),
+            typeof(Callouts.BrandishingWeapon),
+            typeof(Callouts.DomesticDisturbance),
+            typeof(Callouts.OfficerNeedsAssistance),
+            typeof(Callouts.PublicDisturbance),
+            typeof(Callouts.RecklessDriver),
+            typeof(Callouts.Shoplifting),
+            typeof(Callouts.StolenVehicle),
+            typeof(Callouts.StolenVehicleOnFoot),
             typeof(Callouts.SuspiciousPerson),
+            typeof(Callouts.TrafficCollision),
         };
 
         private static bool _registered;
