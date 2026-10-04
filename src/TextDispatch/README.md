@@ -300,8 +300,15 @@ it, which is why `tools/rph-sdk/` is deliberately not in the repository.
 
 ## Design notes
 
-- **The core never references LSPDFR.** `LspdfrApi` is a reflection bridge, so nothing of theirs is
-  bundled, an install without LSPDFR still loads, and a load-order race degrades instead of failing.
+- **Nothing of LSPDFR is bundled, and the API is reached by reflection.** The one compile-time
+  reference is the plugin base class LSPDFR instantiates - the same reference every callout pack
+  has - and it is marked so it can never be copied into the output. Every *call* into the API goes
+  through a reflection bridge that resolves overloads against the runtime signatures, which is how
+  two bugs (`RequestBackup`'s shape, and `StartPulloverOnParkedVehicle` taking three arguments) were
+  found by reading metadata instead of by crashing.
+- **The entry point is an LSPDFR plugin, not an RPH one.** LSPDFR instantiates a class named `Main`
+  deriving from `LSPD_First_Response.Mod.API.Plugin`. That is the only way to run in LSPDFR's
+  AppDomain, and an RPH-loaded plugin gets its own AppDomain where the API is invisible.
 - **Dispatch and dialogue poll, they are not pushed.** A handful of getters a few times a second
   cannot be broken by an API that changed shape between LSPDFR builds, and everything stays on the
   game fiber.

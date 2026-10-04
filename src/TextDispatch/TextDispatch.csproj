@@ -9,11 +9,17 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <!-- Keep this in step with the release tag so a downloaded DLL can be identified. -->
-    <Version>1.0.2</Version>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
+    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
     <Product>TextDispatch</Product>
     <Description>LSPDFR in text: callouts, dispatch and interactions through an in-game chat box.</Description>
+
+    <!-- Where LSPDFR lives. Override with -p:GtaFolder="E:\Games\GTAV". -->
+    <GtaFolder Condition="'$(GtaFolder)' == ''">D:\Grand Theft Auto V Legacy</GtaFolder>
+    <LspdfrDll>$(GtaFolder)\plugins\LSPD First Response.dll</LspdfrDll>
+    <LspdfrAvailable>false</LspdfrAvailable>
+    <LspdfrAvailable Condition="Exists('$(LspdfrDll)')">true</LspdfrAvailable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -47,6 +53,26 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  <!--
+    LSPDFR itself, needed for one thing only: the plugin entry point has to derive from
+    LSPD_First_Response.Mod.API.Plugin, because that is what LSPDFR instantiates. Deriving from a
+    type needs it at compile time.
+
+    Private=false is required rather than optional. LSPDFR must never be copied into this plugin's
+    output: every callout pack works this way, referencing it and shipping without it, and the
+    plugin loads against the copy already in the game. Building therefore needs LSPDFR installed.
+  -->
+  <ItemGroup Condition="'$(LspdfrAvailable)' == 'true'">
+    <Reference Include="LSPD First Response">
+      <HintPath>$(LspdfrDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="LspdfrMissing" BeforeTargets="BeforeBuild" Condition="'$(LspdfrAvailable)' != 'true'">
+    <Error Text="LSPD First Response.dll not found at $(LspdfrDll). The plugin's entry point derives from LSPDFR's Plugin base class, so LSPDFR must be installed to build. Point at your game folder with: dotnet build -p:GtaFolder=&quot;D:\Grand Theft Auto V Legacy&quot;" />
+  </Target>
 
   <Target Name="RphSdkMissing" BeforeTargets="BeforeBuild"
           Condition="!Exists('$(MSBuildThisFileDirectory)..\..\tools\rph-sdk\RagePluginHook.dll')">

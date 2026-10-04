@@ -1,25 +1,20 @@
 using System;
 using Rage;
-using Rage.Attributes;
 using TextDispatch.Chat;
 using TextDispatch.Commands;
 using TextDispatch.Dialogue;
 using TextDispatch.Lspdfr;
 
-// RPH finds plugins by this attribute; EntryPoint is named explicitly so there is no chance of it
-// picking some other static Main.
-[assembly: Plugin("TextDispatch",
-    Description = "LSPDFR in text: callouts, dispatch and interactions through an in-game chat box.",
-    EntryPoint = "TextDispatch.Plugin.Main")]
-
 namespace TextDispatch
 {
     /// <summary>
-    /// The plugin entry point, and the fiber loop.
+    /// The engine, and the host-facing lifetime.
     ///
-    /// Everything that touches the game happens here, on the fiber: reading the keyboard, polling
-    /// LSPDFR, and freezing the player's controls while they type. Drawing happens on the render
-    /// callback instead, which is a different thread - hence the lock inside ChatBox.
+    /// There is deliberately no RAGE Plugin Hook plugin attribute here. LSPDFR does not use it for
+    /// the plugins it loads: it instantiates a class named "Main" deriving from its own Plugin base
+    /// (see Main.cs). Being loaded by LSPDFR is not a style choice - it is the only way to run
+    /// inside LSPDFR's AppDomain, and a plugin RPH loads gets its own AppDomain and cannot see
+    /// LSPDFR at all.
     /// </summary>
     public static class Plugin
     {
@@ -40,6 +35,9 @@ namespace TextDispatch
         private static int _startedAt;
         private static string _lastRenderError;
 
+        private static bool _running;
+        private static GameFiber _fiber;
+
         internal static int RenderCalls { get { return _renderCalls; } }
         internal static string LastRenderError { get { return _lastRenderError; } }
 
@@ -49,12 +47,17 @@ namespace TextDispatch
         internal static CommandRouter Router { get { return _router; } }
         internal static DialogueService Dialogue { get { return _dialogue; } }
         internal static TextInput Input { get { return _input; } }
-
         internal static DispatchService Dispatch { get { return _dispatch; } }
         internal static Settings Settings { get { return _settings; } }
 
-        public static void Main()
+        /// <summary>
+        /// Called by LSPDFR. This must return - LSPDFR is waiting on it - so the tick loop is handed
+        /// to its own fiber rather than run here. A loop in this method hangs LSPDFR's startup.
+        /// </summary>
+        public static void Start()
         {
+            if (_running) return;
+
             try
             {
                 // Without this the box would only hear the keyboard while the game has focus, which
@@ -75,15 +78,15 @@ namespace TextDispatch
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with T");
 
                 // RawFrameRender, not FrameRender. FrameRender is called per *game tick* - about 23
-                // times a second - and its draw calls are queued for the frame renderer, which makes
-                // a HUD flicker against a 60fps frame rate. RawFrameRender is called once per frame,
-                // which is what a chat box needs. It does not allow native calls; this only uses
-                // managed drawing, so that costs nothing.
+                // times a second - and its draw calls get queued, which makes a HUD flicker against a
+                // 60fps frame rate. RawFrameRender is called once per frame, which is what a chat box
+                // wants. It does not allow native calls; this only uses managed drawing.
                 Game.RawFrameRender += OnFrameRender;
                 Game.AddConsoleCommands(new Type[] { typeof(ConsoleCommands) });
 
-                Log.Line("starting; " + _api.Describe() + "; npc speech mode=" + _settings.AiMode);
                 _startedAt = Environment.TickCount;
+                Log.Line("starting; " + _api.Describe() + "; npc speech mode=" + _settings.AiMode +
+                         "; appdomain=" + AppDomain.CurrentDomain.FriendlyName);
                 ReportDisplay();
 
                 _chat.Notice("TextDispatch loaded. Press " + _settings.OpenKey + " to chat - /help for the commands.");
@@ -96,39 +99,56 @@ namespace TextDispatch
                 // Pull the model into memory now rather than on the player's first sentence.
                 Ai.LocalModel.WarmUp(_settings);
 
-                while (true)
-                {
-                    try
-                    {
-                        _input.Update();
-
-                        // While the box is open the player is typing, not driving. Freezing the game's
-                        // controls is what makes typing "10-97" not also steer the car.
-                        if (_chat.IsOpen) DisableGameControls();
-
-                        _dispatch.Update();
-                        _dialogue.Update();
-
-                        // Five seconds in, say plainly whether anything is being drawn. This is the
-                        // single question that cannot be answered from outside the game, and it
-                        // should not be left to guesswork.
-                        if (!_renderReported && Environment.TickCount - _startedAt > 5000)
-                        {
-                            _renderReported = true;
-                            Log.Line("render check: the render callback has fired " + _renderCalls +
-                                     " time(s) in 5s" +
-                                     (_renderCalls == 0
-                                        ? "  -- THE CHAT BOX IS NOT BEING DRAWN. The plugin loaded, so this is the render path, not the load."
-                                        : "  -- the box is being drawn."));
-                        }
-                    }
-                    catch (Exception ex) { Log.Error("tick", ex); }
-
-                    // Removing this would hang GTA V permanently: RPH runs plugins on fibers.
-                    GameFiber.Yield();
-                }
+                _running = true;
+                _fiber = GameFiber.StartNew(Loop, "TextDispatch");
             }
             catch (Exception ex) { Log.Error("startup", ex); }
+        }
+
+        /// <summary>Called by LSPDFR when the plugin unloads or reloads.</summary>
+        public static void Stop()
+        {
+            _running = false;
+
+            try { Game.RawFrameRender -= OnFrameRender; }
+            catch { }
+
+            Log.Line("stopping");
+        }
+
+        private static void Loop()
+        {
+            while (_running)
+            {
+                try
+                {
+                    _input.Update();
+
+                    // While the box is open the player is typing, not driving. Freezing the game's
+                    // controls is what makes typing "10-97" not also steer the car.
+                    if (_chat.IsOpen) DisableGameControls();
+
+                    _dispatch.Update();
+                    _dialogue.Update();
+
+                    // Five seconds in, say plainly whether anything is being drawn. This is the single
+                    // question that cannot be answered from outside the game, and it should not be
+                    // left to guesswork.
+                    if (!_renderReported && Environment.TickCount - _startedAt > 5000)
+                    {
+                        _renderReported = true;
+                        Log.Line("render check: the render callback has fired " + _renderCalls +
+                                 " time(s) in 5s" +
+                                 (_renderCalls == 0
+                                    ? "  -- THE CHAT BOX IS NOT BEING DRAWN. The plugin loaded, so this is the render path, not the load."
+                                    : "  -- the box is being drawn."));
+                    }
+                }
+                catch (Exception ex) { Log.Error("tick", ex); }
+
+                // Removing this would hang the game: RPH runs plugins on fibers.
+                GameFiber.Yield();
+            }
         }
 
         private static void DisableGameControls()
