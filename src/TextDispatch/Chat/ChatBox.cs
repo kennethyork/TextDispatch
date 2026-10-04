@@ -28,8 +28,54 @@ namespace TextDispatch.Chat
     }
 
     /// <summary>
-    /// The chat box. A scrolling transcript at the top-left of the screen and, when open, an input
+    /// Which corner the box is anchored to. Configurable because LSPDFR installs are crowded: the
+    /// top-left is the most contested patch of screen in the game, and a chat box that sits on top of
+    /// another plugin's panel makes both useless.
+    /// </summary>
+    public enum ChatCorner
+    {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    }
+
+    public static class ChatCorners
+    {
+        /// <summary>Accepts "top-right", "topright", "TR" and similar.</summary>
+        public static bool TryParse(string text, out ChatCorner corner)
+        {
+            var t = (text ?? "").Trim().ToLowerInvariant()
+                .Replace(" ", "").Replace("-", "").Replace("_", "");
+
+            switch (t)
+            {
+                case "topleft": case "tl": corner = ChatCorner.TopLeft; return true;
+                case "topright": case "tr": corner = ChatCorner.TopRight; return true;
+                case "bottomleft": case "bl": corner = ChatCorner.BottomLeft; return true;
+                case "bottomright": case "br": corner = ChatCorner.BottomRight; return true;
+            }
+
+            corner = ChatCorner.TopRight;
+            return false;
+        }
+
+        public static string Describe(ChatCorner corner)
+        {
+            switch (corner)
+            {
+                case ChatCorner.TopLeft: return "top-left";
+                case ChatCorner.BottomLeft: return "bottom-left";
+                case ChatCorner.BottomRight: return "bottom-right";
+                default: return "top-right";
+            }
+        }
+    }
+
+    /// <summary>
+    /// The chat box. A scrolling transcript in one corner of the screen and, when open, an input
     /// line - the same shape a FiveM/GTA World chat has, because that is the interface being copied.
+    /// The corner is configurable; top-right by default, since other LSPDFR plugins draw on the left.
     ///
     /// Threading: Render is called from RPH's render callback, which is not the fiber that writes to
     /// this box, so every read and write of the transcript takes the lock.
@@ -44,6 +90,12 @@ namespace TextDispatch.Chat
         public bool IsOpen;
         public string Input = "";
         public int Scroll;
+
+        /// <summary>Default is top-right: the left side belongs to whoever else is drawing.</summary>
+        public ChatCorner Position = ChatCorner.TopRight;
+
+        /// <summary>Distance from the screen edge, in pixels.</summary>
+        public float Margin = 16f;
 
         // Adjustable at runtime so the box can be fixed without a rebuild: /ui, /font, /fontsize, /lines.
         public float UiScale = 1f;
@@ -176,18 +228,41 @@ namespace TextDispatch.Chat
 
             float width = Math.Min(screenWidth * 0.46f, 820f * scale);
             float height = rows * lineHeight + 12f;
-            float x = 16f;
-            float y = 16f;
+
+            float x, y;
+            switch (Position)
+            {
+                case ChatCorner.TopRight:
+                    x = screenWidth - width - Margin;
+                    y = Margin;
+                    break;
+                case ChatCorner.BottomLeft:
+                    x = Margin;
+                    y = screenHeight - height - Margin;
+                    break;
+                case ChatCorner.BottomRight:
+                    x = screenWidth - width - Margin;
+                    y = screenHeight - height - Margin;
+                    break;
+                default:
+                    x = Margin;
+                    y = Margin;
+                    break;
+            }
 
             graphics.DrawRectangle(new RectangleF(x - 8f, y - 6f, width + 16f, height + 8f),
                 Color.FromArgb(128, 0, 0, 0));
 
+            // Clip each line to the box. On the right edge an overlong line would otherwise run off
+            // the screen instead of being cut off at the panel.
             float lineY = y;
             for (int i = first; i < first + count; i++)
             {
                 var line = snapshot[i];
                 var text = string.IsNullOrEmpty(line.Tag) ? line.Text : line.Tag + " " + line.Text;
-                graphics.DrawText(text, FontName, fontSize, new PointF(x, lineY), ColourOf(line.Channel));
+                var clip = new RectangleF(x - 4f, lineY - 3f, width + 8f, lineHeight + 6f);
+
+                graphics.DrawText(text, FontName, fontSize, new PointF(x, lineY), ColourOf(line.Channel), clip);
                 lineY += lineHeight;
             }
 

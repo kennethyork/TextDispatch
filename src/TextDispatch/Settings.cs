@@ -74,6 +74,15 @@ namespace TextDispatch
         /// </summary>
         public string OpenKey = "T";
 
+        /// <summary>
+        /// Which corner the box sits in. Top-right by default: other LSPDFR plugins draw on the
+        /// left, and two panels in the same corner make each other unreadable.
+        /// </summary>
+        public string ChatPosition = "top-right";
+
+        /// <summary>Distance from the screen edge, in pixels.</summary>
+        public float ChatMargin = 16f;
+
         public int TypingMs = 900;                  // NPC "typing" pause
         public int DispatchMs = 500;                // radio answers come back faster
         public float SayRange = 15f;
@@ -82,12 +91,36 @@ namespace TextDispatch
 
         // ---------------------------------------------------------------- load
 
+        /// <summary>
+        /// Write the settings back. Used when a runtime command changes something worth keeping -
+        /// a box position the player had to fiddle with is exactly that.
+        /// </summary>
+        public void Save()
+        {
+            Write(IniPath(), this);
+        }
+
         public static Settings Load()
         {
             var settings = new Settings();
             try
             {
-                var path = Path.Combine(PluginFolder(), "TextDispatch.ini");
+                var path = IniPath();
+
+                // Version 1.0.3 and earlier wrote this to the game's root folder, because the
+                // assembly reported no location. Move it rather than abandoning the player's
+                // settings and starting a second copy.
+                var stray = Path.Combine(Environment.CurrentDirectory, "TextDispatch.ini");
+                if (!File.Exists(path) && File.Exists(stray) && !string.Equals(stray, path, StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        File.Move(stray, path);
+                        Log.Line("settings: moved TextDispatch.ini into " + PluginFolder());
+                    }
+                    catch { }
+                }
+
                 if (!File.Exists(path)) { Write(path, settings); return settings; }
 
                 foreach (var raw in File.ReadAllLines(path))
@@ -112,6 +145,8 @@ namespace TextDispatch
                         case "aimaxtokens": settings.AiMaxTokens = AsInt(value, settings.AiMaxTokens); break;
                         case "aitemperature": settings.AiTemperature = AsFloat(value, settings.AiTemperature); break;
                         case "openkey": settings.OpenKey = value; break;
+                        case "chatposition": settings.ChatPosition = value; break;
+                        case "chatmargin": settings.ChatMargin = AsFloat(value, settings.ChatMargin); break;
                         case "typingms": settings.TypingMs = AsInt(value, settings.TypingMs); break;
                         case "dispatchms": settings.DispatchMs = AsInt(value, settings.DispatchMs); break;
                         case "sayrange": settings.SayRange = AsFloat(value, settings.SayRange); break;
@@ -158,6 +193,12 @@ namespace TextDispatch
                     "; Change it if another mod already uses T.",
                     "OpenKey=" + settings.OpenKey,
                     "",
+                    "; Which corner the chat box sits in: top-left, top-right, bottom-left, bottom-right.",
+                    "; Top-right by default, because other LSPDFR plugins draw on the left.",
+                    "ChatPosition=" + settings.ChatPosition,
+                    "; Distance from the screen edge, in pixels.",
+                    "ChatMargin=" + settings.ChatMargin.ToString(CultureInfo.InvariantCulture),
+                    "",
                     "; How long an NPC appears to 'type' before answering, in milliseconds.",
                     "; The real delay scales with the length of the reply, between half and double this.",
                     "TypingMs=" + settings.TypingMs,
@@ -185,16 +226,41 @@ namespace TextDispatch
             return float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsed) ? parsed : fallback;
         }
 
-        /// <summary>Where the plugin DLL lives - the ini sits beside it, not in AppData.</summary>
+        /// <summary>
+        /// Where the plugin's settings belong: beside the DLL, in Plugins\LSPDFR.
+        ///
+        /// Assembly.Location cannot be relied on here. LSPDFR loads its plugins from memory, and an
+        /// assembly loaded that way reports an empty Location - which silently sent the ini to the
+        /// game's root folder instead. So the location is used when it exists, and otherwise the
+        /// plugin's folder is found the way LSPDFR itself refers to it.
+        /// </summary>
         public static string PluginFolder()
         {
             try
             {
                 var location = Assembly.GetExecutingAssembly().Location;
-                if (!string.IsNullOrEmpty(location)) return Path.GetDirectoryName(location);
+                if (!string.IsNullOrEmpty(location))
+                {
+                    var directory = Path.GetDirectoryName(location);
+                    if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory)) return directory;
+                }
             }
             catch { }
+
+            try
+            {
+                var besideTheGame = Path.Combine(Environment.CurrentDirectory, "Plugins", "LSPDFR");
+                if (Directory.Exists(besideTheGame)) return besideTheGame;
+            }
+            catch { }
+
             return Environment.CurrentDirectory;
+        }
+
+        /// <summary>The settings file, wherever it has ended up.</summary>
+        public static string IniPath()
+        {
+            return Path.Combine(PluginFolder(), "TextDispatch.ini");
         }
     }
 }

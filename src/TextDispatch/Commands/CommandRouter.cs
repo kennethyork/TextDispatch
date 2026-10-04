@@ -21,13 +21,15 @@ namespace TextDispatch.Commands
         private readonly LspdfrApi _api;
         private readonly DispatchService _dispatch;
         private readonly DialogueService _dialogue;
+        private readonly Settings _settings;
 
-        public CommandRouter(ChatBox chat, LspdfrApi api, DispatchService dispatch, DialogueService dialogue)
+        public CommandRouter(ChatBox chat, LspdfrApi api, DispatchService dispatch, DialogueService dialogue, Settings settings)
         {
             _chat = chat;
             _api = api;
             _dispatch = dispatch;
             _dialogue = dialogue;
+            _settings = settings;
         }
 
         public void Handle(string raw)
@@ -135,6 +137,9 @@ namespace TextDispatch.Commands
                 case "911": Call911(argument); return;
 
                 // ---------------------------------------------------- the box itself
+                case "pos":
+                case "corner": SetPosition(argument); return;
+                case "margin": SetMargin(argument); return;
                 case "ui": SetScale(argument); return;
                 case "font": SetFont(argument); return;
                 case "fontsize": SetFontSize(argument); return;
@@ -488,6 +493,52 @@ namespace TextDispatch.Commands
 
         // ------------------------------------------------------------------ the box
 
+        /// <summary>
+        /// Move the box to another corner, and remember it. The top-left of an LSPDFR screen is the
+        /// busiest patch there is, so this is the setting most likely to need changing.
+        /// </summary>
+        private void SetPosition(string argument)
+        {
+            ChatCorner corner;
+            if (!ChatCorners.TryParse(argument, out corner))
+            {
+                _chat.Error("Usage: /pos top-right | top-left | bottom-right | bottom-left" +
+                            "   (currently " + ChatCorners.Describe(_chat.Position) + ")");
+                return;
+            }
+
+            _chat.Position = corner;
+            _chat.Notice("Chat box moved to the " + ChatCorners.Describe(corner) + " corner.");
+
+            if (_settings != null)
+            {
+                _settings.ChatPosition = ChatCorners.Describe(corner);
+                _settings.Save();
+                _chat.Notice("Saved to TextDispatch.ini.");
+            }
+        }
+
+        /// <summary>How far the box sits from the screen edge.</summary>
+        private void SetMargin(string argument)
+        {
+            float value;
+            if (!float.TryParse(argument, NumberStyles.Float, CultureInfo.InvariantCulture, out value) ||
+                value < 0f || value > 400f)
+            {
+                _chat.Error("Usage: /margin <0-400>   e.g. /margin 40");
+                return;
+            }
+
+            _chat.Margin = value;
+            _chat.Notice("Margin set to " + value.ToString("0") + " pixels.");
+
+            if (_settings != null)
+            {
+                _settings.ChatMargin = value;
+                _settings.Save();
+            }
+        }
+
         private void SetScale(string argument)
         {
             float value;
@@ -544,7 +595,7 @@ namespace TextDispatch.Commands
             _chat.Notice("            /id  /frisk  /cuff  /record  /owner all target the driver you stopped");
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /transport  /cuff  /zone");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");
-            _chat.Notice("  Box:      /ui  /font  /fontsize  /lines  /clear");
+            _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /clear");
             _chat.Notice("  Open the box with T, or / to start typing a command.");
         }
     }

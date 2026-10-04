@@ -101,7 +101,7 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Stops | `/stop` · `/endstop` · `/id` · `/frisk` · `/cuff` · `/record` · `/owner` |
 | Backup | `/backup [swat\|air\|state\|ems\|fire\|transport]` · `/transport` · `/panic` · `/911 <details>` |
 | Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |
-| The box | `/ui` · `/font` · `/fontsize` · `/lines` · `/clear` |
+| The box | `/pos <corner>` · `/margin <px>` · `/ui` · `/font` · `/fontsize` · `/lines` · `/clear` |
 
 Everything is also drivable from RAGE Plugin Hook's **F4** console — `tdsay`, `tdwho`, `tdstatus`,
 `tdmodels`, `tdkey`, `tdrender`, `tdfont` — so a chat box that will not open is never a dead end.

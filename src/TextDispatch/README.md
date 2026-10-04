@@ -212,7 +212,11 @@ assembly — and `/callout` starts any of them by name.
 `/pursuit` · `/calledin` · `/endpursuit` · `/panic` · `/911 <details>`
 
 **The box itself**
-`/ui <scale>` · `/font <name>` · `/fontsize <n>` · `/lines <n>` · `/clear`
+`/pos <corner>` · `/margin <px>` · `/ui <scale>` · `/font <name>` · `/fontsize <n>` · `/lines <n>` · `/clear`
+
+The box sits in the **top-right** by default. An LSPDFR install is crowded and the top-left is the
+most contested patch of screen in the game, so putting a chat box there makes it and whatever else is
+drawing unreadable. `/pos bottom-right` moves it; the choice is saved to the ini.
 
 ## Controls
 

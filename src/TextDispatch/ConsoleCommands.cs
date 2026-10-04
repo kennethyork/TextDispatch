@@ -95,6 +95,28 @@ namespace TextDispatch
             Game.Console.Print("[TextDispatch] showing " + lines + " lines");
         }
 
+        [ConsoleCommand("tdpos", Description = "TextDispatch: move the chat box to a corner. e.g. tdpos bottom-right")]
+        public static void TdPos(string value)
+        {
+            if (Plugin.Chat == null) { Game.Console.Print("[TextDispatch] not running."); return; }
+
+            Chat.ChatCorner corner;
+            if (!Chat.ChatCorners.TryParse(value, out corner))
+            {
+                Game.Console.Print("[TextDispatch] chat box is currently " +
+                                   Chat.ChatCorners.Describe(Plugin.Chat.Position) + ".");
+                Game.Console.Print("[TextDispatch] usage: tdpos top-left | top-right | bottom-left | bottom-right");
+                return;
+            }
+
+            Plugin.Chat.Position = corner;
+            Plugin.Settings.ChatPosition = Chat.ChatCorners.Describe(corner);
+            Plugin.Settings.Save();
+
+            Game.Console.Print("[TextDispatch] chat box moved to the " +
+                               Chat.ChatCorners.Describe(corner) + " corner, and saved to the ini.");
+        }
+
         [ConsoleCommand("tdfont", Description = "TextDispatch: change the chat font if text does not draw. e.g. tdfont Consolas")]
         public static void TdFont(string value)
         {

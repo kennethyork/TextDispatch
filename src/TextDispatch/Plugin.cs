@@ -71,11 +71,16 @@ namespace TextDispatch
                 _api = new LspdfrApi();
                 _dispatch = new DispatchService(_chat, _api, _settings);
                 _dialogue = new DialogueService(_chat, _api, _settings);
-                _router = new CommandRouter(_chat, _api, _dispatch, _dialogue);
+                _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings);
                 _input = new TextInput(_chat, _router.Handle);
 
                 if (!_input.SetOpenKey(_settings.OpenKey))
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with T");
+
+                ChatCorner corner;
+                if (ChatCorners.TryParse(_settings.ChatPosition, out corner)) _chat.Position = corner;
+                else Log.Line("ChatPosition '" + _settings.ChatPosition + "' is not a corner; using top-right");
+                _chat.Margin = _settings.ChatMargin;
 
                 // RawFrameRender, not FrameRender. FrameRender is called per *game tick* - about 23
                 // times a second - and its draw calls get queued, which makes a HUD flicker against a
@@ -87,6 +92,7 @@ namespace TextDispatch
                 _startedAt = Environment.TickCount;
                 Log.Line("starting; " + _api.Describe() + "; npc speech mode=" + _settings.AiMode +
                          "; appdomain=" + AppDomain.CurrentDomain.FriendlyName);
+                Log.Line("settings: " + Settings.IniPath());
                 ReportDisplay();
 
                 _chat.Notice("TextDispatch loaded. Press " + _settings.OpenKey + " to chat - /help for the commands.");
