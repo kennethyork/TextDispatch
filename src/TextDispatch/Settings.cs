@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -100,6 +101,18 @@ namespace TextDispatch
             Write(IniPath(), this);
         }
 
+        /// <summary>
+        /// Every setting this version knows about. Used to notice a settings file written by an older
+        /// version, which is how a documented setting quietly came to be missing from a file that was
+        /// supposed to contain it.
+        /// </summary>
+        private static readonly string[] KnownKeys =
+        {
+            "aimode", "aiprovider", "aiendpoint", "aimodel", "aitimeoutms", "aimaxtokens",
+            "aitemperature", "openkey", "chatposition", "chatmargin", "typingms", "dispatchms",
+            "sayrange", "whisperrange", "shoutrange"
+        };
+
         public static Settings Load()
         {
             var settings = new Settings();
@@ -123,6 +136,8 @@ namespace TextDispatch
 
                 if (!File.Exists(path)) { Write(path, settings); return settings; }
 
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
                 foreach (var raw in File.ReadAllLines(path))
                 {
                     var line = raw.Trim();
@@ -133,6 +148,12 @@ namespace TextDispatch
 
                     var key = line.Substring(0, split).Trim();
                     var value = line.Substring(split + 1).Trim();
+
+                    // Recorded before the empty check: blank is a legitimate value for AiEndpoint and
+                    // AiModel, meaning "ask the server", and treating those as absent would make the
+                    // file look incomplete on every single load.
+                    seen.Add(key);
+
                     if (value.Length == 0) continue;
 
                     switch (key.ToLowerInvariant())
@@ -153,6 +174,23 @@ namespace TextDispatch
                         case "whisperrange": settings.WhisperRange = AsFloat(value, settings.WhisperRange); break;
                         case "shoutrange": settings.ShoutRange = AsFloat(value, settings.ShoutRange); break;
                     }
+                }
+
+                // A file written by an older version is missing whatever was added since, and answers
+                // silently with defaults while offering no key to find or change. Bring it up to date
+                // once, keeping the values that are already there.
+                var incomplete = false;
+                foreach (var known in KnownKeys)
+                {
+                    if (seen.Contains(known)) continue;
+                    incomplete = true;
+                    break;
+                }
+
+                if (incomplete)
+                {
+                    Write(path, settings);
+                    Log.Line("settings: " + path + " predates some current keys; rewritten with the full set");
                 }
             }
             catch (Exception ex) { Log.Error("settings", ex); }
@@ -247,12 +285,18 @@ namespace TextDispatch
             }
             catch { }
 
-            try
+            // Two anchors, because the working directory is normally the game folder but is not
+            // guaranteed to be.
+            foreach (var root in new[] { AppDomain.CurrentDomain.BaseDirectory, Environment.CurrentDirectory })
             {
-                var besideTheGame = Path.Combine(Environment.CurrentDirectory, "Plugins", "LSPDFR");
-                if (Directory.Exists(besideTheGame)) return besideTheGame;
+                if (string.IsNullOrEmpty(root)) continue;
+                try
+                {
+                    var besideTheGame = Path.Combine(root, "Plugins", "LSPDFR");
+                    if (Directory.Exists(besideTheGame)) return besideTheGame;
+                }
+                catch { }
             }
-            catch { }
 
             return Environment.CurrentDirectory;
         }
