@@ -353,6 +353,9 @@ namespace TextDispatch.Lspdfr
 
         public void ArrestPed(object ped) { Call("SetPedAsArrested", ped, true, true); }
 
+        /// <summary>LSPDFR's own stopped state - the same one it applies to a detained pedestrian.</summary>
+        public void StopPed(object ped) { Call("SetPedAsStopped", ped); }
+
         public void RequestTransport(object ped) { Call("RequestSuspectTransport", ped); }
 
         public string PersonaForPed(object ped) { return AsString(Call("GetPersonaForPed", ped)); }

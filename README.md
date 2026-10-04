@@ -54,6 +54,9 @@ assembly, so every callout you have is announced in text and can be started by n
 - **You can talk to people.** Type at a suspect and they answer in text, from their actual situation:
   stopped, searched, cuffed, caught with something, or running. Each person keeps a name and a
   temperament across the session, so they stay the same character.
+- **You can give them orders.** `hands up`, `step out of the vehicle`, `look at me`, `don't move`,
+  `you can go` - recognised by the plugin rather than the model, and actually carried out. Whether
+  they obey follows their temperament, so the reply and the action agree.
 - **Traffic stops work both ways** — LSPDFR's own control, or `/stop` from the keyboard. `/id`,
   `/frisk`, `/cuff`, `/record` and `/owner` all act on the driver you stopped.
 - **Every installed callout pack is supported automatically.** `/calls` lists them with the pack each

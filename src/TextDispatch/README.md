@@ -186,6 +186,26 @@ Type anything and it is spoken where you are standing.
 
 Talk to dispatch with `/r <text>`, or just type a status code.
 
+### Orders they actually carry out
+
+Some sentences are not conversation. They are recognised by the plugin - never by the model - and the
+person in front of you is made to do them, if they are willing.
+
+| You type | They |
+|---|---|
+| `hands up` · `let me see your hands` | raise their hands |
+| `step out of the vehicle` · `get out of the car` | get out |
+| `look at me` | turn to face you |
+| `don't move` · `stay there` | stop and wait (LSPDFR's own stopped state) |
+| `you can go` · `move along` | walk off |
+
+Willingness follows temperament, so what they say and what they do agree. A compliant driver complies;
+a hostile one refuses, and their reply already reads as a refusal rather than obeying under protest.
+Someone already in cuffs always complies.
+
+The log records every order and whether it landed, naming the signature that worked - these are GTA
+natives resolved by name at run time, and one or two changed shape between game builds.
+
 ## Commands
 
 Plain text is speech. A leading `/` is a command. A bare status code is radio traffic.

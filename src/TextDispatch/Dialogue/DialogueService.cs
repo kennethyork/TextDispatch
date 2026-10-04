@@ -70,6 +70,12 @@ namespace TextDispatch.Dialogue
             if (mode == SpeechMode.Shout) _chat.Do("Your voice carries down the street.");
 
             var state = BuildState(partner);
+
+            // If that was an order, carry it out. Classification is ours, never the model's - and it
+            // happens before the reply is generated so that what they say matches what they did.
+            var order = ComplyCommands.Classify(text);
+            if (order != ComplyAction.None) PerformOrder(partner, state, order);
+
             partner.Memory.Add("You: " + text);
 
             var intent = ScriptedReplies.Classify(text);
@@ -92,6 +98,37 @@ namespace TextDispatch.Dialogue
                 },
                 scripted,
                 line => Respond(speaker, line));
+        }
+
+        /// <summary>
+        /// Carry out an order the player typed, if this person is willing.
+        ///
+        /// Willingness follows temperament, so the action and the reply agree. The scripted answers for
+        /// a compliant pedestrian already read as compliance and a hostile one's already read as
+        /// refusal - making everyone obey regardless would put "Make me." next to somebody raising
+        /// their hands.
+        /// </summary>
+        private void PerformOrder(Talker talker, PedState state, ComplyAction order)
+        {
+            bool willing =
+                state.Arrested ||
+                talker.Mood == Temperament.Compliant ||
+                talker.Mood == Temperament.Nervous ||
+                (talker.Mood == Temperament.Defensive &&
+                 new Random(talker.Handle * 31 + (int)order * 7).Next(100) < 70);
+
+            if (!willing)
+            {
+                Log.Line("order: " + talker.Name + " refused '" + ComplyCommands.Describe(order) +
+                         "' (mood " + talker.Mood + ")");
+                return;
+            }
+
+            string detail;
+            bool done = PedActions.Perform(_api, talker.Ped, order, out detail);
+
+            Log.Line("order: " + talker.Name + " '" + ComplyCommands.Describe(order) + "' -> " +
+                     (done ? "done (" + detail + ")" : "FAILED (" + detail + ")"));
         }
 
         /// <summary>Put a line in the transcript, as the person who said it.</summary>
