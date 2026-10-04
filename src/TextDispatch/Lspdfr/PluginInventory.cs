@@ -191,6 +191,11 @@ namespace TextDispatch.Lspdfr
                 var identity = Identity(path);
                 entry.Version = identity == null || identity.Version == null ? null : identity.Version.ToString();
 
+                // What LSPDFR and the AppDomain report is the assembly's own name, which is not
+                // always the file's - a pack can ship a DLL under any name it likes. Match on the
+                // one the runtime uses, and fall back to the file name if it cannot be read.
+                var assemblyName = identity == null || string.IsNullOrEmpty(identity.Name) ? name : identity.Name;
+
                 var references = References(path);
                 if (references == null)
                 {
@@ -225,8 +230,8 @@ namespace TextDispatch.Lspdfr
                     Add(entry.Missing, needed);
                 }
 
-                if (registered.Contains(name)) entry.State = PluginState.Loaded;
-                else if (inDomain.Contains(name)) entry.State = PluginState.InDomain;
+                if (registered.Contains(assemblyName)) entry.State = PluginState.Loaded;
+                else if (inDomain.Contains(assemblyName)) entry.State = PluginState.InDomain;
                 else entry.State = PluginState.NotLoaded;
             }
         }
@@ -259,7 +264,9 @@ namespace TextDispatch.Lspdfr
                 var references = References(path);
                 if (references == null || !RefersToLspdfr(references)) continue;
 
-                if (inDomain.Contains(name)) continue;      // loaded from somewhere, and working
+                var identity = Identity(path);
+                var assemblyName = identity == null || string.IsNullOrEmpty(identity.Name) ? name : identity.Name;
+                if (inDomain.Contains(assemblyName)) continue;      // loaded from somewhere, and working
                 Misplaced.Add(name + " (in " + label + "\\)");
             }
         }
