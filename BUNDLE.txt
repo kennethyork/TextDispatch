@@ -1,0 +1,88 @@
+LSPDFR IN TEXT — the bundle
+===========================
+
+Two plugins that are meant to be installed together:
+
+    TextDispatch %DISPATCH_VERSION%    the text interface: dispatch, the people in the callouts,
+                                       traffic stops, records, all through a chat box
+    TextCallouts %CALLOUTS_VERSION%    eight callouts, written from scratch, needing nothing but
+                                       LSPDFR and RAGE Plugin Hook
+
+Both DLLs are in this zip. Neither RAGE Plugin Hook nor LSPDFR is - they are separate works under
+their own licences, and you need your own working install of both.
+
+
+INSTALL
+-------
+
+1. Copy BOTH DLLs into:
+
+       <your Grand Theft Auto V folder>\Plugins\LSPDFR\
+
+   Create the folder if it is not there. Plugins\LSPDFR - not Plugins, and not the game's lspdfr\
+   data folder. Only that folder is loaded by LSPDFR into its own AppDomain, which is what lets a
+   callout pack see the callout API at all.
+
+2. Start the game with RagePluginHook.exe, not the normal launcher.
+
+3. Load story mode, then GO ON DUTY: press E at a police station.
+
+   This is the step people miss. LSPDFR loads everything in Plugins\LSPDFR at that moment and not
+   before it - no chat box, no callouts, nothing, however long you wait in story mode.
+
+4. The box appears saying "TextDispatch loaded. Press T to chat." Press T.
+
+   TextCallouts registers its eight callouts at the same moment and tells you so on screen.
+
+
+WHAT THEY DO TOGETHER
+---------------------
+
+Installed side by side, they are one experience:
+
+  * the eight callouts arrive as radio traffic in the chat box, and you accept or decline by typing
+  * every line a callout says - the ambulance request, the pursuit call-in, the suspect description -
+    is mirrored into the chat box instead of a notification box
+  * /calls lists all eight alongside LSPDFR's own callouts and any other pack's, and /callout <name>
+    starts one on demand, which is the quickest way to see one
+  * people in the callouts answer in text when you talk to them
+
+None of that is a hard dependency. Each plugin works alone: TextDispatch runs with no callout pack,
+and TextCallouts runs with no text interface - the callout lines simply arrive as normal
+notifications instead. The link is made at runtime by reflection, so installing one without the other
+breaks nothing.
+
+
+CHECKING IT
+-----------
+
+Rage Plugin Hook's log (RagePluginHook.log, and dated copies in Logs\) shows what loaded. Look for
+"Creating plugin: TextDispatch.Main" and "Creating plugin: TextCallouts.Main" - they only appear
+after you go on duty.
+
+    Plugins\LSPDFR\textdispatch.log    what loaded, and what each plugin in the folder is missing
+    Plugins\LSPDFR\textcallouts.log    which callouts registered, what each one said, which native ran
+
+In the chat box:  /plugins  /calls  /help
+In the F4 console: tdstatus, tdplugins, tcstatus, tccallouts
+
+
+REQUIREMENTS
+------------
+
+Grand Theft Auto V (Legacy or Enhanced), RAGE Plugin Hook, LSPDFR 0.4.9 or newer, .NET Framework 4.8.
+
+Optional, for TextDispatch's conversation: a local model on your own machine - Ollama on
+localhost:11434, or LM Studio. TextDispatch works without one, on a built-in script.
+
+Nothing else is required. In particular TextCallouts needs no RAGENativeUI, no StopThePed, no
+Ultimate Backup, no CompuLite, no Callout Interface, no External PoliceComputer, no Common Data
+Framework - the complete list of assemblies it references is LSPD First Response, RagePluginHook and
+the .NET framework.
+
+
+LICENCE
+-------
+
+MIT - see LICENSE. It covers these two plugins only. RAGE Plugin Hook and LSPDFR are separate works
+under their own licences, are not included here or in any download, and are not covered by it.

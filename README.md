@@ -162,6 +162,28 @@ work as one thing while depending on nothing.
 Install the DLL into `Plugins\LSPDFR\` and go on duty, exactly like TextDispatch:
 [`src/TextCallouts/README.md`](src/TextCallouts/README.md).
 
+### Installing both at once
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\install-bundle.ps1
+```
+
+builds and installs both DLLs, and `tools\package-bundle.ps1 -Version 1.0.0` packages them into one
+zip with [`BUNDLE.txt`](BUNDLE.txt) — one download, one install, both plugins. They are deliberately
+two assemblies rather than one: each works without the other, and the link between them is reflection
+at runtime, so nothing breaks if only one is installed.
+
+What "working together" means, concretely — with both in `Plugins\LSPDFR`:
+
+- callouts arrive as radio traffic in the chat box, accepted or declined by typing;
+- every line a callout says is mirrored into the box instead of a notification popup;
+- `/calls` lists all eight alongside LSPDFR's own, and `/callout <name>` starts one on demand;
+- the people in those callouts answer in text when you talk to them.
+
+That contract is verified, not assumed: the release check reads both DLLs and confirms
+`TextDispatch.Plugin.Chat` is a public static property and the chat box it returns has a public
+`Notice(string)` — the two names the bridge looks up by reflection.
+
 ## Status
 
 Early. **1.0.4 is the first release that loads.** Earlier versions were built as RAGE Plugin Hook
