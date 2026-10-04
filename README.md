@@ -133,10 +133,13 @@ design, traffic stops, callouts, troubleshooting, and the console fallback.
 
 ## Status
 
-Early, and being shaken out against a real game. 1.0.2 is current: it fixes the install location (1.0.1
-sat in `Plugins\` and could not reach LSPDFR at all) and stops the chat box flickering. The plugin
-compiles clean against the RPH SDK, loads, and renders; the LSPDFR integration is new and is the part
-most likely to have rough edges. Issues and log excerpts are welcome.
+Early. **1.0.4 is the first release that loads.** Earlier versions were built as RAGE Plugin Hook
+plugins, and LSPDFR does not use RPH's plugin attribute — it looks for a class named `Main` deriving
+from `LSPD_First_Response.Mod.API.Plugin`, so it found the DLL and quietly declined it.
+
+1.0.4 is confirmed loading as an LSPDFR plugin, with LSPDFR's API reachable (138 methods found) and
+the chat box rendering once per frame rather than once per game tick. The integration is young and is
+the part most likely to have rough edges. Issues and log excerpts are welcome.
 
 ## Licence
 
