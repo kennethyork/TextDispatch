@@ -223,10 +223,20 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 assembly — and `/callout` starts any of them by name.
 
 **Traffic stops**
-`/stop` · `/endstop` · `/id` · `/frisk` · `/cuff` · `/record` · `/owner` · `/transport`
+`/stop` · `/endstop` · `/tow` · `/record` (or `/plate`) · `/owner`
 
-**On scene**
-`/backup [swat|air|state|ems|fire|transport|code2]` · `/zone`
+**The person**
+`/id` (or `/licence`) · `/frisk` (or `/search`) · `/cuff` · `/detain` · `/release` (or `/uncuff`) ·
+`/transport`
+
+**Services**
+`/ems` (or `/ambulance`, `/medic`) · `/fire` · `/backup [swat|air|state|ems|fire|transport|code2]` ·
+`/zone`
+
+> **`/tow` really takes the vehicle.** LSPDFR has no towing system and there is no tow plugin here to
+> borrow one from, so it does what a tow ends with: the car leaves the world and dispatch says the
+> recovery is arranged. A command that only printed text would be a service pretending to happen.
+> `/detain` uses LSPDFR's own stopped state, and `/release` takes the cuffs off and clears their tasks.
 
 **Pursuit**
 `/pursuit` · `/calledin` · `/endpursuit` · `/panic` · `/911 <details>`

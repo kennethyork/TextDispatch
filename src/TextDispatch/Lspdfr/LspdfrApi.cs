@@ -356,6 +356,27 @@ namespace TextDispatch.Lspdfr
         /// <summary>LSPDFR's own stopped state - the same one it applies to a detained pedestrian.</summary>
         public void StopPed(object ped) { Call("SetPedAsStopped", ped); }
 
+        /// <summary>
+        /// Take the cuffs off. LSPDFR's ForceClearPedArrestedState exists but has had more than one
+        /// shape, so both are tried rather than guessed at.
+        /// </summary>
+        public bool ReleasePed(object ped)
+        {
+            Probe();
+            if (!_available || ped == null) return false;
+
+            return TryCall("ForceClearPedArrestedState",
+                new object[] { ped },
+                new object[] { ped, true });
+        }
+
+        /// <summary>Call something whose shape has changed across LSPDFR builds.</summary>
+        public bool TryCall(string name, params object[][] shapes)
+        {
+            object result;
+            return TryInvokeValue(name, shapes, out result);
+        }
+
         public void RequestTransport(object ped) { Call("RequestSuspectTransport", ped); }
 
         public string PersonaForPed(object ped) { return AsString(Call("GetPersonaForPed", ped)); }
@@ -616,6 +637,12 @@ namespace TextDispatch.Lspdfr
         }
 
         public void EndPullover() { Call("ForceEndCurrentPullover"); }
+
+        /// <summary>The car in front of you, for services that act on it rather than on you.</summary>
+        public Vehicle NearestOtherVehicle(float radius)
+        {
+            return NearestVehicle(radius);
+        }
 
         public Vehicle NearestVehicle(float radius)
         {

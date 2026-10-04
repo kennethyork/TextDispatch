@@ -120,14 +120,29 @@ namespace TextDispatch.Commands
 
                 // ---------------------------------------------------- on scene
                 case "backup": Backup(argument); return;
+                case "ems":
+                case "ambulance":
+                case "medic": Backup("ems"); return;
+                case "fire":
+                case "firedept":
+                case "lsfd": Backup("fire"); return;
                 case "stop":
                 case "pullover": TrafficStop(); return;
                 case "endstop": EndStop(); return;
+                case "tow":
+                case "impound": Impound(); return;
                 case "transport": Transport(); return;
+                case "detain": Detain(); return;
+                case "release":
+                case "uncuff": Release(); return;
                 case "cuff": Cuff(); return;
-                case "frisk": Frisk(); return;
-                case "id": ShowId(); return;
-                case "record": ShowRecord(); return;
+                case "frisk":
+                case "search": Frisk(); return;
+                case "id":
+                case "licence":
+                case "license": ShowId(); return;
+                case "record":
+                case "plate": ShowRecord(); return;
                 case "owner": ShowOwner(); return;
                 case "zone": ShowZone(); return;
                 case "pursuit": StartPursuit(); return;
@@ -370,6 +385,80 @@ namespace TextDispatch.Commands
             _chat.Notice("Stop released. Dispatch will confirm when it sees you clear.");
         }
 
+        /// <summary>
+        /// Have the vehicle taken away.
+        ///
+        /// LSPDFR has no towing system of its own, and there is no tow plugin here to borrow one from,
+        /// so this does what a tow ends with: the vehicle leaves the world. Text alone would be a
+        /// service that only pretended to happen.
+        /// </summary>
+        private void Impound()
+        {
+            var player = Game.LocalPlayer.Character;
+
+            // The one you stopped, or the nearest that is not yours - never your own car.
+            var vehicle = _api.PulloverVehicle();
+            if (vehicle == null) vehicle = _api.NearestVehicle(20f);
+
+            if (vehicle == null) { _chat.Error("No vehicle close enough to tow."); return; }
+
+            if (player != null && ReferenceEquals(vehicle, player.CurrentVehicle))
+            {
+                _chat.Error("That is your own vehicle.");
+                return;
+            }
+
+            var plate = "the vehicle";
+            string model = null;
+            try { if (!string.IsNullOrEmpty(vehicle.LicensePlate)) plate = vehicle.LicensePlate; }
+            catch { }
+            try { model = vehicle.Model.Name; }
+            catch { }
+
+            try { vehicle.Delete(); }
+            catch (Exception ex)
+            {
+                Log.Error("tow", ex);
+                _chat.Error("The tow could not be arranged.");
+                return;
+            }
+
+            Log.Line("tow: removed " + plate + " (" + (model ?? "unknown model") + ")");
+
+            _chat.Radio("You: " + _dispatch.Unit + ", I need a tow for " + plate + ".");
+            _dispatch.Report(DispatcherIntent.Tow,
+                "requesting a tow for " + plate + (string.IsNullOrEmpty(model) ? "" : " (" + model + ")"));
+        }
+
+        /// <summary>Stop them where they are - the state LSPDFR itself uses for somebody detained.</summary>
+        private void Detain()
+        {
+            var ped = Subject(8f);
+            if (ped == null) { _chat.Error("Nobody close enough to detain."); return; }
+
+            _api.StopPed(ped);
+            _chat.Me("You", "stop them and hold them there.");
+            _dispatch.Report(DispatcherIntent.Report, "one detained and held here");
+        }
+
+        /// <summary>Take the cuffs off and let them go.</summary>
+        private void Release()
+        {
+            var ped = Subject(6f);
+            if (ped == null) { _chat.Error("Nobody close enough to release."); return; }
+
+            bool cleared = _api.ReleasePed(ped);
+
+            // Whether or not LSPDFR gives up the arrested state, the cuffed task has to come off.
+            string detail;
+            PedActions.Perform(_api, ped, ComplyAction.StandDown, out detail);
+
+            if (!cleared) Log.Line("release: LSPDFR did not clear the arrested state; cleared their tasks instead");
+
+            _chat.Me("You", "take the cuffs off.");
+            _dispatch.Report(DispatcherIntent.Report, "releasing them - they are free to go");
+        }
+
         private void Transport()
         {
             var ped = Subject(12f);
@@ -591,9 +680,10 @@ namespace TextDispatch.Commands
             _chat.Notice("  Radio:    /r <text>  or just type a status code below");
             _chat.Notice("  Status:   10-8  10-7  10-97  10-98  10-6  code 3  code 4");
             _chat.Notice("  Calls:    /accept  /decline  /calls [filter]  /callout <name>  /endcall  /available on|off");
-            _chat.Notice("  Stops:    /stop  /endstop   (or pull over with LSPDFR and it is picked up)");
-            _chat.Notice("            /id  /frisk  /cuff  /record  /owner all target the driver you stopped");
-            _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /transport  /cuff  /zone");
+            _chat.Notice("  Stops:    /stop  /endstop  /tow   (or pull over with LSPDFR and it is picked up)");
+            _chat.Notice("            /id  /frisk  /cuff  /detain  /release  /record  /owner  /transport");
+            _chat.Notice("            (all of those act on the driver you stopped)");
+            _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");
             _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /clear");
             _chat.Notice("  Open the box with T, or / to start typing a command.");

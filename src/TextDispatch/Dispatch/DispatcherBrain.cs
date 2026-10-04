@@ -12,6 +12,7 @@ namespace TextDispatch.Dispatch
         Ems,
         Fire,
         Transport,
+        Tow,
         Report,
         Question,
         Instruction,
@@ -117,6 +118,9 @@ namespace TextDispatch.Dispatch
             if (Has(t, "transport", "prisoner", "paddy wagon", "pick him up", "pick them up", "haul him", "haul them"))
                 return DispatcherIntent.Transport;
 
+            if (Has(t, "tow", "impound", "recover the vehicle", "recovery", "flatbed"))
+                return DispatcherIntent.Tow;
+
             if (Has(t, "backup", "10-13", "assistance", "assist", "send a unit", "send units", "more units",
                         "additional units", "another unit", "cover me", "officer needs",
                         // A reported violent incident is a request for units, whether or not it is
@@ -154,6 +158,15 @@ namespace TextDispatch.Dispatch
         {
             return intent == DispatcherIntent.Backup || intent == DispatcherIntent.Ems ||
                    intent == DispatcherIntent.Fire || intent == DispatcherIntent.Transport;
+        }
+
+        /// <summary>
+        /// Dispatch is allowed to say a tow is coming only when one was actually arranged - the same
+        /// rule as backup.
+        /// </summary>
+        public static bool UnitsPromised(DispatcherIntent intent)
+        {
+            return NeedsAction(intent) || intent == DispatcherIntent.Tow;
         }
 
         /// <summary>
@@ -199,6 +212,12 @@ namespace TextDispatch.Dispatch
                     return Pick(rng,
                         "Copy " + unit + ", transport unit en route.",
                         "10-4 " + unit + ", prisoner transport on the way.");
+
+                case DispatcherIntent.Tow:
+                    return Pick(rng,
+                        "Copy " + unit + ", tow is on it. Vehicle is off your hands.",
+                        "10-4 " + unit + ", arranging recovery for that vehicle.",
+                        "Copy " + unit + ", it's on the impound list. Carry on.");
 
                 case DispatcherIntent.Report:
                     if (ctx.CalloutRunning && !string.IsNullOrEmpty(ctx.CalloutName))

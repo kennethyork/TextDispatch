@@ -232,7 +232,9 @@ namespace TextDispatch.Lspdfr
         {
             var context = BuildContext();
             var scripted = DispatcherBrain.Scripted(intent, context, playerLine);
-            var allowIncoming = DispatcherBrain.NeedsAction(intent);
+            // Tow counts here as well: dispatch may say a recovery is arranged because the vehicle has
+            // actually been taken, which is the same rule backup follows.
+            var allowIncoming = DispatcherBrain.UnitsPromised(intent);
 
             // The prompt is built synchronously from what really happened; the flag is then cleared
             // so it cannot leak into the next transmission.
