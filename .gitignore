@@ -8,18 +8,3 @@ tools/rph-sdk/
 
 # Local runtime logs
 *.log
-
-# ---------------------------------------------------------------------------
-# The OpenDuty career framework that already lived in this workspace before
-# TextDispatch was written. It is a separate project and is deliberately not
-# part of this repository. Delete these lines to publish it alongside.
-# (Its README was renamed to README.openduty.md so this repository could have
-# its own README.md at the root.)
-/ARCHITECTURE.md
-/README.openduty.md
-/OpenDuty.sln
-/content/
-/src/OpenDuty.Core/
-/src/OpenDuty.Headless/
-/src/OpenDuty.Adapter.Rph/
-/tools/install.ps1
