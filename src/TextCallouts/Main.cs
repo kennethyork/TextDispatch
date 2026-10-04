@@ -59,8 +59,15 @@ namespace TextCallouts
         private static void OnDutyStateChanged(bool onDuty)
         {
             if (!onDuty) return;
-            if (_registered) return;
 
+            // Every duty transition, not just the first one.
+            //
+            // LSPDFR rebuilds its callout registry each time the player goes on duty - which is why
+            // every other pack registers its callouts here on every transition, and why a pack that
+            // registers only once looks perfectly fine until the player goes off duty and back on, and
+            // then has no callouts at all. That is exactly what happened: the pack registered eight
+            // callouts at 18:28:59, the player went off duty at 18:29:07, and on the next duty every
+            // pack re-registered while this one stayed silent.
             var registered = 0;
             foreach (var type in CalloutTypes)
             {
@@ -86,7 +93,7 @@ namespace TextCallouts
             }
 
             _registered = true;
-            Log.Line("registered " + registered + " of " + CalloutTypes.Length + " built-in callouts" +
+            Log.Line("registered for this duty: " + registered + " of " + CalloutTypes.Length + " built-in callouts" +
                      (custom > 0 ? ", plus " + custom + " of your own" : "") +
                      (Custom.CustomCallouts.Problems > 0
                          ? "; " + Custom.CustomCallouts.Problems + " custom file(s) were skipped - see above"
@@ -106,8 +113,9 @@ namespace TextCallouts
             [ConsoleCommand("tcstatus", Description = "TextCallouts: what is registered, your own callouts, and where the log is.")]
             public static void Status()
             {
-                Game.Console.Print("[TextCallouts] " + CalloutTypes.Length + " callouts in the pack" +
-                                   (_registered ? ", registered." : ", NOT registered yet - go on duty."));
+                Game.Console.Print("[TextCallouts] " + CalloutTypes.Length + " callouts in the pack, re-registered on");
+                Game.Console.Print("[TextCallouts]   every duty transition" +
+                                   (_registered ? " (last one done)." : " - not registered yet, so go on duty."));
 
                 var custom = Custom.CustomCallouts.Count;
                 Game.Console.Print("[TextCallouts] " + custom + " custom callout(s) from your own files" +

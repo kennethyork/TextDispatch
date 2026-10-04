@@ -189,6 +189,11 @@ Two references are needed and neither is committed to this repository:
 
 ## Status
 
+**1.2.1 registers the callouts on every duty, not just the first.** LSPDFR rebuilds its callout
+registry each time the player goes on duty; this pack registered once, so after an off-duty and back-on
+cycle it had no callouts at all while every other pack re-registered. Fixed, and the log now says
+`registered for this duty` every time so it is visible rather than assumed.
+
 **1.2.0 adds five callouts** - Barricaded Suspect, Stolen Vehicle (Driver On Foot), Public Disturbance,
 Bicycle Theft and Weapons Call (Brandishing) - which brings the pack to thirteen. Three of them have two
 endings rather than one, decided by how the player plays them rather than by a dice roll that ignores it:
