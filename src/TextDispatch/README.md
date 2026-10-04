@@ -234,19 +234,20 @@ While the box is open the game's controls are frozen, so typing `10-97` does not
    ```powershell
    dotnet build src\TextDispatch\TextDispatch.csproj -c Debug
    ```
-2. Copy `src\TextDispatch\bin\Debug\TextDispatch.dll` into your GTA V `Plugins\` folder.
-3. **Add it to `startup.rphs`** in your GTA V folder:
-   ```
-   LoadPlugin "TextDispatch.dll"
-   ```
-   That file is how RPH is told what to load. On any install where LSPDFR has written its own entry
-   there, RPH loads what that file names - and if TextDispatch is not in it, the plugin sits in the
-   folder and is never loaded, with **no mention of it anywhere in RPH's log**. Add the line below
-   the existing `LoadPlugin "LSPD First Response.dll"`.
-4. Launch **RagePluginHook.exe** (not the normal launcher) and load into story mode.
+2. Copy `src\TextDispatch\bin\Debug\TextDispatch.dll` into your GTA V **`Plugins\LSPDFR\`** folder
+   (create it if it is not there).
+3. Launch **RagePluginHook.exe** (not the normal launcher) and load into story mode.
 
-Or run `tools\install-textdispatch.ps1`, which builds it, copies the DLL and adds the `startup.rphs`
-entry for you. On first run the plugin writes `Plugins\TextDispatch.ini` next to itself.
+> **It must be `Plugins\LSPDFR`, not `Plugins`.** RAGE Plugin Hook gives every plugin it loads its
+> own AppDomain, and a plugin in RPH's AppDomain cannot see LSPDFR's types at all. It runs, it draws,
+> and every call into LSPDFR fails silently - no callouts, no dispatch, no ped state. Plugins in
+> `Plugins\LSPDFR` are loaded by LSPDFR itself, into LSPDFR's AppDomain, which is what makes the
+> whole API reachable. The log says which happened on its first line: `detected, LSPDFR 0.4.9` or
+> `not installed`.
+
+Or run `tools\install-textdispatch.ps1`, which builds it, installs to the right folder, and cleans up
+a copy in `Plugins\` if an earlier version put one there. On first run the plugin writes
+`Plugins\TextDispatch.ini` next to itself.
 
 > **Building needs the RPH SDK.** `tools\rph-sdk\RagePluginHook.dll` must exist. It ships inside the
 > official RAGE Plugin Hook download as `SDK\RagePluginHook.dll` — copy it there. The build refuses
@@ -277,7 +278,8 @@ model answered or timed out, and any call that could not be matched to a signatu
 | Symptom | Look at |
 |---|---|
 | Nothing on screen at all | Is `TextDispatch.dll` in `Plugins\`? RPH log, then ours. |
-| **RPH's log never mentions TextDispatch at all** | It is missing from `startup.rphs`. That file is the load list - add `LoadPlugin "TextDispatch.dll"`. |
+| **RPH's log never mentions TextDispatch at all** | If it is in `Plugins\`, move it to `Plugins\LSPDFR\` - RPH is not going to load it into the right AppDomain anyway. |
+| Log says `starting; not installed` | LSPDFR is installed but invisible: the DLL is in `Plugins\` instead of `Plugins\LSPDFR\`. |
 | Box draws but T does nothing | `AlwaysReceiveKeyEvents` needs the game in borderless/windowed. |
 | No callouts in `/calls` | LSPDFR not loaded, or it loads after us — `ReloadAllPlugins` in F4. |
 | Nobody answers you | `/who` — is anyone within range? Then check the log for the mode. |

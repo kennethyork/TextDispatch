@@ -1,4 +1,4 @@
-# Builds TextDispatch and installs it into the game's Plugins folder.
+# Builds TextDispatch and installs it where LSPDFR will load it.
 #
 #   powershell -ExecutionPolicy Bypass -File tools\install-textdispatch.ps1
 #
@@ -34,41 +34,51 @@ if ($LASTEXITCODE -ne 0) { throw "Build failed." }
 $source = Join-Path $repo "src\TextDispatch\bin\$Configuration\TextDispatch.dll"
 if (-not (Test-Path $source)) { throw "Build produced no DLL at $source" }
 
-$plugins = Join-Path $GtaFolder 'Plugins'
-if (-not (Test-Path $plugins)) {
-    Write-Host "Creating $plugins" -ForegroundColor Yellow
-    New-Item -ItemType Directory -Path $plugins | Out-Null
+# ---------------------------------------------------------------------------------------------
+# Plugins\LSPDFR, NOT Plugins\.
+#
+# LSPDFR loads the DLLs in Plugins\LSPDFR into its own AppDomain, which is what lets a plugin
+# see LSPDFR's types and call the API. RPH gives every plugin it loads its own AppDomain, so a
+# copy in Plugins\ runs perfectly and then cannot see LSPDFR at all - no callouts, no dispatch,
+# no ped state. It looks like the plugin works and silently does nothing.
+# ---------------------------------------------------------------------------------------------
+$target = Join-Path $GtaFolder 'Plugins\LSPDFR'
+if (-not (Test-Path $target)) {
+    Write-Host "Creating $target" -ForegroundColor Yellow
+    New-Item -ItemType Directory -Path $target -Force | Out-Null
 }
 
-Copy-Item $source (Join-Path $plugins 'TextDispatch.dll') -Force
-Write-Host "Installed TextDispatch.dll -> $plugins" -ForegroundColor Green
+Copy-Item $source (Join-Path $target 'TextDispatch.dll') -Force
+Write-Host "Installed TextDispatch.dll -> $target" -ForegroundColor Green
 
 # ---------------------------------------------------------------------------------------------
-# RPH loads the plugins named in startup.rphs. On an LSPDFR install that file already exists with
-# an entry for LSPDFR, and RPH loads what it names - a DLL merely sitting in Plugins\ is never
-# loaded, and RPH's log does not mention it at all, which makes it look like the plugin is broken.
-# So the entry is written here too.
+# Undo the earlier, wrong install: a copy in Plugins\ and its startup.rphs entry.
+# Left in place, RPH loads that copy into the wrong AppDomain and it does nothing useful.
 # ---------------------------------------------------------------------------------------------
+$stale = Join-Path $GtaFolder 'Plugins\TextDispatch.dll'
+if (Test-Path $stale) {
+    try {
+        Remove-Item $stale -Force
+        Write-Host "Removed the old copy in Plugins\ (RPH loaded that one into the wrong AppDomain)" -ForegroundColor Yellow
+    } catch {
+        Write-Host "Could not remove $stale - close the game first, then delete it by hand." -ForegroundColor Red
+    }
+}
+
 $startup = Join-Path $GtaFolder 'startup.rphs'
-$entry = 'LoadPlugin "TextDispatch.dll"'
+if (Test-Path $startup) {
+    $before = @(Get-Content $startup)
+    $after  = @($before | Where-Object { $_ -notmatch 'TextDispatch' })
 
-$lines = @()
-if (Test-Path $startup) { $lines = @(Get-Content $startup) }
-
-if ($lines | Where-Object { $_ -match [regex]::Escape($entry) }) {
-    Write-Host "startup.rphs already loads TextDispatch." -ForegroundColor DarkGray
-} else {
-    if (Test-Path $startup) { Copy-Item $startup "$startup.bak" -Force }
-
-    $updated = [System.Collections.Generic.List[string]]::new()
-    $lines | ForEach-Object { $updated.Add($_) }
-    $updated.Add($entry)
-    [System.IO.File]::WriteAllLines($startup, $updated, (New-Object System.Text.UTF8Encoding($false)))
-
-    Write-Host "Added the plugin to startup.rphs" -ForegroundColor Green
-    if (Test-Path "$startup.bak") { Write-Host "  (previous version saved as startup.rphs.bak)" -ForegroundColor DarkGray }
+    if ($after.Count -ne $before.Count) {
+        [System.IO.File]::WriteAllLines($startup, $after, (New-Object System.Text.UTF8Encoding($false)))
+        Write-Host "Removed the TextDispatch line from startup.rphs - LSPDFR loads it now." -ForegroundColor Green
+    }
 }
 
 Write-Host ""
 Write-Host "Launch RagePluginHook.exe, load story mode, then press T in game." -ForegroundColor Cyan
 Write-Host "Log: $env:APPDATA\TextDispatch\textdispatch.log"
+Write-Host ""
+Write-Host "The log's first lines should say 'detected, LSPDFR 0.4.9'. If they say 'not installed'," -ForegroundColor DarkGray
+Write-Host "this plugin is being loaded by RPH instead of LSPDFR and is in the wrong folder." -ForegroundColor DarkGray

@@ -74,7 +74,12 @@ namespace TextDispatch
                 if (!_input.SetOpenKey(_settings.OpenKey))
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with T");
 
-                Game.FrameRender += OnFrameRender;
+                // RawFrameRender, not FrameRender. FrameRender is called per *game tick* - about 23
+                // times a second - and its draw calls are queued for the frame renderer, which makes
+                // a HUD flicker against a 60fps frame rate. RawFrameRender is called once per frame,
+                // which is what a chat box needs. It does not allow native calls; this only uses
+                // managed drawing, so that costs nothing.
+                Game.RawFrameRender += OnFrameRender;
                 Game.AddConsoleCommands(new Type[] { typeof(ConsoleCommands) });
 
                 Log.Line("starting; " + _api.Describe() + "; npc speech mode=" + _settings.AiMode);
@@ -110,7 +115,7 @@ namespace TextDispatch
                         if (!_renderReported && Environment.TickCount - _startedAt > 5000)
                         {
                             _renderReported = true;
-                            Log.Line("render check: the FrameRender callback has fired " + _renderCalls +
+                            Log.Line("render check: the render callback has fired " + _renderCalls +
                                      " time(s) in 5s" +
                                      (_renderCalls == 0
                                         ? "  -- THE CHAT BOX IS NOT BEING DRAWN. The plugin loaded, so this is the render path, not the load."

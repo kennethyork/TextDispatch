@@ -60,7 +60,9 @@ namespace TextDispatch.Lspdfr
 
             try
             {
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                var loaded = AppDomain.CurrentDomain.GetAssemblies();
+
+                foreach (var assembly in loaded)
                 {
                     string name;
                     try { name = assembly.GetName().Name; }
@@ -77,6 +79,17 @@ namespace TextDispatch.Lspdfr
                     _available = true;
                     return;
                 }
+
+                // Not found. Say why, because the usual cause is not a missing LSPDFR - it is this
+                // plugin being loaded by the wrong host. RPH gives every plugin its own AppDomain,
+                // so a plugin loaded by RPH cannot see LSPDFR's types at all; only a plugin loaded
+                // by LSPDFR (from Plugins\LSPDFR\) shares its AppDomain and can call the API.
+                var names = new System.Collections.Generic.List<string>();
+                foreach (var candidate in loaded) names.Add(candidate.GetName().Name);
+                Log.Line("lspdfr: not visible from AppDomain '" + AppDomain.CurrentDomain.FriendlyName +
+                         "' which holds " + loaded.Length + " assemblies (" + string.Join(", ", names.ToArray()) + ")");
+                Log.Line("lspdfr: if LSPDFR is installed, this plugin is in the wrong folder - it must be " +
+                         "loaded by LSPDFR from Plugins\\LSPDFR, not by RPH from Plugins");
             }
             catch (Exception ex) { Log.Error("lspdfr probe", ex); }
         }
