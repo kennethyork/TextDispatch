@@ -205,6 +205,37 @@ namespace TextDispatch.Commands
                 case "panic": Panic(); return;
                 case "911": Call911(argument); return;
 
+                // ---------------------------------------------------- features other plugins own
+                case "k9":
+                case "dog": BridgeAction("k9"); return;
+                case "spikes":
+                case "spikestrips":
+                case "stingers": BridgeAction("spikes"); return;
+                case "roadblock":
+                case "block": BridgeAction("roadblock"); return;
+                case "pit": BridgeAction("pit"); return;
+                case "felony":
+                case "felonystop": BridgeAction("felony"); return;
+                case "coroner": BridgeAction("coroner"); return;
+                case "animal":
+                case "animalcontrol": BridgeAction("animal"); return;
+                case "group": BridgeAction("group"); return;
+                case "dismiss":
+                case "standdown": BridgeAction("dismiss"); return;
+                case "platecheck":
+                case "runplate": BridgeAction("platecheck"); return;
+                case "pedcheck":
+                case "runped": BridgeAction("pedcheck"); return;
+                case "insurance": BridgeCheck("insurance"); return;
+                case "reg":
+                case "registration": BridgeCheck("registration"); return;
+                case "breath":
+                case "breathalyzer":
+                case "dui": BridgeCheck("breath"); return;
+                case "drugs": BridgeCheck("drugs"); return;
+                case "bridges":
+                case "frameworks": ShowBridges(); return;
+
                 // ---------------------------------------------------- the install
                 case "plugins":
                 case "plugin": ShowPlugins(); return;
@@ -348,6 +379,24 @@ namespace TextDispatch.Commands
         private void Backup(string argument)
         {
             var kind = argument.ToLowerInvariant();
+
+            // Other plugins own units LSPDFR has never had - a K9, spike strips, a road block, air
+            // support - so if one is installed it answers, and LSPDFR stays the fallback rather than
+            // the only option. Which one answered is said out loud, because the player asked for a
+            // unit rather than for a mod.
+            if (kind.Length > 0 && Plugin.Bridge != null)
+            {
+                Plugin.Bridge.Ensure();
+
+                var answered = Plugin.Bridge.Backup(kind);
+                if (answered != null)
+                {
+                    _chat.Notice(answered + " is sending " + Spoken(kind) + ".");
+                    Log.Line("bridge: backup " + kind + " -> " + answered);
+                    return;
+                }
+            }
+
             string response, unit, spoken;
 
             switch (kind)
@@ -1089,6 +1138,135 @@ namespace TextDispatch.Commands
             _chat.Notice("The box now opens with " + description + ", and that is saved to the ini.");
         }
 
+        /// <summary>How a backup kind reads back to the player.</summary>
+        private static string Spoken(string kind)
+        {
+            switch (kind)
+            {
+                case "k9": case "dog": case "statek9": return "a K9 unit";
+                case "spikes": case "spikestrips": return "spike strips";
+                case "roadblock": case "block": return "a road block";
+                case "felony": return "a felony stop";
+                case "group": return "a group of units";
+                case "female": return "a female unit";
+                case "pursuit": return "pursuit backup";
+                case "traffic": case "stop": return "a traffic stop unit";
+                case "coroner": return "the coroner";
+                case "animal": return "animal control";
+                case "air": case "helicopter": return "air support";
+                case "nooseair": return "NOOSE air support";
+                case "swat": case "noose": case "localswat": return "SWAT";
+                case "state": return "a state unit";
+                case "ems": case "ambulance": case "medic": return "an ambulance";
+                case "fire": case "firetruck": return "the fire department";
+                case "tow": return "a tow truck";
+                case "transport": return "a transport unit";
+                default: return "backup";
+            }
+        }
+
+        /// <summary>
+        /// Something only another plugin can do. Which one answers is reported, because the player
+        /// asked for a thing - a K9, spike strips - rather than for a particular mod.
+        /// </summary>
+        private void BridgeAction(string what)
+        {
+            var bridge = Plugin.Bridge;
+            if (bridge == null) { _chat.Error("No framework bridge is running."); return; }
+
+            bridge.Ensure();
+
+            string who, said;
+            switch (what)
+            {
+                case "k9": who = bridge.Backup("k9"); said = "a K9 unit"; break;
+                case "spikes": who = bridge.Backup("spikes"); said = "spike strips ahead"; break;
+                case "roadblock": who = bridge.Backup("roadblock"); said = "a road block"; break;
+                case "group": who = bridge.Backup("group"); said = "a group of units"; break;
+                case "coroner": who = bridge.Backup("coroner"); said = "the coroner"; break;
+                case "animal": who = bridge.Backup("animal"); said = "animal control"; break;
+                case "pit": who = bridge.Pit(); said = "a PIT"; break;
+                case "felony": who = bridge.FelonyStop(); said = "a felony stop"; break;
+                case "dismiss": who = bridge.DismissAll(); said = "standing all units down"; break;
+                case "platecheck": who = bridge.RadioPlateCheck(); said = "a plate check on the radio"; break;
+                case "pedcheck": who = bridge.RadioPedCheck(); said = "a ped check on the radio"; break;
+                default: who = null; said = what; break;
+            }
+
+            if (who == null)
+            {
+                _chat.Error("Nothing installed can do that. /bridges says what can.");
+                Log.Line("bridge: '" + what + "' could not be done - " + bridge.Describe());
+                return;
+            }
+
+            _chat.Notice(who + " is handling " + said + ".");
+            Log.Line("bridge: " + what + " -> " + who);
+        }
+
+        /// <summary>
+        /// The checks the other plugins own: insurance and registration out of StopThePed's records,
+        /// and whether somebody has been drinking or using. Answered as text, from their data rather
+        /// than from anything invented here.
+        /// </summary>
+        private void BridgeCheck(string what)
+        {
+            var bridge = Plugin.Bridge;
+            if (bridge == null) { _chat.Error("No framework bridge is running."); return; }
+
+            bridge.Ensure();
+
+            if (what == "breath" || what == "drugs")
+            {
+                var ped = Subject(6f);
+                if (ped == null) { _chat.Error("Nobody close enough to test."); return; }
+
+                var answer = what == "breath" ? bridge.Alcohol(ped) : bridge.Drugs(ped);
+                if (answer == null) { _chat.Error("StopThePed is not running - that check is its own."); return; }
+
+                _chat.Notice((what == "breath" ? "Breath check: " : "Drug check: ") + answer + ".");
+                Log.Line("bridge: " + what + " -> " + answer);
+                return;
+            }
+
+            var vehicle = _api.PulloverVehicle();
+            if (vehicle == null) vehicle = _api.NearestVehicle(12f);
+            if (vehicle == null) { _chat.Error("No vehicle close enough - pull one over, or stand beside one."); return; }
+
+            var status = bridge.VehicleStatus(vehicle, what == "insurance");
+            if (status == null) { _chat.Error("StopThePed is not running - that check is its own."); return; }
+
+            string plate = null;
+            try { plate = vehicle.LicensePlate; } catch { }
+
+            _chat.Notice((what == "insurance" ? "Insurance" : "Registration") + " on " +
+                         (string.IsNullOrEmpty(plate) ? "that vehicle" : plate) + ": " + status + ".");
+            Log.Line("bridge: " + what + " -> " + status);
+        }
+
+        /// <summary>Which other plugins are here, and what each one adds.</summary>
+        private void ShowBridges()
+        {
+            var bridge = Plugin.Bridge;
+            if (bridge == null) { _chat.Error("No framework bridge is running."); return; }
+
+            bridge.Ensure();
+
+            _chat.Notice("Other plugins this can drive, and what each one adds:");
+            _chat.Notice("  StopThePed          " + (bridge.HasStopThePed
+                ? "yes - PIT, coroner, animal control, radio checks, insurance and registration"
+                : "no"));
+            _chat.Notice("  Ultimate Backup     " + (bridge.HasUltimateBackup
+                ? "yes - K9, spike strips, road blocks, panic, units by type"
+                : "no"));
+            _chat.Notice("  Policing Redefined  " + (bridge.HasPolicingRedefined
+                ? "yes - units by type, air support, felony stops, group backup"
+                : "no"));
+            _chat.Notice("  A missing one costs only its own commands. /k9 /spikes /pit /insurance /breath ...");
+
+            Log.Line("bridges: " + bridge.Describe());
+        }
+
         private void Help()
         {
             _chat.Notice("TextDispatch - LSPDFR through a chat box.");
@@ -1110,6 +1288,9 @@ namespace TextDispatch.Commands
             _chat.Notice("  Install:  /plugins  what LSPDFR actually loaded, and what it did not");
             _chat.Notice("  Open the box with " + Plugin.OpenKeyDescription + ", or / to start a command.");
             _chat.Notice("  Chatter:  /chatter quiet|brief|full  - how much of dispatch's traffic you see.");
+            _chat.Notice("  Frameworks: /bridges shows what the other plugins can do, and which are running");
+            _chat.Notice("            /k9  /spikes  /roadblock  /pit  /felony  /coroner  /animal  /dismiss");
+            _chat.Notice("            /insurance  /reg  /breath  /drugs  /platecheck  /pedcheck");
         }
     }
 }

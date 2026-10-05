@@ -1,5 +1,6 @@
 using System;
 using Rage;
+using TextDispatch.Bridges;
 using TextDispatch.Chat;
 using TextDispatch.Commands;
 using TextDispatch.Dialogue;
@@ -26,6 +27,7 @@ namespace TextDispatch
         private static DialogueService _dialogue;
         private static Settings _settings;
         private static RecordsLedger _records;
+        private static FrameworkBridge _bridge;
         private static CommandRouter _router;
         private static PluginInventory _inventory;
         private static bool _rendering;
@@ -54,6 +56,9 @@ namespace TextDispatch
         internal static DispatchService Dispatch { get { return _dispatch; } }
         internal static Settings Settings { get { return _settings; } }
         internal static PluginInventory Inventory { get { return _inventory; } }
+
+        /// <summary>What other plugins can do - K9 units, spike strips, the checks they own.</summary>
+        internal static FrameworkBridge Bridge { get { return _bridge; } }
 
         /// <summary>What the box opens with, for saying it back: 'F6', or 'T or F6'.</summary>
         internal static string OpenKeyDescription
@@ -106,6 +111,12 @@ namespace TextDispatch
 
                 _chat = new ChatBox();
                 _api = new LspdfrApi();
+
+                // The other frameworks are found by reflection, the same way LSPDFR is, so nothing is
+                // referenced at build time and a missing one costs nothing but the commands it owned.
+                // Ultimate Backup sorts after us in the folder, so discovery is repeated on demand.
+                _bridge = new FrameworkBridge();
+                _bridge.Discover();
                 // Fixed seed: the same town every session, so somebody the terminal flags as wanted is
                 // still that person tomorrow. The alternative - a fresh population each launch - makes
                 // the records meaningless.
@@ -244,6 +255,10 @@ namespace TextDispatch
         {
             _inventory = PluginInventory.Scan(_api);
             _inventory.WriteToLog();
+
+            // By now every plugin in the folder has been constructed, so this is the first moment the
+            // framework bridge can be sure it found all of them.
+            if (_bridge != null) _bridge.Ensure();
 
             // The headline, and only the warnings that mean something is wrong.
             //
