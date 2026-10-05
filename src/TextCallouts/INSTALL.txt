@@ -42,7 +42,7 @@ work matches the agency you went on duty as:
 | **EMS** (lsfd) |  patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
 | **Fire** (lsfd_fire) |  fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
 
-Three hundred and twenty-two of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
+Three hundred and twenty-six of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
 player's own callouts use, so you can read them, copy them and edit them. The other eighteen are written
 in C# because their behaviour is particular (the medical ones, and the police ones that need a scene the
 recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`

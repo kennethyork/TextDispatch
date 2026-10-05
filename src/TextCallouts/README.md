@@ -45,6 +45,44 @@ Each one is built around LSPDFR's own systems wherever possible: pursuits are LS
 ambulance and backup come from LSPDFR's backup system, arrest detection is LSPDFR's, and the callout
 blip and acceptance flow are LSPDFR's. The pack supplies the situation, not a parallel universe.
 
+### Talking to the scene, and scenes that move on by themselves
+
+Two things a recipe gained in 1.8.0, and they are the two things a scene usually cannot have.
+
+**People who answer.** A recipe can carry the lines its suspect or patient will say when they are
+spoken to, and TextDispatch asks for those before it asks anything else - before its own script and
+before the language model. So a stranger in a standoff answers in character, instantly, with no model
+running at all:
+
+    /talk                       who is nearest
+    type anything               they answer from the callout's own lines, in order
+
+The lines are handed out in order and the last one repeats, because somebody who has said their piece
+three times is still better company than somebody who has gone mute. With TextDispatch absent the lines
+are simply never asked for, and everything else works exactly as before.
+
+**Scenes that move.** A recipe can also say what happens after you have been there a while: backup
+arriving twenty seconds in, a suspect's nerve breaking at fifty, the fire starting once they have had a
+chance to talk. Written as stages, in the same file:
+
+```xml
+<Stages>
+    <Stage At="20" Do="backup">Second unit is on the street behind you.</Stage>
+    <Stage At="50" Do="handsup">He has his hands on his head.</Stage>
+    <Stage At="80" Do="end">He is in the car. Call finished.</Stage>
+</Stages>
+```
+
+Only the actions the engine already knows are allowed - `flee`, `fleeinvehicle`, `hostile`, `handsup`,
+`cower`, `backup`, `ambulance`, `fire`, `line`, `end` - so a stage cannot invent behaviour that does not
+exist, and nothing is timed until you are actually at the scene.
+
+Four callouts use both to start with: a **standoff**, a **bank siege**, a **gang fight**, and a **patient
+who can talk to you before you treat them**. They are the model for the ones that will follow.
+
+The bridge between the two plugins is checked by `tools\verify-bridge.ps1`, which reads both assemblies'
+metadata and confirms the names they look each other up by still match - the compiler cannot see across
+that boundary, and a rename there would be silent in game.
 ### The library, and which duty gets what
 
 Three hundred and forty callouts, and each one says which duty it belongs to in its `<For>` element, so the
@@ -60,7 +98,7 @@ work matches the agency you went on duty as:
 | **EMS** (lsfd) |  patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
 | **Fire** (lsfd_fire) |  fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
 
-Three hundred and twenty-two of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
+Three hundred and twenty-six of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
 player's own callouts use, so you can read them, copy them and edit them. The other eighteen are written
 in C# because their behaviour is particular (the medical ones, and the police ones that need a scene the
 recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`

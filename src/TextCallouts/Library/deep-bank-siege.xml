@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>deep-bank-siege</Id>
+    <Name>Bank Siege</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Armed robbery turned siege, staff inside with the suspects.</Message>
+    <Advisory>Two males, weapons seen, no shots fired.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>We are not opening the door.</Line>
+        <Line>Nobody has been hurt. We do not want anybody hurt.</Line>
+        <Line>We want a way out of here and we want it in writing.</Line>
+        <Line>We are sending somebody out. Do not shoot.</Line>
+    </Script>
+    <Stages>
+        <Stage At="15" Do="backup">SWAT is three minutes out.</Stage>
+        <Stage At="60" Do="handsup">The door is opening - hands first.</Stage>
+        <Stage At="100" Do="end">Both in custody. Tally the staff and let them go.</Stage>
+    </Stages>
+    <Lines>
+        <Briefing>A siege is a conversation with a clock on it. Keep them talking.</Briefing>
+        <Approach>Two of them and staff in there. Do not go in - establish contact and keep them talking.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

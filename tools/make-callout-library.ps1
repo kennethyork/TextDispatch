@@ -417,6 +417,17 @@ Add @{ id='fire-chimney'; for='fire'; name='Chimney Fire'; msg='Chimney fire in 
 Add @{ id='fire-electrical-depot'; for='fire'; name='Electrical Fire at a Depot'; msg='Fire in an electrical cabinet at a depot.'; adv='Power isolated by staff, no injuries.'; line='They have killed the power, so it is smoke and burnt plastic rather than anything worse.'; app='Fire' }
 Add @{ id='fire-alley-rubbish'; for='fire'; name='Fire in an Alleyway'; msg='Rubbish alight in an alley between buildings.'; adv='No persons about, fence beginning to scorch.'; line='It is in the alley between the buildings and the fence is going to go first.'; app='Fire' }
 
+# ============================================================ The deep ones
+#
+# Recipes with the two things a scene usually cannot have: people who answer when they are spoken to,
+# and a sequence rather than a single reaction. These are the closest a recipe gets to the scripted
+# set-pieces - they still build a scene rather than a cut scene, but the scene now talks back and moves
+# on by itself.
+
+Add @{ id='deep-hostage-standoff'; for='lspd'; name='Standoff - Suspect Inside'; msg='Domestic incident escalated, one person inside refusing to come out.'; adv='One male, no weapon confirmed, occupants out.'; line='He is in there on his own and he will not come out. Start talking - I am holding everybody back.'; app='none'; talk='I have not done anything. I am not coming out for you. | You are not listening to me. None of you ever listen. | If I come out, what happens? Tell me what happens. | Alright. Alright. I am putting my hands on my head.'; stages=@(@{at=20; do='backup'; text='Second unit is on the street behind you.'; }, @{at=50; do='handsup'; text='He has his hands on his head.'; }, @{at=80; do='end'; text='He is in the car. Call finished.'; }); brief='Nobody has been hurt yet and that is the whole job: talk him out.'; backup=$true }
+Add @{ id='deep-bank-siege'; for='lspd'; name='Bank Siege'; msg='Armed robbery turned siege, staff inside with the suspects.'; adv='Two males, weapons seen, no shots fired.'; line='Two of them and staff in there. Do not go in - establish contact and keep them talking.'; app='none'; talk='We are not opening the door. | Nobody has been hurt. We do not want anybody hurt. | We want a way out of here and we want it in writing. | We are sending somebody out. Do not shoot.'; stages=@(@{at=15; do='backup'; text='SWAT is three minutes out.'; }, @{at=60; do='handsup'; text='The door is opening - hands first.'; }, @{at=100; do='end'; text='Both in custody. Tally the staff and let them go.'; }); brief='A siege is a conversation with a clock on it. Keep them talking.'; backup=$true }
+Add @{ id='deep-medical-patient-talks'; for='ems'; name='Patient Who Can Talk'; msg='Person collapsed but conscious, wants to explain before you treat them.'; adv='Conscious, no obvious injury, refusing to be moved.'; line='She is awake and she wants to talk to you before anybody touches her.'; patient='a_f_y_business_02'; seconds=14; pline='It went tight and then it went numb. It is going again now.'; talk='Do not move me yet. Not until I have said this. | I take tablets. The blue ones, twice a day. I have not had them since Thursday. | I feel like I am going to be sick. | Thank you. I am ready now.'; brief='She can talk, which is information. Listen before you treat.'; amb=$true }
+Add @{ id='deep-gang-fight'; for='lspd'; name='Gang Fight in Progress'; msg='Two groups fighting, weapons mentioned by the caller.'; adv='Six or more, bottles and at least one knife.'; line='Six of them and a knife mentioned. Wait for your second unit - I am not sending you in alone.'; app='Hostile'; count=4; backup=$true; amb=$true; talk='He started it. He started it outside the shop. | You are not taking me anywhere. I have not done anything. | My cousin is coming. You want to be gone when he gets here.'; stages=@(@{at=15; do='backup'; text='Second unit is turning into the street.'; }, @{at=45; do='hostile'; text='Knife.'; }, @{at=90; do='end'; text='Two in custody. Ambulance for the one on the ground.'; }) }
 # ============================================================ Writing them out
 function Xml($text) {
     if ($null -eq $text) { return '' }
@@ -487,6 +498,23 @@ foreach ($r in $library) {
     if ($r['backup']) { $support += 'Backup="true"' }
     if ($support.Count -gt 0) { $lines.Add('    <Support ' + ($support -join ' ') + ' />') }
 
+    # What they say when they are spoken to. Piped on one line in the table: 'First line | second line'.
+    if ($r['talk']) {
+        $lines.Add('    <Script>')
+        foreach ($spoken in ($r['talk'] -split '\s*\|\s*')) {
+            if ($spoken.Trim().Length -gt 0) { $lines.Add("        <Line>$(Xml $spoken.Trim())</Line>") }
+        }
+        $lines.Add('    </Script>')
+    }
+
+    # What happens after the player has been there a while.
+    if ($r['stages']) {
+        $lines.Add('    <Stages>')
+        foreach ($stage in $r['stages']) {
+            $lines.Add("        <Stage At=`"$($stage['at'])`" Do=`"$($stage['do'])`">$(Xml $stage['text'])</Stage>")
+        }
+        $lines.Add('    </Stages>')
+    }
     if ($r['patient']) {
         $lines.Add("    <Patient Model=`"$($r['patient'])`" TreatmentSeconds=`"$($r['seconds'])`">$(Xml $r['pline'])</Patient>")
     }

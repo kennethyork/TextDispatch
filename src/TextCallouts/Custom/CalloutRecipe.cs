@@ -37,6 +37,20 @@ namespace TextCallouts.Custom
         public string Working = "Work the patient - the ambulance is rolling.";
     }
 
+    /// <summary>
+    /// Something a recipe does after a while, rather than when the player arrives.
+    ///
+    /// This is what turns a scene into a sequence: they hold the door for twenty seconds and then come
+    /// out, the second car arrives a minute in, the fire is set going after they have had a chance to
+    /// talk. Only the actions the engine already knows are allowed, so a stage cannot invent behaviour.
+    /// </summary>
+    internal sealed class StageRecipe
+    {
+        public int At = 30;                 // seconds after the player arrives
+        public string Do = "line";          // line | flee | fleeinvehicle | hostile | handsup | cower | backup | ambulance | fire | end
+        public string Text;                 // for Do="line"
+    }
+
     internal sealed class ActorRecipe
     {
         public string Model = "a_m_y_business_01";
@@ -82,6 +96,18 @@ namespace TextCallouts.Custom
 
         /// <summary>Set for the medical recipes, and then there are no suspects.</summary>
         public PatientRecipe Patient;
+
+        /// <summary>
+        /// What the scene's people say when they are spoken to, in order.
+        ///
+        /// Handed to Scripts.CalloutScript when the scene is built, where TextDispatch finds them - so a
+        /// suspect in a recipe answers in character instead of being mute or being improvised at by a
+        /// language model.
+        /// </summary>
+        public readonly List<string> Script = new List<string>();
+
+        /// <summary>What the scene does after the player has been there a while.</summary>
+        public readonly List<StageRecipe> Stages = new List<StageRecipe>();
 
         public float DistanceMin = 150f;
         public float DistanceMax = 320f;
@@ -139,6 +165,28 @@ namespace TextCallouts.Custom
                     case "probability": recipe.Probability = ProbabilityOf(element); break;
                     case "for": recipe.For = Text(element); break;
                     case "patient": recipe.Patient = PatientOf(element); break;
+
+                    case "script":
+                        foreach (var line in element.Elements())
+                        {
+                            if (line.Name.LocalName.ToLowerInvariant() != "line") continue;
+                            var spoken = Text(line);
+                            if (!string.IsNullOrEmpty(spoken)) recipe.Script.Add(spoken);
+                        }
+                        break;
+
+                    case "stages":
+                        foreach (var stage in element.Elements())
+                        {
+                            if (stage.Name.LocalName.ToLowerInvariant() != "stage") continue;
+
+                            var recipeStage = new StageRecipe();
+                            recipeStage.At = NumberAttribute(stage, "At", recipeStage.At);
+                            recipeStage.Do = (AttributeText(stage, "Do", recipeStage.Do) ?? recipeStage.Do).Trim().ToLowerInvariant();
+                            recipeStage.Text = Text(stage);
+                            recipe.Stages.Add(recipeStage);
+                        }
+                        break;
                     case "timeoutminutes": recipe.TimeoutMinutes = Int(element, recipe.TimeoutMinutes); break;
                     case "resolution": recipe.Resolution = ResolutionOf(Text(element)); break;
 
@@ -229,6 +277,15 @@ namespace TextCallouts.Custom
         private static string Text(XElement element)
         {
             return (element.Value ?? "").Trim();
+        }
+
+        /// <summary>An attribute that should be a whole number. A recipe that gets it wrong keeps the
+        /// default rather than failing to load: the sequence is worth more than the exact timing.</summary>
+        private static int NumberAttribute(XElement element, string name, int fallback)
+        {
+            var text = AttributeText(element, name, "");
+            int parsed;
+            return int.TryParse(text, out parsed) ? parsed : fallback;
         }
 
         private static PatientRecipe PatientOf(XElement element)

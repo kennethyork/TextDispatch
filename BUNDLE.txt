@@ -5,7 +5,7 @@ LSPDFR - and DriverJobs - in text. Three plugins that are meant to be installed 
 
     TextDispatch %DISPATCH_VERSION%    the police side: dispatch, the people in the callouts,
                                        traffic stops, records, all through a chat box
-    TextCallouts %CALLOUTS_VERSION%    three hundred and forty callouts, written from scratch, needing nothing but
+    TextCallouts %CALLOUTS_VERSION%    three hundred and forty-four callouts, written from scratch, needing nothing but
                                        LSPDFR and RAGE Plugin Hook
     TextJobs %TEXTJOBS_VERSION%        the civilian side: DriverJobs V's jobs in a box of their own,
                                        needing neither LSPDFR nor RAGE Plugin Hook
@@ -41,7 +41,7 @@ INSTALL
        <your Grand Theft Auto V folder>\Plugins\LSPDFR\TextCallouts\
 
    ...so the files end up in Plugins\LSPDFR\TextCallouts\Library\. That is TextCallouts' own library:
-   three hundred and twenty-two of its three hundred and forty callouts, written as XML recipes and sorted by the duty they
+   three hundred and twenty-six of its three hundred and forty-four-four callouts, written as XML recipes and sorted by the duty they
    belong to - LSPD, Sheriff, Highway Patrol, Rangers, the prison, EMS and fire. Skip this step and the
    eighteen callouts written in C# still work; you just lose the other three hundred and twenty-two, and the log says so.
 

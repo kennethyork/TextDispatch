@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>deep-gang-fight</Id>
+    <Name>Gang Fight in Progress</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Two groups fighting, weapons mentioned by the caller.</Message>
+    <Advisory>Six or more, bottles and at least one knife.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="4" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>He started it. He started it outside the shop.</Line>
+        <Line>You are not taking me anywhere. I have not done anything.</Line>
+        <Line>My cousin is coming. You want to be gone when he gets here.</Line>
+    </Script>
+    <Stages>
+        <Stage At="15" Do="backup">Second unit is turning into the street.</Stage>
+        <Stage At="45" Do="hostile">Knife.</Stage>
+        <Stage At="90" Do="end">Two in custody. Ambulance for the one on the ground.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>Six of them and a knife mentioned. Wait for your second unit - I am not sending you in alone.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Checks the bridge between TextDispatch and TextCallouts by reading their metadata.
+
+    Both assemblies reference RagePluginHook, whose public types are compile-time stubs with no
+    implementation - so a console process cannot load them, and reflection is not available for this
+    check. Cecil reads the metadata without loading anything, which is all it needs.
+
+    Run it with tools\verify-bridge.ps1, or by running dotnet on the BridgeCheck project.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>BridgeCheck</AssemblyName>
+    <RootNamespace>BridgeCheck</RootNamespace>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+  </ItemGroup>
+
+</Project>

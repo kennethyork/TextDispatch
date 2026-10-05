@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>deep-medical-patient-talks</Id>
+    <Name>Patient Who Can Talk</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person collapsed but conscious, wants to explain before you treat them.</Message>
+    <Advisory>Conscious, no obvious injury, refusing to be moved.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Ambulance="true" />
+    <Script>
+        <Line>Do not move me yet. Not until I have said this.</Line>
+        <Line>I take tablets. The blue ones, twice a day. I have not had them since Thursday.</Line>
+        <Line>I feel like I am going to be sick.</Line>
+        <Line>Thank you. I am ready now.</Line>
+    </Script>
+    <Patient Model="a_f_y_business_02" TreatmentSeconds="14">It went tight and then it went numb. It is going again now.</Patient>
+    <Lines>
+        <Briefing>She can talk, which is information. Listen before you treat.</Briefing>
+        <Approach>She is awake and she wants to talk to you before anybody touches her.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

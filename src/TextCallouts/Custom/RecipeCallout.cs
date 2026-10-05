@@ -50,6 +50,10 @@ namespace TextCallouts.Custom
         private bool _fireCleared;
         private Vector3 _fireAt;
 
+        // the stages: what the scene does after the player has been there a while
+        private int _arrivedAt;
+        private readonly List<StageRecipe> _played = new List<StageRecipe>();
+
         private CalloutRecipe Recipe
         {
             get
@@ -154,10 +158,25 @@ namespace TextCallouts.Custom
                 catch (Exception ex) { Log.Error("putting a recipe's patient on the ground", ex); }
             }
 
+            // What they will say when they are spoken to: the first suspect, or the patient, or whoever is
+            // there. One speaker per scene, because a scene with two conversations in it is two callouts.
+            if (recipe.Script.Count > 0)
+            {
+                var speaker = _suspects.Count > 0 ? _suspects[0] : (_patient ?? (_bystanders.Count > 0 ? _bystanders[0] : null));
+                if (speaker != null)
+                {
+                    Scripts.CalloutScript.Register(speaker, recipe.Name, recipe.Script.ToArray());
+                    Log.Line("script for " + recipe.Id + ": " + recipe.Script.Count + " line(s), to be spoken by the " +
+                             (recipe.Patient != null ? "patient" : "suspect") + " when the player talks to them");
+                }
+            }
+
             // The count goes to the log, not the box: it is bookkeeping, and a recipe that says it
             // three times over a callout is how a chat box stops being readable.
             Log.Line("custom callout scene: " + _suspects.Count + " suspect(s), " + _bystanders.Count +
-                     " other(s)" + (recipe.Patient != null ? ", one patient" : "") + " at " + Where(position));
+                     " other(s)" + (recipe.Patient != null ? ", one patient" : "") +
+                     (recipe.Stages.Count > 0 ? ", " + recipe.Stages.Count + " stage(s)" : "") +
+                     " at " + Where(position));
         }
 
         protected override bool Tick()
@@ -203,6 +222,11 @@ namespace TextCallouts.Custom
                 if (recipe.ApproachFire) LightFire(CalloutPosition);
             }
 
+            // What happens after the player has been there a while: the stages. This is what turns a scene
+            // into a sequence - they hold the door for twenty seconds and then come out, the second car
+            // arrives a minute in, the fire starts once they have had a chance to talk.
+            if (recipe.Stages.Count > 0 && !RunStages(recipe)) return false;
+
             // A recipe with a patient has nobody to catch: it ends when the player has spent long enough
             // on them. That is the whole of the medical path, and it is in one method because a recipe's
             // patient is data rather than code.
@@ -230,6 +254,89 @@ namespace TextCallouts.Custom
                     Close("every suspect is dealt with");
                     return false;
             }
+        }
+
+        /// <summary>
+        /// Play any stage whose time has come. False means a stage ended the callout.
+        /// </summary>
+        private bool RunStages(CalloutRecipe recipe)
+        {
+            // Nothing is timed before the player is at the scene, or a stage would play to an empty
+            // street while they were still driving to it.
+            if (!_approached) return true;
+
+            if (_arrivedAt == 0)
+            {
+                _arrivedAt = Environment.TickCount;
+                Log.Line("stages for " + recipe.Id + " start now: " + recipe.Stages.Count + " of them");
+            }
+
+            var elapsed = (Environment.TickCount - _arrivedAt) / 1000;
+
+            foreach (var stage in recipe.Stages)
+            {
+                if (_played.Contains(stage) || elapsed < stage.At) continue;
+                _played.Add(stage);
+                if (!Play(stage, recipe)) return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>One stage. False means it ended the callout.</summary>
+        private bool Play(StageRecipe stage, CalloutRecipe recipe)
+        {
+            Log.Line("stage " + stage.At + "s in " + recipe.Id + ": " + stage.Do +
+                     (string.IsNullOrEmpty(stage.Text) ? "" : "  -  " + stage.Text));
+
+            if (!string.IsNullOrEmpty(stage.Text)) Say(stage.Text);
+
+            switch (stage.Do)
+            {
+                case "flee":
+                    foreach (var ped in _suspects) if (ped != null && ped.Exists()) FleeOnFoot(ped);
+                    break;
+
+                case "fleeinvehicle":
+                    foreach (var ped in _suspects) if (ped != null && ped.Exists()) FleeInVehicle(ped);
+                    break;
+
+                case "hostile":
+                    foreach (var ped in _suspects) if (ped != null && ped.Exists()) MakeHostile(ped, null, 0);
+                    break;
+
+                case "handsup":
+                    foreach (var ped in _suspects) if (ped != null && ped.Exists()) HandsUp(ped);
+                    break;
+
+                case "cower":
+                    foreach (var ped in _bystanders) Try(ped, p => p.Tasks.Cower(-1), "Cower");
+                    break;
+
+                case "backup":
+                    try
+                    {
+                        Functions.RequestBackup(CalloutPosition, EBackupResponseType.Code3, EBackupUnitType.LocalUnit);
+                        Log.Line("backup requested by a stage in " + recipe.Id);
+                    }
+                    catch (Exception ex) { Log.Error("a stage requesting backup", ex); }
+                    break;
+
+                case "ambulance":
+                    RequestAmbulance(CalloutPosition);
+                    break;
+
+                case "fire":
+                    LightFire(CalloutPosition);
+                    break;
+
+                case "end":
+                    ClearFire();
+                    Close("the scene reached its end");
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>

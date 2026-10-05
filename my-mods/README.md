@@ -405,7 +405,7 @@ is also the horn while driving (that is LSPDFR's choice, not a collision with an
 
 ### 1.13 What can now come out, and what cannot
 
-TextCallouts is at three hundred and forty callouts, and every callout the other packs offer has an
+TextCallouts is at three hundred and forty-four callouts, and every callout the other packs offer has an
 equivalent in it - so the callout packs can be uninstalled.
 
 | Pack | Callouts | Covered? |
@@ -429,6 +429,31 @@ plugins, not callout packs, and TextCallouts references nothing but LSPDFR and R
 **How to take them out:** delete the DLL from `Plugins\LSPDFR\` and its folder (686Callouts, MizCallouts,
 UnitedCallouts) if it has one. Then check `/calls` in the box, or `/plugins`, which lists what loaded.
 
+### 1.14 The other callout packs are out - moved, not deleted
+
+Twenty things were moved out of the game and into `_removed-callout-packs\` in the game folder: the seven
+callout packs' DLLs and folders (686Callouts, ManiacCallouts, MizCallouts, Plain Sight, SSStuartCallouts,
+StoryCallouts, UnitedCallouts) and three sets of scanner audio that came with them. Nothing was deleted,
+so putting one back is a drag. Delete that folder once you are sure.
+
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.8.0**, and the interaction plugins
+that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
+ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
+CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
+
+**TextCallouts 1.8.0** is at 344 callouts, and it can now do the two things a recipe could not:
+
+  * **people who answer** - a callout's suspect or patient has lines, and TextDispatch asks for those
+    before its own script and before the model: `/talk`, or just type at them, and they answer in
+    character, instantly, with no model running;
+  * **scenes that move** - stages: backup arriving twenty seconds in, a suspect's nerve breaking at
+    fifty, the fire starting once they have had a chance to talk.
+
+Four callouts use both so far: a standoff, a bank siege, a gang fight, and a patient who talks to you
+before you treat them.
+
+`tools\verify-bridge.ps1` checks the bridge between the two plugins by reading their metadata - the
+compiler cannot see across a reflection boundary, and a rename there would fail silently in game.
 ## 2. Every mod installed
 
 ### 2.1 Platform — the things everything else sits on

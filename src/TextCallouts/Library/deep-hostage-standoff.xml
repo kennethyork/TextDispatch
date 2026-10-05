@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>deep-hostage-standoff</Id>
+    <Name>Standoff - Suspect Inside</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Domestic incident escalated, one person inside refusing to come out.</Message>
+    <Advisory>One male, no weapon confirmed, occupants out.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>I have not done anything. I am not coming out for you.</Line>
+        <Line>You are not listening to me. None of you ever listen.</Line>
+        <Line>If I come out, what happens? Tell me what happens.</Line>
+        <Line>Alright. Alright. I am putting my hands on my head.</Line>
+    </Script>
+    <Stages>
+        <Stage At="20" Do="backup">Second unit is on the street behind you.</Stage>
+        <Stage At="50" Do="handsup">He has his hands on his head.</Stage>
+        <Stage At="80" Do="end">He is in the car. Call finished.</Stage>
+    </Stages>
+    <Lines>
+        <Briefing>Nobody has been hurt yet and that is the whole job: talk him out.</Briefing>
+        <Approach>He is in there on his own and he will not come out. Start talking - I am holding everybody back.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

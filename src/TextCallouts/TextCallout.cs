@@ -68,6 +68,10 @@ namespace TextCallouts
             }
             catch (Exception ex) { Log.Error("scene blip", ex); }
 
+            // A new scene means new people: whatever the last callout's suspects were going to say, they
+            // are not saying it any more, and a reused handle must not inherit a script.
+            try { Scripts.CalloutScript.Clear(); } catch { }
+
             Log.Line("accepted: " + FriendlyName + " at " + Where(CalloutPosition));
             if (!string.IsNullOrEmpty(Briefing)) Say(Briefing);
 

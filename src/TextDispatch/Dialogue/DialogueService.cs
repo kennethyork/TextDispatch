@@ -5,6 +5,7 @@ using TextDispatch.Ai;
 using TextDispatch.Chat;
 using TextDispatch.Lspdfr;
 using TextDispatch.Records;
+using TextDispatch.Bridges;
 
 namespace TextDispatch.Dialogue
 {
@@ -26,6 +27,9 @@ namespace TextDispatch.Dialogue
         private readonly Settings _settings;
         private readonly ReplyPump _pump;
         private readonly RecordsLedger _records;
+
+        /// <summary>What the callout's own people say, if a callout pack is installed and scripted them.</summary>
+        private readonly CalloutScriptBridge _script = new CalloutScriptBridge();
 
         private readonly Dictionary<int, Talker> _talkers = new Dictionary<int, Talker>();
         private Talker _target;
@@ -84,6 +88,17 @@ namespace TextDispatch.Dialogue
             var intent = ScriptedReplies.Classify(text);
             var scripted = ScriptedReplies.Answer(text, intent, partner, state);
             var speaker = partner;
+
+            // The callout's own words come first. If this person is one a callout wrote lines for, they
+            // answer with those - in character, immediately, and without a model - and only everybody
+            // else falls through to the script or the model below.
+            var fromCallout = _script.Reply(partner.Ped, text);
+            if (fromCallout != null)
+            {
+                Log.Line("callout script answered for " + partner.Name);
+                _pump.Schedule(fromCallout, _settings.TypingMs, line => Respond(speaker, line));
+                return;
+            }
 
             if (!_settings.UseModel)
             {
