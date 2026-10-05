@@ -130,8 +130,8 @@ namespace TextDispatch
         /// asks the hardware directly - and some do - still sees it, so a hidden press is followed
         /// by a synthetic release, which empties that state too: a key that went down and up inside
         /// one frame is too fast for a menu to open on. On by default, because it is the difference
-        /// between stopping those plugins and only stopping the others; /block hardware off turns it
-        /// off, and nothing else in the plugin depends on it.
+        /// between stopping those plugins and only stopping the others; /typing hardware off turns
+        /// it off, and nothing else in the plugin depends on it.
         /// </summary>
         public bool HideHardwareKeys = true;
 
@@ -304,7 +304,7 @@ namespace TextDispatch
                     "",
                     "; Whether typing hides the keystrokes from the other plugins. On by default - without",
                     "; it, typing '10-97' opens whatever menu is watching for those letters.",
-                    "; /block off changes it while playing.",
+                    "; /typing off changes it while playing. (/block is a road block.)",
                     "BlockOtherModsKeys=" + (settings.BlockOtherModsKeys ? "1" : "0"),
                     "; Whether a hidden key is also released in the hardware state, which is what stops",
                     "; a plugin that reads the keyboard directly instead of the game's messages.",
