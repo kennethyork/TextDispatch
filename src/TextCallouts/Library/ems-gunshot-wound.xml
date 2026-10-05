@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-gunshot-wound</Id>
+    <Name>Gunshot Wound</Name>
+    <For>ems,lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person shot, conscious, suspect gone.</Message>
+    <Advisory>Wound to the shoulder, caller applying pressure.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_hasjew_01" TreatmentSeconds="18">I cannot move my arm. Tell me it is still there.</Patient>
+    <Lines>
+        <Approach>He has been shot in the shoulder and the caller is holding it. Suspect has gone - the patient comes first.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

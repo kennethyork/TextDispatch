@@ -333,13 +333,13 @@ says which duty it belongs to in its `<For>` element.
 
 | Duty you go on as | Callouts | What it is |
 |---|---|---|
-| **LSPD** | 81 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances, missing people |
-| **Sheriff** (lssd) | 37 | county: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
-| **Highway Patrol** (sahp) | 29 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
-| **Park Rangers** (sapr) | 22 | illegal fires, poaching, lost walkers, injured wildlife, off-roading |
-| **Prison** (saspa) | 18 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
-| **EMS** (lsfd) | 20 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
-| **Fire** (lsfd_fire) | 7 | refuse, kitchens, grass, a car in a car park, a car on a hard shoulder, commercial bins |
+| **LSPD** |  city work: robberies, drugs, shots fired, burglary, assaults, disturbances, missing people |
+| **Sheriff** (lssd) |  county: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
+| **Highway Patrol** (sahp) |  traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
+| **Park Rangers** (sapr) |  illegal fires, poaching, lost walkers, injured wildlife, off-roading |
+| **Prison** (saspa) |  Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
+| **EMS** (lsfd) |  patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
+| **Fire** (lsfd_fire) |  refuse, kitchens, grass, a car in a car park, a car on a hard shoulder, commercial bins |
 
 An agency the pack has never heard of gets the police work - a patrol with no calls at all is a worse
 failure than a misfiled callout. Some callouts name several duties and are offered to all of them.
@@ -405,7 +405,7 @@ is also the horn while driving (that is LSPDFR's choice, not a collision with an
 
 ### 1.13 What can now come out, and what cannot
 
-TextCallouts is at a hundred and forty-five callouts, and every callout the other packs offer has an
+TextCallouts is at two hundred and twelve callouts, and every callout the other packs offer has an
 equivalent in it - so the callout packs can be uninstalled.
 
 | Pack | Callouts | Covered? |

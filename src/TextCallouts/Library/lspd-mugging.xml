@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-mugging</Id>
+    <Name>Street Robbery</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Street robbery just happened, victim still on scene.</Message>
+    <Advisory>Two males on foot, phone and wallet taken.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="2" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>Two of them, took his phone and ran. He is still there and he is shaken.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

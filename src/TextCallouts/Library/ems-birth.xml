@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-birth</Id>
+    <Name>Birth Imminent</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Woman in labour, no time for the hospital.</Message>
+    <Advisory>Conscious, partner present, contractions close.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_f_y_bevhills_01" TreatmentSeconds="20">Is she all right? Tell me she is all right.</Patient>
+    <Lines>
+        <Approach>There is no time for the hospital and she knows it. You are the closest thing to a professional.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

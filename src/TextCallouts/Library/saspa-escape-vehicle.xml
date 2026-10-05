@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>saspa-escape-vehicle</Id>
+    <Name>Escape Vehicle Reported</Name>
+    <For>prison,sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Vehicle seen taking on a passenger at the perimeter road.</Message>
+    <Advisory>Vehicle heading for the highway, one passenger boarded.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>Somebody got into it at the fence line and it went for the highway. That is an escape attempt in progress.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

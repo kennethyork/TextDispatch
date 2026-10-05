@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-glass-assault</Id>
+    <Name>Assault with a Glass</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person cut in a bar, injury to the neck.</Message>
+    <Advisory>Conscious, bleeding heavily, suspect gone.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_business_01" TreatmentSeconds="18">It is not as bad as it looks. Is it as bad as it looks?</Patient>
+    <Lines>
+        <Approach>Cut across the neck with a glass and the suspect has gone. Pressure on it and get him out of there.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

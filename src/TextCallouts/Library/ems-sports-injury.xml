@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-sports-injury</Id>
+    <Name>Sports Injury</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Player injured on a pitch, suspected leg fracture.</Message>
+    <Advisory>Conscious, leg deformed, coaches keeping people back.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_musclbeac_01" TreatmentSeconds="14">I heard it crack. I am not walking off.</Patient>
+    <Lines>
+        <Approach>The leg is not straight and he is being very brave about it. Splint him and keep the crowd off.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

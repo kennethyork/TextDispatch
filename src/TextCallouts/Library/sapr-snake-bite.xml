@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sapr-snake-bite</Id>
+    <Name>Snake Bite</Name>
+    <For>ranger,ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Walker bitten by a snake on a trail.</Message>
+    <Advisory>Conscious, bite to the calf, remote location.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_hipster_01" TreatmentSeconds="14">It is going numb. Is that normal?</Patient>
+    <Lines>
+        <Approach>Bitten on the leg and a long way from the road. Keep him still and get to him.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

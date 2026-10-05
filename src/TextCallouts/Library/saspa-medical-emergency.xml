@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>saspa-medical-emergency</Id>
+    <Name>Medical Emergency - Inmate</Name>
+    <For>prison,ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Inmate collapsed in a workshop.</Message>
+    <Advisory>Conscious but unwell, staff on scene, no violence.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="s_m_m_prisguard_01" TreatmentSeconds="14">I came over dizzy. I have not felt right since breakfast.</Patient>
+    <Lines>
+        <Approach>He went down in the workshop and the staff have him sitting up. They want the ambulance and so do I.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

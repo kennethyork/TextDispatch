@@ -52,15 +52,15 @@ work matches the agency you went on duty as:
 
 | Duty | Callouts | What it is |
 |---|---|---|
-| **LSPD** | 81 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances |
-| **Sheriff** (lssd) | 37 | county work: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
-| **Highway Patrol** (sahp) | 29 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
-| **Park Rangers** (sapr) | 22 | the parks: illegal fires, poaching, lost walkers, injured wildlife, off-roading |
-| **Prison** (saspa) | 18 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
-| **EMS** (lsfd) | 20 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
-| **Fire** (lsfd_fire) | 7 | fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
+| **LSPD** |  city work: robberies, drugs, shots fired, burglary, assaults, disturbances |
+| **Sheriff** (lssd) |  county work: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
+| **Highway Patrol** (sahp) |  traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
+| **Park Rangers** (sapr) |  the parks: illegal fires, poaching, lost walkers, injured wildlife, off-roading |
+| **Prison** (saspa) |  Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
+| **EMS** (lsfd) |  patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
+| **Fire** (lsfd_fire) |  fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
 
-A hundred and twenty-seven of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
+A hundred and ninety-four of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
 player's own callouts use, so you can read them, copy them and edit them. The other eighteen are written
 in C# because their behaviour is particular (the medical ones, and the police ones that need a scene the
 recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`

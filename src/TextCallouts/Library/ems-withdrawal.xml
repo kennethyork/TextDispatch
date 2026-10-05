@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-withdrawal</Id>
+    <Name>Withdrawal</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person shaking and vomiting, withdrawing from something.</Message>
+    <Advisory>Conscious, no injuries, refuses to say what.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_tramp_01" TreatmentSeconds="14">I just need to get through it. I have done it before.</Patient>
+    <Lines>
+        <Approach>Shaking, sick, and not saying what he has been taking. Keep your kit close.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

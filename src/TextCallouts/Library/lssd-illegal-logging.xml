@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-illegal-logging</Id>
+    <Name>Illegal Logging</Name>
+    <For>sheriff,ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Chainsaws and a flatbed working in protected woodland.</Message>
+    <Advisory>Two vehicles, equipment running, no persons confronted.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>Two trucks and chainsaws going. They are not supposed to be in there at all.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

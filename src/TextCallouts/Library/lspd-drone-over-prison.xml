@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-drone-over-prison</Id>
+    <Name>Drone Over the Perimeter</Name>
+    <For>lspd,prison</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Drone seen over a secure perimeter.</Message>
+    <Advisory>Drone still airborne, operator believed nearby.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>Somebody is flying a drone over the fence and they are not doing it for the view.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

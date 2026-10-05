@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-farm-machinery</Id>
+    <Name>Farm Machinery Injury</Name>
+    <For>ems,sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person injured by a tractor, arm trapped.</Message>
+    <Advisory>Conscious, arm trapped, machine switched off.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_farmer_01" TreatmentSeconds="20">Do not move it. Whatever you do, do not move it.</Patient>
+    <Lines>
+        <Approach>His arm is in it and the machine is off, and now it is a question of getting him free without making it worse.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-electric-shock</Id>
+    <Name>Electric Shock</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person shocked by a live cable at a site.</Message>
+    <Advisory>Power isolated, casualty conscious, burns to the hand.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_construct_01" TreatmentSeconds="15">My hand is buzzing. It will not stop buzzing.</Patient>
+    <Lines>
+        <Approach>They have killed the power and he is conscious, with entry and exit burns on the one hand.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

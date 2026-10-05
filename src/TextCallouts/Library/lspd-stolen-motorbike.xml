@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-stolen-motorbike</Id>
+    <Name>Stolen Motorcycle</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Motorcycle taken from outside a cafe minutes ago.</Message>
+    <Advisory>Two riders, both in dark clothing, no plates.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Vehicle="bati" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Lines>
+        <Approach>Two on it, no plates, gone towards the freeway. They will not stop for you.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

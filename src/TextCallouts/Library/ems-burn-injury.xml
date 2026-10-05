@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-burn-injury</Id>
+    <Name>Burn Injury</Name>
+    <For>ems,fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person with burns to the arms from a kitchen.</Message>
+    <Advisory>Conscious, burns to both forearms, kitchen staff on scene.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_business_02" TreatmentSeconds="15">I poured it over myself. It was on the stove.</Patient>
+    <Lines>
+        <Approach>Both forearms and he is holding them out like he cannot decide what to do. Cool it and get him moving.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

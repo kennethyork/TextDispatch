@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-industrial-accident</Id>
+    <Name>Industrial Accident</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Worker injured by machinery at a depot.</Message>
+    <Advisory>Conscious, hand caught, machinery stopped.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_construct_02" TreatmentSeconds="18">I cannot see how bad it is. Tell me how bad it is.</Patient>
+    <Lines>
+        <Approach>His hand was in it when it went. The machinery is stopped and so is the bleeding, for now.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

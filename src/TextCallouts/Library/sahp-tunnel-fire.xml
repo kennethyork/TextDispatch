@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-tunnel-fire</Id>
+    <Name>Vehicle Fire in a Tunnel</Name>
+    <For>fire,sahp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Vehicle alight inside a tunnel, traffic still moving.</Message>
+    <Advisory>Occupants out, smoke filling the tunnel.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>They are out of it but the smoke has nowhere to go and people are still driving in.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>
