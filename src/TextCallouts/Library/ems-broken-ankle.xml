@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-broken-ankle</Id>
+    <Name>Walker with a Broken Ankle</Name>
+    <For>ems,ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Walker unable to continue, suspected broken ankle.</Message>
+    <Advisory>Ridge path, no road access, weather closing in.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_f_y_hipster_01" TreatmentSeconds="18">I heard it go. I am not walking down from here.</Patient>
+    <Lines>
+        <Approach>She is on the ridge path and there is no road up there. Take the kit you can carry.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

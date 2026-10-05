@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-respiratory</Id>
+    <Name>Respiratory Distress</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person struggling to breathe, inhaler empty.</Message>
+    <Advisory>Conscious, sitting up, speaking in short sentences.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_f_y_hipster_01" TreatmentSeconds="12">I can breathe again. I really could not get it in.</Patient>
+    <Lines>
+        <Approach>She is sitting up and cannot finish a sentence. Inhaler is empty.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -33,6 +33,20 @@ namespace TextCallouts.Custom
             get { return Path.Combine(Log.PluginFolder(), "TextCallouts", "Custom"); }
         }
 
+        /// <summary>
+        /// Where the pack's own recipes live: the library that ships with it, in the same format.
+        ///
+        /// Two folders rather than one because they are two different things - the library belongs to
+        /// the pack and is replaced when it is updated, Custom belongs to the player and is never
+        /// touched - and because a pack that silently overwrote somebody's own callouts would be a
+        /// worse neighbour than one that keeps them apart. Both are read, and the log names the file
+        /// each callout came from.
+        /// </summary>
+        internal static string LibraryFolder
+        {
+            get { return Path.Combine(Log.PluginFolder(), "TextCallouts", "Library"); }
+        }
+
         /// <summary>The callout types built from the player's files. Loads them on first call.</summary>
         internal static Type[] CalloutTypes()
         {
@@ -63,13 +77,37 @@ namespace TextCallouts.Custom
             {
                 EnsureFolder();
 
-                if (!Directory.Exists(Folder))
+                // The library first, then the player's own, so a player's recipe with the same id wins
+                // the name it wants and the log reads in the order they are offered.
+                LoadFrom(LibraryFolder, "library");
+                LoadFrom(Folder, "custom");
+
+                Log.Line("callouts from files: " + Types.Count + " loaded, " + _problems + " skipped");
+                if (Types.Count == 0)
+                    Log.Line("no callouts from files: put .xml files in " + Folder + " to add your own");
+            }
+            catch (Exception ex) { Log.Error("loading custom callouts", ex); }
+        }
+
+        /// <summary>
+        /// Read every recipe in one folder. A file that will not parse is named in the log and skipped,
+        /// because a file written by hand is the likeliest thing here to be wrong and skipping it in
+        /// silence would look exactly like the file never being read.
+        /// </summary>
+        private static void LoadFrom(string folder, string what)
+        {
+            try
+            {
+                if (!Directory.Exists(folder))
                 {
-                    Log.Line("custom callouts: no folder at " + Folder);
+                    if (what == "custom") Log.Line(what + " callouts: no folder at " + folder);
                     return;
                 }
 
-                var files = Directory.GetFiles(Folder, "*.xml");
+                var files = Directory.GetFiles(folder, "*.xml");
+                if (files.Length == 0 && what == "custom")
+                    Log.Line("custom callouts: no files in " + folder + " - put .xml files there to add your own");
+
                 foreach (var file in files)
                 {
                     try
@@ -81,23 +119,16 @@ namespace TextCallouts.Custom
                         RecipeCallout.Bind(type.Name, recipe);
                         Recipes.Add(recipe);
                         Types.Add(type);
-                        Log.Line("custom callout: " + recipe.Display + "  <-  " + Path.GetFileName(file));
+                        Log.Line(what + " callout: " + recipe.Display + "  [" + recipe.For + "]  <-  " + Path.GetFileName(file));
                     }
                     catch (Exception ex)
                     {
                         _problems++;
-                        // A file somebody wrote by hand is the most likely thing here to be wrong, and
-                        // skipping it in silence would look exactly like the file never being read.
-                        Log.Line("custom callout NOT loaded: " + Path.GetFileName(file) + ": " + ex.Message);
+                        Log.Line(what + " callout NOT loaded: " + Path.GetFileName(file) + ": " + ex.Message);
                     }
                 }
-
-                Log.Line("custom callouts: " + Types.Count + " loaded, " + _problems + " skipped, from " + Folder);
-                if (Types.Count == 0 && files.Length == 0)
-                    Log.Line("custom callouts: put .xml files in that folder to add your own callouts " +
-                             "(see README.txt in it)");
             }
-            catch (Exception ex) { Log.Error("loading custom callouts", ex); }
+            catch (Exception ex) { Log.Error("loading " + what + " callouts", ex); }
         }
 
         /// <summary>Build the type LSPDFR needs for one recipe.</summary>

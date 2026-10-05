@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-domestic-injury</Id>
+    <Name>Injury - Domestic</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person with an injury following a domestic incident.</Message>
+    <Advisory>Patient safe with a neighbour, injury to the arm.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_f_y_vinewood_01" TreatmentSeconds="14">It is not as bad as it looks. He has gone.</Patient>
+    <Lines>
+        <Approach>She is next door with the neighbour. The injury needs looking at and so does she.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

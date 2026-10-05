@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-assault-victim</Id>
+    <Name>Assault Victim</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person assaulted, bleeding from a head wound.</Message>
+    <Advisory>Suspect gone, victim on the pavement, conscious.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_business_01" TreatmentSeconds="15">I did not even see him. Is it bad?</Patient>
+    <Lines>
+        <Approach>Suspect has gone. The victim is on the pavement and the head wound is a bad one.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

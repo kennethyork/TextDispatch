@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-overdose-park</Id>
+    <Name>Overdose in a Park</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person unresponsive on a bench, paraphernalia nearby.</Message>
+    <Advisory>Breathing but not waking, no witnesses.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_trampbeac_01" TreatmentSeconds="12">Where - what day is it? Did somebody call you?</Patient>
+    <Lines>
+        <Approach>Breathing but not waking, and nobody with him. You are the first one there.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

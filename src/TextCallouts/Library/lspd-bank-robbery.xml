@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-bank-robbery</Id>
+    <Name>Bank Robbery in Progress</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Silent alarm at a bank, staff not answering the phone.</Message>
+    <Advisory>Two males inside, cash seen being bagged.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Briefing>A bank, a silent alarm, and nobody answering the phone. Assume two armed and treat it that way.</Briefing>
+        <Approach>Silent alarm, no answer from the branch. Two males inside. Do not go in alone.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

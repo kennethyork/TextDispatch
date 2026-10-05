@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-exposure</Id>
+    <Name>Exposure - Cold</Name>
+    <For>ems,ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Walker found cold and disoriented on the ridge.</Message>
+    <Advisory>Shivering stopped, caller has him out of the wind.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_farmer_01" TreatmentSeconds="14">I lost the path in the fog. I thought I was going the right way.</Patient>
+    <Lines>
+        <Approach>He is out of the wind with the caller. The shivering has stopped, which is not good news.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

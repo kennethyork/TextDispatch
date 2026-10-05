@@ -63,10 +63,23 @@ foreach ($plugin in $plugins)
 # TextDispatch by reflection. TextJobs goes to scripts\, where ScriptHookVDotNet looks, and where the
 # jobs mod it reads is already installed.
 
+# TextCallouts' callout library is data, not a DLL, and it goes in the plugin's own folder where the pack
+# reads it from: Plugins\LSPDFR\TextCallouts\Library. Custom, the folder a player's own recipes go in, is
+# left exactly as it is.
+$librarySource = Join-Path $repo 'src\TextCallouts\Library'
+if (Test-Path $librarySource) {
+    $libraryTarget = Join-Path $target 'TextCallouts\Library'
+    if (-not (Test-Path $libraryTarget)) { New-Item -ItemType Directory -Path $libraryTarget -Force | Out-Null }
+    Copy-Item (Join-Path $librarySource '*.xml') $libraryTarget -Force
+    $recipes = (Get-ChildItem $libraryTarget -Filter '*.xml').Count
+    Write-Host ("  installed the callout library: " + $recipes + " recipes -> " + $libraryTarget) -ForegroundColor Green
+}
+
 Write-Host ""
 Write-Host "Launch RagePluginHook.exe, load story mode, then GO ON DUTY (press E at a police station)." -ForegroundColor Cyan
 Write-Host "The two LSPDFR plugins load at that moment, and the callouts register then too." -ForegroundColor Cyan
 Write-Host "TextJobs loads with the game instead - left arrow for the police box, F9 for the jobs box." -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Logs: $target\textdispatch.log, $target\textcallouts.log, $scripts\TextJobs.log"
+Write-Host "On duty as LSPD, the Sheriff, Highway Patrol, a Ranger, at Bolingbroke, as EMS or fire: each gets its own work."
 Write-Host "In the police box: /help, /calls, /callout <name>.  In the jobs box: /jobs, /job <name>.  F4 console: tdstatus, tcstatus."

@@ -1,6 +1,6 @@
 # TextCallouts
 
-**LSPDFR callouts with no dependencies.** Eighteen callouts in the style of the big packs, written from
+**LSPDFR callouts with no dependencies.** A hundred and two callouts in the style of the big packs, written from
 scratch, needing nothing but LSPDFR and RAGE Plugin Hook — no StopThePed, no Ultimate Backup, no
 CompuLite, no Callout Interface, no ExternalPoliceComputer, no Common Data Framework, no
 RAGENativeUI.
@@ -44,6 +44,28 @@ Nothing else — verified by reading the built DLL's reference table, not by hop
 Each one is built around LSPDFR's own systems wherever possible: pursuits are LSPDFR pursuits, the
 ambulance and backup come from LSPDFR's backup system, arrest detection is LSPDFR's, and the callout
 blip and acceptance flow are LSPDFR's. The pack supplies the situation, not a parallel universe.
+
+### The library, and which duty gets what
+
+A hundred and two callouts, and each one says which duty it belongs to in its `<For>` element, so the
+work matches the agency you went on duty as:
+
+| Duty | Callouts | What it is |
+|---|---|---|
+| **LSPD** | 30 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances |
+| **Sheriff** (lssd) | 16 | county work: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
+| **Highway Patrol** (sahp) | 12 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
+| **Park Rangers** (sapr) | 9 | the parks: illegal fires, poaching, lost walkers, injured wildlife, off-roading |
+| **Prison** (saspa) | 5 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
+| **EMS** (lsfd) | 14 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
+| **Fire** (lsfd_fire) | 6 | fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
+
+Eighty-four of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
+player's own callouts use, so you can read them, copy them and edit them. The other eighteen are written
+in C# because their behaviour is particular (the medical ones, and the police ones that need a scene the
+recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`
+is offered to all three. An agency the pack has never heard of gets the police work, because a patrol
+with no calls at all is a worse failure than a misfiled one.
 
 ### The five that are not police work
 

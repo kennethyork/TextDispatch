@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-seizure</Id>
+    <Name>Seizure</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person having a seizure in the street.</Message>
+    <Advisory>Caller keeping people back, seizure ongoing.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_vinewood_01" TreatmentSeconds="16">What happened? Why is everybody looking at me?</Patient>
+    <Lines>
+        <Approach>It is still going on. The caller is keeping everybody back like they were told to.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-prisoner-escape</Id>
+    <Name>Prisoner Escape</Name>
+    <For>sheriff,prison</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Prisoner has escaped from custody during transport.</Message>
+    <Advisory>Suspect on foot in cuffs, last seen crossing the road.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>He is still in cuffs and he is on foot. He cannot have gone far.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

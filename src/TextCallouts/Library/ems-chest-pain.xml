@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-chest-pain</Id>
+    <Name>Chest Pain</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person with chest pain, history of heart problems.</Message>
+    <Advisory>Conscious, pale, sitting on a bench.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_business_01" TreatmentSeconds="18">It is easing. It does not feel like the last one, but it does not feel right.</Patient>
+    <Lines>
+        <Approach>Pale, sweating, and he has a history. Do not let him walk anywhere.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

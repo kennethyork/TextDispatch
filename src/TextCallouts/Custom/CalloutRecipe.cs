@@ -19,6 +19,24 @@ namespace TextCallouts.Custom
         Manual
     }
 
+    /// <summary>
+    /// The person who needs treating, for the recipes that are medical rather than a crime.
+    ///
+    /// A recipe with one of these has no suspects to deal with: it ends when the player has spent long
+    /// enough with the patient, which is the same shape the hand-written medical callouts have.
+    /// </summary>
+    internal sealed class PatientRecipe
+    {
+        public string Model = "a_m_m_tramp_01";
+        public int TreatmentSeconds = 15;
+        public float Range = 2.5f;
+
+        /// <summary>What they say when they come round.</summary>
+        public string Line;
+
+        public string Working = "Work the patient - the ambulance is rolling.";
+    }
+
     internal sealed class ActorRecipe
     {
         public string Model = "a_m_y_business_01";
@@ -54,6 +72,17 @@ namespace TextCallouts.Custom
         public string Advisory;
         public CalloutProbability Probability = CalloutProbability.Medium;
 
+        /// <summary>
+        /// Which duty this belongs to: police, medical, fire, or any.
+        ///
+        /// Defaults to police, which is what every recipe written before this existed is, and what an
+        /// unknown value falls back to - see Callouts.Agency for the rule.
+        /// </summary>
+        public string For = "police";
+
+        /// <summary>Set for the medical recipes, and then there are no suspects.</summary>
+        public PatientRecipe Patient;
+
         public float DistanceMin = 150f;
         public float DistanceMax = 320f;
         public float BlipRadius = 40f;
@@ -72,6 +101,9 @@ namespace TextCallouts.Custom
 
         public bool RequestAmbulance;
         public bool RequestBackup;
+
+        /// <summary>Light a fire at the scene when the player arrives - the fire recipes.</summary>
+        public bool ApproachFire;
 
         public string Briefing;
         public string ApproachLine;
@@ -105,6 +137,8 @@ namespace TextCallouts.Custom
                     case "message": recipe.Message = Text(element); break;
                     case "advisory": recipe.Advisory = Text(element); break;
                     case "probability": recipe.Probability = ProbabilityOf(element); break;
+                    case "for": recipe.For = Text(element); break;
+                    case "patient": recipe.Patient = PatientOf(element); break;
                     case "timeoutminutes": recipe.TimeoutMinutes = Int(element, recipe.TimeoutMinutes); break;
                     case "resolution": recipe.Resolution = ResolutionOf(Text(element)); break;
 
@@ -129,6 +163,7 @@ namespace TextCallouts.Custom
                         recipe.ApproachHostile = Flag(element, "Hostile", false);
                         recipe.ApproachHandsUp = Flag(element, "HandsUp", false);
                         recipe.ApproachCower = Flag(element, "Cower", false);
+                        recipe.ApproachFire = Flag(element, "Fire", false);
                         break;
 
                     case "support":
@@ -194,6 +229,19 @@ namespace TextCallouts.Custom
         private static string Text(XElement element)
         {
             return (element.Value ?? "").Trim();
+        }
+
+        private static PatientRecipe PatientOf(XElement element)
+        {
+            var patient = new PatientRecipe();
+            patient.Model = AttributeText(element, "Model", patient.Model);
+            var seconds = AttributeText(element, "TreatmentSeconds", "");
+            int parsed;
+            if (int.TryParse(seconds, out parsed) && parsed > 0) patient.TreatmentSeconds = parsed;
+            patient.Range = Attribute(element, "Range", patient.Range);
+            patient.Line = Text(element);
+            patient.Working = AttributeText(element, "Working", patient.Working);
+            return patient;
         }
 
         private static float Attribute(XElement element, string name, float fallback)

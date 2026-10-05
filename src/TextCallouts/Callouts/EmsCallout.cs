@@ -20,15 +20,6 @@ namespace TextCallouts.Callouts
     /// </summary>
     public abstract class EmsCallout : TextCallout
     {
-        /// <summary>
-        /// Which agencies these belong to, matched against the agency's ScriptName from agency.xml.
-        ///
-        /// Matched loosely - the name only has to contain one of these - because a player who adds
-        /// their own ambulance service to agency.xml should not have to come back here. The two that
-        /// ship with LSPDFR are lsfd, its EMS branch, and lsfd_fire.
-        /// </summary>
-        private static readonly string[] EmsWords = { "lsfd", "ems", "medic", "paramedic", "ambulance", "fire" };
-
         private static bool _reported;
 
         /// <summary>How long the player has to spend on the patient, standing next to them.</summary>
@@ -53,34 +44,15 @@ namespace TextCallouts.Callouts
         private int _nextHelp;
 
         /// <summary>
-        /// Is the player working as an emergency-medical agency? It answers with the agency as well, so
-        /// that a no can be read in the log rather than guessed at.
-        /// </summary>
-        protected static bool OnDutyAsEms(out string agency)
-        {
-            agency = null;
-
-            try { agency = Functions.GetCurrentAgencyScriptName(); }
-            catch (Exception ex) { Log.Error("asking which agency the player is on duty as", ex); return false; }
-
-            if (string.IsNullOrEmpty(agency)) return false;
-
-            var name = agency.Trim().ToLowerInvariant();
-            foreach (var word in EmsWords)
-                if (name.IndexOf(word, StringComparison.Ordinal) >= 0) return true;
-
-            return false;
-        }
-
-        /// <summary>
-        /// Whether to offer this callout at all. The reason for declining is logged once per session:
-        /// LSPDFR asks a pack for a callout many times a patrol, and logging every refusal would be a
+        /// Whether to offer this callout at all. The rule itself is in Agency, where the recipes in the
+        /// library ask the same question; the reason for declining is logged once per session, because
+        /// LSPDFR asks a pack for a callout many times a patrol and logging every refusal would be a
         /// wall of the same sentence.
         /// </summary>
         protected static bool OfferedToThisAgency()
         {
-            string agency;
-            if (OnDutyAsEms(out agency)) return true;
+            var agency = Agency.Current();
+            if (Agency.AllowsFor(Agency.Medical, agency)) return true;
 
             if (!_reported)
             {

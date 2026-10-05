@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-fall-from-height</Id>
+    <Name>Fall from Height</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Tradesman fallen from a ladder, conscious.</Message>
+    <Advisory>Casualty on the ground, colleague applying pressure.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_construct_01" TreatmentSeconds="16">I landed on my side. I can move my fingers. That is something.</Patient>
+    <Lines>
+        <Approach>He went off the third rung carrying something. His mate is holding pressure.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

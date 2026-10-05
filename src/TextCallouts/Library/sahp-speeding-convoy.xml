@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-speeding-convoy</Id>
+    <Name>Convoy of Speeding Vehicles</Name>
+    <For>sahp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Several vehicles travelling together at speed.</Message>
+    <Advisory>Three or four vehicles, no plates readable.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="2" Vehicle="buffalo" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Lines>
+        <Approach>Three or four of them running together and none of the plates readable.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

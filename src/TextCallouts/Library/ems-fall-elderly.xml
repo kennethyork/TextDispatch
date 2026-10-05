@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-fall-elderly</Id>
+    <Name>Fall - Elderly Resident</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Elderly person fallen at home, cannot get up.</Message>
+    <Advisory>Conscious, hip pain, neighbour has the key.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_tramp_01" TreatmentSeconds="12">I cannot put any weight on it. Where is the ambulance?</Patient>
+    <Lines>
+        <Approach>She has been on the floor since this morning and the neighbour has the key.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

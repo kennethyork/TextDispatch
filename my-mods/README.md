@@ -325,26 +325,39 @@ the install notes describing both folders - `Plugins\LSPDFR` for the two police 
 this one - and two command lists. `tools\install-bundle.ps1` puts all three in the right places in one
 go; `tools\package-bundle.ps1` builds the zip.
 
-### 1.12 Being EMS now has its own callouts - TextCallouts 1.3.0
+### 1.12 TextCallouts: 102 callouts, sorted by the duty you work as
 
-Choosing LSFD changed only your uniform, your vehicle and what dispatch calls you: LSPDFR's callout
-registry is police calls, and it filters nothing by agency. So the pack now decides for itself.
+LSPDFR's callout registry is police calls and it filters nothing by agency - the agency you choose changes
+your uniform, your vehicle and what dispatch calls you. So the pack decides for itself, and every callout
+says which duty it belongs to in its `<For>` element.
 
-Five of its eighteen callouts are medical, and each one asks LSPDFR which agency you are working as
-(`Functions.GetCurrentAgencyScriptName()`) before offering itself:
+| Duty you go on as | Callouts | What it is |
+|---|---|---|
+| **LSPD** | 30 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances, missing people |
+| **Sheriff** (lssd) | 16 | county: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
+| **Highway Patrol** (sahp) | 12 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
+| **Park Rangers** (sapr) | 9 | illegal fires, poaching, lost walkers, injured wildlife, off-roading |
+| **Prison** (saspa) | 5 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
+| **EMS** (lsfd) | 14 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
+| **Fire** (lsfd_fire) | 6 | refuse, kitchens, grass, a car in a car park, a car on a hard shoulder, commercial bins |
 
-  Cardiac Arrest             somebody collapsed in the street, a stranger doing compressions
-  Overdose                   slumped and unresponsive; airway, naloxone, and a patient who wakes up
-  Collision with Injuries    one casualty still in the car - the door comes open when you arrive
-  Welfare Check              somebody sat where a neighbour thinks they should not be
-  Vehicle Fire               a car alight in a car park, one person who took the smoke
+An agency the pack has never heard of gets the police work - a patrol with no calls at all is a worse
+failure than a misfiled callout. Some callouts name several duties and are offered to all of them.
 
-The match is loose - `lsfd`, or any agency whose name contains ems, medic, paramedic, ambulance or fire -
-so adding your own ambulance service to `agency.xml` works without touching the pack. A police patrol
-never sees them. Nothing in them pays: that is DriverJobs V's paramedic shift, and `/job LS Medical
-Center` still marks where that starts.
+**Where they live.** Eighty-four are XML recipes in `Plugins\LSPDFR\TextCallouts\Library` - the same format
+your own go in, so they can be read, copied and edited; the pack reads that folder and your `Custom` one,
+and an update replaces only the library. The other eighteen are written in C#, because their behaviour is
+particular: the medical callouts that need a patient to treat, and the police ones that need a scene a
+recipe cannot describe. `tools\make-callout-library.ps1` writes the library from one table, so adding a
+callout is a line in it rather than a new class.
 
-`Plugins\LSPDFR\TextCallouts.dll` is 1.3.0.0 now, and `bundle 1.4.1` carries all three plugins.
+**Checked outside the game:** all 84 recipes parsed with the pack's own parser, and the routing tested duty
+by duty - LSPD gets city work and not county, the Sheriff the other way round, a shared callout reaches all
+three agencies that asked for it, EMS gets medical work and no police work, the fire branch gets fires, an
+unknown agency gets the police work. 21 checks, no failures.
+
+`Plugins\LSPDFR\TextCallouts.dll` is 1.4.0.0 and the library is installed at
+`Plugins\LSPDFR\TextCallouts\Library` (84 files). `bundle 1.4.2` carries all three plugins.
 ### 1.11 The keyboard, redone so nothing is shared
 
 Every mod's config was read, the bindings were pooled, and anything two mods both watched for was moved

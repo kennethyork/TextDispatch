@@ -68,6 +68,13 @@ try {
     # Two command lists, two files: TextDispatch's keeps the plain name, TextJobs' names itself.
     Copy-Item (Join-Path $repo 'src\TextDispatch\COMMANDS.md') (Join-Path $stage 'COMMANDS.md')
     Copy-Item (Join-Path $repo 'src\TextJobs\COMMANDS.md') (Join-Path $stage 'COMMANDS-TextJobs.md')
+
+    # TextCallouts' callout library. Data rather than code, and it goes in the plugin's own folder:
+    # Plugins\LSPDFR\TextCallouts\Library. A bundle that shipped the callout pack without the callouts
+    # would be the kind of mistake nobody notices until they are on duty wondering where the work is.
+    $library = Join-Path $repo 'src\TextCallouts\Library'
+    if (Test-Path $library) { Copy-Item $library (Join-Path $stage 'Library') -Recurse }
+
     Copy-Item (Join-Path $repo 'LICENSE') $stage
     [System.IO.File]::WriteAllText((Join-Path $stage 'BUNDLE.txt'), $text)
 
@@ -75,8 +82,10 @@ try {
     if (Test-Path $zip) { Remove-Item $zip -Force }
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip
     Write-Host ("Packaged " + $zip + "  (" + [Math]::Round((Get-Item $zip).Length / 1kb) + " KB)") -ForegroundColor Green
+    $recipes = 0
+    if (Test-Path $library) { $recipes = (Get-ChildItem $library -Filter '*.xml').Count }
     Write-Host "Contents: TextDispatch.dll $dispatchVersion, TextCallouts.dll $calloutsVersion, TextJobs.dll $jobsVersion,"
-    Write-Host "          BUNDLE.txt, COMMANDS.md (TextDispatch), COMMANDS-TextJobs.md, LICENSE"
+    Write-Host "          BUNDLE.txt, COMMANDS.md (TextDispatch), COMMANDS-TextJobs.md, LICENSE, Library\ ($recipes recipe callouts)"
     Write-Host "No RagePluginHook.dll and no LSPD First Response.dll - neither may be redistributed." -ForegroundColor DarkGray
     Write-Host "TextDispatch.dll and TextCallouts.dll go in Plugins\LSPDFR; TextJobs.dll goes in scripts." -ForegroundColor DarkGray
 }

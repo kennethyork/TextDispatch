@@ -38,13 +38,22 @@ New-Item -ItemType Directory -Path $stage -Force | Out-Null
 try {
     Copy-Item $dll $stage
     Copy-Item (Join-Path $repo 'src\TextCallouts\INSTALL.txt') $stage
+
+    # The callout library: the pack's own recipes, in the same format a player's are. They go in the
+    # player's data folder beside the DLL, in a folder of their own - Library, next to Custom - and the
+    # pack reads both.
+    $library = Join-Path $repo 'src\TextCallouts\Library'
+    if (Test-Path $library) { Copy-Item $library (Join-Path $stage 'Library') -Recurse }
+
     Copy-Item (Join-Path $repo 'LICENSE') $stage
 
     $zip = Join-Path $OutputDirectory "TextCallouts-$Version.zip"
     if (Test-Path $zip) { Remove-Item $zip -Force }
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip
     Write-Host ("Packaged " + $zip + "  (" + [Math]::Round((Get-Item $zip).Length / 1kb) + " KB)") -ForegroundColor Green
-    Write-Host "Contents: TextCallouts.dll $stamp, INSTALL.txt, LICENSE"
+    $recipeCount = 0
+    if (Test-Path $library) { $recipeCount = (Get-ChildItem $library -Filter '*.xml').Count }
+    Write-Host "Contents: TextCallouts.dll $stamp, INSTALL.txt, LICENSE, Library\ ($recipeCount recipe callouts)"
     Write-Host "No RagePluginHook.dll and no LSPD First Response.dll in it - neither may be redistributed." -ForegroundColor DarkGray
 }
 finally {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-ranch-trespass</Id>
+    <Name>Trespasser on Ranch Land</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Rancher reporting somebody on his land with a rifle.</Message>
+    <Advisory>Male on foot, rifle slung, no shots fired.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_RIFLE" />
+    </Actors>
+    <OnApproach At="25" HandsUp="true" />
+    <Lines>
+        <Approach>He is on the rancher land with a rifle on his shoulder. Nobody has been threatened yet.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

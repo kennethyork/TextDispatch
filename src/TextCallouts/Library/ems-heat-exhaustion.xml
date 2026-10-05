@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-heat-exhaustion</Id>
+    <Name>Heat Exhaustion</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person collapsed in the heat, no shade nearby.</Message>
+    <Advisory>Conscious but confused, no water.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_beach_01" TreatmentSeconds="12">I just need to sit down for a minute. I am fine.</Patient>
+    <Lines>
+        <Approach>He has been out in it all day and there is no shade where he is.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

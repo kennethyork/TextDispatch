@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-vehicle-car-park</Id>
+    <Name>Vehicle Fire</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Vehicle alight in a car park, one person overcome by smoke.</Message>
+    <Advisory>Nobody in the vehicle, one casualty being kept back.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Patient Model="a_m_y_business_01" TreatmentSeconds="10">I was right next to it. My chest feels tight.</Patient>
+    <Lines>
+        <Approach>Nobody is in the car. One person took the smoke and is being kept clear.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

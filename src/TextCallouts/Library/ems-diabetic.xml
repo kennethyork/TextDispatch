@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-diabetic</Id>
+    <Name>Diabetic Emergency</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Diabetic person unwell, conscious but confused.</Message>
+    <Advisory>Family present, no insulin taken today.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_f_y_business_01" TreatmentSeconds="14">I just need something sweet. I know what it is.</Patient>
+    <Lines>
+        <Approach>The family are with her. She is confused and has not eaten today.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-pedestrian-struck</Id>
+    <Name>Pedestrian Struck</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Pedestrian struck by a vehicle, driver still on scene.</Message>
+    <Advisory>Casualty in the road, road blocked.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_hasjew_01" TreatmentSeconds="20">My leg. I cannot feel my leg properly.</Patient>
+    <Lines>
+        <Approach>Casualty in the road and the driver is standing there in shock. Two patients for you.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>
