@@ -15,7 +15,7 @@ metadata, not from memory of what was downloaded.
 | LemonUI | **2.2 ✓** — `LemonUI.SHVDN3.dll` in `scripts\`, the menu library the jobs mod draws with |
 | LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.17** and TextCallouts 1.2.3 |
 | ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
-| Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**) |
+| Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**), and every one of them now runs **as your own character** (**§1.8**) |
 | Non-police duty | **LSFD — EMS and Fire ✓** — added to LSPDFR's duty menu (**§1.7**) |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
@@ -229,6 +229,37 @@ Two things to expect, both gameplay rather than faults:
 - **Policing Redefined and StopThePed are written for police duty** and may behave oddly with a
   non-police agency. If a shift as EMS turns strange, take a police agency and use DriverJobs'
   paramedic job instead — that one never involves LSPDFR at all.
+
+### 1.8 DriverJobs runs as your own character now
+
+Every job in DriverJobs normally puts you into a work ped for the shift — a paramedic, a fireman, a
+garbage crewman, a pilot. It is not destructive: `PlayerSkinHelper` stores the model hash, the outfit
+and the weapons first and `RevertModel()` puts all three back afterwards. But during the shift you are
+somebody else, which is not what you want when the whole point is playing *your* character.
+
+That is now off. The `<skins>` block has been removed from all **24** jobs that had one, in
+`scripts\DriverJobsData\Missions\Jobs.xml`. The mod checks `Skins.Count` before it calls `ApplyModel`
+— visible in the IL of `Mission.Start` — and 13 of the 37 jobs already shipped with no skins at all, so
+a job without one simply leaves you alone. **Every job now runs as whoever you are**: on duty that is
+your LSPDFR character in the uniform of the agency you picked (LSFD now included), off duty your story
+character. Nothing is saved or restored, because nothing is changed.
+
+| | |
+|---|---|
+| Backup | `Jobs.xml.bak-20261005-1728` beside it — 56,972 → 54,942 bytes, 1,096 → 1,004 lines |
+| Removed | 24 `<skins>` blocks and their 45 `<skin>` entries, 92 lines; **nothing else** |
+| Checked | line-for-line identical to the backup with those blocks taken out (0 differences), same UTF-8 BOM and CRLF endings, XML parses, 37 missions intact, every other element count unchanged |
+| Unchanged | pay, company vehicles, `personalVehicle` categories, start points, blips, descriptions |
+
+To give one job its uniform back, add the block to that job and nothing else:
+
+```xml
+<skins>
+    <skin>s_m_y_fireman_01</skin>
+</skins>
+```
+
+Not seen in game yet: the game has not been launched since any of this was installed.
 
 ---
 
