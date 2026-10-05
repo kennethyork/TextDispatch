@@ -19,7 +19,12 @@ namespace TextDispatch.Chat
         private readonly Action<string> _submit;
         private readonly Dictionary<Keys, bool> _wasDown = new Dictionary<Keys, bool>();
         private static readonly Keys[] Scan = BuildScanKeys();
-        private Keys _openKey = Keys.T;
+        /// <summary>
+        /// Every key that opens the box - more than one because a single key is a single point of
+        /// failure. On this install T is already claimed by something else, and a chat box that
+        /// cannot be opened is not much of a chat box.
+        /// </summary>
+        private readonly List<Keys> _openKeys = new List<Keys> { Keys.F6 };
 
         public TextInput(ChatBox chat, Action<string> submit)
         {
@@ -36,12 +41,31 @@ namespace TextDispatch.Chat
         {
             if (string.IsNullOrWhiteSpace(name)) return false;
 
-            Keys parsed;
-            if (!Enum.TryParse(name.Trim(), true, out parsed)) return false;
-            if (parsed == Keys.None) return false;
+            var wanted = new List<Keys>();
+            foreach (var part in name.Split(new[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                Keys parsed;
+                if (!Enum.TryParse(part.Trim(), true, out parsed)) return false;
+                if (parsed == Keys.None) return false;
+                if (!wanted.Contains(parsed)) wanted.Add(parsed);
+            }
 
-            _openKey = parsed;
+            if (wanted.Count == 0) return false;
+
+            _openKeys.Clear();
+            _openKeys.AddRange(wanted);
             return true;
+        }
+
+        /// <summary>'F6', or 'T or F6' - for saying back what the box opens with.</summary>
+        public string OpenKeyDescription
+        {
+            get
+            {
+                var parts = new List<string>();
+                foreach (var key in _openKeys) parts.Add(key.ToString());
+                return string.Join(" or ", parts.ToArray());
+            }
         }
 
         /// <summary>Whether controls should be frozen this frame because the player is typing.</summary>
@@ -71,7 +95,7 @@ namespace TextDispatch.Chat
             // Closed: the open key brings the box up, "/" brings it up mid-command.
             if (!_chat.IsOpen)
             {
-                if (key == _openKey) { _chat.IsOpen = true; _chat.Input = ""; _chat.Scroll = 0; }
+                if (_openKeys.Contains(key)) { _chat.IsOpen = true; _chat.Input = ""; _chat.Scroll = 0; }
                 else if (key == Keys.OemQuestion) { _chat.IsOpen = true; _chat.Input = "/"; _chat.Scroll = 0; }
                 return;
             }

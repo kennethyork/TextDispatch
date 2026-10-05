@@ -115,8 +115,10 @@ namespace TextCallouts.Custom
                 }
             }
 
-            Say("Dispatch shows " + _suspects.Count + " suspect(s) and " + _bystanders.Count +
-                " other(s) at " + Where(position) + ".");
+            // The count goes to the log, not the box: it is bookkeeping, and a recipe that says it
+            // three times over a callout is how a chat box stops being readable.
+            Log.Line("custom callout scene: " + _suspects.Count + " suspect(s), " + _bystanders.Count +
+                     " other(s) at " + Where(position));
         }
 
         protected override bool Tick()

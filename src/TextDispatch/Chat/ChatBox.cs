@@ -107,9 +107,38 @@ namespace TextDispatch.Chat
 
         // ------------------------------------------------------------------ output
 
+        private string _lastText;
+        private ChatChannel _lastChannel;
+        private int _lastAt;
+        private int _suppressed;
+
+        /// <summary>Lines dropped because they repeated within three seconds - for the log.</summary>
+        public int SuppressedRepeats { get { return _suppressed; } }
+
         public void Write(ChatChannel channel, string tag, string text)
         {
-            if (text == null) return;
+            if (string.IsNullOrEmpty(text)) return;
+
+            // The same line twice in a moment is never information - it is a loop somewhere upstream,
+            // and a box that fills with it is unusable. Three seconds is long enough to catch the
+            // repeat and short enough that a genuinely repeated radio call still gets through.
+            var now = Environment.TickCount;
+            if (channel == _lastChannel && text == _lastText && now - _lastAt < 3000)
+            {
+                _suppressed++;
+                Log.Line("box repeat suppressed: " + text);
+                return;
+            }
+
+            _lastText = text;
+            _lastChannel = channel;
+            _lastAt = now;
+
+            // Every line that reaches the box is written down, with its channel. Without this the
+            // log can only show what the plugin *decided* to say, which is exactly the half that is
+            // not in question when somebody reports that the box is spamming.
+            Log.Line("box " + channel + ": " + (string.IsNullOrEmpty(tag) ? "" : tag + " ") + text);
+
             lock (_gate)
             {
                 _lines.Add(new ChatLine { Channel = channel, Tag = tag, Text = text });

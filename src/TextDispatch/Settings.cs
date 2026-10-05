@@ -83,7 +83,34 @@ namespace TextDispatch
         /// installed it is entirely possible something else already owns it, and a chat box you
         /// cannot open is not much of a chat box.
         /// </summary>
-        public string OpenKey = "T";
+        public string OpenKey = "Left";
+
+        /// <summary>
+        /// How much of the radio reaches the box.
+        ///
+        ///   quiet  only what asks you something, and answers to what you said
+        ///   brief  the callout cycle as well, but not the routine narration (default)
+        ///   full   everything the dispatcher says
+        ///
+        /// It is here because the dispatcher narrating every callout, every pursuit and every
+        /// acknowledgement fills the box faster than anyone can read it, and the lines worth reading
+        /// are the ones that ask a question.
+        /// </summary>
+        public string Chatter = "brief";
+
+        /// <summary>quiet = 0, brief = 1, full = 2. Anything unrecognised behaves as brief.</summary>
+        public int ChatterLevel
+        {
+            get
+            {
+                switch ((Chatter ?? "").Trim().ToLowerInvariant())
+                {
+                    case "quiet": return 0;
+                    case "full": return 2;
+                    default: return 1;
+                }
+            }
+        }
 
         /// <summary>
         /// Which corner the box sits in. Top-right by default: other LSPDFR plugins draw on the
@@ -119,8 +146,8 @@ namespace TextDispatch
         private static readonly string[] KnownKeys =
         {
             "aimode", "aiprovider", "aiendpoint", "aimodel", "aitimeoutms", "aimaxtokens",
-            "aitemperature", "aihistorylines", "openkey", "chatposition", "chatmargin", "typingms",
-            "dispatchms", "sayrange", "whisperrange", "shoutrange"
+            "aitemperature", "aihistorylines", "openkey", "chatter", "chatposition", "chatmargin",
+            "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange"
         };
 
         public static Settings Load()
@@ -177,6 +204,7 @@ namespace TextDispatch
                         case "aitemperature": settings.AiTemperature = AsFloat(value, settings.AiTemperature); break;
                         case "aihistorylines": settings.AiHistoryLines = AsInt(value, settings.AiHistoryLines); break;
                         case "openkey": settings.OpenKey = value; break;
+                        case "chatter": settings.Chatter = value; break;
                         case "chatposition": settings.ChatPosition = value; break;
                         case "chatmargin": settings.ChatMargin = AsFloat(value, settings.ChatMargin); break;
                         case "typingms": settings.TypingMs = AsInt(value, settings.TypingMs); break;
@@ -241,9 +269,18 @@ namespace TextDispatch
                     "; and costs a little more time per reply.",
                     "AiHistoryLines=" + settings.AiHistoryLines.ToString(CultureInfo.InvariantCulture),
                     "",
-                    "; Which key opens the chat box. Any key name works: T, F6, OemQuestion, Home.",
-                    "; Change it if another mod already uses T.",
+                    "; Which key opens the chat box. Any key name works: Left, Right, F6, T, Home.",
+                    "; The left arrow by default: T is claimed by other mods on a lot of installs, and",
+                    "; a chat box whose key opens something else is a chat box you stop using.",
+                    "; More than one can be given, separated by commas: OpenKey=Left,F6 - and it can",
+                    "; be changed in game with /key, which saves it here.",
                     "OpenKey=" + settings.OpenKey,
+                    "",
+                    "; How much the dispatcher puts in the box:",
+                    ";   quiet  only what asks you something, and answers to what you said",
+                    ";   brief  the callout cycle too, but not the routine narration (default)",
+                    ";   full   everything dispatch says - the callouts, the pursuits, the lot",
+                    "Chatter=" + settings.Chatter,
                     "",
                     "; Which corner the chat box sits in: top-left, top-right, bottom-left, bottom-right.",
                     "; Top-right by default, because other LSPDFR plugins draw on the left.",

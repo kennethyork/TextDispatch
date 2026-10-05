@@ -9,9 +9,9 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <!-- Keep this in step with the release tag so a downloaded DLL can be identified. -->
-    <Version>1.0.14</Version>
-    <AssemblyVersion>1.0.14.0</AssemblyVersion>
-    <FileVersion>1.0.14.0</FileVersion>
+    <Version>1.0.15</Version>
+    <AssemblyVersion>1.0.15.0</AssemblyVersion>
+    <FileVersion>1.0.15.0</FileVersion>
     <Product>TextDispatch</Product>
     <Description>LSPDFR in text: callouts, dispatch and interactions through an in-game chat box.</Description>
 

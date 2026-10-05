@@ -55,6 +55,38 @@ namespace TextDispatch
         internal static Settings Settings { get { return _settings; } }
         internal static PluginInventory Inventory { get { return _inventory; } }
 
+        /// <summary>What the box opens with, for saying it back: 'F6', or 'T or F6'.</summary>
+        internal static string OpenKeyDescription
+        {
+            get
+            {
+                if (_input != null) return _input.OpenKeyDescription;
+                return _settings == null ? "" : _settings.OpenKey;
+            }
+        }
+
+        /// <summary>
+        /// Change the key, or keys, that open the box, and remember it in the ini.
+        ///
+        /// In game rather than only in the ini, because the key that clashes is discovered while
+        /// playing - by pressing it and watching something else come up. Returns null on success, or
+        /// a sentence saying what was wrong.
+        /// </summary>
+        internal static string ChangeOpenKey(string spec, out string description)
+        {
+            description = null;
+            if (string.IsNullOrWhiteSpace(spec)) return "no key was given";
+            if (_input == null || _settings == null) return "the box is not running";
+
+            if (!_input.SetOpenKey(spec))
+                return "'" + spec.Trim() + "' is not a key name - try F6, T, Home, OemQuestion";
+
+            _settings.OpenKey = spec.Trim();
+            _settings.Save();
+            description = _input.OpenKeyDescription;
+            return null;
+        }
+
         /// <summary>
         /// Called by LSPDFR. This must return - LSPDFR is waiting on it - so the tick loop is handed
         /// to its own fiber rather than run here. A loop in this method hangs LSPDFR's startup.
@@ -74,15 +106,15 @@ namespace TextDispatch
 
                 _chat = new ChatBox();
                 _api = new LspdfrApi();
-                _dispatch = new DispatchService(_chat, _api, _settings);
                 // Fixed seed: the same town every session, so somebody the terminal flags as wanted is
                 // still that person tomorrow. The alternative - a fresh population each launch - makes
                 // the records meaningless.
                 //
-                // Built before the dialogue service on purpose: the conversation prompt describes the
-                // same person the terminal does, from the same records.
+                // Built before the services that read it, on purpose: a plate on the radio is answered
+                // from the same records the terminal shows, and the conversation prompt describes the
+                // same person the terminal does.
                 _records = RecordsLedger.Populate(20261004);
-
+                _dispatch = new DispatchService(_chat, _api, _settings, _records);
                 _dialogue = new DialogueService(_chat, _api, _settings, _records);
                 _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records);
                 _input = new TextInput(_chat, _router.Handle);
@@ -115,10 +147,11 @@ namespace TextDispatch
                 Log.Line("log: " + Log.Path);
                 ReportDisplay();
 
-                _chat.Notice("TextDispatch loaded. Press " + _settings.OpenKey + " to chat - /help for the commands.");
-                _chat.Notice("Type anything to speak out loud. People nearby answer in text (" +
-                             (_settings.UseModel ? "model: " + _settings.AiProvider : "scripted") + " mode).");
-                _chat.Notice("Type in the box with /r <text> to talk to dispatch - it answers on the radio.");
+                // Two lines at startup, not five. A box that opens with a wall of text is one the
+                // player scrolls past rather than reads, and everything else belongs in /help where
+                // it can be asked for.
+                _chat.Notice("TextDispatch ready. Press " + _input.OpenKeyDescription +
+                             " to chat - type to speak, /r for the radio, /help for the rest.");
                 _chat.Dispatch("Dispatch online. " + _dispatch.Unit +
                                ", you are 10-8. I will call you when something comes in.");
 
@@ -212,8 +245,22 @@ namespace TextDispatch
             _inventory = PluginInventory.Scan(_api);
             _inventory.WriteToLog();
 
+            // The headline, and only the warnings that mean something is wrong.
+            //
+            // "Optional integrations not installed" is the common case - a feature switched off,
+            // not a fault - and a long line about it every session is how a box teaches its reader
+            // to look past it. /plugins still lists it and the log has it in full.
             _chat.Notice(_inventory.Headline());
-            foreach (var warning in _inventory.Warnings()) _chat.Error(warning);
+            foreach (var warning in _inventory.Warnings())
+            {
+                if (warning.StartsWith("Optional integrations", StringComparison.OrdinalIgnoreCase))
+                {
+                    Log.Line("inventory (kept out of the box - it is a feature switched off, not a fault): " + warning);
+                    continue;
+                }
+
+                _chat.Error(warning);
+            }
         }
 
         private static void DisableGameControls()

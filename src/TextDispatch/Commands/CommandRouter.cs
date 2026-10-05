@@ -47,6 +47,16 @@ namespace TextDispatch.Commands
             var code = AsStatusCode(text);
             if (code != null) { Status(code); return; }
 
+            // The two words dispatch actually asks for work without the slash, because having to
+            // remember one is a way of missing a call. They are the only bare words that mean a
+            // command: "yes" and "no" stay speech, since those are exactly the words somebody says
+            // to a suspect.
+            if (CallWaiting())
+            {
+                if (text.Equals("accept", StringComparison.OrdinalIgnoreCase)) { Accept(); return; }
+                if (text.Equals("decline", StringComparison.OrdinalIgnoreCase)) { Decline(); return; }
+            }
+
             // Anything else is speech, spoken where you are standing - and the people who can hear
             // it answer, which is the whole point.
             _dialogue.Say(text, SpeechMode.Say);
@@ -121,8 +131,15 @@ namespace TextDispatch.Commands
                 case "endtalk": _dialogue.StopTalking(); return;
 
                 // ---------------------------------------------------- callouts
-                case "accept": Accept(); return;
-                case "decline": Decline(); return;
+                // /y is already "yell", so accepting is /yes - and a bare "accept" works too,
+                // which is the word dispatch actually says.
+                case "accept":
+                case "yes": Accept(); return;
+                case "decline":
+                case "no": Decline(); return;
+                case "key": SetKey(argument); return;
+                case "chatter":
+                case "spam": SetChatter(argument); return;
                 case "callout":
                 case "start": StartCallout(argument); return;
                 case "calls": ListCallouts(argument); return;
@@ -209,10 +226,14 @@ namespace TextDispatch.Commands
 
         private void TalkTo(string argument)
         {
+            // With no number, the nearest person - which is nearly always who was meant, and saves
+            // running /who first.
+            if (string.IsNullOrWhiteSpace(argument)) { _dialogue.TalkTo(1); return; }
+
             int index;
             if (!int.TryParse(argument, out index))
             {
-                _chat.Error("Usage: /talk <number>  -  see /who for who is nearby.");
+                _chat.Error("Usage: /talk  (whoever is nearest)  or  /talk <number>  -  see /who.");
                 return;
             }
             _dialogue.TalkTo(index);
@@ -1014,6 +1035,60 @@ namespace TextDispatch.Commands
             foreach (var warning in inventory.Warnings()) _chat.Error(warning);
         }
 
+        /// <summary>
+        /// How much of the dispatcher's traffic reaches the box.
+        ///
+        /// In game rather than only in the ini, because the right answer changes with what you are
+        /// doing: quiet while you are reading your way through a callout, full while you are waiting
+        /// for something to happen.
+        /// </summary>
+        private void SetChatter(string argument)
+        {
+            var level = (argument ?? "").Trim().ToLowerInvariant();
+            if (level != "quiet" && level != "brief" && level != "full")
+            {
+                _chat.Notice("Chatter is " + _settings.Chatter + ".");
+                _chat.Notice("Usage: /chatter quiet | brief | full");
+                _chat.Notice("  quiet  only what asks you something   brief  the callouts too (default)   full  everything");
+                return;
+            }
+
+            _settings.Chatter = level;
+            _settings.Save();
+            _chat.Notice("Chatter is now " + level + ", and that is saved to the ini.");
+        }
+
+        /// <summary>True when a call is on the radio waiting for an answer.</summary>
+        private bool CallWaiting()
+        {
+            try
+            {
+                var handle = _api.CurrentCallout();
+                return handle != null && (_api.AcceptanceState(handle) ?? "") == "Pending";
+            }
+            catch { return false; }
+        }
+
+        /// <summary>
+        /// Which key, or keys, open the box - changeable while playing, because the key that clashes
+        /// is discovered by pressing it and watching something else come up, not by reading an ini.
+        /// </summary>
+        private void SetKey(string argument)
+        {
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                _chat.Notice("The box opens with " + Plugin.OpenKeyDescription + ".");
+                _chat.Notice("Usage: /key Left   -   or several: /key Left,F6   -   or OpenKey in the ini.");
+                return;
+            }
+
+            string description;
+            var problem = Plugin.ChangeOpenKey(argument, out description);
+            if (problem != null) { _chat.Error("That key will not work: " + problem + "."); return; }
+
+            _chat.Notice("The box now opens with " + description + ", and that is saved to the ini.");
+        }
+
         private void Help()
         {
             _chat.Notice("TextDispatch - LSPDFR through a chat box.");
@@ -1023,6 +1098,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Radio:    /r <text>  or just type a status code below");
             _chat.Notice("  Status:   10-8  10-7  10-97  10-98  10-6  code 3  code 4");
             _chat.Notice("  Calls:    /accept  /decline  /calls [filter]  /callout <name>  /endcall  /available on|off");
+            _chat.Notice("  Quick:    /yes accept  /no decline  (or just type 'accept')   /talk  whoever is nearest");
             _chat.Notice("  Stops:    /stop  /endstop  /tow   (or pull over with LSPDFR and it is picked up)");
             _chat.Notice("            /id  /frisk  /cuff  /detain  /release  /record  /owner  /transport");
             _chat.Notice("            (all of those act on the driver you stopped)");
@@ -1030,9 +1106,10 @@ namespace TextDispatch.Commands
             _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model>");
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest  /cite <name> <offence>");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");
-            _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /clear");
+            _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /key  /clear");
             _chat.Notice("  Install:  /plugins  what LSPDFR actually loaded, and what it did not");
-            _chat.Notice("  Open the box with T, or / to start typing a command.");
+            _chat.Notice("  Open the box with " + Plugin.OpenKeyDescription + ", or / to start a command.");
+            _chat.Notice("  Chatter:  /chatter quiet|brief|full  - how much of dispatch's traffic you see.");
         }
     }
 }

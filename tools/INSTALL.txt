@@ -23,7 +23,8 @@ INSTALL
    no chat box, no callout pack, and nothing in any log - however long you wait in
    story mode.
 
-4. The box appears saying "TextDispatch loaded. Press T to chat." Press T.
+4. Press the key the notification names - the LEFT ARROW by default. T is claimed by other mods on
+   a lot of installs, so it is not the default any more. Change it while playing with /key F6.
 
    If you would rather not type in the box, everything also works from Rage Plugin
    Hook's F4 console: tdsay, tdstatus, tdplugins, tdcallouts, tdmodels, tdfont.
@@ -97,12 +98,16 @@ Type these in the box, or use "tdsay <text>" from the F4 console.
     help          everything, printed in the box
     /plugins      what LSPDFR loaded, and what it did not
     /calls        every callout this install has      /callout <name>  starts one
-    /accept       take the call dispatch announced    /decline  /endcall
+    /accept       take the call dispatch announced    /yes  /decline  /no  /endcall
+                  (or just type: accept)
     /r <text>     talk to dispatch on the radio
     /stop         pull someone over                   /endstop
     /id  /frisk  /cuff  /detain  /release  /record  /owner  /tow  /transport
     /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /911 <details>
     /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest  /cite <name> <offence>
+                  the radio answers records too: /r run 4ABC123   or   /r person Marcus Reyes
+    /talk         speak to whoever is nearest      /key <key>  change the open key
+    /chatter      quiet | brief | full - how much of dispatch's traffic you see
     /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model>
     /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /clear
 

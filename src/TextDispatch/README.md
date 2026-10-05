@@ -181,7 +181,7 @@ Type anything and it is spoken where you are standing.
 | `/do <text>` | scene description — `(( the door is hanging open ))` |
 | `/b <text>` | out of character, grey |
 | `/who` | list who is nearby, with names and moods |
-| `/talk <n>` | speak to a specific person, so a crowd can't steal your conversation |
+| `/talk [n]` | speak to whoever is nearest - or `/talk 3` for a specific person from `/who` |
 | `/endtalk` | drop the current target |
 
 Talk to dispatch with `/r <text>`, or just type a status code.
@@ -238,8 +238,18 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 **Radio**
 `/r <text>` — say anything to dispatch · `/r send me backup` / `/r I need EMS` work as you'd expect
 
+**Records over the radio, too.** `/r run 4ABC123` and `/r person Marcus Reyes` are answered from the same
+ledger the terminal reads — procedurally, so the reply is the record rather than a sentence about one,
+and it costs no model time. A plate is recognised by its shape (four to eight characters with letters
+and digits in it), so `/r what is 4ABC123` works as well as `/r run the plate 4ABC123`. A name only
+matches if the records already hold it and the sentence asks about a person, so ordinary conversation
+cannot turn into a records check by accident.
+
 **Callouts**
-`/accept` · `/decline` · `/calls` · `/callout <name>` · `/endcall` · `/available on|off`
+`/accept` · `/yes` (or just type `accept`) · `/decline` · `/no` · `/calls` · `/callout <name>` · `/endcall` · `/available on|off`
+
+A call waiting for an answer understands the bare word `accept` too, because that is the word dispatch
+says. `yes` and `no` on their own stay speech - they are the words somebody says to a suspect.
 
 `/calls` lists every callout this install has — LSPDFR's own plus every pack's, read from the
 assembly — and `/callout` starts any of them by name.
@@ -295,6 +305,7 @@ Records are per session. Nothing is written to disk.
 
 **The box itself**
 `/pos <corner>` · `/margin <px>` · `/ui <scale>` · `/font <name>` · `/fontsize <n>` · `/lines <n>` · `/clear`
+`/key <key>` · `/chatter quiet|brief|full`
 
 **The install**
 `/plugins` - what LSPDFR actually loaded, what it did not, and anything installed where LSPDFR never
@@ -308,13 +319,25 @@ drawing unreadable. `/pos bottom-right` moves it; the choice is saved to the ini
 
 | Key | Does |
 |---|---|
-| **T** | Open the chat box |
+| **Left arrow** | Open the chat box - configurable, see below |
 | **/** | Open the chat box with a slash already typed |
 | **Enter** | Send |
 | **Esc** | Close and clear |
 | **Up / Down** | Command history |
 | **PgUp / PgDn** | Scroll the transcript |
 | **Ctrl+V** | Paste (yes, really) |
+
+**The key that opens the box is yours to choose.** Left arrow by default, because T is claimed by other
+mods on a lot of installs and a chat box whose key opens something else is one you stop using. `/key F6`
+changes it while playing and saves it; `OpenKey=Left,F6` in the ini gives it two. `/` opens the box with
+a slash already typed - a way in that no other mod can take.
+
+**How much dispatch says is a setting too.** `/chatter quiet | brief | full`: `quiet` is only what asks
+you something and the answers to what you said; `brief` (the default) adds the callout cycle; `full` is
+everything, including narration about calls that have already finished. It is in the box because the
+right answer changes with what you are doing - `quiet` while you are reading your way through a callout,
+`full` while you are waiting for something to happen. Lines kept out of the box are still written to the
+log, and still remembered as radio traffic, so the dispatcher's side of the conversation stays whole.
 
 While the box is open the game's controls are frozen, so typing `10-97` does not also steer the car.
 
@@ -329,7 +352,8 @@ While the box is open the game's controls are frozen, so typing `10-97` does not
    in the right folder, and cleans up a copy in `Plugins\` if an earlier version left one there.
 3. Launch **RagePluginHook.exe** (not the normal launcher) and load into story mode.
 4. **Go on duty** - press **E** at a police station.
-5. The box appears with `TextDispatch loaded. Press T to chat.` Press **T**.
+5. The box appears saying which key opens it. Press that key - the **left arrow** unless you changed
+   it. `T` is claimed by other mods on a lot of installs, which is why it is not the default.
 
 > **LSPDFR loads `Plugins\LSPDFR` when you go on duty - not when the game starts.** Nothing in that
 > folder runs before then: no callout pack, no StopThePed, no chat box. Waiting in story mode changes

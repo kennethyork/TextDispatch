@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TextDispatch.Records;
 using Rage;
 using TextDispatch.Ai;
 using TextDispatch.Chat;
@@ -42,12 +43,14 @@ namespace TextDispatch.Lspdfr
         private bool _onScene;
         private string _lastStatus = "";
         private int _tick;
+        private readonly RecordsLedger _records;
 
-        public DispatchService(ChatBox chat, LspdfrApi api, Settings settings)
+        public DispatchService(ChatBox chat, LspdfrApi api, Settings settings, RecordsLedger records)
         {
             _chat = chat;
             _api = api;
             _settings = settings;
+            _records = records;
             _pump = new ReplyPump(settings);
             _unit = "2A" + new Random().Next(10, 99);
         }
@@ -89,7 +92,7 @@ namespace TextDispatch.Lspdfr
                     _calloutState = "";
                     _calloutName = "";
                     _onScene = false;
-                    Transmit(_unit + ", that call is closed. You are clear and 10-8.");
+                    Transmit(_unit + ", that call is closed. You are clear and 10-8.", 1);
                 }
                 return;
             }
@@ -124,7 +127,7 @@ namespace TextDispatch.Lspdfr
                         break;
 
                     case "Ended":
-                        Transmit(name + " is closed. " + _unit + ", show me 10-98 when you are clear.");
+                        Transmit(name + " is closed. " + _unit + ", show me 10-98 when you are clear.", 2);
                         break;
                 }
             }
@@ -138,9 +141,9 @@ namespace TextDispatch.Lspdfr
 
             if (running)
                 Transmit("All units, pursuit in progress. " + _unit +
-                         ", advise if you need backup - say it on the radio and I will send it.");
+                         ", advise if you need backup - say it on the radio and I will send it.", 1);
             else
-                Transmit("Pursuit has ended. " + _unit + ", advise your status.");
+                Transmit("Pursuit has ended. " + _unit + ", advise your status.", 2);
         }
 
         private void WatchPullover()
@@ -150,9 +153,9 @@ namespace TextDispatch.Lspdfr
             _pullover = stopping;
 
             if (stopping)
-                Transmit(_unit + ", I show you on a traffic stop. Run the plate and tell me what you have.");
+                Transmit(_unit + ", I show you on a traffic stop. Run the plate and tell me what you have.", 1);
             else
-                Transmit("Traffic stop cleared. File it before you close the call.");
+                Transmit("Traffic stop cleared. File it before you close the call.", 1);
         }
 
         private void WatchArrest()
@@ -162,7 +165,7 @@ namespace TextDispatch.Lspdfr
             _arresting = arresting;
 
             if (arresting)
-                Transmit(_unit + ", one in custody. Ask me for transport when you are ready.");
+                Transmit(_unit + ", one in custody. Ask me for transport when you are ready.", 1);
         }
 
         // ------------------------------------------------------------------ talking to dispatch
@@ -183,6 +186,11 @@ namespace TextDispatch.Lspdfr
             // paraphrase it through a model.
             var code = DispatcherBrain.DetectCode(text);
             if (code != null && text.Length <= 12) { Acknowledge(code); return; }
+
+            // A plate, or a name the records already hold, is a records request - answered from the
+            // same ledger the terminal reads. Deterministic on purpose: the reply *is* the record
+            // rather than a sentence about one, so it cannot be invented and costs no model time.
+            if (TryRecordsRequest(text)) return;
 
             var intent = DispatcherBrain.Classify(text);
 
@@ -269,7 +277,7 @@ namespace TextDispatch.Lspdfr
                     return reply;
                 },
                 scripted,
-                Transmit);
+                line => Transmit(line));
         }
 
         /// <summary>Dispatch answers a status code typed by the player.</summary>
@@ -403,12 +411,144 @@ namespace TextDispatch.Lspdfr
             return string.Join("\n", _radioLog.GetRange(start, _radioLog.Count - start).ToArray());
         }
 
-        /// <summary>Everything dispatch says goes through here, so the log and the channel agree.</summary>
-        private void Transmit(string line)
+        // ------------------------------------------------------------------ records over the radio
+
+        /// <summary>
+        /// Answer a plate, or a name the records already hold, the way a dispatcher would. Returns
+        /// false when the text is not a records request at all, so it goes on to the dispatcher as
+        /// ordinary conversation.
+        /// </summary>
+        private bool TryRecordsRequest(string text)
+        {
+            var plate = PlateIn(text);
+            if (plate != null)
+            {
+                var vehicle = _records.EnsureVehicle(plate, null);
+                if (vehicle == null) return false;
+
+                Transmit(plate + " comes back to " + vehicle.OwnerName + " - " + vehicle.Model +
+                         (vehicle.Insured ? ", insured" : ", NOT insured"));
+
+                if (vehicle.ReportedStolen) Transmit(plate + " is flagged as STOLEN.");
+
+                foreach (var bolo in _records.Bolos)
+                    if (BoloMatches(bolo, plate)) Transmit(plate + " matches a BOLO: " + bolo.Reason);
+
+                return true;
+            }
+
+            var person = PersonIn(text);
+            if (person == null) return false;
+
+            Transmit(person.Name + ", " + person.Age + ", " + person.Occupation + " - " +
+                     person.Summary() + ".");
+
+            if (person.Wanted && !string.IsNullOrEmpty(person.WarrantFor))
+                Transmit("Warrant on file: " + person.WarrantFor);
+
+            return true;
+        }
+
+        /// <summary>
+        /// A plate hiding in a sentence: a token of four to eight characters with at least one letter
+        /// and one digit, which is the shape GTA gives plates and is not the shape of a word. A token
+        /// after "plate" or "reg" counts too, because that is how somebody asks for it out loud.
+        /// </summary>
+        private static string PlateIn(string text)
+        {
+            var words = text.Split(new[] { ' ', ',', '.', '?', '!', ';', ':', '\'', '"' },
+                                   StringSplitOptions.RemoveEmptyEntries);
+
+            for (var i = 0; i < words.Length; i++)
+            {
+                var word = words[i].Trim();
+                if (LooksLikePlate(word)) return word.ToUpperInvariant();
+                if (i > 0 && AskedForPlate(words[i - 1]) && word.Length >= 3) return word.ToUpperInvariant();
+            }
+
+            return null;
+        }
+
+        private static bool AskedForPlate(string word)
+        {
+            var w = (word ?? "").Trim().ToLowerInvariant();
+            return w == "plate" || w == "plates" || w == "reg" || w == "registration" || w == "tag";
+        }
+
+        private static bool LooksLikePlate(string word)
+        {
+            if (string.IsNullOrEmpty(word)) return false;
+
+            var w = word.Trim();
+            if (w.Length < 4 || w.Length > 8) return false;
+
+            var letters = 0;
+            var digits = 0;
+
+            foreach (var character in w)
+            {
+                if (char.IsLetter(character)) letters++;
+                else if (char.IsDigit(character)) digits++;
+                else return false;
+            }
+
+            return letters > 0 && digits > 0;
+        }
+
+        /// <summary>
+        /// A name on the radio - but only one the records already hold, and only when the sentence
+        /// asks about a person. Everything else stays conversation, so an ordinary sentence cannot
+        /// turn into a records request by accident.
+        /// </summary>
+        private PersonRecord PersonIn(string text)
+        {
+            var asked = text.IndexOf("person", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        text.IndexOf("name", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        text.IndexOf("warrant", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        text.IndexOf("record", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (!asked) return null;
+
+            foreach (var person in _records.People)
+            {
+                if (string.IsNullOrEmpty(person.Name)) continue;
+                if (text.IndexOf(person.Name, StringComparison.OrdinalIgnoreCase) >= 0) return person;
+            }
+
+            return null;
+        }
+
+        private static bool BoloMatches(BoloRecord bolo, string subject)
+        {
+            if (bolo == null || string.IsNullOrEmpty(bolo.Subject)) return false;
+
+            return bolo.Subject.IndexOf(subject, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   subject.IndexOf(bolo.Subject, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        /// <summary>
+        /// Everything dispatch says goes through here, so the log and the channel agree.
+        ///
+        ///   needed 0  something asked of the player, or an answer to something they said - always shown
+        ///   needed 1  routine narration: a call opening, a pursuit starting, a stop clearing
+        ///   needed 2  the quietest line there is: narration about something already over
+        ///
+        /// At `brief` - the default - levels 0 and 1 reach the box and level 2 goes to the log; at
+        /// `quiet` only level 0 does; at `full` everything does. The dispatcher narrating all of it
+        /// fills the box faster than anyone can read, and the lines worth reading are the ones that
+        /// ask the player something.
+        ///
+        /// A suppressed line is still remembered as radio traffic, so the dispatcher's own idea of
+        /// what it has said does not develop holes just because part of it was not displayed.
+        /// </summary>
+        private void Transmit(string line, int needed = 0)
         {
             if (string.IsNullOrEmpty(line)) return;
-            _chat.Dispatch(line);
+
             RememberRadio("Dispatch: " + line);
+
+            if (_settings.ChatterLevel >= needed) _chat.Dispatch(line);
+            else Log.Line("radio (chatter=" + _settings.Chatter + ", kept to the log): " + line);
         }
     }
 }

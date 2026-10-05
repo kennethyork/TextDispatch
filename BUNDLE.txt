@@ -30,7 +30,9 @@ INSTALL
    This is the step people miss. LSPDFR loads everything in Plugins\LSPDFR at that moment and not
    before it - no chat box, no callouts, nothing, however long you wait in story mode.
 
-4. The box appears saying "TextDispatch loaded. Press T to chat." Press T.
+4. Press the key the notification names - the LEFT ARROW by default. T is claimed by other mods on a
+   lot of installs, so it is no longer the default. /key F6 changes it while playing; /chatter
+   quiet|brief|full decides how much of dispatch's radio traffic reaches the box.
 
    TextCallouts registers its thirteen callouts at the same moment and tells you so on screen.
 
