@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>uc-armed-clown</Id>
+    <Name>Person in Clown Mask with a Weapon</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person in a mask carrying a weapon, frightening the public.</Message>
+    <Advisory>Male in a clown mask, weapon visible, no victims.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_BAT" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Lines>
+        <Approach>He is in a mask and he has something in his hand, and he is enjoying the reaction.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

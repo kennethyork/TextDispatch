@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>uc-k9-backup</Id>
+    <Name>K9 Backup Required</Name>
+    <For>lspd,sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Handler requesting a K9 unit, suspect fled on foot.</Message>
+    <Advisory>Suspect in a yard, no weapon seen, handler holding the perimeter.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Lines>
+        <Approach>He is in the yard and the handler wants a dog rather than a foot chase. Hold what you have.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

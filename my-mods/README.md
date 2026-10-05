@@ -333,13 +333,13 @@ says which duty it belongs to in its `<For>` element.
 
 | Duty you go on as | Callouts | What it is |
 |---|---|---|
-| **LSPD** | 30 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances, missing people |
-| **Sheriff** (lssd) | 16 | county: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
-| **Highway Patrol** (sahp) | 12 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
-| **Park Rangers** (sapr) | 9 | illegal fires, poaching, lost walkers, injured wildlife, off-roading |
-| **Prison** (saspa) | 5 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
-| **EMS** (lsfd) | 14 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
-| **Fire** (lsfd_fire) | 6 | refuse, kitchens, grass, a car in a car park, a car on a hard shoulder, commercial bins |
+| **LSPD** | 81 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances, missing people |
+| **Sheriff** (lssd) | 37 | county: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
+| **Highway Patrol** (sahp) | 29 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
+| **Park Rangers** (sapr) | 22 | illegal fires, poaching, lost walkers, injured wildlife, off-roading |
+| **Prison** (saspa) | 18 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
+| **EMS** (lsfd) | 20 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
+| **Fire** (lsfd_fire) | 7 | refuse, kitchens, grass, a car in a car park, a car on a hard shoulder, commercial bins |
 
 An agency the pack has never heard of gets the police work - a patrol with no calls at all is a worse
 failure than a misfiled callout. Some callouts name several duties and are offered to all of them.
@@ -402,6 +402,32 @@ is also the horn while driving (that is LSPDFR's choice, not a collision with an
 (PR's partner in/out of a vehicle) is the game's look-behind. If either annoys you, they are one line each.
 
 ---
+
+### 1.13 What can now come out, and what cannot
+
+TextCallouts is at a hundred and forty-five callouts, and every callout the other packs offer has an
+equivalent in it - so the callout packs can be uninstalled.
+
+| Pack | Callouts | Covered? |
+|---|---|---|
+| 686 Callouts 2.1.2 | 30 | yes - a recipe for each, except the two that were already here |
+| UnitedCallouts 1.5.8.2 | 19 enabled | yes |
+| StoryCallouts 0.1.2 | the mission remakes | the four situations, as police work rather than cut scenes |
+| ManiacCallouts 1.3.0 | - | its own scenarios are covered by type (shootings, foot chases, weapons) |
+| MizCallouts 1.0.1 | - | idem - its BabyDriver scenario is the pursuit and stolen-vehicle recipes |
+| Plain Sight 1.1.3 | - | idem |
+| SSStuartCallouts 0.1.2 | - | idem |
+
+**What you would lose by uninstalling them, which this does not replace:** Callout Interface's MDT and
+call metadata (already removed once, see the inventory), anything that leaned on interiors or RAGENativeUI,
+and the specific *scripted* routines - a bomb on a timer, a protest crowd, a SWAT entry sequence. The
+callout list is covered; the staging is simpler.
+
+**Nothing else depends on them.** StopThePed, Ultimate Backup and Policing Redefined are interaction
+plugins, not callout packs, and TextCallouts references nothing but LSPDFR and RAGE Plugin Hook.
+
+**How to take them out:** delete the DLL from `Plugins\LSPDFR\` and its folder (686Callouts, MizCallouts,
+UnitedCallouts) if it has one. Then check `/calls` in the box, or `/plugins`, which lists what loaded.
 
 ## 2. Every mod installed
 

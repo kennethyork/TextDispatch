@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>p686-offensive-weapon</Id>
+    <Name>Offensive Weapon Reported</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person reported carrying a weapon in public.</Message>
+    <Advisory>Male on foot, bat or club seen, no victims.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_BAT" />
+    </Actors>
+    <OnApproach At="25" HandsUp="true" />
+    <Lines>
+        <Approach>Bat in his hand and no victims yet. He is walking, not running.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

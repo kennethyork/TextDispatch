@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>story-armoured-truck</Id>
+    <Name>Armoured Truck Intercepted</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Armoured truck stopped in the road, crew not responding.</Message>
+    <Advisory>Truck abandoned, crew unaccounted for.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>The truck is stopped and nobody is answering from it. Approach like they are still inside.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

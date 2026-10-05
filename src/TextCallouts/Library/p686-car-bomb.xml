@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>p686-car-bomb</Id>
+    <Name>Suspected Vehicle Bomb</Name>
+    <For>lspd,fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Vehicle reported with wiring visible under the dashboard.</Message>
+    <Advisory>Nobody in or near the vehicle, caller keeping people back.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Lines>
+        <Approach>Wiring under the dash and nobody near it. Do not touch the car - keep the street clear.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

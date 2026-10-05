@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>uc-metro-disturbance</Id>
+    <Name>Disturbance at a Metro Station</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Disturbance at a metro station, staff asking for attendance.</Message>
+    <Advisory>Three involved, no weapons seen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="3" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Lines>
+        <Approach>Three of them and the staff want them out. No weapons mentioned.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

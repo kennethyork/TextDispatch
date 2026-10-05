@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>uc-person-with-knife</Id>
+    <Name>Person with a Knife</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person in the street with a knife, public backing away.</Message>
+    <Advisory>Male on foot, knife in hand, no victims yet.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_KNIFE" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Lines>
+        <Approach>Knife in his hand and people are backing away from him. Nobody has been hurt yet.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>p686-alleyway-robbery</Id>
+    <Name>Alleyway Robbery</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Robbery in progress in an alley, caller watching from a window.</Message>
+    <Advisory>One male, knife seen, victim still there.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_KNIFE" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>Knife, one male, and the victim is still in the alley with him.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

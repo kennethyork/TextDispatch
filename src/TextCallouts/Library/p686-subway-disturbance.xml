@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>p686-subway-disturbance</Id>
+    <Name>Subway Disturbance</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Disturbance on a subway platform.</Message>
+    <Advisory>Two males arguing, staff asking for someone to attend.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Lines>
+        <Approach>Two of them on the platform and the staff have had enough. It has not turned violent.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

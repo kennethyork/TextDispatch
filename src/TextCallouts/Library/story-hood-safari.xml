@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>story-hood-safari</Id>
+    <Name>Hunters Reported</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Armed men in the county, residents reporting shots.</Message>
+    <Advisory>Two vehicles, rifles seen, one resident confronted.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_RIFLE" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>They have rifles and one of them has already had a go at a resident. Both vehicles are still close.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>
