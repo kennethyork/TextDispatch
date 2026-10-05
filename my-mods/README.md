@@ -11,8 +11,11 @@ metadata, not from memory of what was downloaded.
 | .NET Framework | 4.8 ✓ |
 | RAGENativeUI | 1.9.3.0 ✓ (was wrongly 1.6.3.0 — fixed, see §1) |
 | ScriptHookV | **3889.0.1158.13 ✓** — installed, matches your game build 1.0.3889.0 (§1.1) |
-| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is 1.0.15 and TextCallouts 1.2.3 |
-| ASI mods | 3 installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
+| ScriptHookVDotNet | **nightly 3.7.0.191 ✓** — installed for the civilian jobs mod (§1.6) |
+| LemonUI | **2.2 ✓** — `LemonUI.SHVDN3.dll` in `scripts\`, the menu library the jobs mod draws with |
+| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.17** and TextCallouts 1.2.3 |
+| ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
+| Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**) |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
 | Local model | Ollama `llama3.2:latest` ✓ answering |
@@ -150,6 +153,58 @@ StopThePed** (hard reference — that was the 14:43 crash). So:
 
 ---
 
+### 1.6 Civilian jobs (DriverJobs V) — installed, not yet launched
+
+DriverJobs V **1.6.0** is in `scripts\`, with the two things it needs: **ScriptHookVDotNet nightly
+3.7.0.191** in the game root, and **LemonUI 2.2** (`LemonUI.SHVDN3.dll`) beside it in `scripts\`. It is
+the first mod here that runs through ScriptHookV rather than through RAGE Plugin Hook, which is what
+makes it work with LSPDFR rather than instead of it: nothing is shared between them but the game.
+
+Installed path, for reference:
+
+```
+D:\Grand Theft Auto V Legacy\
+    ScriptHookVDotNet.asi          the loader ScriptHookV's ASI loader picks up
+    ScriptHookVDotNet2.dll         API for v2 scripts
+    ScriptHookVDotNet3.dll         API for v3 scripts  (3.7.0.191)
+    ScriptHookVDotNet.ini          console key F7 (was F4 - see below)
+    scripts\
+        DriverJobs.dll             the mod
+        DriverJobsData\            its 84 XML data files
+        LemonUI.SHVDN3.dll         the menu library it draws with
+```
+
+Verified by reading the files, not by playing:
+
+- all **476** ScriptHookVDotNet and LemonUI members `DriverJobs.dll` calls resolve against the versions
+  installed, so there is no `MissingMethodException` waiting to happen;
+- it references `World.CreateRandomPed` — the one the newest nightly did **not** rename (nightly 191
+  changed `Ped.CreateRandom` only, which DriverJobs does not use);
+- its assembly references carry no public key token, so their version numbers are not enforced: built
+  against 3.7.0.106 and 2.1.2.0, it loads against 3.7.0.191 and 2.2.0;
+- all 84 XML data files parse, and `Missions\Jobs.xml` holds 37 jobs.
+
+**One setting was changed for you.** ScriptHookVDotNet's console key is **F4** by default, which is
+RAGE Plugin Hook's console too — two consoles fighting over one key. It is set to **F7** in
+`ScriptHookVDotNet.ini`; that is the only line in it that was touched.
+
+**Not yet verified, because the game has not been launched since:** whether ScriptHookVDotNet accepts
+your build (it refuses on a *minimum* version, and build 3889 is far above it, but that is the check
+that would say no), whether the ASI loads at all, and whether the jobs start. On the next launch, in
+this order:
+
+| File, in the game root | What to look for |
+|---|---|
+| `asiloader.log` | `Loading "…\ScriptHookVDotNet.asi"` and **no** `failed to load` after it — the failure ELS showed before ScriptHookV was in place |
+| `ScriptHookVDotNet.log` | its version, then `Loaded 1 script(s)` |
+| `DriverJobsV.log` | the mod's own start-up, and any job it could not load |
+
+If `DriverJobsV.log` complains that it cannot access `Jobs.xml`, the fix is **DirectStorageFix** by
+alloc8or — the one known Windows 11 failure mode for this mod — and installing anything else for it
+would be guesswork.
+
+---
+
 ## 2. Every mod installed
 
 ### 2.1 Platform — the things everything else sits on
@@ -159,11 +214,12 @@ StopThePed** (hard reference — that was the 14:43 crash). So:
 | **RAGE Plugin Hook** 1.131.1424.17745 | `RAGEPluginHook.exe` | — | ✓ F4 console, 10 s plugin timeout |
 | **LSPDFR** 0.4.9695 (0.4.9) | `Plugins\LSPD First Response.dll` | RPH | ✓ |
 | **ScriptHookV's ASI loader** | `dinput8.dll` | — | ✓ loads ASI mods (build May 2 2015) |
-| **ScriptHookV** | `ScriptHookV.dll` | — | ✗ **absent — ELS needs it (§1.1)** |
+| **ScriptHookV** | `ScriptHookV.dll` | — | ✓ installed, matches the game build (§1.1) |
 | **AdvancedHookV** + EasyHook/EasyLoad64 + LMS libraries | game root | — | ✓ (ELS's hook; works, ELS itself does not) |
 | **OpenIV** | `OpenIV.asi` + `mods\` folder | — | ✓ loaded, mods folder active |
 | **openCameraV** | `openCameraV.asi` | — | ✓ loaded |
-| **ScriptHookVDotNet** | `scripts\` + `ScriptHookVDotNet.asi` | — | ✗ not installed — so no .NET script mods |
+| **ScriptHookVDotNet** | `ScriptHookVDotNet.asi`, `ScriptHookVDotNet2.dll`, `ScriptHookVDotNet3.dll`, `ScriptHookVDotNet.ini` | ScriptHookV ✓, .NET 4.8.1 ✓, VC++ v14 ✓ | ✓ nightly **3.7.0.191** — its console key moved from F4 to **F7** because F4 is RAGE Plugin Hook's (§1.6) |
+| **LemonUI** | `scripts\LemonUI.SHVDN3.dll` | ScriptHookVDotNet ✓ | ✓ **2.2** |
 
 RAGE Plugin Hook and LSPDFR also drop these support libraries in the root; none of them is a mod you installed:
 `SlimDX.dll`, `Gwen.dll`, `Gwen.UnitTest.dll`, `FW1FontWrapper.dll`, `Mono.Cecil.dll` + `.Mdb`/`.Pdb`/`.Rocks`,
@@ -179,13 +235,25 @@ RAGE Plugin Hook and LSPDFR also drop these support libraries in the root; none 
 | **openCameraV** | `openCameraV.asi` | — | ✓ |
 | **OpenIV** | `OpenIV.asi` | — | ✓ |
 
-### 2.3 RagePluginHook-level plugin
+### 2.3 .NET script mods — `scripts\` (loaded by ScriptHookVDotNet)
+
+Not LSPDFR plugins, and they never will be: these are loaded by ScriptHookV's ASI loader through
+ScriptHookVDotNet, before the game reaches story mode. That is also why they run whether or not you go
+on duty — and why they appear in none of LSPDFR's own lists.
+
+| Mod | Version | Needs | Status |
+|---|---|---|---|
+| **DriverJobs V** | **1.6.0** | ScriptHookVDotNet ✓, LemonUI 2.x ✓ | installed — 31 civilian jobs; `Shift+J` opens its menu. **Never launched yet (§1.6)** |
+| **LemonUI** | 2.2 (SHVDN3 build) | ScriptHookVDotNet ✓ | ✓ the menus DriverJobs draws with |
+| **DriverJobs' data** | — | — | `DriverJobsData\` beside the DLL: 84 XML files, all parsing cleanly, `Missions\Jobs.xml` holding 37 jobs |
+
+### 2.4 RagePluginHook-level plugin
 
 | Plugin | Version | Where | Why it is here | Status |
 |---|---|---|---|---|
 | **Damage Tracker Framework** | 2.0.2 | `Plugins\DamageTrackingFramework.dll` + `DamageTrackerLib.dll` (root) | **required by Policing Redefined** | ✓ RPH loads it at startup (16:43:49) |
 
-### 2.4 LSPDFR plugins — `Plugins\LSPDFR` (15)
+### 2.5 LSPDFR plugins — `Plugins\LSPDFR` (17)
 
 | Plugin | Version | Needs | Status |
 |---|---|---|---|
@@ -217,7 +285,7 @@ Callouts' `Is ExternalPoliceComputer Running? False` line should now read `True`
 **Still out:** PoliceSmartRadio (its 151-file data folder is on disk), Callout Interface, LSPDFR+,
 BetterEMS and Arrest Manager. All of them are optional integrations for something else.
 
-### 2.5 Mod content inside `lspdfr\`
+### 2.6 Mod content inside `lspdfr\`
 
 Scanner audio that came with mods — all present:
 
@@ -226,15 +294,15 @@ Scanner audio that came with mods — all present:
 | `Traffic Policer Audio` | 163 |
 | `PolicingRedefinedAudio` | 156 |
 | `686Callouts Audio` | 80 |
-| `EMSAUDIO` (BetterEMS — plugin removed, §2.7) | 43 |
+| `EMSAUDIO` (BetterEMS — plugin removed, §2.8) | 43 |
 | `Maniac Callouts` | 22 |
 | `UnitedCallouts Audio` | 21 |
-| `Arrest Manager Audio` (plugin removed, §2.7) | 4 |
+| `Arrest Manager Audio` (plugin removed, §2.8) | 4 |
 
 Plus LSPDFR's own scanner set and cop voice sets (`AREAS`, `CRIMES`, `CAR_MODEL`, `STREETS`, `s_m_y_cop_01_*`, …) and
 LSPDFR's own data (`lspdfr\data\`: agency, backup, stations, regions, outfits, duty selection, `ai\`, `custom\`).
 
-### 2.6 Vehicles, liveries and ELS configs
+### 2.7 Vehicles, liveries and ELS configs
 
 **Installed**
 
@@ -253,7 +321,7 @@ LSPDFR's own data (`lspdfr\data\`: agency, backup, stations, regions, outfits, d
 | `0bb177-AFProj_Yankton.rar` | **AFNYSP** — dlc of NYSP/Yankton police vehicles + uniforms | `AFNYSP` → `mods\update\x64\dlcpacks\`, add `<Item>dlcpacks:\AFNYSP\</Item>` to `dlclist.xml` in `mods\update\update.rpf\common\data\`; its readme also requires **SSLA V2** ✗ and a **300-car gameconfig** ✗. Do it last, and back up `update.rpf` first. |
 | `bddb84-NYSP_Liveries.rar` | 6 PNG livery **templates** | not installable as-is — artwork for making `.ytd` textures |
 
-### 2.7 Leftovers from mods you removed — safe to delete, or keep if you reinstall
+### 2.8 Leftovers from mods you removed — safe to delete, or keep if you reinstall
 
 | Leftover | Belongs to | Note |
 |---|---|---|
@@ -268,7 +336,7 @@ LSPDFR's own data (`lspdfr\data\`: agency, backup, stations, regions, outfits, d
 | `startup.rphs.bak`, `lspdfr_uinst.exe`, `index.bin` | LSPDFR installer | |
 | `My-Mods-README.md` | this file | the copy in the game folder is stuck at the 15:41 version — §1.3 |
 
-### 2.8 Not installed — removed, or never had
+### 2.9 Not installed — removed, or never had
 
 | Mod | State |
 |---|---|
@@ -277,7 +345,6 @@ LSPDFR's own data (`lspdfr\data\`: agency, backup, stations, regions, outfits, d
 | **BetterEMS 4.1b** | removed, same reason as LSPDFR+. |
 | **Arrest Manager 7.11.0.0** | downloaded 16:09, DLL not present now. |
 | **VocalDispatch**, **PoliceSearch**, **British Policing Script**, **GrammarPolice**, **ImmersiveAmbientEvents**, **RagePROletariat** | never installed — see §1.5 |
-| **ScriptHookVDotNet** | never installed |
 | **Riskier Traffic Stops** dependencies | CDF ✓ already installed |
 
 ---
@@ -289,7 +356,9 @@ LSPDFR's own data (`lspdfr\data\`: agency, backup, stations, regions, outfits, d
 | Live plugin list, and what each one is missing | `/plugins` in the chat box, or `tdplugins` in the F4 console |
 | The same thing, written automatically | `Plugins\LSPDFR\textdispatch.log` — the `inventory:` block, a few seconds after going on duty |
 | What LSPDFR loaded, and when | `RagePluginHook.log` and `Logs\` — `Creating plugin:` lines appear **only after you go on duty (E at a police station)** |
-| What ASI mods loaded | `asiloader.log` |
+| What ASI mods loaded | `asiloader.log` — should now include `ScriptHookVDotNet.asi` |
+| The .NET scripts (DriverJobs V, LemonUI) | `ScriptHookVDotNet.log` — loads, and `Loaded 1 script(s)` |
+| What the civilian jobs mod did | `DriverJobsV.log` in the game root |
 | Crashes | `MiniCrashReports\` (8 reports: 14:43, plus 7 between 15:38 and 16:44 — all the RAGENativeUI error, now fixed) |
 
 ---
@@ -304,6 +373,10 @@ LSPDFR's own data (`lspdfr\data\`: agency, backup, stations, regions, outfits, d
   1.6.3.0 build and overwrite the 1.9.x that everything else needs. That one mistake caused every crash from 15:38 to
   16:44. Copy the plugin DLL, its ini and its folder — nothing else.
 - **The root folder needs admin** (§1.3), so root-level files need a UAC prompt until that is changed.
+- **`scripts\` belongs to ScriptHookV, not to LSPDFR.** Mods there (DriverJobs V, LemonUI) are loaded by
+  ScriptHookVDotNet when the game starts, duty or not, and they appear in none of LSPDFR's lists — not in
+  `/plugins`, not in `RagePluginHook.log`. Their logs are `asiloader.log`, `ScriptHookVDotNet.log` and
+  `DriverJobsV.log`, all in the game root. Going on duty is not what starts them.
 - **Traffic Policer 7.0.0.0, LSPDFR+ 1.9.0.0 and PoliceSmartRadio 2.0.0.0 are 2019-era**, kept alive by community
   patches. They log a *compatibility warning* because your build is newer than the 1.0.3521.x they were written for —
   expected, not a fault.
@@ -337,3 +410,7 @@ No session has run since the RAGENativeUI fix, so it is verified by reading the 
 - Common Data Framework — <https://github.com/Policing-Redefined/CommonDataFramework>
 - IPT.Common — <https://github.com/Immersive-Plugins-Team/IPT.Common>
 - TextDispatch — <https://github.com/kennethyork/TextDispatch>
+- DriverJobs V 1.6.0 — <https://www.gta5-mods.com/scripts/driverjobs-v> · also on Nexus <https://www.nexusmods.com/gta5/mods/1235>
+- ScriptHookVDotNet (nightly builds) — <https://github.com/scripthookvdotnet/scripthookvdotnet-nightly/releases>
+- LemonUI — <https://github.com/LemonUIbyLemon/LemonUI/releases>
+- DirectStorageFix (only if `DriverJobsV.log` cannot read its XML) — <https://www.gta5-mods.com/scripts/directstoragefix>
