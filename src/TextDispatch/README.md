@@ -230,6 +230,10 @@ natives resolved by name at run time, and one or two changed shape between game 
 
 ## Commands
 
+[`COMMANDS.md`](COMMANDS.md) beside this file lists **every** command and alias — 122 of them, which
+is every case label in the router's command switch — with the words that work without a slash: the
+status codes, `accept`, and the orders a pedestrian obeys. The summary below is the short version.
+
 Plain text is speech. A leading `/` is a command. A bare status code is radio traffic.
 
 **Status** — bare codes work too

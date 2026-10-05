@@ -21,6 +21,8 @@ param(
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 if (-not $OutputDirectory) { $OutputDirectory = $repo }
+# Compress-Archive will not create the folder for you, and its complaint does not say so.
+if (-not (Test-Path $OutputDirectory)) { New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null }
 
 $dispatchProject = Join-Path $repo 'src\TextDispatch\TextDispatch.csproj'
 $calloutsProject = Join-Path $repo 'src\TextCallouts\TextCallouts.csproj'
@@ -52,6 +54,7 @@ New-Item -ItemType Directory -Path $stage -Force | Out-Null
 try {
     Copy-Item $dispatch $stage
     Copy-Item $callouts $stage
+    Copy-Item (Join-Path $repo 'src\TextDispatch\COMMANDS.md') (Join-Path $stage 'COMMANDS.md')
     Copy-Item (Join-Path $repo 'LICENSE') $stage
     [System.IO.File]::WriteAllText((Join-Path $stage 'BUNDLE.txt'), $text)
 
@@ -59,7 +62,7 @@ try {
     if (Test-Path $zip) { Remove-Item $zip -Force }
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip
     Write-Host ("Packaged " + $zip + "  (" + [Math]::Round((Get-Item $zip).Length / 1kb) + " KB)") -ForegroundColor Green
-    Write-Host "Contents: TextDispatch.dll $dispatchVersion, TextCallouts.dll $calloutsVersion, BUNDLE.txt, LICENSE"
+    Write-Host "Contents: TextDispatch.dll $dispatchVersion, TextCallouts.dll $calloutsVersion, BUNDLE.txt, COMMANDS.md, LICENSE"
     Write-Host "No RagePluginHook.dll and no LSPD First Response.dll - neither may be redistributed." -ForegroundColor DarkGray
 }
 finally {

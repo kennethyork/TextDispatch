@@ -1,7 +1,8 @@
 # Every text command
 
 The complete command surface of TextDispatch 1.0.16, taken out of the router rather than remembered —
-**97 command names and aliases**, plus the words that work without a slash.
+**122 command names and aliases**, plus the words that work without a slash. Every case label in the
+router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
 `accept`, and the orders below, which are recognised because a police radio *is* mostly codes and orders.

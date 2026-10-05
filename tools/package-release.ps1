@@ -23,6 +23,8 @@ param(
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 if (-not $OutputDirectory) { $OutputDirectory = $repo }
+# Compress-Archive will not create the folder for you, and its complaint does not say so.
+if (-not (Test-Path $OutputDirectory)) { New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null }
 
 $project = Join-Path $repo 'src\TextDispatch\TextDispatch.csproj'
 Write-Host "Building TextDispatch (Release)..." -ForegroundColor Cyan
@@ -43,13 +45,15 @@ New-Item -ItemType Directory -Path $stage -Force | Out-Null
 try {
     Copy-Item $dll $stage
     Copy-Item (Join-Path $PSScriptRoot 'INSTALL.txt') $stage
+    # Beside the plugin's own manual, and shipped with it, so a download comes with its command list.
+    Copy-Item (Join-Path $PSScriptRoot '..\src\TextDispatch\COMMANDS.md') (Join-Path $stage 'COMMANDS.md')
     Copy-Item (Join-Path $repo 'LICENSE') $stage
 
     $zip = Join-Path $OutputDirectory "TextDispatch-$Version.zip"
     if (Test-Path $zip) { Remove-Item $zip -Force }
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip
     Write-Host ("Packaged " + $zip + "  (" + [Math]::Round((Get-Item $zip).Length / 1kb) + " KB)") -ForegroundColor Green
-    Write-Host "Contents: TextDispatch.dll $stamp, INSTALL.txt, LICENSE"
+    Write-Host "Contents: TextDispatch.dll $stamp, INSTALL.txt, COMMANDS.md, LICENSE"
     Write-Host "RagePluginHook.dll is not in it, and never will be - RPH's terms forbid redistributing it." -ForegroundColor DarkGray
 }
 finally {
