@@ -16,8 +16,23 @@ namespace TextCallouts
     /// </summary>
     public class Main : Plugin
     {
+        /// <summary>
+        /// The police callouts, and the five that are not police work at all.
+        ///
+        /// The medical ones are in the same list because LSPDFR has one callout registry and no notion
+        /// of an EMS callout; each of them decides for itself whether the player's current agency is one
+        /// it belongs to, and declines politely if not (see Callouts.EmsCallout).
+        /// </summary>
         private static readonly Type[] CalloutTypes =
         {
+            // the medical ones - offered only to an emergency-medical agency
+            typeof(Callouts.CardiacArrest),
+            typeof(Callouts.CollisionWithInjuries),
+            typeof(Callouts.FireStandby),
+            typeof(Callouts.Overdose),
+            typeof(Callouts.WelfareCheck),
+
+            // the police ones
             typeof(Callouts.ArmedRobbery),
             typeof(Callouts.BarricadedSuspect),
             typeof(Callouts.BicycleTheft),
@@ -43,6 +58,8 @@ namespace TextCallouts
                 Game.AddConsoleCommands(new[] { typeof(ConsoleCommands) });
 
                 Log.Line("loaded; " + CalloutTypes.Length + " callouts, none of them needing another plugin");
+                Log.Line("five of them are medical and only offered to an emergency-medical agency; " +
+                         "going on duty as LSFD is how you get them");
                 Log.Line("log: " + Log.Path);
             }
             catch (Exception ex) { Log.Error("initialise", ex); }

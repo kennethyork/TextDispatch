@@ -13,7 +13,7 @@ metadata, not from memory of what was downloaded.
 | ScriptHookV | **3889.0.1158.13 ✓** — installed, matches your game build 1.0.3889.0 (§1.1) |
 | ScriptHookVDotNet | **nightly 3.7.0.191 ✓** — installed for the civilian jobs mod (§1.6) |
 | LemonUI | **2.2 ✓** — `LemonUI.SHVDN3.dll` in `scripts\`, the menu library the jobs mod draws with |
-| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.17** and TextCallouts 1.2.3 |
+| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.20**, TextCallouts **1.3.0** and TextJobs 1.0.2 |
 | ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
 | Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**), all of them now running **as your own character** (**§1.8**), and listed in the chat box by **`/jobs`** |
 | Non-police duty | **LSFD — EMS and Fire ✓** — added to LSPDFR's duty menu (**§1.7**) |
@@ -325,6 +325,26 @@ the install notes describing both folders - `Plugins\LSPDFR` for the two police 
 this one - and two command lists. `tools\install-bundle.ps1` puts all three in the right places in one
 go; `tools\package-bundle.ps1` builds the zip.
 
+### 1.12 Being EMS now has its own callouts - TextCallouts 1.3.0
+
+Choosing LSFD changed only your uniform, your vehicle and what dispatch calls you: LSPDFR's callout
+registry is police calls, and it filters nothing by agency. So the pack now decides for itself.
+
+Five of its eighteen callouts are medical, and each one asks LSPDFR which agency you are working as
+(`Functions.GetCurrentAgencyScriptName()`) before offering itself:
+
+  Cardiac Arrest             somebody collapsed in the street, a stranger doing compressions
+  Overdose                   slumped and unresponsive; airway, naloxone, and a patient who wakes up
+  Collision with Injuries    one casualty still in the car - the door comes open when you arrive
+  Welfare Check              somebody sat where a neighbour thinks they should not be
+  Vehicle Fire               a car alight in a car park, one person who took the smoke
+
+The match is loose - `lsfd`, or any agency whose name contains ems, medic, paramedic, ambulance or fire -
+so adding your own ambulance service to `agency.xml` works without touching the pack. A police patrol
+never sees them. Nothing in them pays: that is DriverJobs V's paramedic shift, and `/job LS Medical
+Center` still marks where that starts.
+
+`Plugins\LSPDFR\TextCallouts.dll` is 1.3.0.0 now, and `bundle 1.4.1` carries all three plugins.
 ### 1.11 The keyboard, redone so nothing is shared
 
 Every mod's config was read, the bindings were pooled, and anything two mods both watched for was moved

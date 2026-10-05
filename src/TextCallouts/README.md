@@ -1,6 +1,6 @@
 # TextCallouts
 
-**LSPDFR callouts with no dependencies.** Thirteen callouts in the style of the big packs, written from
+**LSPDFR callouts with no dependencies.** Eighteen callouts in the style of the big packs, written from
 scratch, needing nothing but LSPDFR and RAGE Plugin Hook — no StopThePed, no Ultimate Backup, no
 CompuLite, no Callout Interface, no ExternalPoliceComputer, no Common Data Framework, no
 RAGENativeUI.
@@ -17,7 +17,7 @@ mscorlib, System, System.Core, System.Drawing, Microsoft.CSharp   the .NET frame
 
 Nothing else — verified by reading the built DLL's reference table, not by hoping.
 
-> It is **inspired by** packs like 686 Callouts, not a copy of it. All thirteen callouts, their names and
+> It is **inspired by** packs like 686 Callouts, not a copy of it. All eighteen callouts, their names and
 > their dialogue are original work, and no file, string or asset from 686 Callouts is used. Keep 686
 > installed alongside — they do not conflict.
 
@@ -45,6 +45,29 @@ Each one is built around LSPDFR's own systems wherever possible: pursuits are LS
 ambulance and backup come from LSPDFR's backup system, arrest detection is LSPDFR's, and the callout
 blip and acceptance flow are LSPDFR's. The pack supplies the situation, not a parallel universe.
 
+### The five that are not police work
+
+LSPDFR has no notion of an EMS callout: its registry is police calls, and the agency you go on duty as
+changes only your uniform, your vehicle and what dispatch calls you. What it does give a callout is the
+means to ask - `Functions.GetCurrentAgencyScriptName()` - so these five offer themselves **only while
+the player is working as an emergency-medical agency**, and stay out of the way on a police patrol.
+
+| | |
+|---|---|
+| **Cardiac Arrest** | somebody collapsed in the street, a stranger doing compressions. Twenty seconds of yours |
+| **Overdose** | slumped and unresponsive; airway, naloxone, and a patient who comes round frightened |
+| **Collision with Injuries** | one casualty still in the car - the door comes open when you arrive - and one walking wounded |
+| **Welfare Check** | somebody sat where a neighbour thinks they should not be. Half of these are nothing at all |
+| **Vehicle Fire** | a car alight in a car park, one person who took the smoke, and an engine that is not there yet |
+
+They are matched against the agency's *ScriptName* from `agency.xml`, loosely: `lsfd`, or anything whose
+name contains ems, medic, paramedic, ambulance or fire. So a player who adds their own ambulance service
+to `agency.xml` does not have to change anything here. Going on duty as **LSFD** - which the LSPDFR duty
+menu offers once `duty_selection.xml` lists it - is how you get them.
+
+They use nothing but LSPDFR's own API, like the rest of the pack: the ambulances and the fire engine come
+from LSPDFR's backup system, and a patient who dies on scene ends the callout differently from one who
+does not. There is no payment in any of them, because LSPDFR callouts do not pay.
 ### Two rules the code follows
 
 - **What dispatch says matches what the ped does.** Hostility is decided *first*, then the line is
@@ -64,7 +87,7 @@ Adding a callout should not need a compiler. Drop an XML file in
 Plugins\LSPDFR\TextCallouts\Custom\
 ```
 
-go on duty, and it is offered exactly like the built-in thirteen - same dispatch announcements, same callout
+go on duty, and it is offered exactly like the built-in eighteen - same dispatch announcements, same callout
 blip, same resolution. The folder is created on first run with a `README.txt` describing every field and
 a worked example to copy (`Example-ArmedRobbery.xml.example` - rename it to end in `.xml` to use it).
 
@@ -117,7 +140,7 @@ out usable as type names.
 One thing to be straight about: the recipes are turned into real callout types at run time, because
 that is the only thing LSPDFR accepts - `Functions.RegisterCallout` takes a `Type`. That step cannot be
 exercised outside the game, so if it ever fails it will fail loudly in the log, naming the file, and the
-built-in thirteen are unaffected either way.
+built-in eighteen are unaffected either way.
 
 ---
 
@@ -147,7 +170,7 @@ That link is reflection at runtime, so:
 - if TextDispatch is not there, the same lines simply appear as on-screen notifications instead.
 
 TextDispatch also picks these callouts up on its own, because it reads the callout catalogue out of
-the assemblies it finds. So with both installed: `/calls` lists all thirteen, and `/callout <name>`
+the assemblies it finds. So with both installed: `/calls` lists all eighteen, and `/callout <name>`
 starts one on demand — the quickest way to see a callout without waiting for dispatch to offer it.
 
 ---
@@ -158,7 +181,7 @@ starts one on demand — the quickest way to see a callout without waiting for d
 |---|---|
 | Log | `Plugins\LSPDFR\textcallouts.log` — what registered, what was accepted, every line said, and any native that did not resolve |
 | `tcstatus` (F4) | how many callouts are in the pack, whether they are registered, and the log path |
-| `tccallouts` (F4) | the thirteen, by their dispatch names |
+| `tccallouts` (F4) | the eighteen, by their dispatch names |
 | `/plugins` (TextDispatch) | confirms it loaded, and that it has no missing dependencies |
 
 Every callout also logs when it opens and closes, with the reason — so "dispatch never called me" and
@@ -212,7 +235,7 @@ refuses bad files by name instead of ignoring them (see above). **1.0.0** was th
 
 The pack compiles against the real LSPDFR and RAGE Plugin Hook APIs, and the
 built DLL has been checked against LSPDFR's contract — the `Main` type exists, is public, and derives
-from `LSPD_First_Response.Mod.API.Plugin`; all thirteen callouts are public, concrete, have a
+from `LSPD_First_Response.Mod.API.Plugin`; all eighteen callouts are public, concrete, have a
 parameterless constructor and a `[CalloutInfo]` name; and the reference table contains no mod
 assembly (see the check results in the release notes).
 

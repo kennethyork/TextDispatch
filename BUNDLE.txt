@@ -5,7 +5,7 @@ LSPDFR - and DriverJobs - in text. Three plugins that are meant to be installed 
 
     TextDispatch %DISPATCH_VERSION%    the police side: dispatch, the people in the callouts,
                                        traffic stops, records, all through a chat box
-    TextCallouts %CALLOUTS_VERSION%    thirteen callouts, written from scratch, needing nothing but
+    TextCallouts %CALLOUTS_VERSION%    eighteen callouts, written from scratch, needing nothing but
                                        LSPDFR and RAGE Plugin Hook
     TextJobs %TEXTJOBS_VERSION%        the civilian side: DriverJobs V's jobs in a box of their own,
                                        needing neither LSPDFR nor RAGE Plugin Hook
@@ -42,7 +42,7 @@ INSTALL
 
    This is the step people miss, for the two police plugins. LSPDFR loads everything in
    Plugins\LSPDFR at that moment and not before it - no chat box, no callouts, nothing, however long
-   you wait in story mode. TextCallouts registers its thirteen callouts at the same moment and says so
+   you wait in story mode. TextCallouts registers its eighteen callouts at the same moment and says so
    on screen.
 
    TextJobs does not wait for any of that: it loads with the game, and a ticker says it did.
@@ -61,14 +61,20 @@ WHAT THEY DO TOGETHER
 
 Installed side by side, they are one experience:
 
-  * the thirteen callouts arrive as radio traffic in the chat box, and you accept or decline by typing
+  * the eighteen callouts arrive as radio traffic in the chat box, and you accept or decline by typing
+
+    Five of those eighteen are not police work: a cardiac arrest, an overdose, a collision with
+    somebody trapped in the car, a welfare check and a vehicle fire. They are offered only while you
+    are on duty as an emergency-medical agency - LSFD, or any agency whose name says ems, medic,
+    paramedic, ambulance or fire - and stay out of the way on a police patrol. Going on duty as LSFD
+    is how you get them.
   * every line a callout says - the ambulance request, the pursuit call-in, the suspect description -
     is mirrored into the chat box instead of a notification box
-  * /calls lists all thirteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>
+  * /calls lists all eighteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>
     starts one on demand, which is the quickest way to see one
   * people in the callouts answer in text when you talk to them
   * your own callouts - written as XML files in Plugins\LSPDFR\TextCallouts\Custom\ - are offered
-    exactly like the built-in thirteen, no compiling involved
+    exactly like the built-in eighteen, no compiling involved
   * and the civilian side: /jobs lists every job DriverJobs V has, with what each pays, and
     /job <name or number> describes one and puts a blip and a sat-nav route on where it starts
 

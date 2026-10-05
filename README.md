@@ -179,7 +179,7 @@ rather than TextDispatch's left arrow.
 
 ## Also in this repository: TextCallouts
 
-[`src/TextCallouts/`](src/TextCallouts/) is a companion **callout pack** — thirteen callouts, written
+[`src/TextCallouts/`](src/TextCallouts/) is a companion **callout pack** — eighteen callouts, written
 from scratch, that need **nothing but LSPDFR and RAGE Plugin Hook**: no StopThePed, no Ultimate
 Backup, no CompuLite, no Callout Interface, no Common Data Framework, no RAGENativeUI. Its whole
 reference table is `LSPD First Response`, `RagePluginHook` and the .NET framework, verified by
@@ -189,7 +189,7 @@ If TextDispatch is installed, each callout's lines are mirrored into the chat bo
 TextDispatch lists them in `/calls` and can start any of them with `/callout <name>` — so the two
 work as one thing while depending on nothing.
 
-Its thirteen callouts are written in C#; **your own are written in XML** - drop a file in
+Its eighteen callouts are written in C#; **your own are written in XML** - drop a file in
 `Plugins\LSPDFR\TextCallouts\Custom\`, go on duty, and it is offered like any other callout. A file
 it cannot make sense of is refused with the reason in the log, never ignored.
 
@@ -214,7 +214,7 @@ What "working together" means, concretely — with both in `Plugins\LSPDFR`:
 
 - callouts arrive as radio traffic in the chat box, accepted or declined by typing;
 - every line a callout says is mirrored into the box instead of a notification popup;
-- `/calls` lists all thirteen alongside LSPDFR's own, and `/callout <name>` starts one on demand;
+- `/calls` lists all eighteen alongside LSPDFR's own, and `/callout <name>` starts one on demand;
 - the people in those callouts answer in text when you talk to them.
 
 That contract is verified, not assumed: the release check reads both DLLs and confirms
@@ -236,7 +236,7 @@ the chat box rendering once per frame rather than once per game tick. The integr
 the part most likely to have rough edges. Issues and log excerpts are welcome.
 
 **TextCallouts 1.1.0** is the pack described above, in [`src/TextCallouts/`](src/TextCallouts/) —
-thirteen callouts, plus **your own callouts written as XML recipes**. It is released separately from
+eighteen callouts, plus **your own callouts written as XML recipes**. It is released separately from
 TextDispatch, which is at **1.0.13** (the inventory wording fix) and does not depend on it.
 
 **1.0.12 answers the question that costs the most evenings.** A plugin that is installed in the wrong

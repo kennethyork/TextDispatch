@@ -1,4 +1,4 @@
-TextCallouts 1.0.0
+TextCallouts 1.3.0
 ==================
 
 LSPDFR callouts that need nothing but LSPDFR and RAGE Plugin Hook.
@@ -7,7 +7,7 @@ LSPDFR callouts that need nothing but LSPDFR and RAGE Plugin Hook.
 WHAT IT IS
 ----------
 
-Thirteen callouts in the style of the big callout packs, written from scratch, with no dependency on
+Eighteen callouts in the style of the big callout packs, written from scratch, with no dependency on
 StopThePed, Ultimate Backup, CompuLite, Callout Interface, ExternalPoliceComputer, Common Data
 Framework or RAGENativeUI. You can run it on a bare LSPDFR install, and it will not conflict with
 anything, because it never reaches into another plugin.
@@ -18,7 +18,11 @@ That is not a claim - it is the assembly's reference table:
 
 Nothing else. Every dependency the big packs have is one this pack does not.
 
-Note: it is *inspired by* packs like 686 Callouts, not a copy of it. All thirteen callouts, their names
+Five of the eighteen are medical, not police work: a cardiac arrest, an overdose, a collision with
+somebody trapped in the car, a welfare check and a vehicle fire. They are offered only while you are on
+duty as an emergency-medical agency - LSFD, or any agency whose name says ems, medic, paramedic,
+ambulance or fire - so a police patrol never sees them. Go on duty as LSFD to get them.
+Note: it is *inspired by* packs like 686 Callouts, not a copy of it. All eighteen callouts, their names
 and their dialogue are original, and none of 686 Callouts' files, text or ideas-in-code are used.
 Keep 686 installed alongside if you like - they do not overlap.
 
@@ -88,7 +92,7 @@ direction, and if TextDispatch is not there, nothing breaks - the lines simply a
 notifications instead.
 
 TextDispatch also picks the callouts up automatically, because it reads each callout out of the
-assemblies it finds: /calls lists all thirteen, and /callout <name> starts one on demand, which is the
+assemblies it finds: /calls lists all eighteen, and /callout <name> starts one on demand, which is the
 quickest way to see one without waiting for dispatch.
 
 
