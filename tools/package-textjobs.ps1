@@ -41,7 +41,7 @@ New-Item -ItemType Directory -Path $stage -Force | Out-Null
 
 try {
     Copy-Item $dll $stage
-    Copy-Item (Join-Path $PSScriptRoot 'INSTALL-textjobs.txt') $stage
+    Copy-Item (Join-Path $PSScriptRoot 'INSTALL-textjobs.txt') (Join-Path $stage 'INSTALL.txt')
     Copy-Item (Join-Path $repo 'src\TextJobs\COMMANDS.md') (Join-Path $stage 'COMMANDS.md')
     Copy-Item (Join-Path $repo 'LICENSE') $stage
 
