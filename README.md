@@ -72,6 +72,10 @@ assembly, so every callout you have is announced in text and can be started by n
   came from; `/callout <name>` starts any of them.
 - **An optional local model** (Ollama or LM Studio) behind both the dispatcher and the pedestrians.
   No API key, no internet, nothing leaves your machine.
+- **Your other mods keep out of the way while you type.** A sentence is nothing but keystrokes, and
+  every plugin is watching for them - so while the box is open the keys are hidden from everything
+  else in the game, and read from the hook instead. Type `10-97` and your own menus stay shut. `/typing`
+  says how it went, and turns it off.
 - **It runs with no model at all**, on a built-in script, so it works on a machine with nothing
   installed.
 - **Nothing it says can block the game.** Every model turn has a deadline and a scripted fallback.
@@ -117,6 +121,7 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |
 | The box | `/pos <corner>` · `/margin <px>` · `/ui` · `/font` · `/fontsize` · `/lines` · `/clear` |
 | The install | `/plugins` — what LSPDFR actually loaded, what it did not, and what is sitting in a folder LSPDFR never looks in |
+| Typing | `/typing [on\|off]` — whether the other plugins can see what you type, and which way this install turned out |
 
 Everything is also drivable from RAGE Plugin Hook's **F4** console — `tdsay`, `tdwho`, `tdstatus`,
 `tdmodels`, `tdplugins`, `tdkey`, `tdrender`, `tdfont` — so a chat box that will not open is never a

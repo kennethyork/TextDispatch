@@ -26,6 +26,7 @@ namespace TextDispatch
         private static DispatchService _dispatch;
         private static DialogueService _dialogue;
         private static Settings _settings;
+        private static KeyCapture _keys;
         private static RecordsLedger _records;
         private static FrameworkBridge _bridge;
         private static CommandRouter _router;
@@ -59,6 +60,9 @@ namespace TextDispatch
 
         /// <summary>What other plugins can do - K9 units, spike strips, the checks they own.</summary>
         internal static FrameworkBridge Bridge { get { return _bridge; } }
+
+        /// <summary>What keeps typing hidden from those other plugins. Null before startup.</summary>
+        internal static KeyCapture Keys { get { return _keys; } }
 
         /// <summary>What the box opens with, for saying it back: 'F6', or 'T or F6'.</summary>
         internal static string OpenKeyDescription
@@ -128,7 +132,15 @@ namespace TextDispatch
                 _dispatch = new DispatchService(_chat, _api, _settings, _records);
                 _dialogue = new DialogueService(_chat, _api, _settings, _records);
                 _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records);
-                _input = new TextInput(_chat, _router.Handle);
+
+                // Started before the box: until this is running, the keystrokes that spell a
+                // sentence are the same keystrokes every other plugin is watching for.
+                _keys = new KeyCapture(key => Game.GetKeyboardState().IsDown(key));
+                _keys.SetEnabled(_settings.BlockOtherModsKeys);
+                _keys.SetHardware(_settings.HideHardwareKeys);
+                _keys.Start();
+
+                _input = new TextInput(_chat, _router.Handle, _keys);
 
                 if (!_input.SetOpenKey(_settings.OpenKey))
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with T");
@@ -163,6 +175,13 @@ namespace TextDispatch
                 // it can be asked for.
                 _chat.Notice("TextDispatch ready. Press " + _input.OpenKeyDescription +
                              " to chat - type to speak, /r for the radio, /help for the rest.");
+
+                // Said in the box rather than only in the log, because it changes what the player can
+                // expect: with no hook installed, typing a sentence is still going to open whatever
+                // menu is watching for those letters.
+                if (!_keys.Active)
+                    _chat.Error("Typing cannot be hidden from other plugins on this install - see /typing. " +
+                                "TextDispatch's own keystrokes go to the game while the box is open.");
                 _chat.Dispatch("Dispatch online. " + _dispatch.Unit +
                                ", you are 10-8. I will call you when something comes in.");
 
@@ -193,6 +212,9 @@ namespace TextDispatch
         {
             _running = false;
 
+            try { if (_keys != null) _keys.Stop(); }
+            catch { }
+
             try { Game.RawFrameRender -= OnFrameRender; }
             catch { }
 
@@ -205,6 +227,11 @@ namespace TextDispatch
             {
                 try
                 {
+                    // Before the input: this decides whether the player is typing into the game, or
+                    // into something else on another monitor, and it is also where the keystrokes are
+                    // taken away from the other plugins.
+                    _keys.Update(_chat.IsOpen);
+
                     _input.Update();
 
                     // While the box is open the player is typing, not driving. Freezing the game's

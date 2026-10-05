@@ -230,7 +230,7 @@ natives resolved by name at run time, and one or two changed shape between game 
 
 ## Commands
 
-[`COMMANDS.md`](COMMANDS.md) beside this file lists **every** command and alias — 122 of them, which
+[`COMMANDS.md`](COMMANDS.md) beside this file lists **every** command and alias — 123 of them, which
 is every case label in the router's command switch — with the words that work without a slash: the
 status codes, `accept`, and the orders a pedestrian obeys. The summary below is the short version.
 
@@ -344,6 +344,42 @@ right answer changes with what you are doing - `quiet` while you are reading you
 log, and still remembered as radio traffic, so the dispatcher's side of the conversation stays whole.
 
 While the box is open the game's controls are frozen, so typing `10-97` does not also steer the car.
+
+### Typing, and your other mods
+
+Freezing the game's controls stops the *game* reacting to a sentence. It does nothing about the other
+plugins, which read the keyboard themselves — which is why typing `10-97` used to open whatever menu
+was watching for those letters.
+
+There is no RAGE Plugin Hook call that says "not while he is typing", so the keystrokes are taken out
+of the pipe instead, in the two places one can be caught on its way in:
+
+- a **system-wide low-level keyboard hook**, installed after RAGE Plugin Hook's own, so it is called
+  first and the key is dropped before RPH ever sees it;
+- a **hook on the game window's own message procedure**, which also catches raw keyboard reports — the
+  ones that do not travel through the other hook at all.
+
+Both are installed at startup and either alone would do. While the box is open, and only while the game
+window is in front, the keystrokes are hidden and read from the hook instead, so the box keeps working —
+and typing into another window on another monitor is left alone, which on a multi-monitor install
+matters as much as anything here.
+
+Nothing is taken on trust. The first time you open the box, the plugin hides a key of its own and then
+asks the game whether it can still see it. `/typing` reports which of these it found:
+
+> a key hidden from the game was invisible to it, so other plugins do not see what is typed
+
+or, on an install whose plugins read the keyboard hardware directly rather than the game's messages:
+
+> a key hidden from the game was still visible to it …
+
+That second answer is covered as well: a hidden press is followed by a synthetic release, which empties
+the hardware state too — a key that went down and up inside one frame is far too fast for a menu to open
+on. `HideHardwareKeys` in the ini controls it, and `/typing hardware off` turns it off.
+
+`/typing off` gives all of it up and lets the other plugins see what you type, exactly as they did
+before any of this existed. Alt with any key, and anything another program synthesises, is always let
+through — Alt+Tab is not something to break in the name of a chat box.
 
 ## Install
 

@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.16, taken out of the router rather than remembered —
-**122 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.17, taken out of the router rather than remembered —
+**123 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -155,6 +155,8 @@ Reached by reflection, so a missing plugin costs only its own commands. `/bridge
 | `/pos <corner>` `/corner [corner]` | which corner the box sits in |
 | `/margin <px>` | distance from the screen edge |
 | `/ui <scale>` `/font <name>` `/fontsize <n>` `/lines <n>` | how it looks |
+| `/typing [on\|off]` | whether what you type is hidden from the other plugins — and what this install found |
+| `/typing hardware [on\|off]` | whether a hidden key is also released in the hardware state (see below) |
 | `/clear` `/cls` | empty the box |
 
 ---
@@ -167,6 +169,11 @@ Reached by reflection, so a missing plugin costs only its own commands. `/bridge
 | **/** | open the box with a slash already typed |
 | **Enter** | send · **Esc** close and clear |
 | **Up / Down** | command history · **PgUp / PgDn** scroll · **Ctrl+V** paste |
+
+While the box is open and the game window is in front, what you type is hidden from everything else in
+the game — the other plugins never see the letters, so none of their menus open on the word `10-97`.
+`/typing` says how that went, and turns it off if you would rather have the old behaviour. Alt with any
+key, and anything another program sends, is always let through.
 
 ---
 

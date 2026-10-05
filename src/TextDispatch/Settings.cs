@@ -113,6 +113,29 @@ namespace TextDispatch
         }
 
         /// <summary>
+        /// Whether the keystrokes that spell a sentence are kept away from the other plugins while
+        /// the box is open.
+        ///
+        /// On by default. With a few mods installed, typing "10-97" opens their menus, because the
+        /// letters are the same letters they watch for - and a chat box that opens somebody else's
+        /// menu is a chat box nobody uses. Off is for a player who wants the old behaviour back;
+        /// /block turns it off in game.
+        /// </summary>
+        public bool BlockOtherModsKeys = true;
+
+        /// <summary>
+        /// Whether a hidden key is released in the hardware state as well.
+        ///
+        /// Blocking a key hides it from everything that reads the game's messages. A plugin that
+        /// asks the hardware directly - and some do - still sees it, so a hidden press is followed
+        /// by a synthetic release, which empties that state too: a key that went down and up inside
+        /// one frame is too fast for a menu to open on. On by default, because it is the difference
+        /// between stopping those plugins and only stopping the others; /block hardware off turns it
+        /// off, and nothing else in the plugin depends on it.
+        /// </summary>
+        public bool HideHardwareKeys = true;
+
+        /// <summary>
         /// Which corner the box sits in. Top-right by default: other LSPDFR plugins draw on the
         /// left, and two panels in the same corner make each other unreadable.
         /// </summary>
@@ -146,7 +169,8 @@ namespace TextDispatch
         private static readonly string[] KnownKeys =
         {
             "aimode", "aiprovider", "aiendpoint", "aimodel", "aitimeoutms", "aimaxtokens",
-            "aitemperature", "aihistorylines", "openkey", "chatter", "chatposition", "chatmargin",
+            "aitemperature", "aihistorylines", "openkey", "chatter", "blockothermodskeys",
+            "hidehardwarekeys", "chatposition", "chatmargin",
             "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange"
         };
 
@@ -205,6 +229,8 @@ namespace TextDispatch
                         case "aihistorylines": settings.AiHistoryLines = AsInt(value, settings.AiHistoryLines); break;
                         case "openkey": settings.OpenKey = value; break;
                         case "chatter": settings.Chatter = value; break;
+                        case "blockothermodskeys": settings.BlockOtherModsKeys = AsBool(value, settings.BlockOtherModsKeys); break;
+                        case "hidehardwarekeys": settings.HideHardwareKeys = AsBool(value, settings.HideHardwareKeys); break;
                         case "chatposition": settings.ChatPosition = value; break;
                         case "chatmargin": settings.ChatMargin = AsFloat(value, settings.ChatMargin); break;
                         case "typingms": settings.TypingMs = AsInt(value, settings.TypingMs); break;
@@ -276,6 +302,14 @@ namespace TextDispatch
                     "; be changed in game with /key, which saves it here.",
                     "OpenKey=" + settings.OpenKey,
                     "",
+                    "; Whether typing hides the keystrokes from the other plugins. On by default - without",
+                    "; it, typing '10-97' opens whatever menu is watching for those letters.",
+                    "; /block off changes it while playing.",
+                    "BlockOtherModsKeys=" + (settings.BlockOtherModsKeys ? "1" : "0"),
+                    "; Whether a hidden key is also released in the hardware state, which is what stops",
+                    "; a plugin that reads the keyboard directly instead of the game's messages.",
+                    "HideHardwareKeys=" + (settings.HideHardwareKeys ? "1" : "0"),
+                    "",
                     "; How much the dispatcher puts in the box:",
                     ";   quiet  only what asks you something, and answers to what you said",
                     ";   brief  the callout cycle too, but not the routine narration (default)",
@@ -307,6 +341,19 @@ namespace TextDispatch
         {
             int parsed;
             return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsed) ? parsed : fallback;
+        }
+
+        private static bool AsBool(string value, bool fallback)
+        {
+            var text = (value ?? "").Trim();
+            if (text.Length == 0) return fallback;
+            if (text == "1" || text.Equals("on", StringComparison.OrdinalIgnoreCase) ||
+                text.Equals("true", StringComparison.OrdinalIgnoreCase) || text.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (text == "0" || text.Equals("off", StringComparison.OrdinalIgnoreCase) ||
+                text.Equals("false", StringComparison.OrdinalIgnoreCase) || text.Equals("no", StringComparison.OrdinalIgnoreCase))
+                return false;
+            return fallback;
         }
 
         private static float AsFloat(string value, float fallback)

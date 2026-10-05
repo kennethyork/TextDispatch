@@ -12,11 +12,20 @@ namespace TextDispatch.Chat
     /// this polls it once per fiber tick and derives edges itself: a key that is down now and was
     /// not down last tick is a keystroke. Doing our own edge detection keeps it independent of how
     /// the host defines "pressed".
+    ///
+    /// There are two sources, and the second exists because the first stops working exactly when it
+    /// matters. While the key capture is running - which is whenever the box is open - the keystrokes
+    /// come from it instead, because that is also where they are being hidden from the other plugins,
+    /// and a key hidden on its way into the game never reaches RPH's keyboard state for this to poll.
+    /// When no hook could be installed the polling below is still here, unchanged, so the box keeps
+    /// working on an install where the hooks are refused.
     /// </summary>
     public sealed class TextInput
     {
         private readonly ChatBox _chat;
         private readonly Action<string> _submit;
+        private readonly KeyCapture _capture;
+        private readonly List<KeyPress> _typed = new List<KeyPress>();
         private readonly Dictionary<Keys, bool> _wasDown = new Dictionary<Keys, bool>();
         private static readonly Keys[] Scan = BuildScanKeys();
         /// <summary>
@@ -26,10 +35,13 @@ namespace TextDispatch.Chat
         /// </summary>
         private readonly List<Keys> _openKeys = new List<Keys> { Keys.F6 };
 
-        public TextInput(ChatBox chat, Action<string> submit)
+        // Internal, unlike the rest of this class: the key capture it is handed is an implementation
+        // detail of the plugin, not something another plugin could ever be given.
+        internal TextInput(ChatBox chat, Action<string> submit, KeyCapture capture)
         {
             _chat = chat;
             _submit = submit;
+            _capture = capture;
         }
 
         /// <summary>
@@ -73,6 +85,8 @@ namespace TextDispatch.Chat
 
         public void Update()
         {
+            if (_capture != null && _capture.Active) { Captured(); return; }
+
             KeyboardState state;
             try { state = Game.GetKeyboardState(); }
             catch { return; }
@@ -85,12 +99,30 @@ namespace TextDispatch.Chat
                 _wasDown.TryGetValue(key, out was);
                 _wasDown[key] = down;
                 if (!down || was) continue;
-                try { Pressed(key, state); }
+                try { Pressed(key, state.IsShiftDown, state.IsControlDown, state.IsCapsLockDown); }
                 catch (Exception ex) { Log.Error("input", ex); }
             }
         }
 
-        private void Pressed(Keys key, KeyboardState state)
+        /// <summary>
+        /// Take the keystrokes the capture has collected. Only presses arrive, and only real ones:
+        /// the probes and the synthetic releases it makes for its own purposes are marked and never
+        /// reach here, so nothing it does to hide a key can end up in what the player wrote.
+        /// </summary>
+        private void Captured()
+        {
+            _typed.Clear();
+            _capture.Drain(_typed);
+
+            for (int i = 0; i < _typed.Count; i++)
+            {
+                var press = _typed[i];
+                try { Pressed(press.Key, press.Shift, press.Control, press.Caps); }
+                catch (Exception ex) { Log.Error("input", ex); }
+            }
+        }
+
+        private void Pressed(Keys key, bool shift, bool control, bool caps)
         {
             // Closed: the open key brings the box up, "/" brings it up mid-command.
             if (!_chat.IsOpen)
@@ -135,7 +167,7 @@ namespace TextDispatch.Chat
             // Everything else becomes text. Note the open key is only special while the box is
             // closed - once it is open, typing a 't' must insert a 't'.
 
-            if (state.IsControlDown)
+            if (control)
             {
                 // Ctrl+V pastes - the one shortcut worth having in a chat box.
                 if (key == Keys.V)
@@ -145,7 +177,7 @@ namespace TextDispatch.Chat
                 return;
             }
 
-            var ch = CharacterFor(key, state);
+            var ch = CharacterFor(key, shift, caps);
             if (ch != '\0')
             {
                 _chat.Scroll = 0;
@@ -153,11 +185,8 @@ namespace TextDispatch.Chat
             }
         }
 
-        private static char CharacterFor(Keys key, KeyboardState state)
+        private static char CharacterFor(Keys key, bool shift, bool caps)
         {
-            bool shift = state.IsShiftDown;
-            bool caps = state.IsCapsLockDown;
-
             if (key == Keys.Space) return ' ';
 
             if (key >= Keys.A && key <= Keys.Z)

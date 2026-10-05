@@ -140,6 +140,8 @@ namespace TextDispatch.Commands
                 case "key": SetKey(argument); return;
                 case "chatter":
                 case "spam": SetChatter(argument); return;
+                // /block is a road block on the bridge, so this is /typing.
+                case "typing": SetBlock(argument); return;
                 case "callout":
                 case "start": StartCallout(argument); return;
                 case "calls": ListCallouts(argument); return;
@@ -1107,6 +1109,73 @@ namespace TextDispatch.Commands
             _chat.Notice("Chatter is now " + level + ", and that is saved to the ini.");
         }
 
+        /// <summary>
+        /// Whether the keystrokes that spell a sentence are hidden from the other plugins.
+        ///
+        /// Here rather than only in the ini because the answer is only visible in game, and because
+        /// part of it cannot be decided in advance: whether a plugin reads the game's key messages or
+        /// the keyboard itself is that plugin's business, not something this one can be told. So
+        /// /typing reports which of the two this install turned out to be, and either can be changed
+        /// from here. It is not called /block because that is already a road block.
+        /// </summary>
+        private void SetBlock(string argument)
+        {
+            var capture = Plugin.Keys;
+            if (capture == null)
+            {
+                _chat.Error("The keyboard is not being watched yet - the box has to be running first.");
+                return;
+            }
+
+            var parts = (argument ?? "").Trim().ToLowerInvariant()
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var what = parts.Length > 0 ? parts[0] : "";
+
+            if (what == "hardware")
+            {
+                if (parts.Length < 2)
+                {
+                    _chat.Notice("Hidden keys are " + (capture.Hardware ? "also" : "not") +
+                                 " released in the hardware state.");
+                    _chat.Notice("Usage: /typing hardware on | off");
+                    return;
+                }
+
+                if (parts[1] != "on" && parts[1] != "off")
+                {
+                    _chat.Error("Say which: /typing hardware on | off");
+                    return;
+                }
+
+                var hardware = parts[1] == "on";
+                capture.SetHardware(hardware);
+                _settings.HideHardwareKeys = hardware;
+                _settings.Save();
+
+                _chat.Notice(hardware
+                    ? "Hidden keys now release in the hardware state too. That is what stops a plugin that reads the keyboard directly, and it is saved to the ini."
+                    : "Hidden keys are no longer released in the hardware state - a plugin that reads the keyboard directly will see them again. Saved to the ini.");
+                return;
+            }
+
+            if (what == "on" || what == "off")
+            {
+                var hide = what == "on";
+                capture.SetEnabled(hide);
+                _settings.BlockOtherModsKeys = hide;
+                _settings.Save();
+
+                _chat.Notice(hide
+                    ? "Typing is hidden from the other plugins again, and that is saved to the ini."
+                    : "Typing is no longer hidden: the other plugins see it, as they did before. Saved to the ini.");
+                return;
+            }
+
+            _chat.Notice(capture.Describe());
+            if (!string.IsNullOrEmpty(capture.Probe)) _chat.Notice(capture.Probe + ".");
+            _chat.Notice("Usage: /typing on | off      /typing hardware on | off");
+        }
+
         /// <summary>True when a call is on the radio waiting for an answer.</summary>
         private bool CallWaiting()
         {
@@ -1285,6 +1354,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest  /cite <name> <offence>");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");
             _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /key  /clear");
+            _chat.Notice("  Typing:   /typing  whether the other plugins can see what you type, and what it found");
             _chat.Notice("  Install:  /plugins  what LSPDFR actually loaded, and what it did not");
             _chat.Notice("  Open the box with " + Plugin.OpenKeyDescription + ", or / to start a command.");
             _chat.Notice("  Chatter:  /chatter quiet|brief|full  - how much of dispatch's traffic you see.");
