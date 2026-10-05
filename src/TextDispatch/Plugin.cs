@@ -198,11 +198,15 @@ namespace TextDispatch
 
                 // An RPH notification as well as a chat line.
                 //
-                // The question a player actually has is "did it load?", and until now the only answer
-                // was the chat box itself - which is exactly the thing that is missing when it has not
-                // loaded. LSPDFR does not load these plugins until about half a minute after the
-                // player switch, so pressing T too early looks identical to a broken install.
-                try { Game.DisplayNotification("TextDispatch loaded. Press T to chat."); }
+                // The question a player actually has is "did it load?", and the only other answer is
+                // the chat box itself - which is exactly the thing that is missing when it has not
+                // loaded. LSPDFR does not load these plugins until the player goes on duty, so pressing
+                // the key too early looks identical to a broken install.
+                //
+                // The key in this line is the configured one, not a remembered one: it said "Press T"
+                // for two releases after T stopped being the default, which sent the player looking for
+                // a key that does something else entirely.
+                try { Game.DisplayNotification("TextDispatch loaded. Press " + _input.OpenKeyDescription + " to chat."); }
                 catch { }
 
                 _running = true;
