@@ -236,7 +236,7 @@ the chat box rendering once per frame rather than once per game tick. The integr
 the part most likely to have rough edges. Issues and log excerpts are welcome.
 
 **TextCallouts 1.1.0** is the pack described above, in [`src/TextCallouts/`](src/TextCallouts/) —
-eighteen callouts, plus **your own callouts written as XML recipes**. It is released separately from
+three hundred and forty callouts, plus **your own callouts written as XML recipes**. It is released separately from
 TextDispatch, which is at **1.0.13** (the inventory wording fix) and does not depend on it.
 
 **1.0.12 answers the question that costs the most evenings.** A plugin that is installed in the wrong

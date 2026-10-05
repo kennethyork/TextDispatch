@@ -43,7 +43,7 @@ INSTALL
    ...so the files end up in Plugins\LSPDFR\TextCallouts\Library\. That is TextCallouts' own library:
    three hundred and twenty-two of its three hundred and forty callouts, written as XML recipes and sorted by the duty they
    belong to - LSPD, Sheriff, Highway Patrol, Rangers, the prison, EMS and fire. Skip this step and the
-   eighteen callouts written in C# still work; you just lose the other eighty-four, and the log says so.
+   eighteen callouts written in C# still work; you just lose the other three hundred and twenty-two, and the log says so.
 
 4. Start the game with RagePluginHook.exe, not the normal launcher.
 

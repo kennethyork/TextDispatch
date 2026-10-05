@@ -344,7 +344,7 @@ says which duty it belongs to in its `<For>` element.
 An agency the pack has never heard of gets the police work - a patrol with no calls at all is a worse
 failure than a misfiled callout. Some callouts name several duties and are offered to all of them.
 
-**Where they live.** Eighty-four are XML recipes in `Plugins\LSPDFR\TextCallouts\Library` - the same format
+**Where they live.** Three hundred and twenty-two are XML recipes in `Plugins\LSPDFR\TextCallouts\Library` - the same format
 your own go in, so they can be read, copied and edited; the pack reads that folder and your `Custom` one,
 and an update replaces only the library. The other eighteen are written in C#, because their behaviour is
 particular: the medical callouts that need a patient to treat, and the police ones that need a scene a

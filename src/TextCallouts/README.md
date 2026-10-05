@@ -17,7 +17,7 @@ mscorlib, System, System.Core, System.Drawing, Microsoft.CSharp   the .NET frame
 
 Nothing else — verified by reading the built DLL's reference table, not by hoping.
 
-> It is **inspired by** packs like 686 Callouts, not a copy of it. All eighteen callouts, their names and
+> It is **inspired by** packs like 686 Callouts, not a copy of it. All of them, their names and
 > their dialogue are original work, and no file, string or asset from 686 Callouts is used. Keep 686
 > installed alongside — they do not conflict.
 
@@ -257,7 +257,7 @@ refuses bad files by name instead of ignoring them (see above). **1.0.0** was th
 
 The pack compiles against the real LSPDFR and RAGE Plugin Hook APIs, and the
 built DLL has been checked against LSPDFR's contract — the `Main` type exists, is public, and derives
-from `LSPD_First_Response.Mod.API.Plugin`; all eighteen callouts are public, concrete, have a
+from `LSPD_First_Response.Mod.API.Plugin`; all eighteen callouts written in C# are public, concrete, have a
 parameterless constructor and a `[CalloutInfo]` name; and the reference table contains no mod
 assembly (see the check results in the release notes).
 
