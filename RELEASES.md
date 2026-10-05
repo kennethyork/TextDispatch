@@ -6,6 +6,7 @@ Three things ship from this repository, each with its own version and its own re
 |---|---|---|---|
 | TextDispatch | `v1.0.13` | `TextDispatch 1.0.13` | `TextDispatch-1.0.13.zip` |
 | TextCallouts | `callouts-v1.2.0` | `TextCallouts 1.2.0` | `TextCallouts-1.2.0.zip` |
+| TextJobs | `textjobs-v1.0.0` | `TextJobs 1.0.0` | `TextJobs-1.0.0.zip` |
 | The bundle — both together | `bundle-1.2.0` | `bundle 1.2.0` | `bundle-1.2.0.zip` |
 
 **A release name is the product and its version. Nothing else.**
@@ -28,8 +29,13 @@ number and moves whenever either plugin does. `bundle 1.2.0` is not TextDispatch
 ```
 powershell -ExecutionPolicy Bypass -File tools\package-release.ps1      -Version 1.0.14
 powershell -ExecutionPolicy Bypass -File tools\package-textcallouts.ps1 -Version 1.2.1
+powershell -ExecutionPolicy Bypass -File tools\package-textjobs.ps1     -Version 1.0.0
 powershell -ExecutionPolicy Bypass -File tools\package-bundle.ps1       -Version 1.2.1
 ```
+
+TextJobs is the one product that is not an LSPDFR plugin: it is a ScriptHookVDotNet script, and it
+ships into `scripts\` rather than `Plugins\LSPDFR`. It is also not in the bundle, which is about
+LSPDFR and the callouts.
 
 Each builds, checks the built DLL's version against the version asked for, and writes the zip. The
 bundle also fills its own version into `BUNDLE.txt`, so a download says which pair it contains without

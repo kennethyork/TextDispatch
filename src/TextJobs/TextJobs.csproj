@@ -1,0 +1,74 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TextJobs</AssemblyName>
+    <RootNamespace>TextJobs</RootNamespace>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- Keep this in step with the release tag so a downloaded DLL can be identified. -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>TextJobs</Product>
+    <Description>DriverJobs V through a chat box: the job list, what it pays, and where each one starts.</Description>
+
+    <!--
+      Where the game and ScriptHookVDotNet are. Override with -p:GtaFolder="E:\Games\GTAV".
+
+      Unlike TextDispatch, this one is not an LSPDFR plugin: it is a script for ScriptHookVDotNet,
+      which is what DriverJobs V itself is. So it needs the game's ScriptHookVDotNet3.dll and nothing
+      else - no LSPDFR, no RAGE Plugin Hook.
+    -->
+    <GtaFolder Condition="'$(GtaFolder)' == ''">D:\Grand Theft Auto V Legacy</GtaFolder>
+    <ShvdnDll>$(GtaFolder)\ScriptHookVDotNet3.dll</ShvdnDll>
+    <ShvdnAvailable>false</ShvdnAvailable>
+    <ShvdnAvailable Condition="Exists('$(ShvdnDll)')">true</ShvdnAvailable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <!--
+    ScriptHookVDotNet3.dll, the same file the game already loads. Private=false so it is never copied
+    into the build output: the game has one, and a second copy in scripts\ would be handed to the
+    script loader as if it were a script.
+  -->
+  <ItemGroup>
+    <Reference Include="ScriptHookVDotNet3">
+      <HintPath>$(ShvdnDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="ShvdnMissing" BeforeTargets="BeforeBuild" Condition="'$(ShvdnAvailable)' != 'true'">
+    <Error Text="ScriptHookVDotNet3.dll not found at $(ShvdnDll). Install ScriptHookVDotNet, or point at your game folder with: dotnet build -p:GtaFolder=&quot;D:\Grand Theft Auto V Legacy&quot;" />
+  </Target>
+
+  <!--
+    The parts shared with TextDispatch, compiled from the same files rather than copied.
+
+    The chat box's keyboard handling - the system-wide hook, the hook on the game window, the rule for
+    what to hide while typing - and the reader for DriverJobs' job file are the same code in both
+    plugins. Compiling the same source is what stops them drifting: a fix to the hiding, or to the job
+    reader, is one edit and two builds. They keep TextDispatch's namespace, which is why Log.cs here
+    defines TextDispatch.Log.
+  -->
+  <ItemGroup>
+    <Compile Include="..\TextDispatch\Chat\Win32.cs" Link="Shared\Win32.cs" />
+    <Compile Include="..\TextDispatch\Chat\KeyboardFilter.cs" Link="Shared\KeyboardFilter.cs" />
+    <Compile Include="..\TextDispatch\Chat\KeyboardHook.cs" Link="Shared\KeyboardHook.cs" />
+    <Compile Include="..\TextDispatch\Chat\WindowHook.cs" Link="Shared\WindowHook.cs" />
+    <Compile Include="..\TextDispatch\Chat\KeyCapture.cs" Link="Shared\KeyCapture.cs" />
+    <Compile Include="..\TextDispatch\Jobs\CivilianJobs.cs" Link="Shared\CivilianJobs.cs" />
+  </ItemGroup>
+
+</Project>

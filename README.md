@@ -156,6 +156,27 @@ put `RagePluginHook.dll` in `tools\rph-sdk\`. It ships inside the official RAGE 
 [`src/TextDispatch/README.md`](src/TextDispatch/README.md) is the full manual — commands, the AI
 design, traffic stops, callouts, troubleshooting, and the console fallback.
 
+## Also in this repository: TextJobs
+
+[`src/TextJobs`](src/TextJobs) is DriverJobs V's jobs in a box like this one — and it is **not** an
+LSPDFR plugin. TextDispatch cannot exist without LSPDFR (its entry point derives from LSPDFR's Plugin
+base, and LSPDFR is what loads it) and it comes up when you go on duty. TextJobs is a
+ScriptHookVDotNet script instead, the same framework DriverJobs itself runs on, so it works with or
+without LSPDFR, on duty or off.
+
+```
+/jobs              every civilian job DriverJobs V has, with what each pays
+/job <name>        what the work is, what you pay, what you drive, and a blip + route to its start
+```
+
+It reads the mod's own job file rather than a copy, hides what you type from the other plugins while
+the box is open, and needs nothing installed but the game, ScriptHookV, ScriptHookVDotNet and the jobs
+mod. The keyboard handling and the job reader are the *same source files* as TextDispatch's, compiled
+into both, so a fix to either lands in both.
+
+Two boxes on one key would both open and both read the same keystrokes, so TextJobs defaults to **F8**
+rather than TextDispatch's left arrow.
+
 ## Also in this repository: TextCallouts
 
 [`src/TextCallouts/`](src/TextCallouts/) is a companion **callout pack** — thirteen callouts, written

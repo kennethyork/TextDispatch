@@ -1,0 +1,66 @@
+TextJobs 1.0.0
+==============
+
+DriverJobs V's jobs, in a chat box. A ScriptHookVDotNet script - the same framework DriverJobs itself
+runs on - so it needs no LSPDFR and no RAGE Plugin Hook, and it works on duty or off.
+
+
+INSTALL
+-------
+
+1. Copy TextJobs.dll into:
+
+       <your Grand Theft Auto V folder>\scripts\
+
+   That is the folder DriverJobs.dll is already in. If it is not there, DriverJobs is not installed,
+   and this box will say so rather than pretending.
+
+2. Start the game. There is nothing to go on duty for - a ticker confirms it loaded.
+
+3. Press F8, type /jobs, press Enter.
+
+
+WHAT IT DOES
+------------
+
+  /jobs             every job the mod has, with what each pays
+  /jobs taxi        the ones matching a word
+  /job <name>       the description, the pay, what you drive - and a blip and a sat-nav route on
+                    where it starts
+  /job 13           the same one by its number, which is what you need when two share a name
+
+It reads scripts\DriverJobsData\Missions\Jobs.xml - the very file the mod loads - so a job you edit or
+add by hand appears in the list too, and the list is re-read when the file changes.
+
+It cannot take a job for you. The mod owns that: be at its place, or use the mod's own menu (Shift+J).
+Jobs the file marks "remote" can be started from that menu anywhere, in a suitable vehicle, and /job
+says so when that applies.
+
+While the box is open - and only while the game window is in front - what you type is hidden from every
+other plugin and script, DriverJobs' own Shift+J included. That is what stops a job name opening
+somebody else's menu. Alt with any key is always let through.
+
+
+REQUIREMENTS
+------------
+
+GTA V (Legacy or Enhanced), ScriptHookV, ScriptHookVDotNet (nightly 3.7.0 or newer), and DriverJobs V.
+
+NOT required: LSPDFR, RAGE Plugin Hook, TextDispatch.
+
+If TextDispatch is installed as well, keep the two boxes on different keys: TextDispatch uses the left
+arrow, this one uses F8, and two boxes on one key would both open and both read the same keystrokes.
+
+
+THE FILES IT MAKES
+------------------
+
+  scripts\TextJobs.dll    this plugin
+  scripts\TextJobs.ini    its settings: the key, the corner, the size, and the two hiding switches
+  scripts\TextJobs.log    what it did, and the whole job list every time /jobs runs
+
+
+LICENCE
+-------
+
+MIT - see LICENSE. It covers this plugin only. DriverJobs V is a separate work under its own licence.

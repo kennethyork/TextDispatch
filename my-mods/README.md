@@ -17,6 +17,7 @@ metadata, not from memory of what was downloaded.
 | ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
 | Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**), all of them now running **as your own character** (**§1.8**), and listed in the chat box by **`/jobs`** |
 | Non-police duty | **LSFD — EMS and Fire ✓** — added to LSPDFR's duty menu (**§1.7**) |
+| Jobs in text | **TextJobs 1.0.0 ✓** — DriverJobs V in a chat box, **F8**, no LSPDFR needed (**§1.10**) |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
 | Local model | Ollama ✓ — `llama3.2:1b` for the NPCs, with `llama3.2:latest` still installed (§1.9) |
@@ -292,6 +293,30 @@ Measured on this machine, both models warm:
 
 The first reply of a session also pays for loading the model, which is why a cold one can look much
 slower than these numbers. To go back: set `AiModel=llama3.2:latest`, or blank the line.
+
+### 1.10 TextJobs — DriverJobs V in a text box, without LSPDFR
+
+TextDispatch is the police half and cannot exist without LSPDFR: it derives from LSPDFR's plugin base
+and is loaded when you go on duty. So the civilian jobs got their own plugin, built as a
+**ScriptHookVDotNet** script - the same framework DriverJobs itself runs on:
+
+| | |
+|---|---|
+| Where | `scripts\TextJobs.dll`, beside DriverJobs |
+| Opens with | **F8** - deliberately not the left arrow, because two boxes on one key would both open and both read the same keystrokes |
+| Needs | the game, ScriptHookV, ScriptHookVDotNet, DriverJobs V. **Not** LSPDFR, not RAGE Plugin Hook |
+| Commands | `/jobs [filter]`, `/job <name or number>`, `/key`, `/pos`, `/hide on\|off`, `/hardware on\|off`, `/clear`, `/help` |
+| Its files | `scripts\TextJobs.ini` (settings), `scripts\TextJobs.log` (what it did, and the whole job list) |
+
+It reads the mod's own `Jobs.xml`, so a job edited by hand is in the list, and it hides what you type
+from every other plugin and script while the box is open - DriverJobs' own `Shift+J` included. It
+cannot take a job: the mod owns that, and `Shift+J` or being at the place is how a job starts.
+
+The keyboard handling, the hiding rule and the job reader are the **same source files** as
+TextDispatch's, compiled into both plugins, so they cannot drift apart. Nothing else is shared: no
+run-time dependency either way, and each works with the other absent.
+
+Built and installed; not yet run in game.
 
 ---
 
