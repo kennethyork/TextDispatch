@@ -113,6 +113,14 @@ namespace TextDispatch
                 _settings = Settings.Load();
                 _settings.Resolve();
 
+                // The civilian jobs are DriverJobs V's, and the only way to know them is to read the
+                // file that mod loads. Found once here, so /jobs answers instantly and the log says
+                // where it looked - a missing mod is a sentence in the box, not a fault.
+                Jobs.CivilianJobs.Locate(Settings.PluginFolder());
+                Log.Line(Jobs.CivilianJobs.All().Count > 0
+                    ? "jobs: " + Jobs.CivilianJobs.All().Count + " civilian jobs, from " + Jobs.CivilianJobs.Location
+                    : "jobs: no civilian job list - " + Jobs.CivilianJobs.Problem);
+
                 _chat = new ChatBox();
                 _api = new LspdfrApi();
 

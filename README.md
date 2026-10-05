@@ -72,6 +72,9 @@ assembly, so every callout you have is announced in text and can be started by n
   came from; `/callout <name>` starts any of them.
 - **An optional local model** (Ollama or LM Studio) behind both the dispatcher and the pedestrians.
   No API key, no internet, nothing leaves your machine.
+- **Your civilian jobs are in the box too.** With DriverJobs V installed, `/jobs` lists all 37 of its
+  jobs with what each pays, and `/job <name>` describes one and marks where it starts on your map — read
+  from the mod's own job file, so a job you edit or add shows up as well.
 - **Your other mods keep out of the way while you type.** A sentence is nothing but keystrokes, and
   every plugin is watching for them - so while the box is open the keys are hidden from everything
   else in the game, and read from the hook instead. Type `10-97` and your own menus stay shut. `/typing`
@@ -122,6 +125,7 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | The box | `/pos <corner>` · `/margin <px>` · `/ui` · `/font` · `/fontsize` · `/lines` · `/clear` |
 | The install | `/plugins` — what LSPDFR actually loaded, what it did not, and what is sitting in a folder LSPDFR never looks in |
 | Typing | `/typing [on\|off]` — whether the other plugins can see what you type, and which way this install turned out |
+| Civilian jobs | `/jobs [filter]` — DriverJobs V's jobs, what each pays · `/job <name or number>` — the details, and a marker on where it starts |
 
 Everything is also drivable from RAGE Plugin Hook's **F4** console — `tdsay`, `tdwho`, `tdstatus`,
 `tdmodels`, `tdplugins`, `tdkey`, `tdrender`, `tdfont` — so a chat box that will not open is never a

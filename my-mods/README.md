@@ -15,11 +15,12 @@ metadata, not from memory of what was downloaded.
 | LemonUI | **2.2 ✓** — `LemonUI.SHVDN3.dll` in `scripts\`, the menu library the jobs mod draws with |
 | LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.17** and TextCallouts 1.2.3 |
 | ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
-| Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**), and every one of them now runs **as your own character** (**§1.8**) |
+| Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**), all of them now running **as your own character** (**§1.8**), and listed in the chat box by **`/jobs`** |
 | Non-police duty | **LSFD — EMS and Fire ✓** — added to LSPDFR's duty menu (**§1.7**) |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
-| Local model | Ollama `llama3.2:latest` ✓ answering |
+| Local model | Ollama ✓ — `llama3.2:1b` for the NPCs, with `llama3.2:latest` still installed (§1.9) |
+| Pausing on focus loss | **off** — the game no longer pauses when you click your second monitor (§1.9) |
 
 Legend: **✓** present and working · **✗** missing or broken · *optional* = the mod works without it.
 
@@ -260,6 +261,37 @@ To give one job its uniform back, add the block to that job and nothing else:
 ```
 
 Not seen in game yet: the game has not been launched since any of this was installed.
+
+**In the chat box.** TextDispatch **1.0.18** reads that same file, so the civilian side is in the text
+interface with the police side:
+
+| | |
+|---|---|
+| `/jobs [filter]` | all 37, with what each pays |
+| `/job <name or number>` | the description, the pay, what you drive, and a blip + sat-nav route on where it starts |
+
+It reads the mod's file rather than keeping a copy, so a job edited or added by hand appears there too,
+and the list is re-read when the file changes. It cannot *start* a job - the mod owns that - and the
+mod not being installed is a sentence in the box, not a fault. Tested outside the game against your
+real `Jobs.xml`: 21 checks, including the two freight jobs that share a name (they are numbered, so
+`/job 19` picks one).
+
+### 1.9 The two settings you said yes to
+
+| What | Was | Now | Where |
+|---|---|---|---|
+| Pausing when you click your other monitor | `<PauseOnFocusLoss value="1" />` | `value="0"` | `Documents\Rockstar Games\GTA V\settings.xml` — backup `settings.xml.bak-20261005-1740` beside it |
+| The model answering dispatch and the people | nothing set ("whatever the server reports first") | `AiModel=llama3.2:1b` | `Plugins\LSPDFR\TextDispatch.ini` |
+
+Measured on this machine, both models warm:
+
+| Model | Speed | Notes |
+|---|---|---|
+| `llama3.2:1b` | **~330 tokens/s** | 1.3 GB, pulled tonight; blunter, and fine for one-line replies |
+| `llama3.2:latest` | ~210 tokens/s | 2.0 GB, what has been answering until now; better sentences |
+
+The first reply of a session also pays for loading the model, which is why a cold one can look much
+slower than these numbers. To go back: set `AiModel=llama3.2:latest`, or blank the line.
 
 ---
 

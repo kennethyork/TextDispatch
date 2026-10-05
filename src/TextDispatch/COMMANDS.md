@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.17, taken out of the router rather than remembered —
-**123 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.18, taken out of the router rather than remembered —
+**125 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -81,6 +81,22 @@ fire  firetruck     tow              transport
 | `/decline` `/no` | decline it |
 | `/endcall` | close the call you are on |
 | `/available on\|off` | go on or off the call list |
+
+---
+
+## Civilian jobs — DriverJobs V
+
+DriverJobs V is a ScriptHookV script with no plugin API to ask, so these read the same file the mod
+loads — `scripts\DriverJobsData\Missions\Jobs.xml` — rather than a copy of it. A job you edited or
+added by hand shows up here too, and a mod that is not installed is one sentence, not a fault.
+
+| | |
+|---|---|
+| `/jobs [filter]` | every civilian job the mod has, with what each pays |
+| `/job <name or number>` | what the work is, what it pays, what you drive — and marks where it starts on your map |
+
+Starting one is not TextDispatch's to do: the mod owns that, and a job is taken by being at its place,
+or from the mod's own menu (`Shift+J`).
 
 ---
 

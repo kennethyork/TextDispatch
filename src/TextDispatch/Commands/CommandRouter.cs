@@ -5,6 +5,7 @@ using Rage;
 using TextDispatch.Chat;
 using TextDispatch.Dialogue;
 using TextDispatch.Dispatch;
+using TextDispatch.Jobs;
 using TextDispatch.Lspdfr;
 using TextDispatch.Records;
 
@@ -25,6 +26,9 @@ namespace TextDispatch.Commands
         private readonly DialogueService _dialogue;
         private readonly Settings _settings;
         private readonly RecordsLedger _records;
+
+        /// <summary>The one job marker this plugin has on the map, so asking for another does not leave a trail.</summary>
+        private static Blip _jobBlip;
 
         public CommandRouter(ChatBox chat, LspdfrApi api, DispatchService dispatch, DialogueService dialogue,
                              Settings settings, RecordsLedger records)
@@ -145,6 +149,11 @@ namespace TextDispatch.Commands
                 case "callout":
                 case "start": StartCallout(argument); return;
                 case "calls": ListCallouts(argument); return;
+
+                // DriverJobs V's civilian work. It is a ScriptHookV script with no API to ask, so
+                // the list is read out of the file the mod itself loads.
+                case "jobs": ListJobs(argument); return;
+                case "job": DescribeJob(argument); return;
                 case "endcall": EndCall(); return;
                 case "available": Available(argument); return;
 
@@ -368,6 +377,121 @@ namespace TextDispatch.Commands
 
             foreach (var callout in _api.ListCallouts(filter, int.MaxValue, out int _))
                 Log.Line("callout: " + callout);
+        }
+
+        /// <summary>
+        /// The civilian jobs DriverJobs V has, in the box.
+        ///
+        /// There is no API to ask: DriverJobs is a ScriptHookV script with no callout registration
+        /// to hang a question on. So the list comes from the file the mod itself loads -
+        /// scripts\DriverJobsData\Missions\Jobs.xml - which is why what is shown is what the mod
+        /// actually has, including a job edited or added by hand. Not having the mod is a normal
+        /// state: then this says so, once, and nothing else changes.
+        /// </summary>
+        private void ListJobs(string argument)
+        {
+            var jobs = CivilianJobs.All();
+            if (jobs.Count == 0)
+            {
+                _chat.Error("No civilian jobs to list: " + CivilianJobs.Problem + ".");
+                _chat.Notice("They come with DriverJobs V - scripts\\DriverJobsData\\Missions\\Jobs.xml.");
+                return;
+            }
+
+            var filter = (argument ?? "").Trim();
+            var matching = new List<CivilianJob>();
+            foreach (var job in jobs)
+                if (filter.Length == 0 || job.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0) matching.Add(job);
+
+            if (matching.Count == 0)
+            {
+                _chat.Error("No job matches '" + filter + "'.");
+                return;
+            }
+
+            const int page = 20;
+            var scope = filter.Length == 0 ? "" : " matching '" + filter + "'";
+            _chat.Notice("Civilian jobs" + scope + ": " + matching.Count + "  (DriverJobs V)");
+
+            for (int i = 0; i < matching.Count && i < page; i++)
+                _chat.Notice("  " + (i + 1) + ". " + matching[i].Name + "  -  " + matching[i].PayText());
+
+            if (matching.Count > page)
+                _chat.Notice("  ... " + (matching.Count - page) + " more - narrow it with '/jobs <text>'.");
+
+            _chat.Notice("Mark one with '/job <name or number>'. The whole list is in the log.");
+
+            foreach (var job in matching) Log.Line("job: " + job.LogLine());
+        }
+
+        /// <summary>
+        /// One job: what the work is, what it pays, what you drive and where it starts - with the
+        /// start marked on the map. It cannot take the job for you, because the mod owns that: a job
+        /// is started by being at its place, or from the mod's own menu.
+        /// </summary>
+        private void DescribeJob(string argument)
+        {
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                _chat.Notice("Usage: /job <name or number>  -  /jobs lists them.");
+                return;
+            }
+
+            string problem;
+            var job = CivilianJobs.Find(argument, out problem);
+            if (job == null)
+            {
+                _chat.Error("No single job matches '" + argument.Trim() + "'" +
+                            (problem == null ? "" : ": " + problem) + ".");
+                _chat.Notice("Try /jobs to see the list.");
+                return;
+            }
+
+            _chat.Notice(job.Name + "  -  " + job.KindText());
+
+            for (int i = 0; i < job.Lines.Length && i < 4; i++)
+                if (job.Lines[i].Length > 0) _chat.Notice("  " + job.Lines[i]);
+            if (job.Lines.Length > 4) _chat.Notice("  ...");
+
+            _chat.Notice("  " + job.PayText() + ".  You drive " + job.VehicleText() + ".");
+            if (job.HasUniform) _chat.Notice("  This one still puts you in its own work clothes.");
+
+            if (job.HasStart) MarkJob(job);
+            else _chat.Notice("  No start point is given in the file - take it from the job menu (Shift + J).");
+        }
+
+        /// <summary>
+        /// Put a job's start on the map, replacing the last one this plugin marked.
+        /// </summary>
+        private void MarkJob(CivilianJob job)
+        {
+            try
+            {
+                if (_jobBlip != null)
+                {
+                    try { _jobBlip.Delete(); } catch { }
+                    _jobBlip = null;
+                }
+
+                _jobBlip = new Blip(new Vector3(job.X, job.Y, job.Z));
+                _jobBlip.Name = job.Name;
+                _jobBlip.Color = System.Drawing.Color.Yellow;
+                _jobBlip.IsRouteEnabled = true;
+
+                // The route as well as the blip: the marker says where, this says how to get there.
+                try { Rage.Native.NativeFunction.Natives.SetNewWaypoint(job.X, job.Y); }
+                catch (Exception ex) { Log.Error("job waypoint", ex); }
+
+                _chat.Notice("  Marked on the map. Drive there to take it" + (job.Remote
+                    ? ", or open the job menu (Shift + J) anywhere in a suitable vehicle."
+                    : "."));
+            }
+            catch (Exception ex)
+            {
+                Log.Error("job blip", ex);
+                _chat.Notice("  Its start is at " +
+                             string.Format(CultureInfo.InvariantCulture, "{0:0.#}, {1:0.#}", job.X, job.Y) + ".");
+            }
         }
 
         private void EndCall()
@@ -1345,6 +1469,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Radio:    /r <text>  or just type a status code below");
             _chat.Notice("  Status:   10-8  10-7  10-97  10-98  10-6  code 3  code 4");
             _chat.Notice("  Calls:    /accept  /decline  /calls [filter]  /callout <name>  /endcall  /available on|off");
+            _chat.Notice("  Civilian: /jobs [filter]  /job <name>  -  DriverJobs V's work, what it pays, where it starts");
             _chat.Notice("  Quick:    /yes accept  /no decline  (or just type 'accept')   /talk  whoever is nearest");
             _chat.Notice("  Stops:    /stop  /endstop  /tow   (or pull over with LSPDFR and it is picked up)");
             _chat.Notice("            /id  /frisk  /cuff  /detain  /release  /record  /owner  /transport");

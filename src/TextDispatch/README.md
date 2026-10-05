@@ -230,7 +230,7 @@ natives resolved by name at run time, and one or two changed shape between game 
 
 ## Commands
 
-[`COMMANDS.md`](COMMANDS.md) beside this file lists **every** command and alias — 123 of them, which
+[`COMMANDS.md`](COMMANDS.md) beside this file lists **every** command and alias — 125 of them, which
 is every case label in the router's command switch — with the words that work without a slash: the
 status codes, `accept`, and the orders a pedestrian obeys. The summary below is the short version.
 
@@ -272,6 +272,25 @@ assembly — and `/callout` starts any of them by name.
 **The car**
 `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` (or `/fix`) ·
 `/veh <model>`
+
+### Civilian jobs — DriverJobs V
+
+If DriverJobs V is installed, its work is in the same box as everything else. It is a ScriptHookV
+script with no plugin API, so TextDispatch reads the file the mod itself loads —
+`scripts\DriverJobsData\Missions\Jobs.xml` — rather than keeping a copy: what `/jobs` shows is what
+the mod actually has, including a job edited or added by hand, and a mod that is not installed is one
+sentence rather than a fault.
+
+```
+/jobs              every civilian job, with what each pays
+/jobs taxi         the ones matching a word
+/job LS Medical    what the work is, what it pays, what you drive, and marks where it starts
+/job 13            the same one by its number, which is handy when two jobs share a name
+```
+
+`/job` puts a blip and a sat-nav route on the start point, and replaces the last one it made. It
+cannot *take* the job: the mod owns that, and a job is started by being at its place or from the mod's
+own menu (`Shift+J`).
 
 ### The records terminal
 
