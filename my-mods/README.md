@@ -16,6 +16,7 @@ metadata, not from memory of what was downloaded.
 | LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.17** and TextCallouts 1.2.3 |
 | ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
 | Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**) |
+| Non-police duty | **LSFD — EMS and Fire ✓** — added to LSPDFR's duty menu (**§1.7**) |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
 | Local model | Ollama `llama3.2:latest` ✓ answering |
@@ -202,6 +203,32 @@ this order:
 If `DriverJobsV.log` complains that it cannot access `Jobs.xml`, the fix is **DirectStorageFix** by
 alloc8or — the one known Windows 11 failure mode for this mod — and installing anything else for it
 would be guesswork.
+
+### 1.7 Being EMS or Fire on duty — LSFD added to the duty menu
+
+LSPDFR ships two non-police agencies in `lspdfr\data\agency.xml` and neither could ever be chosen:
+
+| Agency | What it has |
+|---|---|
+| `lsfd` — Los Santos Fire Department (EMS) | a **Rescue Ambulance** (the `ambulance` model, livery 2), paramedic peds, the `mp_ems` outfits |
+| `lsfd_fire` — Los Santos Fire Department (Fire), child of `lsfd` | the **Fire Truck** (`firetruk`), fireman peds, the `fire` inventory |
+
+The list the duty menu is built from is `lspdfr\data\duty_selection.xml`, and it held only police
+agencies — LSPD, LSSD, SAHP, NYSP, the SWAT branches, NOOSE, FIB, IAA, DOA, SASPA, SAPR. Both LSFD
+agencies are now listed in its `<Peds>` and `<Vehicles>` lists, with the ambulance and the fire truck
+named in the vehicle descriptions, so **LSFD can be picked at any station** alongside the police ones.
+
+Reverting is one file: the original is beside it as `duty_selection.xml.backup-<timestamp>`. Nothing
+else in the install was touched, and LSPDFR's own `agency.xml` was not modified at all.
+
+Two things to expect, both gameplay rather than faults:
+
+- **LSPDFR's callouts are police callouts.** Being LSFD changes what you drive, what you wear and what
+  the records call you; it does not add medical callouts, because LSPDFR has no such callout type. For
+  actual paramedic work, DriverJobs' shift below is the one that has it.
+- **Policing Redefined and StopThePed are written for police duty** and may behave oddly with a
+  non-police agency. If a shift as EMS turns strange, take a police agency and use DriverJobs'
+  paramedic job instead — that one never involves LSPDFR at all.
 
 ---
 
