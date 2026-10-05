@@ -16,13 +16,15 @@ namespace TextJobs
     internal sealed class Settings
     {
         /// <summary>
-        /// F8 by default, and deliberately not the left arrow.
+        /// F9 by default, and deliberately not the left arrow.
         ///
         /// TextDispatch uses the left arrow, and if both plugins are installed then two boxes on one
-        /// key would both open and both read the same keys. F8 is free on this install: F4 is RAGE
-        /// Plugin Hook's console, F7 is ScriptHookVDotNet's, and DriverJobs uses Shift+J.
+        /// key would both open and both read the same keys. The rest of the function row was already
+        /// spoken for when this was chosen: F4 is RAGE Plugin Hook's console, F7 is
+        /// ScriptHookVDotNet's, F5 and F6 are Traffic Policer's, F8 is ALPRLite's, F10 is
+        /// StopThePed's search, F11 and F12 are LSPDFR's, and DriverJobs uses Shift+J.
         /// </summary>
-        public string OpenKey = "F8";
+        public string OpenKey = "F9";
 
         /// <summary>top-left, top-right, bottom-left, bottom-right. Top-right, as TextDispatch does.</summary>
         public string ChatPosition = "top-right";

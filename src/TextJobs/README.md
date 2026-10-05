@@ -1,7 +1,7 @@
 # TextJobs — DriverJobs V in a chat box
 
 TextDispatch's box and its keyboard, for DriverJobs V, as a ScriptHookVDotNet script. Install it in
-`scripts\` beside `DriverJobs.dll` and press **F8**.
+`scripts\` beside `DriverJobs.dll` and press **F9**.
 
 It is a **separate plugin from TextDispatch** and shares nothing with it at run time. TextDispatch is
 an LSPDFR plugin: it cannot load without LSPDFR and does not exist off duty. This is a script for
@@ -14,7 +14,7 @@ duty or off, and needs nothing installed but the game and the jobs mod.
 |---|---|
 | `/jobs [filter]` | every job DriverJobs has, with what each pays |
 | `/job <name or number>` | the description, the pay, what you drive — and a blip and a sat-nav route on where it starts |
-| `/key <key>` | which key opens the box (`/key F8`, `/key Right`) |
+| `/key <key>` | which key opens the box (`/key F9`, `/key Right`) |
 | `/pos <corner>` | which corner it sits in |
 | `/hide on\|off` | whether what you type is hidden from the other plugins |
 | `/hardware on\|off` | whether a hidden key is also released in the hardware state |
@@ -38,7 +38,7 @@ always let through.
 1. **Close the game.**
 2. Copy **`TextJobs.dll`** into `<your game folder>\scripts\` — the folder `DriverJobs.dll` is already in.
 3. Start the game. There is nothing to go on duty for: a ticker confirms it loaded.
-4. Press **F8** and type `/jobs`.
+4. Press **F9** and type `/jobs`.
 
 ## Requirements
 
@@ -46,7 +46,7 @@ GTA V (Legacy or Enhanced), **ScriptHookV**, **ScriptHookVDotNet** (the same ver
 needs), and **DriverJobs V** itself — without it the box still opens and says the job list is missing.
 
 Not required: LSPDFR, RAGE Plugin Hook, or TextDispatch. If you run TextDispatch too, keep the two on
-different keys — TextDispatch uses the left arrow, this uses F8, and two boxes on one key would both
+different keys — TextDispatch uses the left arrow, this uses F9, and two boxes on one key would both
 open and both read the same keystrokes.
 
 ## What it deliberately is not

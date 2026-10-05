@@ -17,7 +17,7 @@ INSTALL
 
 2. Start the game. There is nothing to go on duty for - a ticker confirms it loaded.
 
-3. Press F8, type /jobs, press Enter.
+3. press F9, type /jobs, press Enter.
 
 
 WHAT IT DOES
@@ -49,7 +49,7 @@ GTA V (Legacy or Enhanced), ScriptHookV, ScriptHookVDotNet (nightly 3.7.0 or new
 NOT required: LSPDFR, RAGE Plugin Hook, TextDispatch.
 
 If TextDispatch is installed as well, keep the two boxes on different keys: TextDispatch uses the left
-arrow, this one uses F8, and two boxes on one key would both open and both read the same keystrokes.
+arrow, this one uses F9, and two boxes on one key would both open and both read the same keystrokes.
 
 
 THE FILES IT MAKES

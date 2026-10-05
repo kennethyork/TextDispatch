@@ -28,7 +28,7 @@ as you are in a suitable vehicle — `/job` says so when it applies.
 
 | | |
 |---|---|
-| `/key <key>` | which key opens it (`/key F8`, `/key Right`, `/key Numpad0`) — saved to the ini |
+| `/key <key>` | which key opens it (`/key F9`, `/key Right`, `/key Numpad0`) — saved to the ini |
 | `/pos <corner>` | top-left, top-right, bottom-left, bottom-right — saved to the ini |
 | `/hide on\|off` | whether what you type is hidden from the other plugins |
 | `/hardware on\|off` | whether a hidden key is also released in the hardware state |
@@ -41,7 +41,7 @@ as you are in a suitable vehicle — `/job` says so when it applies.
 
 | | |
 |---|---|
-| **F8** | open the box (`OpenKey=F8` in `TextJobs.ini`) |
+| **F9** | open the box (`OpenKey=F9` in `TextJobs.ini`) |
 | **Enter** | run the command · **Esc** close and clear |
 | **Up / Down** | command history |
 | **Backspace** | delete a character |

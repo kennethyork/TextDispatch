@@ -303,7 +303,7 @@ and is loaded when you go on duty. So the civilian jobs got their own plugin, bu
 | | |
 |---|---|
 | Where | `scripts\TextJobs.dll`, beside DriverJobs |
-| Opens with | **F8** - deliberately not the left arrow, because two boxes on one key would both open and both read the same keystrokes |
+| Opens with | **F9** - deliberately not the left arrow, because two boxes on one key would both open and both read the same keystrokes |
 | Needs | the game, ScriptHookV, ScriptHookVDotNet, DriverJobs V. **Not** LSPDFR, not RAGE Plugin Hook |
 | Commands | `/jobs [filter]`, `/job <name or number>`, `/key`, `/pos`, `/hide on\|off`, `/hardware on\|off`, `/clear`, `/help` |
 | Its files | `scripts\TextJobs.ini` (settings), `scripts\TextJobs.log` (what it did, and the whole job list) |
@@ -317,6 +317,49 @@ TextDispatch's, compiled into both plugins, so they cannot drift apart. Nothing 
 run-time dependency either way, and each works with the other absent.
 
 Built and installed; not yet run in game.
+
+### 1.11 The keyboard, redone so nothing is shared
+
+Every mod's config was read, the bindings were pooled, and anything two mods both watched for was moved
+onto a key or a modifier that nothing else uses. **34 lines across nine config files** were changed -
+counted by diffing each file against its backup, not from the plan; every file has that backup beside it
+named `*.bak-keymap-20261005-1819`. One line of C# changed too: TextJobs' default key, F8 to F9.
+
+What was actually colliding, and what a press used to do:
+
+| Key | Who was sharing it | Now |
+|---|---|---|
+| **Back** | PR tackle, StopThePed tackle, PR fast dispatch, Traffic Policer's radar disable — four actions on one press | PR keeps Back; StopThePed's tackle is `~`; PR's fast dispatch is **LCtrl+Back**; the radar disable is **Insert** |
+| **Enter** | PR speed boost, PR dismiss-all, StopThePed sprint boost, Ultimate Backup dismiss-all | PR's speed boost is **RShift**; its dismiss-all is **LCtrl+Enter**; Ultimate Backup's is **Delete**; StopThePed's sprint is **RAlt** |
+| **B** | LSPDFR's backup menu, LSPDFR's crime report, PR's dispatch menu, Ultimate Backup's menu | LSPDFR keeps **B**; its crime report is **LAlt+B**; PR's dispatch is **F1**; Ultimate Backup's menu is **F2** |
+| **T** | PR's menu and pursuit, ELS's manual siren, StopThePed's gunpoint pursuit, Ultimate Backup's K9, Traffic Policer's stop-follow | PR keeps **T**; ELS's manual siren is **;**; StopThePed's is **LAlt+T**; Ultimate Backup's K9 is **.**; Traffic Policer's is **LShift+T** |
+| **J** | ELS's lights, LSPDFR's siren-sound toggle, Traffic Policer's remove-signs | ELS keeps **J**; LSPDFR's is **F11**; Traffic Policer's is **LCtrl+L** |
+| **G** | ELS's siren, LSPDFR's abort/join chase, StopThePed's context menu | ELS keeps **G**; LSPDFR's is **F3**; StopThePed's is **LAlt+G** |
+| **Y** | ELS's airhorn, LSPDFR's accept-callout | ELS keeps **Y**; LSPDFR's is **F12** (and the box still takes `accept`) |
+| **U** | ELS's primary pattern, PR's felony-stop menu | ELS keeps **U**; PR's is **LAlt+U** |
+| **E** | LSPDFR's interact family, CompuLite's computer | LSPDFR keeps **E**; CompuLite's computer is **LShift+E** |
+| **NumPad0** | PR's panic and Ultimate Backup's panic, both on **RCtrl+NumPad0** | PR keeps **RCtrl+NumPad0**; Ultimate Backup's is **LAlt+NumPad0** |
+| **F8** | ALPRLite's plate reader and TextJobs' box | ALPRLite keeps **F8**; **TextJobs is F9** |
+| **5 and 6** | ELS's own siren tones 5/6 and its scan/tone-X | scan is **-**, tone X is **=** |
+| **G again** | ELS's siren toggle and its own panic siren | panic siren is **'** |
+
+**The function row is now one thing per key:** F1 PR dispatch, F2 Ultimate Backup, F3 LSPDFR chase,
+F4 RPH console, F5/F6 Traffic Policer, F7 ScriptHookVDotNet console, F8 ALPRLite, F9 TextJobs,
+F10 StopThePed search, F11 LSPDFR siren sound, F12 LSPDFR accept callout.
+
+**Two layers keep the two police frameworks apart.** Policing Redefined and StopThePed/Ultimate Backup do
+the same jobs, so StopThePed and Ultimate Backup now live on the **LAlt** layer
+(`LAlt+E` stop a ped, `LAlt+G` context menu, `LAlt+T` gunpoint, `LAlt+Q` quick grab, `LAlt+Back` …)
+and PR keeps the bare keys it always had. That is a keybinding fix, not a fix for the deeper conflict
+between them (§1.4) — one of those two setups still has to go eventually.
+
+**What was deliberately not changed:** LSPDFR's `E` family (duty, arrest, stop peds, traffic-stop talk,
+garage, apartment — one key, contextual by design), its `Q` pair, PR's `T` pair, ELS's lights on
+J/K/L, TextDispatch's left arrow, DriverJobs' `Shift+J`, and ELS's `ScrollLock` key lock.
+
+**Two things worth knowing about the game's own bindings**, which no mod config can settle: bare `E`
+is also the horn while driving (that is LSPDFR's choice, not a collision with another mod), and bare `C`
+(PR's partner in/out of a vehicle) is the game's look-behind. If either annoys you, they are one line each.
 
 ---
 
