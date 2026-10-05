@@ -196,16 +196,19 @@ it cannot make sense of is refused with the reason in the log, never ignored.
 Install the DLL into `Plugins\LSPDFR\` and go on duty, exactly like TextDispatch:
 [`src/TextCallouts/README.md`](src/TextCallouts/README.md).
 
-### Installing both at once
+### Installing all three at once
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\install-bundle.ps1
 ```
 
-builds and installs both DLLs, and `tools\package-bundle.ps1 -Version 1.0.0` packages them into one
-zip with [`BUNDLE.txt`](BUNDLE.txt) — one download, one install, both plugins. They are deliberately
-two assemblies rather than one: each works without the other, and the link between them is reflection
-at runtime, so nothing breaks if only one is installed.
+builds and installs all three — the two LSPDFR plugins into `Plugins\LSPDFR`, [TextJobs](src/TextJobs)
+into `scripts\` where DriverJobs V lives — and `tools\package-bundle.ps1 -Version 1.4.0` packages them
+into one zip with [`BUNDLE.txt`](BUNDLE.txt): one download, one install, all three. They are
+deliberately three assemblies rather than one: each works without the others, the link between
+the two police plugins is reflection at runtime, and TextJobs shares nothing with them at run time at
+all — it is a ScriptHookVDotNet script and does not need LSPDFR, or RAGE Plugin Hook, or the game to be
+on duty.
 
 What "working together" means, concretely — with both in `Plugins\LSPDFR`:
 
@@ -217,6 +220,10 @@ What "working together" means, concretely — with both in `Plugins\LSPDFR`:
 That contract is verified, not assumed: the release check reads both DLLs and confirms
 `TextDispatch.Plugin.Chat` is a public static property and the chat box it returns has a public
 `Notice(string)` — the two names the bridge looks up by reflection.
+
+The bundle since `bundle 1.4.0` also carries the civilian half: `/jobs` lists every job DriverJobs V
+has with what each pays, and `/job <name>` describes one and marks where it starts. TextJobs reads the
+mod's own job file rather than a copy, so a job edited by hand is in the list too.
 
 ## Status
 

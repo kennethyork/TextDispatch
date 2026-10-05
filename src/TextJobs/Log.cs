@@ -22,18 +22,11 @@ namespace TextDispatch
             {
                 if (_path != null) return _path;
 
-                try
-                {
-                    var beside = System.IO.Path.GetDirectoryName(typeof(Log).Assembly.Location);
-                    if (!string.IsNullOrEmpty(beside) && Directory.Exists(beside))
-                    {
-                        _path = System.IO.Path.Combine(beside, "TextJobs.log");
-                        return _path;
-                    }
-                }
-                catch { }
-
-                _path = "TextJobs.log";
+                // One answer for both files: TextJobs' own Settings class already works out where the
+                // script lives, and an assembly loaded from memory reports no location of its own.
+                // Qualified because this type lives in TextDispatch's namespace, where "Settings"
+                // would mean TextDispatch's settings class - which is not compiled into this script.
+                _path = System.IO.Path.Combine(TextJobs.Settings.Folder(), "TextJobs.log");
                 return _path;
             }
         }

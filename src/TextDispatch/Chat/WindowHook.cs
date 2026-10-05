@@ -112,7 +112,21 @@ namespace TextDispatch.Chat
                         bool hide = _filter.Swallow(virtualKey, down, false, altDown);
 
                         if (FeedEvents && down) _presses.Enqueue(_filter.Press(virtualKey));
-                        if (hide) return IntPtr.Zero;
+
+                        if (hide)
+                        {
+                            // The same release the system-wide hook sends, and for the same reason: a
+                            // window message can be swallowed here, but a reader that asks the hardware
+                            // directly - which, in this game, includes RAGE Plugin Hook - still finds the
+                            // key down. Releasing it immediately empties that state too.
+                            //
+                            // This is not a belt-and-braces duplicate. In the first session that ran
+                            // the system-wide hook, Windows accepted it and never called it, so this
+                            // path was doing all the work on its own.
+                            if (_filter.HideFromHardware && down) Hide(virtualKey);
+
+                            return IntPtr.Zero;
+                        }
                         break;
                     }
 
@@ -124,6 +138,16 @@ namespace TextDispatch.Chat
             catch { }
 
             return Win32.CallWindowProc(_previous, window, message, wParam, lParam);
+        }
+
+        /// <summary>
+        /// Release a key that was just swallowed, so nothing polling the hardware state finds it down.
+        /// Marked as ours, so the system-wide hook (if it is running) ignores its own echo.
+        /// </summary>
+        private static void Hide(int virtualKey)
+        {
+            try { Win32.SendKey(virtualKey, true, Win32.HideMark); }
+            catch { }
         }
 
         /// <summary>

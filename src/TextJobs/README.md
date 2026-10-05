@@ -8,6 +8,10 @@ an LSPDFR plugin: it cannot load without LSPDFR and does not exist off duty. Thi
 ScriptHookVDotNet — the same framework DriverJobs itself uses — so it works with or without LSPDFR, on
 duty or off, and needs nothing installed but the game and the jobs mod.
 
+It also ships in **`bundle 1.4.0`** and later, with TextDispatch and TextCallouts. In that zip the two
+DLLs for `Plugins\LSPDFR` are TextDispatch and TextCallouts, this one goes in `scripts\`, and the
+second command list in the zip is `COMMANDS-TextJobs.md`.
+
 ## What it does
 
 | | |

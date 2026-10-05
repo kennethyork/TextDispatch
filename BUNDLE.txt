@@ -1,40 +1,59 @@
 bundle %BUNDLE_VERSION%
 =======================
 
-LSPDFR in text. Two plugins that are meant to be installed together:
+LSPDFR - and DriverJobs - in text. Three plugins that are meant to be installed together:
 
-    TextDispatch %DISPATCH_VERSION%    the text interface: dispatch, the people in the callouts,
+    TextDispatch %DISPATCH_VERSION%    the police side: dispatch, the people in the callouts,
                                        traffic stops, records, all through a chat box
     TextCallouts %CALLOUTS_VERSION%    thirteen callouts, written from scratch, needing nothing but
                                        LSPDFR and RAGE Plugin Hook
+    TextJobs %TEXTJOBS_VERSION%        the civilian side: DriverJobs V's jobs in a box of their own,
+                                       needing neither LSPDFR nor RAGE Plugin Hook
 
-Both DLLs are in this zip. Neither RAGE Plugin Hook nor LSPDFR is - they are separate works under
-their own licences, and you need your own working install of both.
+All three DLLs are in this zip. Neither RAGE Plugin Hook nor LSPDFR is - they are separate works under
+their own licences, and you need your own working install of both. TextJobs does not need either of
+them, but it does need ScriptHookV and ScriptHookVDotNet, which DriverJobs V needs anyway.
 
 
 INSTALL
 -------
 
-1. Copy BOTH DLLs into:
+1. Copy these TWO DLLs into:
 
        <your Grand Theft Auto V folder>\Plugins\LSPDFR\
+           TextDispatch.dll
+           TextCallouts.dll
 
    Create the folder if it is not there. Plugins\LSPDFR - not Plugins, and not the game's lspdfr\
    data folder. Only that folder is loaded by LSPDFR into its own AppDomain, which is what lets a
    callout pack see the callout API at all.
 
-2. Start the game with RagePluginHook.exe, not the normal launcher.
+2. Copy this THIRD DLL into:
 
-3. Load story mode, then GO ON DUTY: press E at a police station.
+       <your Grand Theft Auto V folder>\scripts\
+           TextJobs.dll
 
-   This is the step people miss. LSPDFR loads everything in Plugins\LSPDFR at that moment and not
-   before it - no chat box, no callouts, nothing, however long you wait in story mode.
+   That is the folder DriverJobs V is in. Not Plugins\LSPDFR: LSPDFR and ScriptHookVDotNet read
+   different folders, and a plugin in the wrong one is never loaded at all.
 
-4. Press the key the notification names - the LEFT ARROW by default. T is claimed by other mods on a
-   lot of installs, so it is no longer the default. /key F6 changes it while playing; /chatter
-   quiet|brief|full decides how much of dispatch's radio traffic reaches the box.
+3. Start the game with RagePluginHook.exe, not the normal launcher.
 
-   TextCallouts registers its thirteen callouts at the same moment and tells you so on screen.
+4. Load story mode, then GO ON DUTY: press E at a police station.
+
+   This is the step people miss, for the two police plugins. LSPDFR loads everything in
+   Plugins\LSPDFR at that moment and not before it - no chat box, no callouts, nothing, however long
+   you wait in story mode. TextCallouts registers its thirteen callouts at the same moment and says so
+   on screen.
+
+   TextJobs does not wait for any of that: it loads with the game, and a ticker says it did.
+
+5. The keys, and there are two because there are two boxes:
+
+       LEFT ARROW    the police box (TextDispatch)     /key Left, or /key F6
+       F9            the jobs box   (TextJobs)         /key F9
+
+   Neither is T, which other mods claim on a lot of installs. /chatter quiet|brief|full decides how
+   much of the dispatcher's radio traffic reaches the police box.
 
 
 WHAT THEY DO TOGETHER
@@ -48,13 +67,18 @@ Installed side by side, they are one experience:
   * /calls lists all thirteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>
     starts one on demand, which is the quickest way to see one
   * people in the callouts answer in text when you talk to them
-  * and your own callouts - written as XML files in Plugins\LSPDFR\TextCallouts\Custom\ - are
-    offered exactly like the built-in thirteen, no compiling involved
+  * your own callouts - written as XML files in Plugins\LSPDFR\TextCallouts\Custom\ - are offered
+    exactly like the built-in thirteen, no compiling involved
+  * and the civilian side: /jobs lists every job DriverJobs V has, with what each pays, and
+    /job <name or number> describes one and puts a blip and a sat-nav route on where it starts
+
+Both boxes hide what you type from every other plugin and script while they are open, so typing
+"10-97" or "San Andreas Freight" cannot open somebody else's menu.
 
 None of that is a hard dependency. Each plugin works alone: TextDispatch runs with no callout pack,
-and TextCallouts runs with no text interface - the callout lines simply arrive as normal
-notifications instead. The link is made at runtime by reflection, so installing one without the other
-breaks nothing.
+TextCallouts runs with no text interface - its lines simply arrive as normal notifications instead -
+and TextJobs runs with no LSPDFR at all. The link between TextDispatch and TextCallouts is made at
+runtime by reflection, so installing one without the other breaks nothing.
 
 
 CHECKING IT
@@ -66,15 +90,23 @@ after you go on duty.
 
     Plugins\LSPDFR\textdispatch.log    what loaded, and what each plugin in the folder is missing
     Plugins\LSPDFR\textcallouts.log    which callouts registered, what each one said, which native ran
+    scripts\TextJobs.log               the job list it read, and the whole list every time /jobs runs
+    ScriptHookVDotNet.log              "Loaded 2 script(s)" when DriverJobs and TextJobs are both in
 
-In the chat box:  /plugins  /calls  /help
-In the F4 console: tdstatus, tdplugins, tcstatus, tccallouts
+In the police box:  /plugins  /calls  /help
+In the jobs box:    /jobs  /job <name>  /help
+In the F4 console:  tdstatus, tdplugins, tcstatus, tccallouts
 
 
 REQUIREMENTS
 ------------
 
-Grand Theft Auto V (Legacy or Enhanced), RAGE Plugin Hook, LSPDFR 0.4.9 or newer, .NET Framework 4.8.
+For the two police plugins: Grand Theft Auto V (Legacy or Enhanced), RAGE Plugin Hook, LSPDFR 0.4.9 or
+newer, and .NET Framework 4.8.
+
+For TextJobs: the same game, ScriptHookV and ScriptHookVDotNet - the ones DriverJobs V already needs -
+and DriverJobs V itself if you want the job list to have anything in it. Not LSPDFR, and not RAGE
+Plugin Hook.
 
 Optional, for TextDispatch's conversation: a local model on your own machine - Ollama on
 localhost:11434, or LM Studio. TextDispatch works without one, on a built-in script.
@@ -88,5 +120,6 @@ the .NET framework.
 LICENCE
 -------
 
-MIT - see LICENSE. It covers these two plugins only. RAGE Plugin Hook and LSPDFR are separate works
-under their own licences, are not included here or in any download, and are not covered by it.
+MIT - see LICENSE. It covers these three plugins only. RAGE Plugin Hook, LSPDFR and DriverJobs V are
+separate works under their own licences, are not included here or in any download, and are not
+covered by it.

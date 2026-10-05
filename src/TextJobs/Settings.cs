@@ -48,7 +48,16 @@ namespace TextJobs
             "blockothermodskeys", "hidehardwarekeys"
         };
 
-        /// <summary>The folder the script is in - which is the game's scripts folder.</summary>
+        /// <summary>
+        /// The folder the script is in, which is the game's scripts folder.
+        ///
+        /// Assembly.Location cannot be relied on: ScriptHookVDotNet loads its scripts from memory, and
+        /// an assembly loaded that way reports an empty location - the same trap TextDispatch hit. The
+        /// first session this ran in therefore wrote no ini and no log at all, because the path it fell
+        /// back to was neither the game folder nor the scripts folder. So: the assembly's own location
+        /// when there is one, and otherwise the game's scripts folder, found from the process directory
+        /// and from the working directory.
+        /// </summary>
         public static string Folder()
         {
             try
@@ -57,6 +66,18 @@ namespace TextJobs
                 if (!string.IsNullOrEmpty(beside) && Directory.Exists(beside)) return beside;
             }
             catch { }
+
+            foreach (var root in new[] { AppDomain.CurrentDomain.BaseDirectory, Environment.CurrentDirectory })
+            {
+                if (string.IsNullOrEmpty(root)) continue;
+                try
+                {
+                    var scripts = Path.Combine(root, "scripts");
+                    if (Directory.Exists(scripts)) return scripts;
+                }
+                catch { }
+            }
+
             return Environment.CurrentDirectory;
         }
 

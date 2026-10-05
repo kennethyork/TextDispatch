@@ -126,9 +126,19 @@ namespace TextDispatch.Chat
             if (channel == _lastChannel && text == _lastText && now - _lastAt < 3000)
             {
                 _suppressed++;
-                Log.Line("box repeat suppressed: " + text);
+
+                // Written down once per run, not once per occurrence: the first session this ran in
+                // produced 1,871 lines of "repeat suppressed" out of 2,924, which buries everything
+                // worth reading in the log it was meant to make readable.
+                if (_suppressed == 1)
+                    Log.Line("box: a line is repeating and is being held back - " + text);
+
                 return;
             }
+
+            if (_suppressed > 1)
+                Log.Line("box: " + _suppressed + " repeats of the previous line were held back");
+            _suppressed = 0;
 
             _lastText = text;
             _lastChannel = channel;

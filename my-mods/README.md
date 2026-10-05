@@ -17,7 +17,8 @@ metadata, not from memory of what was downloaded.
 | ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
 | Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**), all of them now running **as your own character** (**§1.8**), and listed in the chat box by **`/jobs`** |
 | Non-police duty | **LSFD — EMS and Fire ✓** — added to LSPDFR's duty menu (**§1.7**) |
-| Jobs in text | **TextJobs 1.0.0 ✓** — DriverJobs V in a chat box, **F8**, no LSPDFR needed (**§1.10**) |
+| Jobs in text | **TextJobs 1.0.1 ✓** — DriverJobs V in a chat box, **F9**, no LSPDFR needed (**§1.10**) |
+| The bundle | **bundle 1.4.0 ✓** — all three in one download: the two police plugins into `Plugins\LSPDFR`, TextJobs into `scripts\` |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
 | Local model | Ollama ✓ — `llama3.2:1b` for the NPCs, with `llama3.2:latest` still installed (§1.9) |
@@ -316,7 +317,13 @@ The keyboard handling, the hiding rule and the job reader are the **same source 
 TextDispatch's, compiled into both plugins, so they cannot drift apart. Nothing else is shared: no
 run-time dependency either way, and each works with the other absent.
 
-Built and installed; not yet run in game.
+Built and installed; not yet run in game. Its key is **F9** rather than F8 as first shipped: F8 turned
+out to be ALPRLite's plate reader, which the keyboard audit found.
+
+It is in the bundle from `bundle 1.4.0` on: the zip carries TextDispatch, TextCallouts **and** this, with
+the install notes describing both folders - `Plugins\LSPDFR` for the two police plugins, `scripts\` for
+this one - and two command lists. `tools\install-bundle.ps1` puts all three in the right places in one
+go; `tools\package-bundle.ps1` builds the zip.
 
 ### 1.11 The keyboard, redone so nothing is shared
 
