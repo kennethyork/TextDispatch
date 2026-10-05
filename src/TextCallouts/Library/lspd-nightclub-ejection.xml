@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-nightclub-ejection</Id>
+    <Name>Ejection from a Club</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person refusing to leave a nightclub.</Message>
+    <Advisory>Door staff holding him at the entrance.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Lines>
+        <Approach>The door staff have him outside and he will not walk away. He is not armed, he is just determined.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

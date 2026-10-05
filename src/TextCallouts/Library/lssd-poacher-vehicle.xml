@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-poacher-vehicle</Id>
+    <Name>Poachers' Vehicle Found</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Vehicle left abandoned on a farm track.</Message>
+    <Advisory>No persons, lamping equipment inside.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Lines>
+        <Approach>Nobody with it, but there is lamping kit on the back seat. They will come back for it.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

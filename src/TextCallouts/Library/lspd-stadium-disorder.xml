@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-stadium-disorder</Id>
+    <Name>Disorder After a Match</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Crowd disorder outside a stadium after a match.</Message>
+    <Advisory>Both sets of supporters, bottles thrown, no injuries yet.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="5" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Ambulance="true" Backup="true" />
+    <Lines>
+        <Approach>Both sets of them, bottles going, and the stewards are outnumbered. Back-up is coming.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

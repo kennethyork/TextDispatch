@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-car-alarm</Id>
+    <Name>Car Alarm Nuisance</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Car alarm going off for hours, neighbours complaining.</Message>
+    <Advisory>No persons near the vehicle, alarm faulty.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Lines>
+        <Approach>It has been going two hours and the owner is away. Everybody on the street is awake.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

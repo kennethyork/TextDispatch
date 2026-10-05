@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-county-drink-driver</Id>
+    <Name>Drink Driver in the County</Name>
+    <For>sheriff,sahp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Vehicle in a ditch, driver still at the wheel.</Message>
+    <Advisory>Driver out and unsteady, no other vehicles involved.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>He is in the ditch and he is already telling the caller he is fine. He is not fine.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

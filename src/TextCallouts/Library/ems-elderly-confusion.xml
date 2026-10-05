@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-elderly-confusion</Id>
+    <Name>Sudden Confusion</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Elderly person suddenly confused, carer concerned.</Message>
+    <Advisory>Conscious, no injury, normally lucid.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_tramp_01" TreatmentSeconds="14">Who are you? Where is my daughter?</Patient>
+    <Lines>
+        <Approach>She was fine this morning and now she does not know the carer. That is new, and new is the point.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

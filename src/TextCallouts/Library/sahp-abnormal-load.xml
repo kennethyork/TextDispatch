@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-abnormal-load</Id>
+    <Name>Abnormal Load Escort</Name>
+    <For>sahp</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Escort requested for an abnormal load.</Message>
+    <Advisory>Load waiting, route surveyed, timings agreed.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Lines>
+        <Approach>They cannot move until somebody is in front of it. It is a slow one.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-office-burglary</Id>
+    <Name>Office Burglary</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Office broken into overnight, alarm activated late.</Message>
+    <Advisory>No suspects on scene, window forced.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Lines>
+        <Approach>Window in and nobody about - they took their time and they took the laptops.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

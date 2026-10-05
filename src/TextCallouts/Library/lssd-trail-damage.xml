@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-trail-damage</Id>
+    <Name>Damage to a Trail</Name>
+    <For>sheriff,ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Trail damaged by vehicles overnight.</Message>
+    <Advisory>Deep tyre marks, no vehicles present.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Lines>
+        <Approach>Somebody has cut the trail up and left. The rangers will want to see it.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

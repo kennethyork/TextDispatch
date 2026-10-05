@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-boat</Id>
+    <Name>Boat Fire</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Boat on fire at a marina.</Message>
+    <Advisory>Nobody on board, fire spreading to the pontoon.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Lines>
+        <Approach>Nobody aboard and it is trying to take the pontoon with it.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

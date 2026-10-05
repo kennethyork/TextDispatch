@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-phone-snatch</Id>
+    <Name>Phone Snatch</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Phone taken from a caller's hand in the street.</Message>
+    <Advisory>Suspect on foot, victim chasing, no weapon seen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Lines>
+        <Approach>He took the phone out of her hand and ran. She is chasing him, which is not what I would advise.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

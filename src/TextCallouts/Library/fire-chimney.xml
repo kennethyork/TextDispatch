@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-chimney</Id>
+    <Name>Chimney Fire</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Chimney fire in an old house, smoke from the roof.</Message>
+    <Advisory>Occupants out, fire contained so far.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Lines>
+        <Approach>It is in the chimney for now and the householder is watching it. That is not a plan.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

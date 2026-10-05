@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-charity-theft</Id>
+    <Name>Theft from a Charity Shop</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Someone has taken the collection tin from a charity shop.</Message>
+    <Advisory>Staff upset, description of one female.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Lines>
+        <Approach>Somebody took the tin off the counter. The staff are more upset than they are angry.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

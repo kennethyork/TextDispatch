@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-gas-leak</Id>
+    <Name>Gas Leak Reported</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Strong smell of gas in a residential street.</Message>
+    <Advisory>Residents outside, no ignition source yet.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Lines>
+        <Approach>You can smell it from the end of the street. Nobody is to touch a doorbell.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

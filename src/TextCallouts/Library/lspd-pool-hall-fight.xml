@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-pool-hall-fight</Id>
+    <Name>Fight in a Pool Hall</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Fight in a pool hall, one person with a cue.</Message>
+    <Advisory>Four involved, no firearms seen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="4" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>Four of them and one has a cue. Get in there before it becomes something else.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

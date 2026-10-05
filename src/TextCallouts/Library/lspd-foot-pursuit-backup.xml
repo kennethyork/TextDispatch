@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-foot-pursuit-backup</Id>
+    <Name>Foot Pursuit Backup</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Officer in a foot pursuit, requesting assistance.</Message>
+    <Advisory>Suspect running, officer behind, no weapon seen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Lines>
+        <Approach>He is on foot with the officer right behind him. Get into the next street.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

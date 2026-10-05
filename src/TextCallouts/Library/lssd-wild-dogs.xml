@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-wild-dogs</Id>
+    <Name>Pack of Wild Dogs</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Pack of dogs worrying sheep on two farms.</Message>
+    <Advisory>Four or five animals, no owner identified.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Lines>
+        <Approach>Four or five of them working two farms in a week. The farmers are taking it badly.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

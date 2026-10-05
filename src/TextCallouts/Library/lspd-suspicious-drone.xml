@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-suspicious-drone</Id>
+    <Name>Drone Over Houses</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Drone flying low over gardens.</Message>
+    <Advisory>Operator seen on a nearby roof, no offence reported.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Lines>
+        <Approach>Low over the gardens, and the operator is up on a roof. Somebody has complained about that specific drone three times.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

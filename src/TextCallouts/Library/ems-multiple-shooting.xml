@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-multiple-shooting</Id>
+    <Name>Multiple Casualties - Shots</Name>
+    <For>ems,lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Two people shot in the street.</Message>
+    <Advisory>One walking wounded, one on the ground.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_business_01" TreatmentSeconds="18">I am fine. Help him first. Help him.</Patient>
+    <Lines>
+        <Approach>One walking and one not. The walking one is not the priority, whatever he says.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

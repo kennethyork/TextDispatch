@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-sepsis</Id>
+    <Name>Suspected Sepsis</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person unwell with a high temperature and confusion.</Message>
+    <Advisory>Conscious, hot to touch, family reporting a recent infection.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_f_y_business_02" TreatmentSeconds="15">I am so cold. Why am I so cold?</Patient>
+    <Lines>
+        <Approach>Hot, confused, and there was an infection last week. That set of things together is not ordinary.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

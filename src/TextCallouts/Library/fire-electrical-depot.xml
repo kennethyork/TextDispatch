@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-electrical-depot</Id>
+    <Name>Electrical Fire at a Depot</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Fire in an electrical cabinet at a depot.</Message>
+    <Advisory>Power isolated by staff, no injuries.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Lines>
+        <Approach>They have killed the power, so it is smoke and burnt plastic rather than anything worse.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

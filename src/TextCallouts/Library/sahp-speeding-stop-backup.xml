@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-speeding-stop-backup</Id>
+    <Name>Speeding Stop Backup</Name>
+    <For>sahp</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Officer on a stop requesting a second unit.</Message>
+    <Advisory>Driver argumentative, single officer on scene.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Backup="true" />
+    <Lines>
+        <Approach>He is arguing with one officer on the hard shoulder and it is getting louder.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

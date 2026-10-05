@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-dehydration</Id>
+    <Name>Collapse After Exercise</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Runner collapsed at the end of a race.</Message>
+    <Advisory>Conscious, hot and dry, event medics on scene.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_musclbeac_01" TreatmentSeconds="12">I finished it. Did I finish it?</Patient>
+    <Lines>
+        <Approach>Hot, dry and confused at the end of a race. Get fluids into him before anything else.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

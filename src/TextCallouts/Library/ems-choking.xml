@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-choking</Id>
+    <Name>Choking</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person choking, still conscious, airway partly clear.</Message>
+    <Advisory>Restaurant staff on scene, patient distressed.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_business_02" TreatmentSeconds="10">(coughing) It is out. It is out.</Patient>
+    <Lines>
+        <Approach>Still conscious and still choking. Whatever they ate, nobody has got it out yet.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-return-domestic</Id>
+    <Name>Return to a Domestic Address</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Neighbours reporting shouting again at an address attended last night.</Message>
+    <Advisory>Same address as last night, no weapons reported.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>Same address as last night, same shouting. Somebody has to go back.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-car-row</Id>
+    <Name>Row of Cars on Fire</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Several vehicles alight in a car park.</Message>
+    <Advisory>Four or five vehicles, no persons at risk.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Lines>
+        <Approach>Four or five of them and it is moving down the row. Water and distance.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

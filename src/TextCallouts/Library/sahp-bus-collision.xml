@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-bus-collision</Id>
+    <Name>Bus in Collision</Name>
+    <For>sahp,ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Bus in collision with a car, passengers on board.</Message>
+    <Advisory>Passengers shaken, one with a head injury.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_business_01" TreatmentSeconds="14">I hit my head on the handrail. I was standing up.</Patient>
+    <Lines>
+        <Approach>There are passengers on it and one of them has taken a knock to the head. The driver is not hurt.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

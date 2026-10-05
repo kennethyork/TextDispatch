@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-dialysis-missed</Id>
+    <Name>Missed Dialysis</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person unwell after missing a dialysis appointment.</Message>
+    <Advisory>Conscious, swollen, hospital trying to contact them.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_business_01" TreatmentSeconds="14">I could not get there. I could not get there.</Patient>
+    <Lines>
+        <Approach>He has missed two appointments and his body is telling everybody about it.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

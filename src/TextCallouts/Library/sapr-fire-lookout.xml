@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sapr-fire-lookout</Id>
+    <Name>Fire Lookout Report</Name>
+    <For>ranger,fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Smoke reported from a fire lookout tower.</Message>
+    <Advisory>Smoke to the east, no access road.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Lines>
+        <Approach>The lookout has smoke to the east and no road within a mile of it. That is the start of something.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

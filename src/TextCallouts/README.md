@@ -1,6 +1,6 @@
 # TextCallouts
 
-**LSPDFR callouts with no dependencies.** A hundred and two callouts in the style of the big packs, written from
+**LSPDFR callouts with no dependencies.** Three hundred and forty callouts in the style of the big packs, written from
 scratch, needing nothing but LSPDFR and RAGE Plugin Hook — no StopThePed, no Ultimate Backup, no
 CompuLite, no Callout Interface, no ExternalPoliceComputer, no Common Data Framework, no
 RAGENativeUI.
@@ -47,7 +47,7 @@ blip and acceptance flow are LSPDFR's. The pack supplies the situation, not a pa
 
 ### The library, and which duty gets what
 
-A hundred and two callouts, and each one says which duty it belongs to in its `<For>` element, so the
+Three hundred and forty callouts, and each one says which duty it belongs to in its `<For>` element, so the
 work matches the agency you went on duty as:
 
 | Duty | Callouts | What it is |
@@ -60,7 +60,7 @@ work matches the agency you went on duty as:
 | **EMS** (lsfd) |  patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
 | **Fire** (lsfd_fire) |  fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
 
-A hundred and ninety-four of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
+Three hundred and twenty-two of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
 player's own callouts use, so you can read them, copy them and edit them. The other eighteen are written
 in C# because their behaviour is particular (the medical ones, and the police ones that need a scene the
 recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`

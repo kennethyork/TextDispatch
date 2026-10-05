@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-flat-smoke</Id>
+    <Name>Smoke in a Block of Flats</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Smoke in a communal stairwell of a block.</Message>
+    <Advisory>Residents evacuating, source unknown.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>The stairwell is full of smoke and nobody knows which flat it is coming from.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

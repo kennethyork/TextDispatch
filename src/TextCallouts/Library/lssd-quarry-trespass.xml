@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-quarry-trespass</Id>
+    <Name>Trespass at a Quarry</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>People on a disused quarry site.</Message>
+    <Advisory>Three or four on foot, no vehicles.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Lines>
+        <Approach>Four of them in a place they have no business being. Nobody is hurt, which is not guaranteed there.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-child-drowning</Id>
+    <Name>Child in the Water</Name>
+    <For>ems,ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Child pulled from a pool, not breathing.</Message>
+    <Advisory>Parent doing compressions, water coming out.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_f_y_beach_01" TreatmentSeconds="20">(a wet cough, then crying)</Patient>
+    <Lines>
+        <Approach>A parent is doing compressions on her own child. Get there and take over.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

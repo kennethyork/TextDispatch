@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-chemical-inhalation</Id>
+    <Name>Chemical Inhalation</Name>
+    <For>ems,fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Worker breathing fumes in a workshop.</Message>
+    <Advisory>Conscious, coughing, area cleared.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_construct_02" TreatmentSeconds="16">It went in my chest and stayed there.</Patient>
+    <Lines>
+        <Approach>He is coughing and there is nothing in the air now, which does not mean it has left his lungs.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

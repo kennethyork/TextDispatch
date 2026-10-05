@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-forklift</Id>
+    <Name>Forklift Injury</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Worker struck by a forklift in a yard.</Message>
+    <Advisory>Conscious, leg crushed, driver shocked but helping.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_construct_01" TreatmentSeconds="18">Do not look at it. Just do not look at it.</Patient>
+    <Lines>
+        <Approach>Leg under the machine and he is conscious. This is a get-him-to-hospital call, not a treat-him-here one.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

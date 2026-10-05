@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>saspa-self-harm</Id>
+    <Name>Self-Harm Concern</Name>
+    <For>prison</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Inmate assessed as a risk, staff requesting attendance.</Message>
+    <Advisory>No injury yet, staff on the door.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>He has told staff what he intends to do and they believe him. Nobody is hurt yet.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

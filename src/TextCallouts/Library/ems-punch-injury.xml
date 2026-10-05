@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-punch-injury</Id>
+    <Name>Assault - Punch Injury</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person punched outside a bar, face bleeding.</Message>
+    <Advisory>Conscious, suspect gone, nose likely broken.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_business_01" TreatmentSeconds="12">He just hit me. I did not say anything to him.</Patient>
+    <Lines>
+        <Approach>One punch, one face, and the suspect is already down the road.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

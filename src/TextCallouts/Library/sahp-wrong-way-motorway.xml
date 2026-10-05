@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-wrong-way-motorway</Id>
+    <Name>Vehicle on the Wrong Side</Name>
+    <For>sahp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Vehicle travelling the wrong way on the freeway.</Message>
+    <Advisory>Multiple callers, headlights on, no collision yet.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Lines>
+        <Approach>Several callers and it is still going. Get ahead of it if you can.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-anaphylaxis-child</Id>
+    <Name>Child with a Severe Reaction</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Child swollen after eating, parent panicking.</Message>
+    <Advisory>Conscious, breathing noisy, parent with a pen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_hipster_01" TreatmentSeconds="12">He is breathing better. He is breathing.</Patient>
+    <Lines>
+        <Approach>A child, a noisy airway, and a parent who has never used the pen before. Take the lead.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

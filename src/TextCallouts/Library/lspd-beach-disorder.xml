@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-beach-disorder</Id>
+    <Name>Disorder on the Beach</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Large group drinking and fighting on the beach.</Message>
+    <Advisory>Around ten people, no weapons seen, families complaining.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="5" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>Ten of them, drinking, and families are packing up to leave. Break it up.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

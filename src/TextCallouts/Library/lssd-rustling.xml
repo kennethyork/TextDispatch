@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-rustling</Id>
+    <Name>Cattle Theft in Progress</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Cattle being loaded at night onto a trailer.</Message>
+    <Advisory>Two males, trailer backed up to the gate, no weapons seen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Lines>
+        <Approach>They are loading somebody else cattle into a trailer in the dark. That is not a mistake.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

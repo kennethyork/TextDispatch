@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sapr-missing-swimmer</Id>
+    <Name>Missing Swimmer</Name>
+    <For>ranger,ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Swimmer not seen for thirty minutes at a lake.</Message>
+    <Advisory>Friends on the shore, no sighting.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>Thirty minutes and nothing. The friends are on the shore and they are not sure where he went in.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

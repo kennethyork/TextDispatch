@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-motorcycle-collision</Id>
+    <Name>Motorcycle Collision</Name>
+    <For>sahp,ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Motorcyclist down, driver of the other vehicle on scene.</Message>
+    <Advisory>Rider conscious, leg injured, lane blocked.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_biker_01" TreatmentSeconds="16">I am all right. I am all right. Is the bike all right?</Patient>
+    <Lines>
+        <Approach>Rider is down and conscious, and the car driver is standing there not knowing what to do.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

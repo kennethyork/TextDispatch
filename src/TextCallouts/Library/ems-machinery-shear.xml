@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-machinery-shear</Id>
+    <Name>Trapped in Machinery</Name>
+    <For>ems,fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person trapped in machinery at a depot.</Message>
+    <Advisory>Conscious, arm trapped, power off, staff with him.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_construct_02" TreatmentSeconds="18">I can hear you. I can hear you.</Patient>
+    <Lines>
+        <Approach>Trapped and conscious, and the fire service are cutting him out. Keep him talking.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

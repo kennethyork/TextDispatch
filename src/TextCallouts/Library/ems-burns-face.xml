@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-burns-face</Id>
+    <Name>Burns to the Face</Name>
+    <For>ems,fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person with facial burns from a gas ring.</Message>
+    <Advisory>Conscious, burns to face and hands, eyes closed.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_m_business_02" TreatmentSeconds="15">I cannot open my eyes. Say something so I know where you are.</Patient>
+    <Lines>
+        <Approach>Face and hands and his eyes are shut. Do not let him touch them.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

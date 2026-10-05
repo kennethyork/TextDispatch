@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-sport-head</Id>
+    <Name>Head Injury at a Game</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Player knocked out briefly on the pitch.</Message>
+    <Advisory>Conscious, confused, coaches holding him down.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_musclbeac_02" TreatmentSeconds="14">What was the score? Did we win?</Patient>
+    <Lines>
+        <Approach>He was out for a second and now he thinks he is fine. He is not going back on that pitch.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

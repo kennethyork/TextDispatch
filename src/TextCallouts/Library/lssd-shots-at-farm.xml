@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-shots-at-farm</Id>
+    <Name>Shots at a Farmhouse</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Gunshots heard, farmhouse window broken.</Message>
+    <Advisory>Family inside and safe, no injuries.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <OnApproach At="25" HandsUp="true" />
+    <Support Backup="true" />
+    <Lines>
+        <Approach>They put a shot through a window with the family inside. That is not poaching.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

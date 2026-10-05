@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-shots-into-building</Id>
+    <Name>Shots into a Building</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Shots fired at a building, windows broken.</Message>
+    <Advisory>No casualties, vehicle seen leaving.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Support Ambulance="true" />
+    <Lines>
+        <Approach>Windows are out and no casualties, and a car left fast. That is your starting point.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

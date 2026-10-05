@@ -405,7 +405,7 @@ is also the horn while driving (that is LSPDFR's choice, not a collision with an
 
 ### 1.13 What can now come out, and what cannot
 
-TextCallouts is at two hundred and twelve callouts, and every callout the other packs offer has an
+TextCallouts is at three hundred and forty callouts, and every callout the other packs offer has an
 equivalent in it - so the callout packs can be uninstalled.
 
 | Pack | Callouts | Covered? |

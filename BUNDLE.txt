@@ -5,7 +5,7 @@ LSPDFR - and DriverJobs - in text. Three plugins that are meant to be installed 
 
     TextDispatch %DISPATCH_VERSION%    the police side: dispatch, the people in the callouts,
                                        traffic stops, records, all through a chat box
-    TextCallouts %CALLOUTS_VERSION%    two hundred and twelve callouts, written from scratch, needing nothing but
+    TextCallouts %CALLOUTS_VERSION%    three hundred and forty callouts, written from scratch, needing nothing but
                                        LSPDFR and RAGE Plugin Hook
     TextJobs %TEXTJOBS_VERSION%        the civilian side: DriverJobs V's jobs in a box of their own,
                                        needing neither LSPDFR nor RAGE Plugin Hook
@@ -41,7 +41,7 @@ INSTALL
        <your Grand Theft Auto V folder>\Plugins\LSPDFR\TextCallouts\
 
    ...so the files end up in Plugins\LSPDFR\TextCallouts\Library\. That is TextCallouts' own library:
-   a hundred and ninety-four of its two hundred and twelve callouts, written as XML recipes and sorted by the duty they
+   three hundred and twenty-two of its three hundred and forty callouts, written as XML recipes and sorted by the duty they
    belong to - LSPD, Sheriff, Highway Patrol, Rangers, the prison, EMS and fire. Skip this step and the
    eighteen callouts written in C# still work; you just lose the other eighty-four, and the log says so.
 
@@ -70,7 +70,7 @@ WHAT THEY DO TOGETHER
 
 Installed side by side, they are one experience:
 
-  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - a hundred and two of them, sorted by what you went on duty as
+  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - three hundred and forty of them, sorted by what you went on duty as
 
     Five of those eighteen are not police work: a cardiac arrest, an overdose, a collision with
     somebody trapped in the car, a welfare check and a vehicle fire. They are offered only while you

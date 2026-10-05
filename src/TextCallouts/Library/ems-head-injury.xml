@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-head-injury</Id>
+    <Name>Head Injury</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person fallen and struck their head.</Message>
+    <Advisory>Conscious but confused, bleeding from the scalp.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Count="1" />
+    </Actors>
+    <Patient Model="a_m_y_bevhills_02" TreatmentSeconds="15">I do not remember falling. Did I fall?</Patient>
+    <Lines>
+        <Approach>Head wounds bleed like nothing else and confuse afterwards. Watch the confusion, not the blood.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>
