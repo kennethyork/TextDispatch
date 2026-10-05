@@ -10,9 +10,9 @@ metadata, not from memory of what was downloaded.
 | LSPDFR | 0.4.9695 (0.4.9) ✓ |
 | .NET Framework | 4.8 ✓ |
 | RAGENativeUI | 1.9.3.0 ✓ (was wrongly 1.6.3.0 — fixed, see §1) |
-| ScriptHookV | ✗ **not installed** — the one thing ELS needs |
-| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer were put back, and **TextCallouts is now 1.1.0** (your own XML callouts) |
-| ASI mods | 3 installed, **2 load** |
+| ScriptHookV | **3889.0.1158.13 ✓** — installed, matches your game build 1.0.3889.0 (§1.1) |
+| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is 1.0.15 and TextCallouts 1.2.3 |
+| ASI mods | 3 installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
 | Local model | Ollama `llama3.2:latest` ✓ answering |
@@ -23,7 +23,28 @@ Legend: **✓** present and working · **✗** missing or broken · *optional* =
 
 ## 1. What is still outstanding
 
-### 1.1 ScriptHookV is missing, so ELS does not run ✗
+### 1.1 ScriptHookV is missing, so ELS does not run ✓ FIXED
+
+`ScriptHookV.dll` **3889.0.1158.13** is installed in the game root — the build that matches your
+exactly (game 1.0.3889.0), from the official source: `https://www.dev-c.com/files/ScriptHookV_3889.0_1158.13.zip`.
+It needed a browser user-agent to download; dev-c.com serves its homepage to anything else, which is
+why the first attempt produced 11 KB of HTML instead of a zip.
+
+`NativeTrainer.asi` from the same zip was **deliberately not** copied: F4 is RAGE Plugin Hook's console
+here, and a trainer is not something that was asked for. `dinput8.dll` was left alone too — the ASI
+loader already present loads `openCameraV.asi` and `OpenIV.asi` successfully, so there was no reason to
+replace a working loader.
+
+The check next launch is `asiloader.log`: it said
+
+```
+ASI: Loading "D:\Grand Theft Auto V Legacy\ELS.asi"
+     "ELS.asi" failed to load          <- because ScriptHookV.dll was missing
+```
+
+and should now say a load address after the name, with no `failed`.
+
+The note below is kept because it explains the mechanism.
 
 `asiloader.log` says it plainly, in every session:
 
@@ -44,7 +65,14 @@ admin prompt to write to (§1.2).
 
 **What it gets you:** every ELS-enabled car lights up properly, with the six VCF configs below.
 
-### 1.2 The ELS configs are in a folder ELS never reads ✗
+### 1.2 The ELS configs are in a folder ELS never reads ✓ FIXED
+
+**All 52** of them — not the six I first attributed to the Los Santos Police Vanilla Pack; the County
+Pack, Patch 1 and others had been installed too — now sit in `ELS\pack_default\`, which is what
+`ELS.ini` names (`VcfContainerFolder = pack_default`). They were loose in `ELS\`, a folder ELS never
+looked in.
+
+The description below is kept because it explains how the mismatch worked.
 
 - `ELS.ini` says `VcfContainerFolder = pack_default`
 - `ELS\pack_default\` **does not exist**
@@ -61,7 +89,19 @@ B) create  ELS\pack_NB-DSQ\    and move them there, then set
 
 B is better if you add the County Pack VCFs later — they use `pack_NB-DSQ` too.
 
-### 1.3 The game root folder is locked to Administrators ⚠
+### 1.3 The game root folder was locked to Administrators ✓ FIXED
+
+```
+icacls "D:\Grand Theft Auto V Legacy" /grant "kennethyork-win\kenne:(OI)(CI)M"
+```
+
+Your account now has **Modify** on the folder, verified by writing a file into it afterwards. Root-level
+installs — mods, configs, ScriptHookV — no longer need a UAC prompt, and the failure mode that produced
+half-installed mods is gone with it. The `(OI)(CI)` means new files and subfolders inherit it, so it
+does not need doing again.
+
+Files that already existed keep the permissions they had; if one ever refuses to be replaced, the same
+command with `/T` fixes the whole tree in one go.
 
 `D:\Grand Theft Auto V Legacy` is owned by `BUILTIN\Administrators` and gives your account only **Read & Execute**:
 
