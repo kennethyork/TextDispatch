@@ -17,7 +17,12 @@ INSTALL
 
 2. Start the game. There is nothing to go on duty for - a ticker confirms it loaded.
 
-3. press F9, type /jobs, press Enter.
+3. press the key the box names when it loads, type /jobs, press Enter.
+
+   That key is the LEFT ARROW - the same one the police box uses - unless TextDispatch's box is loaded
+   in this session, in which case the left arrow is spoken for and this box uses F9 instead. The line
+   in the box says which, and TextJobs.ini's OpenKey is set to auto to do that; name a key there and
+   it wins.
 
 
 WHAT IT DOES
@@ -48,8 +53,14 @@ GTA V (Legacy or Enhanced), ScriptHookV, ScriptHookVDotNet (nightly 3.7.0 or new
 
 NOT required: LSPDFR, RAGE Plugin Hook, TextDispatch.
 
-If TextDispatch is installed as well, keep the two boxes on different keys: TextDispatch uses the left
-arrow, this one uses F9, and two boxes on one key would both open and both read the same keystrokes.
+If TextDispatch is installed as well, the two boxes cannot share a key - both would open and both would
+read the same keystrokes - so with TextDispatch loaded this box uses F9 and leaves the left arrow to it.
+The box says which key it is on when it loads:
+
+    TextJobs ready. DriverJobs V's work, in text. Left opens the box.
+
+...or "F9 opens the box" when TextDispatch is in the session. That is what OpenKey=auto means, and
+off LSPDFR - when this is the only box - the left arrow is yours with nothing to clash with.
 
 
 THE FILES IT MAKES

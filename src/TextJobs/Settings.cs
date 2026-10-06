@@ -16,15 +16,32 @@ namespace TextJobs
     internal sealed class Settings
     {
         /// <summary>
-        /// F9 by default, and deliberately not the left arrow.
+        /// "auto", which means the left arrow - the key the player already uses for the police box -
+        /// unless the police box is loaded in this session, in which case the left arrow is spoken
+        /// for and this one uses F9.
         ///
-        /// TextDispatch uses the left arrow, and if both plugins are installed then two boxes on one
-        /// key would both open and both read the same keys. The rest of the function row was already
-        /// spoken for when this was chosen: F4 is RAGE Plugin Hook's console, F7 is
-        /// ScriptHookVDotNet's, F5 and F6 are Traffic Policer's, F8 is ALPRLite's, F10 is
-        /// StopThePed's search, F11 and F12 are LSPDFR's, and DriverJobs uses Shift+J.
+        /// F9 is not an arbitrary second choice: the rest of the function row is taken. F4 is RAGE
+        /// Plugin Hook's console, F7 is ScriptHookVDotNet's, F5 and F6 are Traffic Policer's, F8 is
+        /// ALPRLite's, F10 is StopThePed's search, F11 and F12 are LSPDFR's, and DriverJobs uses
+        /// Shift+J.
+        ///
+        /// This is a key rather than a preference to be read out of the ini, because the answer
+        /// depends on what else is loaded - and off LSPDFR, which is when this box is the only one,
+        /// the left arrow is the obvious key and there is nothing to clash with. Set OpenKey to a
+        /// key name and that wins; the ini says so.
         /// </summary>
-        public string OpenKey = "F9";
+        public string OpenKey = "auto";
+
+        /// <summary>
+        /// The file TextDispatch refreshes about twice a second while its box is loaded, which is how
+        /// this plugin knows whether the left arrow is spoken for.
+        ///
+        /// The name is the interface between the two plugins, and it cannot be a reference between
+        /// them: TextDispatch is an LSPDFR plugin in LSPDFR's own AppDomain, and a ScriptHookVDotNet
+        /// script cannot see it. tools\verify-bridge.ps1 reads both assemblies and checks that these
+        /// two constants still match, because a rename here would fail silently - as a wrong key.
+        /// </summary>
+        public const string PoliceAliveFile = "TextDispatch-alive";
 
         /// <summary>top-left, top-right, bottom-left, bottom-right. Top-right, as TextDispatch does.</summary>
         public string ChatPosition = "top-right";
@@ -220,9 +237,18 @@ namespace TextJobs
                 {
                     "; TextJobs settings. Delete this file to get the defaults back.",
                     ";",
-                    "; Which key opens the box. F8 by default: F4 is RAGE Plugin Hook's console, F7 is",
-                    "; ScriptHookVDotNet's, DriverJobs itself uses Shift+J, and TextDispatch uses the left",
-                    "; arrow - two chat boxes on one key would both open and both read the same keys.",
+                    "; Which key opens the box: auto, or any key name (Left, F9, Numpad0, OemQuestion).",
+                    ";",
+                    "; auto means the LEFT ARROW - the key the police box uses - unless TextDispatch's box is",
+                    "; loaded in this session, in which case the left arrow is spoken for and this box",
+                    "; uses F9. Off LSPDFR, when this is the only box, the left arrow is yours with",
+                    "; nothing to clash with.",
+                    ";",
+                    "; F9 is the fallback rather than a preference: F4 is RAGE Plugin Hook's console, F7 is",
+                    "; ScriptHookVDotNet's, F5 and F6 are Traffic Policer's, F8 is ALPRLite's, F10 is",
+                    "; StopThePed's search, F11 and F12 are LSPDFR's, and DriverJobs uses Shift+J.",
+                    ";",
+                    "; Name a key here and that wins over auto.",
                     "OpenKey=" + settings.OpenKey,
                     "",
                     "; Where the box sits: top-left, top-right, bottom-left, bottom-right.",

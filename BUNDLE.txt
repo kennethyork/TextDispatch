@@ -61,6 +61,11 @@ INSTALL
        LEFT ARROW    the police box (TextDispatch)     /key Left, or /key F6
        F9            the jobs box   (TextJobs)         /key F9
 
+   The jobs box takes the LEFT ARROW itself when TextDispatch's box is not loaded - off LSPDFR, this
+   is the only box and the left arrow is the obvious key. With both loaded the left arrow belongs to
+   the police box and the jobs box says so on screen: "F9 opens the box". TextJobs.ini's OpenKey is
+   auto, and naming a key there wins.
+
    Neither is T, which other mods claim on a lot of installs. /chatter quiet|brief|full decides how
    much of the dispatcher's radio traffic reaches the police box.
 

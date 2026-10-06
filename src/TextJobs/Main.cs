@@ -75,11 +75,25 @@ namespace TextJobs
                 _commands = new JobCommands(_box, _settings, _capture);
 
                 _input = new TypedInput(_box, _commands.Handle, _capture);
-                if (!_input.SetOpenKey(_settings.OpenKey))
+
+                // Which key opens this box. "auto" is the left arrow - the key the player already
+                // knows - unless TextDispatch's box is loaded in this game, where the left arrow
+                // belongs to it and this box uses F9 instead.
+                var openKey = _settings.OpenKey == null ? "auto" : _settings.OpenKey.Trim();
+                if (openKey.Length == 0 || openKey.Equals("auto", StringComparison.OrdinalIgnoreCase))
+                {
+                    var policeBox = PoliceBoxLoaded();
+                    openKey = policeBox ? "F9" : "Left";
+                    Log.Line(policeBox
+                        ? "OpenKey is auto: TextDispatch's box is loaded, so the left arrow is its key and this box uses F9"
+                        : "OpenKey is auto: no TextDispatch box in this session, so the left arrow opens this box");
+                }
+
+                if (!_input.SetOpenKey(openKey))
                 {
                     // Said in the box as well as the log: "the box will not open" is otherwise
                     // indistinguishable from "the key is wrong", and the player is the one who knows.
-                    Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with the default");
+                    Log.Line("OpenKey '" + openKey + "' is not a key name; sticking with the default");
                     _box.Error("OpenKey in TextJobs.ini is not a key name - using " + _input.OpenKeyDescription + ".");
                 }
 
@@ -128,6 +142,29 @@ namespace TextJobs
             {
                 Log.Error("startup", ex);
             }
+        }
+
+        /// <summary>
+        /// Whether TextDispatch's chat box is loaded in this game.
+        ///
+        /// It cannot be asked, so it says so itself: TextDispatch refreshes a file beside its log
+        /// about twice a second while it is running, and only a session that is going on now has a
+        /// fresh one. The window is a minute rather than two seconds because this is read once, at
+        /// startup, and a heartbeat that has just started should not be missed by a hair.
+        /// </summary>
+        private static bool PoliceBoxLoaded()
+        {
+            try
+            {
+                var game = TextJobs.Settings.GameFolder();
+                if (game == null) return false;
+
+                var path = System.IO.Path.Combine(game, "Plugins", "LSPDFR", TextJobs.Settings.PoliceAliveFile);
+                if (!System.IO.File.Exists(path)) return false;
+
+                return DateTime.UtcNow - System.IO.File.GetLastWriteTimeUtc(path) < TimeSpan.FromSeconds(60);
+            }
+            catch { return false; }
         }
 
         /// <summary>

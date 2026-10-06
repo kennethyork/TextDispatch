@@ -29,11 +29,12 @@ internal static class Program
 
         var packDll = Path.Combine(repo, @"src\TextCallouts\bin\Release\TextCallouts.dll");
         var dispatchDll = Path.Combine(repo, @"src\TextDispatch\bin\Release\TextDispatch.dll");
+        var jobsDll = Path.Combine(repo, @"src\TextJobs\bin\Release\TextJobs.dll");
 
         Console.WriteLine("the bridge between the two plugins, read from their metadata:");
         Console.WriteLine();
 
-        foreach (var path in new[] { packDll, dispatchDll })
+        foreach (var path in new[] { packDll, dispatchDll, jobsDll })
         {
             if (File.Exists(path)) continue;
             Console.WriteLine("  the assemblies are not built yet: " + path);
@@ -42,6 +43,7 @@ internal static class Program
 
         var pack = AssemblyDefinition.ReadAssembly(packDll);
         var dispatch = AssemblyDefinition.ReadAssembly(dispatchDll);
+        var jobs = AssemblyDefinition.ReadAssembly(jobsDll);
 
         // --- what the callout pack publishes
         var registry = pack.MainModule.GetType("TextCallouts.Scripts.CalloutScript");
@@ -71,6 +73,26 @@ internal static class Program
             var literal = bridge.Fields.Where(f => f.Constant != null).Select(f => f.Constant.ToString()).FirstOrDefault();
             Check("  and it looks for the name '" + literal + "'", literal == "TextCallouts.Scripts.CalloutScript");
         }
+
+        // --- the second bridge: the two chat boxes and the one key they share
+        //
+        // The jobs box uses the left arrow unless the police box is loaded, and the only way it can
+        // tell is a file TextDispatch refreshes while it runs. The name is a constant in each, which
+        // is why it can be read here and why it has to be read: a rename on either side would not
+        // break a build, or a test, or anything until a player pressed the key and nothing opened.
+        var alive = dispatch.MainModule.GetType("TextDispatch.Plugin");
+        var expected = jobs.MainModule.GetType("TextJobs.Settings");
+
+        var dispatchName = alive == null ? null
+            : alive.Fields.Where(f => f.Name == "AliveFile" && f.Constant != null)
+                          .Select(f => f.Constant.ToString()).FirstOrDefault();
+        var jobsName = expected == null ? null
+            : expected.Fields.Where(f => f.Name == "PoliceAliveFile" && f.Constant != null)
+                             .Select(f => f.Constant.ToString()).FirstOrDefault();
+
+        Check("TextDispatch says which file announces it", !string.IsNullOrEmpty(dispatchName));
+        Check("TextJobs looks for the same file", !string.IsNullOrEmpty(jobsName) && jobsName == dispatchName);
+        Check("  and neither is empty", (dispatchName ?? "").Length > 0);
 
         // --- and that the recipe engine can express both features, since the notes promise them
         var recipe = pack.MainModule.GetType("TextCallouts.Custom.CalloutRecipe");

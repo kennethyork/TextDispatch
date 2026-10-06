@@ -209,6 +209,8 @@ namespace TextDispatch
                 try { Game.DisplayNotification("TextDispatch loaded. Press " + _input.OpenKeyDescription + " to chat."); }
                 catch { }
 
+                Announce();
+
                 _running = true;
                 _fiber = GameFiber.StartNew(Loop, "TextDispatch");
             }
@@ -253,6 +255,8 @@ namespace TextDispatch
                     _dispatch.Update();
                     _dialogue.Update();
 
+                    Announce();
+
                     // Five seconds in, say plainly whether anything is being drawn. This is the single
                     // question that cannot be answered from outside the game, and it should not be
                     // left to guesswork.
@@ -284,6 +288,42 @@ namespace TextDispatch
                 GameFiber.Yield();
             }
         }
+
+        /// <summary>
+        /// Say, quietly and about twice a second, that this box is here.
+        ///
+        /// The two chat boxes want the same key. The player wants the left arrow, which is this box,
+        /// and off LSPDFR the left arrow should open the jobs box instead - so the jobs plugin has to
+        /// be able to tell whether this one is loaded, and it cannot ask: LSPDFR puts its plugins in
+        /// an AppDomain of their own, where a ScriptHookVDotNet script cannot see them. So it is said
+        /// in the only place both can look: a file, refreshed while this plugin is running, beside
+        /// the log. The jobs box checks it, and uses the left arrow when it is not there.
+        ///
+        /// A file written every two seconds is not tidiness, it is the handshake. Written once it
+        /// would be a leftover from a session that ended - and the jobs box would bind the wrong key
+        /// for the whole of the next one.
+        /// </summary>
+        private static void Announce()
+        {
+            var now = Environment.TickCount;
+            if (now - _announcedAt < 2000) return;
+            _announcedAt = now;
+
+            try
+            {
+                var folder = System.IO.Path.GetDirectoryName(Log.Path);
+                if (string.IsNullOrEmpty(folder)) return;
+
+                System.IO.File.WriteAllText(System.IO.Path.Combine(folder, AliveFile),
+                                            DateTime.UtcNow.ToString("o"));
+            }
+            catch (Exception ex) { Log.Error("announcing this plugin to the other chat box", ex); }
+        }
+
+        /// <summary>The file the jobs plugin looks for, beside this plugin's log.</summary>
+        public const string AliveFile = "TextDispatch-alive";
+
+        private static int _announcedAt;
 
         /// <summary>
         /// Say what loaded, and what did not. A plugin folder that quietly does nothing is the
