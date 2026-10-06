@@ -53,6 +53,20 @@ recipes cannot describe). A recipe names a duty with `police`, one agency, or se
 is offered to all three. An agency the pack has never heard of gets the police work, because a patrol
 with no calls at all is a worse failure than a misfiled one.
 
+HOW A CALL ENDS
+--------------
+
+A call with somebody to catch ends when you have dealt with them - every suspect dealt with, or the
+first arrest, whichever the recipe asks for. A call with **nothing** to catch - a report, a welfare
+check, a scene to look at; there are a hundred and fourteen of them - ends when you have been there and
+are done with it: leave the area, or give it a minute on scene. `/endcall` ends the call you are on at
+any time, whatever it is.
+
+That last part is recent, and it was a real gap. Those hundred and fourteen used to end only by running
+out of time, twenty minutes after they started, with nothing the player could do to finish them: you
+arrived, dispatch said its line, and the call sat there. Now they finish the way the hand-written ones
+do - you deal with the scene and it closes behind you.
+
 WHAT THEY SAY
 ------------
 

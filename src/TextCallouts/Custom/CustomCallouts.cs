@@ -250,7 +250,10 @@ Every field, and nothing more than you need:
   <TimeoutMinutes> how long it may run before it closes itself. Default 20.
   <Resolution>    ArrestOrDeath  every suspect arrested or dead (the default)
                   AnyArrest      the first arrest is enough
-                  Manual         nothing to catch; it closes on the timer
+                  Manual         nothing to catch - a report, a check on somebody. It closes once
+                                 you have been at the scene and are done with it: leave the
+                                 area, or give it a minute on scene. Twenty minutes is the
+                                 backstop for a call nobody ever turns up to.
   <Distance Min Max Radius>   how far away it appears (metres), and the area blip on the map.
   <Actors>
      <Ped ... />   one per person. Attributes:

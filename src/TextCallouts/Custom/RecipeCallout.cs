@@ -54,6 +54,17 @@ namespace TextCallouts.Custom
         private int _arrivedAt;
         private readonly List<StageRecipe> _played = new List<StageRecipe>();
 
+        // the "nothing to catch" recipes: be at the scene, then be done with it
+        private bool _beenThere;
+        private int _onSceneAt;
+
+        /// <summary>How long the player has to be at a scene with nothing to catch before it is
+        /// plainly dealt with. Shorter and a report is not taken; longer and they are stood about.</summary>
+        private const int OnSceneSeconds = 75;
+
+        /// <summary>How far away counts as having left the scene.</summary>
+        private const float LeftTheScene = 150f;
+
         private CalloutRecipe Recipe
         {
             get
@@ -235,8 +246,7 @@ namespace TextCallouts.Custom
             switch (recipe.Resolution)
             {
                 case Resolution.Manual:
-                    // Nothing to catch: it closes on the timer, or when the player leaves it alone.
-                    return true;
+                    return NothingToCatch(recipe);
 
                 case Resolution.AnyArrest:
                     foreach (var ped in _suspects)
@@ -254,6 +264,62 @@ namespace TextCallouts.Custom
                     Close("every suspect is dealt with");
                     return false;
             }
+        }
+
+        /// <summary>
+        /// A recipe with nothing to catch: a report, a check on somebody, a scene that is over when it
+        /// is over. It is finished by the player being there and then being done - the shape the
+        /// hand-written ones have, where you deal with the scene and it closes behind you.
+        ///
+        /// It used to end only by timing out, which meant the hundred and fourteen recipes like this
+        /// could not be finished by anything the player did: you arrived, dispatch said its line, and
+        /// the call stayed open for twenty minutes. The timeout is still there, now only as the
+        /// backstop for a player who never arrives at all.
+        /// </summary>
+        private bool NothingToCatch(CalloutRecipe recipe)
+        {
+            var player = Game.LocalPlayer.Character;
+            if (player == null) return true;
+
+            var distance = player.Position.DistanceTo(CalloutPosition);
+
+            if (!_beenThere)
+            {
+                // Still on the way. Nothing is timed until they are actually at the scene.
+                if (distance > recipe.ApproachDistance) return true;
+                _beenThere = true;
+                _onSceneAt = Environment.TickCount;
+                return true;
+            }
+
+            var onScene = (Environment.TickCount - _onSceneAt) / 1000;
+
+            // Left after being there: the report is taken, the door has been knocked on, the scene has
+            // been looked at. That is the whole of a call with nothing to catch.
+            if (distance > LeftTheScene && onScene >= 10)
+            {
+                ClearFire();
+                Close("you have been to the scene and moved on");
+                return false;
+            }
+
+            // Or they have stayed, in which case it is equally done - being made to drive off to end a
+            // call would be a strange thing to ask of a player standing in the middle of it.
+            if (onScene >= OnSceneSeconds)
+            {
+                ClearFire();
+                Close("the scene is dealt with");
+                return false;
+            }
+
+            if (Environment.TickCount >= _nextHelp)
+            {
+                _nextHelp = Environment.TickCount + 2000;
+                try { Hud.Help("Nothing to arrest here. Deal with it and move on - /endcall ends it now."); }
+                catch (Exception ex) { Log.Error("the help line for a call with nothing to catch", ex); }
+            }
+
+            return true;
         }
 
         /// <summary>

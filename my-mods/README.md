@@ -439,7 +439,7 @@ for SSStuartCallouts and StoryCallouts, and an empty `ParksCommon\ParksModsWebCh
 is no longer installed. Nothing was deleted, so putting one back is a drag. Delete that folder once you are
 sure.
 
-Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.9.1**, and the interaction plugins
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.9.2**, and the interaction plugins
 that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
 ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
 CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
@@ -447,7 +447,7 @@ CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
 `Plugins\` itself is now just LSPD First Response, CommonDataFramework, DamageTrackingFramework and the
 LSPDFR folder - no stray ini files from packs that have gone.
 
-**TextCallouts 1.9.1** is at 344 callouts, and **every one of them has a script.**
+**TextCallouts 1.9.2** is at 344 callouts, and **every one of them has a script and can be finished.**
 
 Previously only four did. Now all 326 recipes carry three or four lines - 981 lines in total - for the
 person in that scene to say, and TextDispatch asks the callout for those lines before it asks its own
@@ -501,8 +501,33 @@ is for and had nothing to do with them - it now counts the three groups apart, a
 message and `tcstatus`. If it ever says "0 of 0 from the library", the folder is not where the pack looks
 for it.
 
+**Being asked whether all the callouts are playable turned up one that was not.** A recipe with nothing to
+catch - a report, a welfare check, a scene to look at - ended only by timing out, so you arrived, dispatch
+said its line, and the call sat open for twenty minutes with nothing you could do to finish it. A hundred
+and fourteen recipes were like that. They now end the way the hand-written ones do - be at the scene, then
+leave the area, or stay a minute and be plainly done with it - and the timeout is only the backstop for a
+call nobody turns up to.
+
+What the three hundred and twenty-six recipes are, by how they end:
+
+| | Callouts | How it ends |
+|---|---|---|
+| Somebody to catch | **273** | every suspect dealt with, or the first arrest, whichever the recipe asks |
+| Somebody to treat | **53** | long enough with the patient, then hand them over |
+| Nothing to catch | **114** | you have been there and move on |
+
+The recipe harness now refuses a library containing a callout that cannot be ended, and reports that split:
+29 checks, no failures. It also checks that nothing in the pack closes the instant it starts, which is what
+a recipe with a resolution and nobody to resolve would do.
+
+**One known rough edge, cosmetic: every suspect in the pack is the same ped model** (`a_m_y_business_01`),
+so the man in the armed robbery is the man in the bank siege. It does not affect playability - the scenes,
+the scripts and the endings are all per-callout - but it is the thing you would notice first in game.
+Varying it is a change to the generator's table, not to any callout's behaviour.
+
 `tools\verify-bridge.ps1` checks the bridge between the two plugins by reading their metadata - the
 compiler cannot see across a reflection boundary, and a rename there would fail silently in game.
+
 ## 2. Every mod installed
 
 ### 2.1 Platform — the things everything else sits on
