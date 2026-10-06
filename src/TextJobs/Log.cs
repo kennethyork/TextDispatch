@@ -47,6 +47,11 @@ namespace TextDispatch
                     Resolve();
                     File.AppendAllText(_path,
                         DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  " + message + Environment.NewLine);
+
+                    // And to ScriptHookVDotNet's own log, which is written from the same process and
+                    // is known to work on this machine. Two channels because the file channel has
+                    // failed silently once already, and a diagnostic that can go missing is not one.
+                    Console.WriteLine("TextJobs: " + message);
                 }
             }
             catch { }
@@ -87,14 +92,18 @@ namespace TextDispatch
                 if (seen.Add(candidate)) list.Add(candidate);
             };
 
-            try { add(System.IO.Path.Combine(TextJobs.Settings.Folder(), "TextJobs.log")); } catch { }
-
+            // The game's own folder first, and deliberately: it is the one place this machine has
+            // been seen to accept a write from inside the game, because ScriptHookV, ScriptHookVDotNet
+            // and ELS all keep their logs there. The scripts folder is the tidier home and is tried
+            // next, then the temp folder.
             var game = TextJobs.Settings.GameFolder();
             if (game != null)
             {
-                add(System.IO.Path.Combine(game, "scripts", "TextJobs.log"));
                 add(System.IO.Path.Combine(game, "TextJobs.log"));
+                add(System.IO.Path.Combine(game, "scripts", "TextJobs.log"));
             }
+
+            try { add(System.IO.Path.Combine(TextJobs.Settings.Folder(), "TextJobs.log")); } catch { }
 
             try { add(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TextJobs.log")); } catch { }
 

@@ -79,6 +79,18 @@ namespace TextDispatch.Chat
             if (injected && !SwallowInjected) return false;
             if (altDown) return false;
 
+            // Function keys are never hidden.
+            //
+            // Hiding them was the default and it was wrong, because two chat boxes live in this game
+            // - the police one and the jobs one - and each hides the keyboard from everything else
+            // while its own box is open. That includes the other box's key, so with the police box
+            // open the jobs box could not be opened or typed into at all: every key went into the
+            // police box. Nothing is lost by letting function keys through, because a sentence does
+            // not contain F9 - what must be hidden is the letters and digits that spell "10-97", and
+            // those are still hidden. What is gained is that the two boxes can be used in the same
+            // session without one locking the other out.
+            if (virtualKey >= 0x70 && virtualKey <= 0x7B) return false;
+
             if (down)
             {
                 _hidden.Add(virtualKey);

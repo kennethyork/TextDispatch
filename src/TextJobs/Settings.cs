@@ -195,9 +195,24 @@ namespace TextJobs
             return settings;
         }
 
-        public void Save() { Write(IniPath(), this); }
+        /// <summary>
+        /// Save, and if the first place will not take it, the game's own folder - the same idea as the
+        /// log having two channels. The ini was never written on this machine in a whole session, and a
+        /// settings file that cannot be written is a settings file that cannot be changed.
+        /// </summary>
+        public void Save()
+        {
+            var path = IniPath();
+            if (Write(path, this)) return;
 
-        private static void Write(string path, Settings settings)
+            var game = GameFolder();
+            if (game == null) return;
+
+            var fallback = Path.Combine(game, "TextJobs.ini");
+            if (Write(fallback, this)) Log.Line("settings: could not write " + path + " - the ini is at " + fallback);
+        }
+
+        private static bool Write(string path, Settings settings)
         {
             try
             {
@@ -234,8 +249,9 @@ namespace TextJobs
                     "; plugin that reads the keyboard directly instead of the game's messages.",
                     "HideHardwareKeys=" + (settings.HideHardwareKeys ? "1" : "0")
                 });
+                return true;
             }
-            catch (Exception ex) { Log.Error("write settings", ex); }
+            catch (Exception ex) { Log.Error("write settings to " + path, ex); return false; }
         }
 
         private static int AsInt(string value, int fallback)

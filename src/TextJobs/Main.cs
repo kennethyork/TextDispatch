@@ -76,7 +76,12 @@ namespace TextJobs
 
                 _input = new TypedInput(_box, _commands.Handle, _capture);
                 if (!_input.SetOpenKey(_settings.OpenKey))
-                    Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with F8");
+                {
+                    // Said in the box as well as the log: "the box will not open" is otherwise
+                    // indistinguishable from "the key is wrong", and the player is the one who knows.
+                    Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with the default");
+                    _box.Error("OpenKey in TextJobs.ini is not a key name - using " + _input.OpenKeyDescription + ".");
+                }
 
                 _box.OpenHint = "Type a job name or /jobs. Esc closes.";
 
@@ -110,7 +115,7 @@ namespace TextJobs
                 if (!string.Equals(Log.Path, wanted, StringComparison.OrdinalIgnoreCase))
                     _box.Notice("Log is at " + Log.Path + " (not the scripts folder).");
 
-                _box.Notice("TextJobs ready. DriverJobs V's work, in text.");
+                _box.Notice("TextJobs ready. DriverJobs V's work, in text. " + _input.OpenKeyDescription + " opens the box.");
                 if (jobs.Count > 0)
                     _box.Notice("/jobs lists all " + jobs.Count + " of them; /job <name> describes one and marks it.");
                 else
