@@ -3,6 +3,7 @@ using LSPD_First_Response.Mod.API;
 using LSPD_First_Response.Mod.Callouts;
 using Rage;
 using Rage.Attributes;
+using TextCallouts.Callouts;
 
 namespace TextCallouts
 {
@@ -111,9 +112,25 @@ namespace TextCallouts
             // then has no callouts at all. That is exactly what happened: the pack registered eight
             // callouts at 18:28:59, the player went off duty at 18:29:07, and on the next duty every
             // pack re-registered while this one stayed silent.
+            // And only what this duty is. The eighteen hand-written callouts used to be registered
+            // whatever the player was wearing, which meant going on duty as LSFD and being sent to an
+            // armed robbery - and, in the other direction, the medical ones offering themselves to a
+            // police patrol. The gate is here rather than in each callout because that is also where
+            // re-registration happens, so it costs nothing and cannot be forgotten by a new callout:
+            // five of the eighteen are EmsCallout, and everything else is police work.
+            var medical = Agency.AllowsFor(Agency.Medical);
+            var police = Agency.AllowsFor(Agency.Police);
+
             var registered = 0;
+            var forThisDuty = 0;
             foreach (var type in CalloutTypes)
             {
+                // One line, one rule: a medical callout goes to a medical duty, everything else to a
+                // police duty, and neither goes anywhere else.
+                var isMedical = typeof(EmsCallout).IsAssignableFrom(type);
+                if (isMedical ? !medical : !police) continue;
+
+                forThisDuty++;
                 try
                 {
                     Functions.RegisterCallout(type);
@@ -152,7 +169,7 @@ namespace TextCallouts
             }
 
             _registered = true;
-            Log.Line("registered for this duty: " + registered + " of " + CalloutTypes.Length + " built-in callouts, " +
+            Log.Line("registered for this duty: " + registered + " of " + forThisDuty + " built-in callouts, " +
                      fromLibrary + " of " + Custom.CustomCallouts.LibraryCount + " from the library, " +
                      ofTheirOwn + " of " + Custom.CustomCallouts.CustomCount + " of your own" +
                      (Custom.CustomCallouts.Problems > 0

@@ -439,7 +439,7 @@ for SSStuartCallouts and StoryCallouts, and an empty `ParksCommon\ParksModsWebCh
 is no longer installed. Nothing was deleted, so putting one back is a drag. Delete that folder once you are
 sure.
 
-Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.11.0**, and the interaction plugins
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.12.0**, and the interaction plugins
 that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
 ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
 CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
@@ -447,8 +447,27 @@ CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
 `Plugins\` itself is now just LSPD First Response, CommonDataFramework, DamageTrackingFramework and the
 LSPDFR folder - no stray ini files from packs that have gone.
 
-**TextCallouts 1.11.0** is at 344 callouts, and **every one of them has a script, can be finished, and
-sends you to a different person each time - a man or a woman.**
+**TextCallouts 1.12.0** is at 344 callouts, and **every one of them has a script, can be finished, sends
+you to a different person each time, and follows the duty you went on as.**
+
+What each duty actually gives you, counted against this install's own `lspdfr\data\agency.xml`:
+
+| Duty you pick | Callouts offered |
+|---|---|
+| **LSPD**, LSPD SWAT, LSPD Air Support | 159 |
+| **Sheriff** (lssd) | 75 |
+| **Sheriff SWAT** | 76 |
+| **Highway Patrol** (sahp) | 55 |
+| **Park Rangers** (sapr) | 43 |
+| **Bolingbroke** (saspa) | 31 |
+| **LSFD - EMS** | 66 |
+| **LSFD - Fire** | 35 |
+| North Yankton (nysp), FIB, IAA, DOA, NOOSE | 15 each |
+
+That the last row is thin is a real limit and it is written down rather than left to be discovered: the
+recipes name a police family - LSPD, Sheriff, Highway Patrol, Rangers, the prison - or a medical or a fire
+branch, and not one of them says "any police agency", so an agency outside those families gets the two
+shared callouts and the thirteen generic police ones. Proper federal and state work is a job of its own.
 
 Previously only four did. Now all 326 recipes carry three or four lines - 981 lines in total - for the
 person in that scene to say, and TextDispatch asks the callout for those lines before it asks its own

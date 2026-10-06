@@ -19,9 +19,14 @@ That is not a claim - it is the assembly's reference table:
 Nothing else. Every dependency the big packs have is one this pack does not.
 
 Five of the eighteen are medical, not police work: a cardiac arrest, an overdose, a collision with
-somebody trapped in the car, a welfare check and a vehicle fire. They are offered only while you are on
-duty as an emergency-medical agency - LSFD, or any agency whose name says ems, medic, paramedic,
-ambulance or fire - so a police patrol never sees them. Go on duty as LSFD to get them.
+somebody trapped in the car, a welfare check and a vehicle fire. They are registered only while you are
+on duty as an emergency-medical agency - LSFD, or an agency whose name says lsfd, ems, medic, paramedic
+or ambulance - so a police patrol never sees them. Go on duty as LSFD to get them.
+
+And it works both ways now. Those five are the `EmsCallout` ones; **everything else in the pack is
+police work, and is not registered at all on a medical or a fire duty.** Until 1.12.0 they were
+registered whatever you were wearing, so a shift as LSFD could send you to an armed robbery. The fire
+branch has its own work - the fire recipes - and does not get the police ones either.
 Note: it is *inspired by* packs like 686 Callouts, not a copy of it. All eighteen callouts, their names
 and their dialogue are original, and none of 686 Callouts' files, text or ideas-in-code are used.
 Keep 686 installed alongside if you like - they do not overlap.
@@ -52,6 +57,29 @@ in C# because their behaviour is particular (the medical ones, and the police on
 recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`
 is offered to all three. An agency the pack has never heard of gets the police work, because a patrol
 with no calls at all is a worse failure than a misfiled one.
+
+### Which duty you pick, and what it gives you
+
+These are the agencies LSPDFR offers in this install, and what a patrol on each is actually offered -
+the recipes above, plus the thirteen hand-written police callouts, or the five medical ones:
+
+| Duty | Callouts offered |
+|---|---|
+| **LSPD**, LSPD SWAT, LSPD Air Support | 159 |
+| **Sheriff** (lssd), Sheriff SWAT | 75, 76 |
+| **Highway Patrol** (sahp) | 55 |
+| **Park Rangers** (sapr) | 43 |
+| **Bolingbroke** (saspa) | 31 |
+| **LSFD - EMS** | 66 |
+| **LSFD - Fire** | 35 |
+| North Yankton (nysp), FIB, IAA, DOA, NOOSE | 15 each |
+
+**Be straight with the last row: it is thin.** The pack's recipes name a police family - LSPD, Sheriff,
+Highway Patrol, Rangers, the prison - or a medical or fire branch. None of them says "any police agency",
+so an agency outside those families gets the two shared callouts and the thirteen hand-written police
+ones, which are generic work. If you spend a shift as the FIB or the NOOSE that is what you will get:
+thirteen calls, none of them federal. Writing work for them is a job of its own, and the honest thing is
+to say so rather than let you find out at a roadblock.
 
 HOW A CALL ENDS
 --------------
