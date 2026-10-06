@@ -10,7 +10,7 @@
     <Advisory>Bystanders started compressions, water still in the lungs.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01,a_f_y_beach_01,a_f_m_beach_01,a_f_y_fitness_01,a_f_y_fitness_02,a_f_y_tourist_01,a_f_y_hipster_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>The current took me sideways. I could not get back in.</Line>
@@ -19,7 +19,7 @@
     </Script>
     <Patient Model="a_m_y_beach_03" TreatmentSeconds="20">(a cough, then breathing)</Patient>
     <Lines>
-        <Approach>They got her out and somebody is doing compressions. Do not stop until you have to.</Approach>
+        <Approach>Pulled out of the water and somebody is doing compressions on them. Do not stop until you have to.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

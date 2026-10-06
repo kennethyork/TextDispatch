@@ -7,10 +7,10 @@
     <Probability>Medium</Probability>
     <Resolution>Manual</Resolution>
     <Message>Walker on the phone and lost, battery nearly flat.</Message>
-    <Advisory>Knows the trailhead, does not know where she is.</Advisory>
+    <Advisory>Knows the trailhead, does not know where they are.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04" Count="1" Role="Suspect" />
+        <Ped Model="a_m_y_business_01" Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04,a_f_y_hipster_02,a_f_y_hipster_01,a_f_m_fatwhite_01,a_f_y_soucent_01,a_f_m_bodybuild_01" Count="1" Role="Suspect" />
     </Actors>
     <Script>
         <Line>I am on a path but I do not know which one.</Line>
@@ -18,7 +18,7 @@
         <Line>My battery is nearly gone. I am going to have to stop talking.</Line>
     </Script>
     <Lines>
-        <Approach>She is on the phone and the battery is going. We have a trailhead and nothing else.</Approach>
+        <Approach>They are on the phone and the battery is going. We have a trailhead and nothing else.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

@@ -10,14 +10,14 @@
     <Advisory>Conscious, suspect gone, nose likely broken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>One punch. That is all it was, one punch.</Line>
         <Line>He walked off towards the taxi rank.</Line>
         <Line>My teeth feel loose. Is that normal, teeth feeling loose?</Line>
     </Script>
-    <Patient Model="a_m_y_business_01" TreatmentSeconds="12">He just hit me. I did not say anything to him.</Patient>
+    <Patient Model="a_m_y_business_01" TreatmentSeconds="12">They just hit me. I did not say anything to them.</Patient>
     <Lines>
         <Approach>One punch, one face, and the suspect is already down the road.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

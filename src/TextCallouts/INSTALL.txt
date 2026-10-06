@@ -70,28 +70,37 @@ do - you deal with the scene and it closes behind you.
 WHO IS IN THE SCENE
 -------------------
 
-**The people a callout sends you to are drawn at random each time it runs.** Forty-two ped models across the
-three hundred and twenty-six recipes, in pools of two to thirteen, chosen to suit the callout: city work draws
-on the downtown crowd, county work on the farms and the hills, the parks on people dressed for the outdoors,
-robberies and drug calls on a rougher cut. Three suspects in a street are three different men, and the man in
-the armed robbery is rarely the same man twice.
+**The people a callout sends you to are drawn at random each time it runs, and they are men and women.**
+Sixty-three ped models across the three hundred and twenty-six recipes, in pools of two to twenty, chosen to
+suit the callout: city work draws on the downtown crowd, county work on the farms and the hills, the parks on
+people dressed for the outdoors, robberies and drug calls on a rougher cut. Three suspects in a street are
+three different people, and the person in the armed robbery is rarely the same one twice.
 
-**They are men, and that is deliberate.** The dispatch prose these recipes carry says "he" - a hundred and
-three of the three hundred and twenty-six do - so a random woman in a scene dispatch is calling "he" would be
-the pack being wrong about its own scene. Varying the sex as well is a pass of its own, and it means rewording
-that prose first.
+**Two callouts are deliberately one sex, and both say so.** "Man with a Gun" keeps the name every pack gives
+that call, and sends a man. "Theft from a Charity Shop" describes one female, and sends one. The generator
+refuses to build a recipe whose text describes a sex while its pool draws from both - that is what would put a
+woman in a scene the dispatch text is calling "he" - so either the text is reworded or the pool is locked, and
+neither can pass unnoticed.
 
-**A pool cannot cost you the callout.** Before spawning anybody the pack checks the model against your game
-and takes the first of the pool that exists; if none of them do - a pool that is wrong for your install - the
-actor falls back to a model that certainly exists, and the log says which. A scene with nobody in it closes the
-moment it starts, so this is the one thing that had to be certain.
+**A pool cannot cost you the callout.** Every recipe carries a pool *and* a single model to fall back to. Before
+spawning anybody the pack checks the model against your game and takes the first of the pool that exists; if
+none of them do - a pool that is wrong for your install - the actor falls back to the named model, which is one
+that certainly exists. A scene with nobody in it closes the moment it starts, so this is the one thing that had
+to be certain.
 
 The log names them as it goes:
 
-    custom callout scene: 2 suspect(s), 0 other(s), drawn from the pool: a_m_y_stlat_01, a_m_y_genstreet_02
+    custom callout scene: 2 suspect(s), 0 other(s), drawn from the pool: a_m_y_stlat_01, a_f_y_genstreet_01
 
-Patient models are not randomised: each medical callout names the person it is about, and there are fifty-three
-different ones, so they are already varied and already match what they say.
+**Vehicles are drawn the same way.** Nineteen of the twenty-seven callouts with a vehicle pick from a pool of
+their own kind - a car that fails to stop is any car a person might own, a motorbike chase is a motorbike, the
+van is any van. The eight where the vehicle *is* the callout keep the one they name: a stolen bus is a bus, an
+ambulance is an ambulance, a livestock trailer is a trailer. Same safety net: the pool is checked against your
+game, and the named vehicle is the fallback.
+
+Patient models are not randomised: each medical callout names the person it is about, the fifty-three are
+different from each other, and each one matches what that patient says - a check of its own, because a call
+that says "she" over a man on the floor is the kind of thing nobody reports.
 
 WHAT THEY SAY
 ------------

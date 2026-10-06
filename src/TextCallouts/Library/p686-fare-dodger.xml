@@ -10,7 +10,7 @@
     <Advisory>Driver holding the bus at a stop, passenger on board.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01" Count="1" Role="Suspect" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Script>
@@ -19,7 +19,7 @@
         <Line>Call whoever you like. I am sat here.</Line>
     </Script>
     <Lines>
-        <Approach>The bus is stopped and he will not get off it. Driver wants him dealt with, not arrested.</Approach>
+        <Approach>The bus is stopped and they will not get off it. Driver wants them dealt with, not arrested.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

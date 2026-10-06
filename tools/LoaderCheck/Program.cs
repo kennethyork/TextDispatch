@@ -141,15 +141,31 @@ internal static class Program
                            .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
         Check("the people in a scene are drawn from a pool, and the pool survived parsing and loading",
               pooled >= actors.Length - 1);
-        Check("every pool names more than one man and none of them twice",
+        Check("every pool names more than one person and none of them twice",
               actors.All(a => a.Models.Distinct(StringComparer.OrdinalIgnoreCase).Count() == a.Models.Length));
+
+        var women = models.Count(m => m.StartsWith("a_f_", StringComparison.OrdinalIgnoreCase));
+        var bothSexes = actors.Count(a => a.Models.Any(m => m.StartsWith("a_f_", StringComparison.OrdinalIgnoreCase))
+                                       && a.Models.Any(m => m.StartsWith("a_m_", StringComparison.OrdinalIgnoreCase)));
+        Check("the people in a scene can be either sex, and the pool says so", bothSexes >= actors.Length - 5);
+        Check("the pack can send women", women >= 20);
+
+        // Vehicles, the same terms as the people: scenery is pooled, the vehicle that *is* the callout is
+        // named, and either way there is something to spawn.
+        var vehicleActors = actors.Where(a => a.Vehicles.Length > 0 || !string.IsNullOrWhiteSpace(a.Vehicle)).ToArray();
+        var drawnVehicles = vehicleActors.SelectMany(a => a.Vehicles.Length > 0 ? a.Vehicles : new[] { a.Vehicle })
+                                         .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        var pooledVehicles = vehicleActors.Count(a => a.Vehicles.Length > 1);
+        Check("a vehicle pool survived parsing and loading, and every pooled one has a fallback",
+              vehicleActors.Where(a => a.Vehicles.Length > 0).All(a => a.Vehicles.Length >= 2 && !string.IsNullOrWhiteSpace(a.Vehicle)));
 
         Console.WriteLine();
         Console.WriteLine("   callouts built by the loader:  " + types.Count);
         Console.WriteLine("   of them with a script:         " + scripted + "  (" + scriptLines + " lines)");
         Console.WriteLine("   bound to their recipe:         " + RecipeCallout.Bound.Count);
         Console.WriteLine("   actors the scenes spawn:       " + actors.Length + "  (" + pooled + " draw from a pool)");
-        Console.WriteLine("   distinct ped models:           " + models.Length);
+        Console.WriteLine("   distinct ped models:           " + models.Length + "  (" + women + " of them women)");
+        Console.WriteLine("   actors arriving by vehicle:    " + vehicleActors.Length + "  (" + pooledVehicles + " pooled, " + drawnVehicles.Length + " models)");
 
         var sample = recipes.Cast<CalloutRecipe>().FirstOrDefault(r => r.Id == "lspd-armed-robbery-off-licence");
         if (sample != null)

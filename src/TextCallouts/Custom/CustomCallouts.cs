@@ -259,9 +259,11 @@ Every field, and nothing more than you need:
      <Ped ... />   one per person. Attributes:
                      Model      any GTA ped model, e.g. a_m_y_business_01
                      Models     a pool to draw from at random instead, e.g. a_m_y_business_01,
-                                a_m_y_downtown_01,a_m_y_genstreet_01. The pack checks each one
+                                a_m_y_downtown_01,a_f_y_business_01. The pack checks each one
                                 against the game and takes the first that exists, so a name that
-                                is wrong costs you nothing but that name. Model is the fallback.
+                                is wrong costs you nothing but that name. Model is the fallback,
+                                and a pool should always have one: without it, a pool that is
+                                wrong for somebody's install is a scene with nobody in it.
                      Role       Suspect (counts towards the resolution) or Bystander
                      Count      how many of them, 1-8
                      Armed      true/false
@@ -272,6 +274,10 @@ Every field, and nothing more than you need:
                      Hostile    true = fights you from the start
                      Cower      true = takes cover and stays out of it
                      Vehicle    a model name, e.g. sultan - spawns the car and puts them in it
+                     Vehicles   a pool to draw the car from, on the same terms as Models:
+                                sultan,buffalo,premier. Vehicle is the fallback. Use a pool
+                                where the car is scenery - a stop, a chase - and name a single
+                                one where the car is the callout: a stolen bus is a bus.
   <OnApproach At=""30"" ...>   what they do when you are that close:
                      Flee           runs on foot
                      FleeInVehicle  runs in the car, driven by LSPDFR's pursuit AI

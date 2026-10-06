@@ -10,7 +10,7 @@
     <Advisory>Three suspects, mopeds waiting outside.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="3" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="3" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Script>

@@ -7,10 +7,10 @@
     <Probability>Medium</Probability>
     <Resolution>ArrestOrDeath</Resolution>
     <Message>Person reported exposing themselves in a park.</Message>
-    <Advisory>Male on foot, no other parties involved.</Advisory>
+    <Advisory>Suspect on foot, no other parties involved.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01" Count="1" Role="Suspect" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Script>
@@ -19,7 +19,7 @@
         <Line>I am not doing anything. I am sat on a bench.</Line>
     </Script>
     <Lines>
-        <Approach>In the park, on his own, and the caller is not making it up. Go and deal with him.</Approach>
+        <Approach>In the park, on their own, and the caller is not making it up. Go and deal with them.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

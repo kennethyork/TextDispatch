@@ -10,14 +10,14 @@
     <Advisory>Suspect gone, victim on the pavement, conscious.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>Two of them. It came out of nowhere.</Line>
         <Line>I did not get a proper look. Baseball cap, dark jacket, that is all.</Line>
         <Line>Which way did they go? Tell me which way they went.</Line>
     </Script>
-    <Patient Model="a_m_y_business_01" TreatmentSeconds="15">I did not even see him. Is it bad?</Patient>
+    <Patient Model="a_m_y_business_01" TreatmentSeconds="15">I did not even see them. Is it bad?</Patient>
     <Lines>
         <Approach>Suspect has gone. The victim is on the pavement and the head wound is a bad one.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -6,11 +6,11 @@
     <For>sheriff</For>
     <Probability>Medium</Probability>
     <Resolution>ArrestOrDeath</Resolution>
-    <Message>Armed men in the county, residents reporting shots.</Message>
+    <Message>Armed suspects in the county, residents reporting shots.</Message>
     <Advisory>Two vehicles, rifles seen, one resident confronted.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04,a_f_y_hipster_02,a_f_y_hipster_01,a_f_m_fatwhite_01,a_f_y_soucent_01,a_f_m_bodybuild_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Backup="true" />

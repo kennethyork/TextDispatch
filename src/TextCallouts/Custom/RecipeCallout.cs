@@ -35,6 +35,7 @@ namespace TextCallouts.Custom
         // Who the scene's people turned out to be, for the log. The same callout twice running is two
         // different men, and the log is the only place that can be seen from outside the game.
         private readonly List<string> _people = new List<string>();
+        private readonly List<string> _vehicles = new List<string>();
         private readonly List<Ped> _bystanders = new List<Ped>();
         private bool _approached;
         private bool _supportCalled;
@@ -136,7 +137,12 @@ namespace TextCallouts.Custom
             foreach (var actor in recipe.Actors)
             {
                 Vehicle vehicle = null;
-                if (!string.IsNullOrEmpty(actor.Vehicle)) vehicle = SpawnVehicle(actor.Vehicle, position, heading);
+                var arrivingIn = PickVehicle(actor);
+                if (arrivingIn != null)
+                {
+                    vehicle = SpawnVehicle(arrivingIn, position, heading);
+                    if (actor.Vehicles.Length > 1) _vehicles.Add(arrivingIn);
+                }
 
                 for (var i = 0; i < actor.Count; i++)
                 {
@@ -194,6 +200,7 @@ namespace TextCallouts.Custom
                      " other(s)" + (recipe.Patient != null ? ", one patient" : "") +
                      (recipe.Stages.Count > 0 ? ", " + recipe.Stages.Count + " stage(s)" : "") +
                      (_people.Count > 0 ? ", drawn from the pool: " + string.Join(", ", _people.ToArray()) : "") +
+                     (_vehicles.Count > 0 ? ", driving: " + string.Join(", ", _vehicles.ToArray()) : "") +
                      " at " + Where(position));
         }
 
@@ -274,6 +281,39 @@ namespace TextCallouts.Custom
         }
 
         /// <summary>
+        /// What this actor arrives in, on the same terms as who they are: a pool drawn from at random,
+        /// each candidate checked against the game, and a model that certainly exists as the fallback.
+        /// A vehicle that will not spawn is worse than a plain one - three suspects standing about
+        /// where a car chase was meant to be.
+        /// </summary>
+        private static string PickVehicle(ActorRecipe actor)
+        {
+            var pool = actor.Vehicles;
+
+            if (pool == null || pool.Length == 0)
+            {
+                if (string.IsNullOrEmpty(actor.Vehicle)) return null;
+                try { return new Model(actor.Vehicle).IsValid ? actor.Vehicle : null; }
+                catch (Exception ex) { Log.Error("checking the vehicle " + actor.Vehicle, ex); return null; }
+            }
+
+            var start = Rng.Next(pool.Length);
+            for (var i = 0; i < pool.Length; i++)
+            {
+                var name = pool[(start + i) % pool.Length];
+                try
+                {
+                    if (new Model(name).IsValid) return name;
+                    Log.Line("the vehicle " + name + " is not in this game - the next one in the pool is used");
+                }
+                catch (Exception ex) { Log.Error("checking the vehicle " + name, ex); }
+            }
+
+            Log.Line("none of the " + pool.Length + " vehicles in this recipe's pool exist here - the actor arrives on foot");
+            return null;
+        }
+
+        /// <summary>
         /// Who this actor is this time.
         ///
         /// A pool is drawn from at random, starting at a random place in it so the same few names are
@@ -281,7 +321,9 @@ namespace TextCallouts.Custom
         /// the point: a pool with a typo in it, or a model a player's game does not have, must not cost
         /// the callout its suspect - a scene with nobody in it closes the moment it starts, and that is
         /// a far worse thing than a familiar face. If nothing in the pool exists, the actor falls back
-        /// to the model the recipe named.
+        /// to the model the recipe named - and a woman is not a fallback, so the pool carries both and
+        /// the recipe's own Model is a man only because a_m_y_business_01 is the one model certain to
+        /// exist in every install.
         /// </summary>
         private static Model PickModel(ActorRecipe actor)
         {

@@ -7,10 +7,10 @@
     <Probability>Medium</Probability>
     <Resolution>ArrestOrDeath</Resolution>
     <Message>Person reported carrying a weapon in public.</Message>
-    <Advisory>Male on foot, bat or club seen, no victims.</Advisory>
+    <Advisory>Suspect on foot, bat or club seen, no victims.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_BAT" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_BAT" />
     </Actors>
     <OnApproach At="25" HandsUp="true" />
     <Script>
@@ -19,7 +19,7 @@
         <Line>Two cars have gone past him and neither of them stopped.</Line>
     </Script>
     <Lines>
-        <Approach>Bat in his hand and no victims yet. He is walking, not running.</Approach>
+        <Approach>Bat in their hand and no victims yet. They are walking, not running.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

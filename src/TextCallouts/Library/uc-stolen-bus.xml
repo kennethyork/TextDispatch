@@ -10,7 +10,7 @@
     <Advisory>Bus heading through the city, no passengers on board.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01" Count="1" Role="Suspect" Vehicle="bus" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Suspect" Vehicle="bus" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
     <Script>
@@ -19,7 +19,7 @@
         <Line>It cannot get far in a bus. It cannot get far and it cannot hide.</Line>
     </Script>
     <Lines>
-        <Approach>He took it empty, so there is nobody on board to worry about. He is still going.</Approach>
+        <Approach>They took it empty, so there is nobody on board to worry about. They are still going.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

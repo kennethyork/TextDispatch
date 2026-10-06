@@ -10,7 +10,7 @@
     <Advisory>Smoke reported from the engine, pilot still in contact.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01" Count="1" Role="Suspect" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
     <Script>
@@ -19,7 +19,7 @@
         <Line>There is a field behind the barn. If he is putting it down, it will be there.</Line>
     </Script>
     <Lines>
-        <Approach>Smoke from the engine and he is trying to put it down. Wherever he lands, we are going.</Approach>
+        <Approach>Smoke from the engine and they are trying to put it down. Wherever they land, we are going.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

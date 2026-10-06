@@ -7,10 +7,10 @@
     <Probability>Medium</Probability>
     <Resolution>Manual</Resolution>
     <Message>Unlicensed vendor blocking the pavement.</Message>
-    <Advisory>One male, stall set up, no violence.</Advisory>
+    <Advisory>One suspect, stall set up, no violence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01" Count="1" Role="Suspect" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
     </Actors>
     <Script>
         <Line>I have a licence. It is at home in a drawer.</Line>
@@ -18,7 +18,7 @@
         <Line>Everybody in this market is doing the same thing.</Line>
     </Script>
     <Lines>
-        <Approach>Pavement blocked, no licence, and he has been told twice already.</Approach>
+        <Approach>Pavement blocked, no licence, and they have been told twice already.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

@@ -10,7 +10,7 @@
     <Advisory>Conscious, hand caught, machinery stopped.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>The guard came off the machine. It should never have been off.</Line>
@@ -19,7 +19,7 @@
     </Script>
     <Patient Model="a_m_y_construct_02" TreatmentSeconds="18">I cannot see how bad it is. Tell me how bad it is.</Patient>
     <Lines>
-        <Approach>His hand was in it when it went. The machinery is stopped and so is the bleeding, for now.</Approach>
+        <Approach>Their hand was in it when it went. The machinery is stopped and so is the bleeding, for now.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

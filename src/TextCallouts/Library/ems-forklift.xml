@@ -10,7 +10,7 @@
     <Advisory>Conscious, leg crushed, driver shocked but helping.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>He came round the corner and I had nowhere to step.</Line>
@@ -19,7 +19,7 @@
     </Script>
     <Patient Model="a_m_y_construct_01" TreatmentSeconds="18">Do not look at it. Just do not look at it.</Patient>
     <Lines>
-        <Approach>Leg under the machine and he is conscious. This is a get-him-to-hospital call, not a treat-him-here one.</Approach>
+        <Approach>Leg under the machine and they are conscious. This is a get-them-to-hospital call, not a treat-them-here one.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

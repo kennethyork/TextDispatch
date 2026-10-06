@@ -73,6 +73,11 @@ namespace TextCallouts.Custom
         public bool Hostile;
         public bool Cower;
         public string Vehicle;                   // a model name, or null: spawn one and put them in it
+
+        /// <summary>The vehicles this actor may arrive in, drawn from at random like the people are.
+        /// Empty means Vehicle. A stolen bus is a bus; a car that fails to stop is any car.</summary>
+        public string[] Vehicles = new string[0];
+
         public int Count = 1;
 
         public bool IsSuspect { get { return !"Bystander".Equals(Role, StringComparison.OrdinalIgnoreCase); } }
@@ -273,21 +278,8 @@ namespace TextCallouts.Custom
             // Models="a,b,c" - the pool the actor is picked from. Model is what it falls back to, and
             // is added to the end of the pool so a single-model recipe and a pooled one take the same
             // path through the spawn.
-            var pool = AttributeText(element, "Models", null);
-            if (!string.IsNullOrWhiteSpace(pool))
-            {
-                var names = new List<string>();
-                foreach (var name in pool.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    var trimmed = name.Trim();
-                    if (trimmed.Length > 0 &&
-                        !names.Exists(n => string.Equals(n, trimmed, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        names.Add(trimmed);
-                    }
-                }
-                if (names.Count > 0) actor.Models = names.ToArray();
-            }
+            actor.Models = Pool(element, "Models", actor.Models);
+            actor.Vehicles = Pool(element, "Vehicles", actor.Vehicles);
             actor.Role = AttributeText(element, "Role", actor.Role);
             actor.Armed = Flag(element, "Armed", actor.Armed);
             actor.Weapon = AttributeText(element, "Weapon", actor.Weapon);
@@ -339,6 +331,24 @@ namespace TextCallouts.Custom
             if (float.TryParse(attribute.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out value)) return value;
 
             throw new InvalidDataException("'" + attribute.Value + "' is not a number for " + name);
+        }
+
+        /// <summary>One of the "a,b,c" attributes, in the order written and without repeats.</summary>
+        private static string[] Pool(XElement element, string name, string[] fallback)
+        {
+            var text = AttributeText(element, name, null);
+            if (string.IsNullOrWhiteSpace(text)) return fallback;
+
+            var names = new List<string>();
+            foreach (var part in text.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var trimmed = part.Trim();
+                if (trimmed.Length == 0) continue;
+                if (names.Exists(n => string.Equals(n, trimmed, StringComparison.OrdinalIgnoreCase))) continue;
+                names.Add(trimmed);
+            }
+
+            return names.Count > 0 ? names.ToArray() : fallback;
         }
 
         private static string AttributeText(XElement element, string name, string fallback)

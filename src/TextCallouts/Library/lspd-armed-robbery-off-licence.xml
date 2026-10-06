@@ -7,10 +7,10 @@
     <Probability>Medium</Probability>
     <Resolution>ArrestOrDeath</Resolution>
     <Message>Armed robbery in progress at an off licence.</Message>
-    <Advisory>One male with a handgun, staff inside, no shots fired yet.</Advisory>
+    <Advisory>One suspect with a handgun, staff inside, no shots fired yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Script>
@@ -19,8 +19,8 @@
         <Line>I came in for cigarettes. That is the whole of it.</Line>
     </Script>
     <Lines>
-        <Briefing>Armed robbery in progress. He is still inside and the staff are still in there with him.</Briefing>
-        <Approach>One male, handgun, in the off licence now. Get there before he leaves.</Approach>
+        <Briefing>Armed robbery in progress. They are still inside and the staff are still in there with them.</Briefing>
+        <Approach>One suspect, handgun, in the off licence now. Get there before they leave.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

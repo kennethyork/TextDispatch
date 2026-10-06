@@ -6,11 +6,11 @@
     <For>lspd</For>
     <Probability>Medium</Probability>
     <Resolution>ArrestOrDeath</Resolution>
-    <Message>Group intimidating a shop owner on his doorstep.</Message>
-    <Advisory>Three males, no weapons seen, shop owner frightened.</Advisory>
+    <Message>Group intimidating a shop owner on the doorstep.</Message>
+    <Advisory>Three suspects, no weapons seen, shop owner frightened.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="3" Role="Suspect" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="3" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Script>
@@ -19,7 +19,7 @@
         <Line>You can stand there all day. It does not change anything.</Line>
     </Script>
     <Lines>
-        <Approach>Three of them at his door and he is on his own inside. Nobody has been hit yet.</Approach>
+        <Approach>Three of them at their door and they are on their own inside. Nobody has been hit yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

@@ -10,7 +10,7 @@
     <Advisory>Parent doing compressions, water coming out.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01,a_f_y_beach_01,a_f_m_beach_01,a_f_y_fitness_01,a_f_y_fitness_02,a_f_y_tourist_01,a_f_y_hipster_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>She was under for a while. I do not know how long.</Line>
@@ -19,7 +19,7 @@
     </Script>
     <Patient Model="a_f_y_beach_01" TreatmentSeconds="20">(a wet cough, then crying)</Patient>
     <Lines>
-        <Approach>A parent is doing compressions on her own child. Get there and take over.</Approach>
+        <Approach>A parent is doing compressions on their own child. Get there and take over.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

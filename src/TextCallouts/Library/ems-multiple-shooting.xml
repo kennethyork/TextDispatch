@@ -10,16 +10,16 @@
     <Advisory>One walking wounded, one on the ground.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>We were both outside. It all happened at once.</Line>
         <Line>I got down behind the car. He did not get down in time.</Line>
         <Line>Do not leave him. Whatever else you do, do not leave him.</Line>
     </Script>
-    <Patient Model="a_m_m_business_01" TreatmentSeconds="18">I am fine. Help him first. Help him.</Patient>
+    <Patient Model="a_m_m_business_01" TreatmentSeconds="18">I am fine. Help them first. Help them.</Patient>
     <Lines>
-        <Approach>One walking and one not. The walking one is not the priority, whatever he says.</Approach>
+        <Approach>One walking and one not. The walking one is not the priority, whatever they say.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

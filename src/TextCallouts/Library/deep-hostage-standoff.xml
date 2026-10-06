@@ -7,10 +7,10 @@
     <Probability>Medium</Probability>
     <Resolution>ArrestOrDeath</Resolution>
     <Message>Domestic incident escalated, one person inside refusing to come out.</Message>
-    <Advisory>One male, no weapon confirmed, occupants out.</Advisory>
+    <Advisory>One suspect, no weapon confirmed, occupants out.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="1" Role="Suspect" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
     <Script>
@@ -21,12 +21,12 @@
     </Script>
     <Stages>
         <Stage At="20" Do="backup">Second unit is on the street behind you.</Stage>
-        <Stage At="50" Do="handsup">He has his hands on his head.</Stage>
-        <Stage At="80" Do="end">He is in the car. Call finished.</Stage>
+        <Stage At="50" Do="handsup">They have their hands on their head.</Stage>
+        <Stage At="80" Do="end">They are in the car. Call finished.</Stage>
     </Stages>
     <Lines>
-        <Briefing>Nobody has been hurt yet and that is the whole job: talk him out.</Briefing>
-        <Approach>He is in there on his own and he will not come out. Start talking - I am holding everybody back.</Approach>
+        <Briefing>Nobody has been hurt yet and that is the whole job: talk them out.</Briefing>
+        <Approach>They are in there on their own and they will not come out. Start talking - I am holding everybody back.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

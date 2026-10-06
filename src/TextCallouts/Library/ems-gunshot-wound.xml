@@ -10,7 +10,7 @@
     <Advisory>Wound to the shoulder, caller applying pressure.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>It came from the car. I did not see a face.</Line>
@@ -19,7 +19,7 @@
     </Script>
     <Patient Model="a_m_m_hasjew_01" TreatmentSeconds="18">I cannot move my arm. Tell me it is still there.</Patient>
     <Lines>
-        <Approach>He has been shot in the shoulder and the caller is holding it. Suspect has gone - the patient comes first.</Approach>
+        <Approach>They have been shot in the shoulder and the caller is holding it. Suspect has gone - the patient comes first.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

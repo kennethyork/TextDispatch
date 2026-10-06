@@ -10,7 +10,7 @@
     <Advisory>Conscious, burns to face and hands, eyes closed.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>The gas ring. It caught the moment I went to light it.</Line>
@@ -19,7 +19,7 @@
     </Script>
     <Patient Model="a_m_m_business_02" TreatmentSeconds="15">I cannot open my eyes. Say something so I know where you are.</Patient>
     <Lines>
-        <Approach>Face and hands and his eyes are shut. Do not let him touch them.</Approach>
+        <Approach>Face and hands and their eyes are shut. Do not let them touch them.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

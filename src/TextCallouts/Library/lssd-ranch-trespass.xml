@@ -6,11 +6,11 @@
     <For>sheriff</For>
     <Probability>Medium</Probability>
     <Resolution>ArrestOrDeath</Resolution>
-    <Message>Rancher reporting somebody on his land with a rifle.</Message>
-    <Advisory>Male on foot, rifle slung, no shots fired.</Advisory>
+    <Message>Rancher reporting somebody on their land with a rifle.</Message>
+    <Advisory>Suspect on foot, rifle slung, no shots fired.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" />
+        <Ped Model="a_m_y_business_01" Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04,a_f_y_hipster_02,a_f_y_hipster_01,a_f_m_fatwhite_01,a_f_y_soucent_01,a_f_m_bodybuild_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" />
     </Actors>
     <OnApproach At="25" HandsUp="true" />
     <Script>
@@ -19,7 +19,7 @@
         <Line>I have been on this land forty years. He is not supposed to be on it.</Line>
     </Script>
     <Lines>
-        <Approach>He is on the rancher land with a rifle on his shoulder. Nobody has been threatened yet.</Approach>
+        <Approach>They are on the rancher land with a rifle on their shoulder. Nobody has been threatened yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
     </Lines>
 </Callout>

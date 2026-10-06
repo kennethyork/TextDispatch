@@ -439,7 +439,7 @@ for SSStuartCallouts and StoryCallouts, and an empty `ParksCommon\ParksModsWebCh
 is no longer installed. Nothing was deleted, so putting one back is a drag. Delete that folder once you are
 sure.
 
-Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.10.0**, and the interaction plugins
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.11.0**, and the interaction plugins
 that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
 ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
 CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
@@ -447,7 +447,8 @@ CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
 `Plugins\` itself is now just LSPD First Response, CommonDataFramework, DamageTrackingFramework and the
 LSPDFR folder - no stray ini files from packs that have gone.
 
-**TextCallouts 1.10.0** is at 344 callouts, and **every one of them has a script, can be finished, and sends you to a different man each time.**
+**TextCallouts 1.11.0** is at 344 callouts, and **every one of them has a script, can be finished, and
+sends you to a different person each time - a man or a woman.**
 
 Previously only four did. Now all 326 recipes carry three or four lines - 981 lines in total - for the
 person in that scene to say, and TextDispatch asks the callout for those lines before it asks its own
@@ -531,14 +532,26 @@ Two things about how that is done, because both were decisions:
   * **A pool cannot cost you a callout.** A scene with nobody in it closes the moment it starts, so before
     spawning anybody the pack checks the model against the game and takes the first of the pool that exists,
     falling back to a model that certainly exists if none of them do. A typo in a pool is survivable by
-    design, and the log names the men it picked.
-  * **They are men.** The dispatch prose these recipes carry says "he" - 103 of the 326 do - so randomising
-    the sex as well would have the pack calling a woman "he" in its own scene description. That needs the
-    prose reworded first, which is a pass of its own.
+    design, and the log names the people it picked.
+  * **They are men and women.** Sixty-three models, 21 of them women, and 324 of the 326 scenes can send
+    either. This needed the dispatch prose doing first: it was measured properly, and the "103 recipes that
+    say he" turned out to be the suspect talking about somebody else ("He started it"), which is true
+    whoever they are. What actually had to change was two recipes. `Man with a Gun` keeps the name every
+    pack gives that call and sends a man; `Theft from a Charity Shop` describes one female and sends one.
+    The generator now refuses a recipe whose text describes a sex while its pool draws from both, so it
+    cannot drift back.
+  * **The vehicles are pooled too.** 19 of the 27 callouts that involve a vehicle pick from a pool of their
+    own kind; the 8 where the vehicle *is* the callout keep the one they name - a stolen bus is a bus.
 
-Patient models are not randomised: each medical callout names the person it is about, and the 53 are already
-different from each other and already match what the patient says. Your own recipes can use either form:
-`<Ped Model="..." />` or `<Ped Models="a,b,c" />`.
+  * **And the fallback bug that fell out of doing it:** a pooled vehicle had no single vehicle to fall
+    back to, so a pool that was wrong for an install would have left three suspects standing where a car
+    chase was meant to be. People had a fallback, vehicles did not. Both pools now ship with their
+    fallback in the recipe, and both checkers look for it.
+
+Patient models are not randomised: each medical callout names the person it is about, the 53 are already
+different from each other, and each matches what that patient says. Your own recipes can use either form:
+`<Ped Model="..." />` or `<Ped Models="a,b,c" />`, and the same for vehicles with `Vehicle` and
+`Vehicles` - all documented in the README in `Custom\`.
 
 `tools\verify-bridge.ps1` checks the bridge between the two plugins by reading their metadata - the
 compiler cannot see across a reflection boundary, and a rename there would fail silently in game.

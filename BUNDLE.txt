@@ -81,11 +81,13 @@ Installed side by side, they are one experience:
     is mirrored into the chat box instead of a notification box
   * /calls lists all eighteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>
     starts one on demand, which is the quickest way to see one
-  * the people the callouts send you to are drawn at random each time: forty-two ped models, in pools
-    of two to thirteen, chosen to suit the callout - so three suspects are three different men and the
-    man in the armed robbery is rarely the same man twice. The pack checks a model against your game
-    before spawning it and falls back if none of the pool exist, so a bad name cannot leave a scene
-    with nobody in it
+  * the people the callouts send you to are drawn at random each time, and they are men and women:
+    sixty-three ped models in pools of two to twenty, chosen to suit the callout - so three suspects are
+    three different people and the person in the armed robbery is rarely the same one twice. Two calls
+    are deliberately one sex because their own name says so. Vehicles are pooled the same way, except
+    where the vehicle *is* the callout. Every recipe carries a fallback model as well as a pool, checked
+    against your game before anything spawns, so a pool that is wrong for an install cannot leave a
+    scene with nobody in it
   * people in the callouts answer in text when you talk to them - and every callout has its own script,
     nine hundred and eighty-one lines across the three hundred and twenty-six recipes. Type at the suspect
     in an armed robbery and he denies it in character, out of that callout's own lines, with no model
