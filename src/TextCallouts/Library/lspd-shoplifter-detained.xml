@@ -12,6 +12,11 @@
     <Actors>
         <Ped Model="a_m_y_business_01" Count="1" Cower="true" />
     </Actors>
+    <Script>
+        <Line>I have got a receipt in my bag for all of it.</Line>
+        <Line>The security guard grabbed me before I got to the till.</Line>
+        <Line>I am not resisting. Look, I am sat down and I am not resisting.</Line>
+    </Script>
     <Lines>
         <Approach>They have him in the office and the goods are on the desk. He is not fighting anybody.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

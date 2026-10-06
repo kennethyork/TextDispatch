@@ -10,9 +10,14 @@
     <Advisory>No persons about, fence beginning to scorch.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It is not ours. It was going before we opened up.</Line>
+        <Line>It has come up through the boards and it is under the fence now.</Line>
+        <Line>There is a gas main along that wall. That is why we called you straight away.</Line>
+    </Script>
     <Lines>
         <Approach>It is in the alley between the buildings and the fence is going to go first.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

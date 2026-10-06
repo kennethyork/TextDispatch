@@ -10,10 +10,15 @@
     <Advisory>Four or more involved, at least one injured.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>I was nowhere near it. I came out when I heard the shots.</Line>
+        <Line>It is two families and it has been building all week.</Line>
+        <Line>You want to look at the blue car. Everything comes back to the blue car.</Line>
+    </Script>
     <Lines>
         <Approach>Two groups and they are shooting at each other. Wait for back-up if you can.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

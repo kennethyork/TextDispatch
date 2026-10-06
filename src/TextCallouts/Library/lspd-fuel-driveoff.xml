@@ -10,9 +10,14 @@
     <Advisory>Plates noted, driver headed for the freeway.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="asea" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="asea" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>The pump would not take my card. I was going to come back.</Line>
+        <Line>I live ten minutes from here. Ask anybody.</Line>
+        <Line>I will pay it now. I will pay it now, in cash.</Line>
+    </Script>
     <Lines>
         <Approach>Filled it and left. Plates are with the station and they would like a word.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

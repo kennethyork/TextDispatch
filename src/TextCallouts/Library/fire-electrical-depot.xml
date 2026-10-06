@@ -10,9 +10,14 @@
     <Advisory>Power isolated by staff, no injuries.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>We killed the power at the main. Everybody is out and counted.</Line>
+        <Line>It is the cabinet by the loading bay. It has been arcing for a week.</Line>
+        <Line>Nobody goes near that bay. I have made sure of that.</Line>
+    </Script>
     <Lines>
         <Approach>They have killed the power, so it is smoke and burnt plastic rather than anything worse.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

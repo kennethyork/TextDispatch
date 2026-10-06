@@ -10,9 +10,14 @@
     <Advisory>On foot, no phone signal in the area.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>He has not come back from the fence line and that is four hours.</Line>
+        <Line>His quad is still in the barn. So he is on foot.</Line>
+        <Line>He does not carry a phone and it has never mattered before.</Line>
+    </Script>
     <Lines>
         <Approach>He went out to check fences this morning and he has not come back. No signal out there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

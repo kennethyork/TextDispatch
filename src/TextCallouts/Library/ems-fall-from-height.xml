@@ -10,8 +10,13 @@
     <Advisory>Casualty on the ground, colleague applying pressure.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>Third rung. It was not even the top of the ladder.</Line>
+        <Line>I had a box of tiles in one hand. That is why I went.</Line>
+        <Line>It is my back. Everything else is fine, it is my back.</Line>
+    </Script>
     <Patient Model="a_m_y_construct_01" TreatmentSeconds="16">I landed on my side. I can move my fingers. That is something.</Patient>
     <Lines>
         <Approach>He went off the third rung carrying something. His mate is holding pressure.</Approach>

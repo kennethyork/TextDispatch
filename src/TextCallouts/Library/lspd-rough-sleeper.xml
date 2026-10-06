@@ -10,9 +10,14 @@
     <Advisory>Male, no visible injuries, business complaining.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>I am in a doorway because it is minus four outside.</Line>
+        <Line>I have not been asked to move by anybody except you.</Line>
+        <Line>There is a shelter on the other road. It is full. I checked.</Line>
+    </Script>
     <Lines>
         <Approach>He is in the doorway and it is below freezing. Whatever the business wants, check on him first.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Conscious, family present, onset twenty minutes ago.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It came on while I was on the phone. The words just went.</Line>
+        <Line>My face feels wrong on this side. I can feel it drooping.</Line>
+        <Line>What time is it? Somebody write down what time it is.</Line>
+    </Script>
     <Patient Model="a_m_m_business_01" TreatmentSeconds="14">My arm went heavy. I could not hold the phone.</Patient>
     <Lines>
         <Approach>Face dropped and one side weak, twenty minutes ago. That is a stroke clock and it is running.</Approach>

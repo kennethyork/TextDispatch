@@ -10,9 +10,14 @@
     <Advisory>No other parties, caller concerned.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>He is parked on the bridge and he is stood at the rail.</Line>
+        <Line>He has not done anything. He is just stood there looking at the water.</Line>
+        <Line>I am keeping well back. That is why I called you.</Line>
+    </Script>
     <Lines>
         <Approach>He is out of the car and he is at the rail. Do not rush this one.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

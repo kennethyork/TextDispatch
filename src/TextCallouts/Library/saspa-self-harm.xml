@@ -10,9 +10,14 @@
     <Advisory>No injury yet, staff on the door.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>He has been assessed and he is on fifteen minute checks.</Line>
+        <Line>He has not said a word since yesterday, and that is not like him.</Line>
+        <Line>I am asking properly. I am asking you to come and see him.</Line>
+    </Script>
     <Lines>
         <Approach>He has told staff what he intends to do and they believe him. Nobody is hurt yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,10 +10,15 @@
     <Advisory>Several involved, staff responding, no weapons seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>Two of them in the yard and about twenty watching.</Line>
+        <Line>It is over a debt. It is always over a debt.</Line>
+        <Line>We need them apart before the watchers decide to join in.</Line>
+    </Script>
     <Lines>
         <Approach>Half a dozen of them at it in the yard and the staff are going in. Nobody has used a weapon yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

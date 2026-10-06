@@ -10,8 +10,13 @@
     <Advisory>Conscious, epinephrine not used, restaurant staff on scene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It was in the sauce. I asked them twice and they said there were no nuts in it.</Line>
+        <Line>My throat is closing. This is not a cold, I know what this is.</Line>
+        <Line>I have a pen for it. It is in my bag. Right hand pocket.</Line>
+    </Script>
     <Patient Model="a_f_y_vinewood_01" TreatmentSeconds="12">It is going down. I can swallow again.</Patient>
     <Lines>
         <Approach>Swelling fast and she has not used a pen. This is the one that goes wrong if nobody gets there.</Approach>

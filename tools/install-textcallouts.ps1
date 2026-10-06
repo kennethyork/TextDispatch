@@ -46,6 +46,32 @@ if (-not (Test-Path $target)) { New-Item -ItemType Directory -Path $target -Forc
 Copy-Item $source (Join-Path $target 'TextCallouts.dll') -Force
 Write-Host "Installed TextCallouts.dll -> $target" -ForegroundColor Green
 
+# ---------------------------------------------------------------------------------------------
+# The library as well, and this is the part that is easy to forget: the DLL and the recipes are
+# shipped together and are meant to move together. Installing the plugin without its recipes leaves
+# the previous library in place, which looks exactly like a pack that has stopped working - the new
+# callouts are simply not in the folder it reads. The player's own Custom folder is beside it and is
+# never touched: the library belongs to the pack, Custom belongs to them.
+$library = Join-Path $repo 'src\TextCallouts\Library'
+if (Test-Path $library) {
+    $installed = Join-Path $target 'TextCallouts\Library'
+    if (Test-Path $installed) { Remove-Item $installed -Recurse -Force }
+    New-Item -ItemType Directory -Path (Split-Path -Parent $installed) -Force | Out-Null
+    Copy-Item $library $installed -Recurse -Force
+    $recipes = (Get-ChildItem $installed -Filter '*.xml').Count
+    $spoken = (Select-String -Path (Join-Path $installed '*.xml') -Pattern '<Line>').Count
+    Write-Host "Installed the library   -> $installed  ($recipes recipes, $spoken script lines)" -ForegroundColor Green
+
+    $scriptless = @(Get-ChildItem $installed -Filter '*.xml' | Where-Object { (Get-Content $_.FullName -Raw) -notmatch '<Script>' })
+    if ($scriptless.Count -gt 0) {
+        Write-Host ("" + $scriptless.Count + " recipe(s) went in without a script - that is a library built by hand, not by tools\make-callout-library.ps1:") -ForegroundColor Red
+        foreach ($file in $scriptless) { Write-Host ("   " + $file.Name) -ForegroundColor Red }
+    }
+}
+else {
+    Write-Host "No Library folder in the repo - only the plugin was installed." -ForegroundColor Yellow
+}
+
 # RagePluginHook.dll and LSPD First Response.dll are never copied: RPH's terms forbid shipping the
 # SDK, and LSPDFR is already in the game, loaded by RPH. Both are referenced Private=false.
 

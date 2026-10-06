@@ -10,8 +10,13 @@
     <Advisory>Animal wandering, no owner present.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is on the carriageway and the traffic is doing seventy at it.</Line>
+        <Line>Two cars have already gone onto the hard shoulder to miss it.</Line>
+        <Line>I am not going out there on foot. Not for that.</Line>
+    </Script>
     <Lines>
         <Approach>There is a cow on the carriageway and drivers are stopping to film it. Clear the traffic first.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

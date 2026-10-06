@@ -10,9 +10,14 @@
     <Advisory>One weapon seen, in a bag, no shots fired.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>It is a part. It is a spare part for a hobby.</Line>
+        <Line>I am selling it to him because he asked for one.</Line>
+        <Line>There is no ammunition. Look, there is no ammunition.</Line>
+    </Script>
     <Lines>
         <Approach>A bag, a gun and money changing hands. Nobody has fired anything yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

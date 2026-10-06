@@ -10,10 +10,15 @@
     <Advisory>Residents evacuating, source unknown.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>The smoke is in the stairwell and it is going up.</Line>
+        <Line>Nobody has come past me and I have been here ten minutes.</Line>
+        <Line>The door of number six is warm. I am not touching it.</Line>
+    </Script>
     <Lines>
         <Approach>The stairwell is full of smoke and nobody knows which flat it is coming from.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

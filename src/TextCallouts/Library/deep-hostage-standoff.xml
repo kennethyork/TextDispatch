@@ -10,7 +10,7 @@
     <Advisory>One male, no weapon confirmed, occupants out.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
     <Script>

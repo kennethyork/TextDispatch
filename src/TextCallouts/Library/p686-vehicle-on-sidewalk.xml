@@ -10,8 +10,13 @@
     <Advisory>Driver still with the vehicle, no contact made.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>He went up the pavement to get past the queue.</Line>
+        <Line>There were people on that pavement. A woman with a pram stepped into the road.</Line>
+        <Line>He turned off at the next junction. He is still local.</Line>
+    </Script>
     <Lines>
         <Approach>He has parked it across the pavement and he is still sat in it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

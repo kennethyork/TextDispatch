@@ -10,8 +10,13 @@
     <Advisory>Casualty in the road, road blocked.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I was on the crossing. I am sure I was on the crossing.</Line>
+        <Line>It came from the left. I only heard it.</Line>
+        <Line>Somebody has my bag. My bag is over by the wall.</Line>
+    </Script>
     <Patient Model="a_m_m_hasjew_01" TreatmentSeconds="20">My leg. I cannot feel my leg properly.</Patient>
     <Lines>
         <Approach>Casualty in the road and the driver is standing there in shock. Two patients for you.</Approach>

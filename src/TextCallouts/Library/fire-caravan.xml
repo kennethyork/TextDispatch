@@ -10,10 +10,15 @@
     <Advisory>Occupants out, gas cylinder inside.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>It started inside. Nobody was in it, thank God.</Line>
+        <Line>There is a gas bottle under the sink. The big one.</Line>
+        <Line>We are all out of ours, but there are four more down that row.</Line>
+    </Script>
     <Lines>
         <Approach>They are out, and there is a gas bottle in it. Everybody back.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

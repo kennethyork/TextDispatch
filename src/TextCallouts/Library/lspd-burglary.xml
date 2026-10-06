@@ -10,9 +10,14 @@
     <Advisory>One male, rear window forced, still inside.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>The window was already open. I was checking nobody was hurt inside.</Line>
+        <Line>I have not taken a thing. Feel my pockets, go on.</Line>
+        <Line>It is my aunt who lives here. She is away, that is why it is empty.</Line>
+    </Script>
     <Lines>
         <Approach>Rear window is in and he is still inside. The neighbours are watching from their kitchen.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

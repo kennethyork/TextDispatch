@@ -10,9 +10,14 @@
     <Advisory>Both on foot, shouting, no weapons seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>He cut me up at the junction and then he brake checked me.</Line>
+        <Line>We both got out. Neither of us threw anything.</Line>
+        <Line>He has gone back to his car. That is the part I am watching.</Line>
+    </Script>
     <Lines>
         <Approach>Both out of their cars on the hard shoulder. It is loud, it is not violent yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

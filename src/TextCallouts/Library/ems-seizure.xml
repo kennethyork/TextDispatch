@@ -10,8 +10,13 @@
     <Advisory>Caller keeping people back, seizure ongoing.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It has happened before. Not like this, but it has happened.</Line>
+        <Line>I bit my tongue. I can taste it.</Line>
+        <Line>Everybody is staring at me. Can you move them back?</Line>
+    </Script>
     <Patient Model="a_m_y_vinewood_01" TreatmentSeconds="16">What happened? Why is everybody looking at me?</Patient>
     <Lines>
         <Approach>It is still going on. The caller is keeping everybody back like they were told to.</Approach>

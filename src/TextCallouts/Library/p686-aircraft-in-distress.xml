@@ -10,9 +10,14 @@
     <Advisory>Smoke reported from the engine, pilot still in contact.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It came over the trees low and it did not come back up.</Line>
+        <Line>I can hear it but I cannot see it. That is the thing.</Line>
+        <Line>There is a field behind the barn. If he is putting it down, it will be there.</Line>
+    </Script>
     <Lines>
         <Approach>Smoke from the engine and he is trying to put it down. Wherever he lands, we are going.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

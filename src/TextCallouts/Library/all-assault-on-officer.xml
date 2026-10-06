@@ -10,9 +10,14 @@
     <Advisory>Suspect held on the ground, officer with a facial injury.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>I never touched him. Ask the man in the van, he pulled me off.</Line>
+        <Line>You are hurting my arm. It was already like that before you got here.</Line>
+        <Line>He went for me first. That is the whole of it. That is what happened.</Line>
+    </Script>
     <Lines>
         <Approach>A member of the public has him on the ground. The officer took one to the face.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

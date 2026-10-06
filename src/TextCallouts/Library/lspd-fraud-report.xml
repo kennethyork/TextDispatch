@@ -10,8 +10,13 @@
     <Advisory>Suspect left some time ago, details with staff.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It came off the account this morning. Two thousand.</Line>
+        <Line>I have the printout here, and the transaction number on it.</Line>
+        <Line>I have never been to that shop. Never in my life.</Line>
+    </Script>
     <Lines>
         <Approach>He is long gone but the staff have everything written down for you.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

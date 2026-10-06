@@ -10,9 +10,14 @@
     <Advisory>Three males, no weapons seen, shop owner frightened.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="3" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="3" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>Nobody is intimidating anybody. We are delivering a message.</Line>
+        <Line>He owes money to people and that is his problem.</Line>
+        <Line>You can stand there all day. It does not change anything.</Line>
+    </Script>
     <Lines>
         <Approach>Three of them at his door and he is on his own inside. Nobody has been hit yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

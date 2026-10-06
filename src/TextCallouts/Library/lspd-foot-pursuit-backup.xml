@@ -10,9 +10,14 @@
     <Advisory>Suspect running, officer behind, no weapon seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>He went through the gardens and I am not going over that fence on my own.</Line>
+        <Line>He is in the back of those houses. I have not lost him.</Line>
+        <Line>Two of us and a cordon. That is what this needs.</Line>
+    </Script>
     <Lines>
         <Approach>He is on foot with the officer right behind him. Get into the next street.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

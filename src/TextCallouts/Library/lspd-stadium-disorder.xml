@@ -10,10 +10,15 @@
     <Advisory>Both sets of supporters, bottles thrown, no injuries yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="5" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="5" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>It is two sets of supporters and it has been going since the whistle.</Line>
+        <Line>Nobody has been hurt yet. That is the whole of it, yet.</Line>
+        <Line>We need a line down the middle of that street.</Line>
+    </Script>
     <Lines>
         <Approach>Both sets of them, bottles going, and the stewards are outnumbered. Back-up is coming.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Car still at the trailhead, weather turning.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>Her car is at the trailhead and she has not come back.</Line>
+        <Line>She is fit. She has walked this trail a dozen times.</Line>
+        <Line>The weather is turning in tonight, so we are against the light.</Line>
+    </Script>
     <Lines>
         <Approach>Her car is still at the trailhead and the weather is coming in. That is all we have.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

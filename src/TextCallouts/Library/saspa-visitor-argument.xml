@@ -10,8 +10,13 @@
     <Advisory>Two visitors, no violence, staff holding them apart.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is two families in the visitors hall and it is getting loud.</Line>
+        <Line>Nobody has thrown anything yet. That is the bit I would watch.</Line>
+        <Line>We are pulling the visit now, before it gets any worse.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them over a table and the staff have them apart. It is loud, not violent.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

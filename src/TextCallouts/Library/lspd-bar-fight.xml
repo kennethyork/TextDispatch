@@ -10,10 +10,15 @@
     <Advisory>Several involved, staff trying to separate them.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="3" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="3" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>He started it inside and he brought it out here.</Line>
+        <Line>I have had four pints. That is not a crime.</Line>
+        <Line>My nose is broken. So who is the victim here?</Line>
+    </Script>
     <Lines>
         <Approach>Fight outside the bar, more than two involved, and one of them is down.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

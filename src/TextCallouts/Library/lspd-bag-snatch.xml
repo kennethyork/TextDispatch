@@ -10,9 +10,14 @@
     <Advisory>One male on a scooter, bag taken, victim unhurt.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="faggio" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="faggio" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It was on the bench next to her. I thought it had been left there.</Line>
+        <Line>I have not run anywhere. I am stood right here.</Line>
+        <Line>You want it back? Here. Take it.</Line>
+    </Script>
     <Lines>
         <Approach>He took it off her on a scooter and rode off. She is not hurt, which is luck more than anything.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

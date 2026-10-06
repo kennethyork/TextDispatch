@@ -10,9 +10,14 @@
     <Advisory>Gunshot wound to the leg, conscious, remote location.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It came out of the treeline. I did not see a face.</Line>
+        <Line>He is on the ground and he is still talking. That is good, is it not?</Line>
+        <Line>We are both licensed. Neither of us should be getting shot at.</Line>
+    </Script>
     <Lines>
         <Approach>Shot in the leg and he is a long way from a road. The ambulance is not going to reach him on its own.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

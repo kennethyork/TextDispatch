@@ -10,8 +10,13 @@
     <Advisory>No occupants, no plates visible.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It has been there five days. It is not mine and it is not anybody round here.</Line>
+        <Line>No plates on it and the doors are unlocked.</Line>
+        <Line>Nobody has touched it. I have been watching it out of the window.</Line>
+    </Script>
     <Lines>
         <Approach>Been there three days with no plates on it. Run it when you get there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

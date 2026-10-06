@@ -10,9 +10,14 @@
     <Advisory>Multiple visitors, brief stays, neighbours keep reporting it.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>It is a shared house. People come and go from a shared house.</Line>
+        <Line>I rent a room. I do not know what the others get up to.</Line>
+        <Line>You need a warrant for the rest of it, and I know my rights on that.</Line>
+    </Script>
     <Lines>
         <Approach>Same house, same thing, four times this month. The neighbours have had enough.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

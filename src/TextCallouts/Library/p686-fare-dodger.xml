@@ -10,9 +10,14 @@
     <Advisory>Driver holding the bus at a stop, passenger on board.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I am not paying because the machine is broken. That is not my problem.</Line>
+        <Line>I am not getting off. I paid to get on this bus.</Line>
+        <Line>Call whoever you like. I am sat here.</Line>
+    </Script>
     <Lines>
         <Approach>The bus is stopped and he will not get off it. Driver wants him dealt with, not arrested.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

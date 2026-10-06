@@ -10,9 +10,14 @@
     <Advisory>Two of them with bolt croppers, several bikes.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I sell bikes. Buying and selling, that is all this is.</Line>
+        <Line>The croppers are for the lock. They are not for anything else.</Line>
+        <Line>Nothing here is stolen. Not one of them. Check the frames.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them at the rack with croppers and they have already had two.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

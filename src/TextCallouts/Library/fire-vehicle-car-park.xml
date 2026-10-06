@@ -10,9 +10,14 @@
     <Advisory>Nobody in the vehicle, one casualty being kept back.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>I was two cars away when it went up.</Line>
+        <Line>I have been coughing since. My chest feels tight.</Line>
+        <Line>I am not leaving until I know about my car. Just tell me about my car.</Line>
+    </Script>
     <Patient Model="a_m_y_business_01" TreatmentSeconds="10">I was right next to it. My chest feels tight.</Patient>
     <Lines>
         <Approach>Nobody is in the car. One person took the smoke and is being kept clear.</Approach>

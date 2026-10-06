@@ -10,8 +10,13 @@
     <Advisory>Adult male, no medical condition reported, on foot.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>He walked out this morning and he has not come back.</Line>
+        <Line>He does not carry a phone. He never has.</Line>
+        <Line>That is his picture. That is the best one I have got.</Line>
+    </Script>
     <Lines>
         <Approach>Last seen this morning on foot. Family are out looking as well.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

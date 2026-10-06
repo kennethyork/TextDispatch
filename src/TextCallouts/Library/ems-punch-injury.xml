@@ -10,8 +10,13 @@
     <Advisory>Conscious, suspect gone, nose likely broken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>One punch. That is all it was, one punch.</Line>
+        <Line>He walked off towards the taxi rank.</Line>
+        <Line>My teeth feel loose. Is that normal, teeth feeling loose?</Line>
+    </Script>
     <Patient Model="a_m_y_business_01" TreatmentSeconds="12">He just hit me. I did not say anything to him.</Patient>
     <Lines>
         <Approach>One punch, one face, and the suspect is already down the road.</Approach>

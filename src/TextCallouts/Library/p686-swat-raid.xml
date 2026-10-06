@@ -10,10 +10,15 @@
     <Advisory>Two inside, weapons believed present, entry team waiting on your call.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>They are not answering and the door is barricaded from the inside.</Line>
+        <Line>One confirmed male, possibly two.</Line>
+        <Line>Nobody goes through that door until you say the word.</Line>
+    </Script>
     <Lines>
         <Approach>They will not come out and the entry team is waiting on you. Two inside, and they are armed.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>No suspects, trailer tracks in the gateway.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Her stall was empty this morning and the gate was open.</Line>
+        <Line>She is chipped and she is worth real money. That is why they took her.</Line>
+        <Line>There are trailer tracks by the gate. They were in and out in ten minutes.</Line>
+    </Script>
     <Lines>
         <Approach>They walked it out to a trailer. The owner is beside herself.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

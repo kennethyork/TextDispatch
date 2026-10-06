@@ -10,9 +10,14 @@
     <Advisory>Driver out and unsteady, no other vehicles involved.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>I have not had anything. I swerved for a deer.</Line>
+        <Line>It is my mate who owns the truck. He lent it to me.</Line>
+        <Line>I am in the ditch and I am fine. That is the main thing.</Line>
+    </Script>
     <Lines>
         <Approach>He is in the ditch and he is already telling the caller he is fine. He is not fine.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

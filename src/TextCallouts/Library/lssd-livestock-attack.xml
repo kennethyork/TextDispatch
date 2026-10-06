@@ -10,8 +10,13 @@
     <Advisory>Several dead, owner asking for someone to attend.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Nine sheep down and not one of them will stand up.</Line>
+        <Line>It was not a dog on its own. Not with that much damage.</Line>
+        <Line>Whatever it was is still out there. The dogs are going mad.</Line>
+    </Script>
     <Lines>
         <Approach>Something has been through the flock and the owner thinks it is still about.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

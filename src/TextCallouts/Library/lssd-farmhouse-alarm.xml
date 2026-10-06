@@ -10,9 +10,14 @@
     <Advisory>No persons seen, driveway gates open.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>It is a monitored alarm and the keyholder is an hour away.</Line>
+        <Line>Last time it was a barn door in the wind. This is the house.</Line>
+        <Line>I am not going in on my own and there is nobody else out here.</Line>
+    </Script>
     <Lines>
         <Approach>The gates are open and the keyholder is an hour out. Approach like somebody is still inside.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

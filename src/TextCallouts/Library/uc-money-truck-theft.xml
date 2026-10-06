@@ -10,9 +10,14 @@
     <Advisory>Two males, both armed, truck stopped.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>They have the crew locked in the back of the truck.</Line>
+        <Line>Three of them, and they came in a van with no plates.</Line>
+        <Line>They are still at it. They have not gone yet.</Line>
+    </Script>
     <Lines>
         <Approach>They have stopped the truck and they are working on the back of it. Two, both armed.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

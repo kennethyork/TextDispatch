@@ -10,8 +10,13 @@
     <Advisory>Four or five animals, no owner identified.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>They have had two of my lambs and my neighbour has lost three.</Line>
+        <Line>It is a pack of four at least. They are not frightened of anything.</Line>
+        <Line>I would bring a rifle if I were you. I would, honestly.</Line>
+    </Script>
     <Lines>
         <Approach>Four or five of them working two farms in a week. The farmers are taking it badly.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Three or four males, one keeping watch.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Armed="true" Weapon="WEAPON_KNIFE" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Armed="true" Weapon="WEAPON_KNIFE" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>We are not selling anything. We are stood here.</Line>
+        <Line>It is a public corner. Anybody can stand on a corner.</Line>
+        <Line>You have got nothing on me and you know it.</Line>
+    </Script>
     <Lines>
         <Approach>Four of them and one watching the corner. They will scatter when they see you.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

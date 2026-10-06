@@ -10,8 +10,13 @@
     <Advisory>Loud music, several neighbours have called.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is a Saturday night. It is music, not a crime.</Line>
+        <Line>The neighbours have complained five times and it is always them.</Line>
+        <Line>I will turn it down. Look, I am turning it down.</Line>
+    </Script>
     <Lines>
         <Approach>Fifth call this week from the same neighbours.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

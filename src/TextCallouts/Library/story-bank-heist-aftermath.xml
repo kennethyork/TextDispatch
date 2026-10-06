@@ -10,10 +10,15 @@
     <Advisory>Cash on the pavement, three suspects running.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="3" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="3" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>They came out of the back and went on foot through the car park.</Line>
+        <Line>Two of them and they are carrying. Take that seriously.</Line>
+        <Line>One of them is limping. He went down on the steps and he is limping now.</Line>
+    </Script>
     <Lines>
         <Approach>They have dropped half of it and they are running. The money is not the priority.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Three vehicles, drivers out, no violence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I have been on this rank nine years. This is my spot.</Line>
+        <Line>He is the one who pulled in on top of me.</Line>
+        <Line>I am not moving until somebody tells me who was first.</Line>
+    </Script>
     <Lines>
         <Approach>Three of them out of their cars shouting at each other over a fare.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

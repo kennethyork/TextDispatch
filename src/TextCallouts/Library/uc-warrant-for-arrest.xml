@@ -10,9 +10,14 @@
     <Advisory>Name and description confirmed, occupant uncooperative.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>He is in there. I saw him at the window half an hour ago.</Line>
+        <Line>He does not come out in the day. Only at night.</Line>
+        <Line>There is a dog. I am telling you now, there is a dog.</Line>
+    </Script>
     <Lines>
         <Approach>Address confirmed and the warrant is live. Nobody has answered the door but somebody is in.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

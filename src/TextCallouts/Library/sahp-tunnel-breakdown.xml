@@ -10,9 +10,14 @@
     <Advisory>Driver out of the vehicle, tunnel filling with fumes.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>There is a car stopped inside the tunnel and there is smoke coming off it.</Line>
+        <Line>The traffic behind is still coming in. Nobody has shut it off.</Line>
+        <Line>Get the tunnel closed. That is the thing that matters.</Line>
+    </Script>
     <Lines>
         <Approach>He is out of it and the tunnel is filling up with what is coming off it. Get the traffic stopped.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,10 +10,15 @@
     <Advisory>Four involved, two on the ground.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is four of them and it has spread out into the street.</Line>
+        <Line>They have all known each other twenty years. That does not help.</Line>
+        <Line>One is on the ground and I have not seen him move.</Line>
+    </Script>
     <Lines>
         <Approach>Four of them and two already on the floor. It is a small town and they all know each other.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

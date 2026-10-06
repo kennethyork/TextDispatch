@@ -10,9 +10,14 @@
     <Advisory>Two people on foot, rifles believed.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_RIFLE" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>A lamp, in that field, for the last two hours.</Line>
+        <Line>Nobody is looking for anything legal at this hour.</Line>
+        <Line>There have been shots as well. Two of them.</Line>
+    </Script>
     <Lines>
         <Approach>They are lamping a field in the dark. Assume rifles and do not walk straight at them.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

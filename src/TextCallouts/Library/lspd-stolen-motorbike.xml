@@ -10,9 +10,14 @@
     <Advisory>Two riders, both in dark clothing, no plates.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="bati" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="bati" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It was outside the cafe and I went in for a coffee.</Line>
+        <Line>Two minutes. Two minutes and it was gone.</Line>
+        <Line>It is black with a red tank. That is all I can tell you.</Line>
+    </Script>
     <Lines>
         <Approach>Two on it, no plates, gone towards the freeway. They will not stop for you.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

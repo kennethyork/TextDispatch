@@ -10,10 +10,15 @@
     <Advisory>Around ten people, no weapons seen, families complaining.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="5" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="5" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>It is a beach. People are allowed a drink on a beach.</Line>
+        <Line>Nobody is fighting. Nobody is even shouting.</Line>
+        <Line>You want us gone, we are gone. Just leave my mates alone.</Line>
+    </Script>
     <Lines>
         <Approach>Ten of them, drinking, and families are packing up to leave. Break it up.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

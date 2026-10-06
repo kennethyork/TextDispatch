@@ -10,9 +10,14 @@
     <Advisory>Around fifteen vehicles, engines revving, no racing yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>I am parked. Everybody here is parked.</Line>
+        <Line>Nobody is racing. We are stood around talking.</Line>
+        <Line>It is a car park. That is what a car park is for.</Line>
+    </Script>
     <Lines>
         <Approach>Fifteen cars and nobody is moving. They will scatter the moment you arrive - which is half the problem.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

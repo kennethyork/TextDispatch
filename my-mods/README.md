@@ -431,26 +431,50 @@ UnitedCallouts) if it has one. Then check `/calls` in the box, or `/plugins`, wh
 
 ### 1.14 The other callout packs are out - moved, not deleted
 
-Twenty things were moved out of the game and into `_removed-callout-packs\` in the game folder: the seven
-callout packs' DLLs and folders (686Callouts, ManiacCallouts, MizCallouts, Plain Sight, SSStuartCallouts,
-StoryCallouts, UnitedCallouts) and three sets of scanner audio that came with them. Nothing was deleted,
-so putting one back is a drag. Delete that folder once you are sure.
+Twenty-two things were moved out of the game and into `_removed-callout-packs\` in the game folder: the
+seven callout packs' DLLs and folders (686Callouts, ManiacCallouts, MizCallouts, Plain Sight,
+SSStuartCallouts, StoryCallouts, UnitedCallouts), three sets of scanner audio that came with them, and two
+odds and ends they left behind in `Plugins\` - `SSStuart_UpdateChecker.ini`, which was still phoning home
+for SSStuartCallouts and StoryCallouts, and an empty `ParksCommon\ParksModsWebCheck.ini` from a pack that
+is no longer installed. Nothing was deleted, so putting one back is a drag. Delete that folder once you are
+sure.
 
-Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.8.0**, and the interaction plugins
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.9.0**, and the interaction plugins
 that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
 ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
 CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
 
-**TextCallouts 1.8.0** is at 344 callouts, and it can now do the two things a recipe could not:
+`Plugins\` itself is now just LSPD First Response, CommonDataFramework, DamageTrackingFramework and the
+LSPDFR folder - no stray ini files from packs that have gone.
 
-  * **people who answer** - a callout's suspect or patient has lines, and TextDispatch asks for those
-    before its own script and before the model: `/talk`, or just type at them, and they answer in
-    character, instantly, with no model running;
+**TextCallouts 1.9.0** is at 344 callouts, and **every one of them has a script.**
+
+Previously only four did. Now all 326 recipes carry three or four lines - 981 lines in total - for the
+person in that scene to say, and TextDispatch asks the callout for those lines before it asks its own
+script and before it asks the model:
+
+  * open the box (left arrow), type at whoever is nearest, and the suspect or the complainant answers in
+    character, instantly, with no model running at all;
+  * in a medical callout it is the **patient** who answers, not the bystander stood next to them - the 53
+    medical recipes now carry the caller or family as a bystander and the patient as the speaker, which is
+    what made a woman with chest pain answer for herself and nobody else;
+  * somebody who has said their piece repeats their last line rather than going mute.
+
+It is checked rather than hoped for. `tools\make-callout-library.ps1` refuses to write a library where any
+callout has no script, fewer than three lines, a repeated line, or an apostrophe that would break the data
+file; the recipe harness reads the finished library back with the pack's own parser and refuses one where
+any of that slipped through (28 checks, no failures). A recipe that is missing its script cannot be built,
+let alone shipped.
+
   * **scenes that move** - stages: backup arriving twenty seconds in, a suspect's nerve breaking at
-    fifty, the fire starting once they have had a chance to talk.
+    fifty, the fire starting once they have had a chance to talk. Four callouts use them: a standoff, a
+    bank siege, a gang fight, and a patient who talks to you before you treat them.
 
-Four callouts use both so far: a standoff, a bank siege, a gang fight, and a patient who talks to you
-before you treat them.
+**`tools\install-textcallouts.ps1` now installs the library too.** It only ever copied the DLL, which left
+the previous library in place - a pack that looked like it had stopped working, because the new callouts
+were simply not in the folder it reads. It now replaces `Plugins\LSPDFR\TextCallouts\Library` as well,
+says how many recipes and how many script lines went in, and names any recipe that arrived without a
+script. Your own `Custom\` folder is beside it and is never touched.
 
 `tools\verify-bridge.ps1` checks the bridge between the two plugins by reading their metadata - the
 compiler cannot see across a reflection boundary, and a rename there would fail silently in game.

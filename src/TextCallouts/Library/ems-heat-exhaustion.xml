@@ -10,8 +10,13 @@
     <Advisory>Conscious but confused, no water.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I have been out in it since the morning. No shade, no water.</Line>
+        <Line>I stopped feeling hot a while ago. Now I am cold, which makes no sense.</Line>
+        <Line>I am not going to hospital. I just need to sit for a minute.</Line>
+    </Script>
     <Patient Model="a_m_y_beach_01" TreatmentSeconds="12">I just need to sit down for a minute. I am fine.</Patient>
     <Lines>
         <Approach>He has been out in it all day and there is no shade where he is.</Approach>

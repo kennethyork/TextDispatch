@@ -10,8 +10,13 @@
     <Advisory>Occupant cooperative, quantity small.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It was behind the vent, not on him.</Line>
+        <Line>Three of them share that cell and not one of them is talking.</Line>
+        <Line>There is more of it somewhere. There always is.</Line>
+    </Script>
     <Lines>
         <Approach>It was under the mattress and he is not arguing about it. Paperwork rather than a scene.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>No driver visible, traffic swerving.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>There are no lights on it at all. None.</Line>
+        <Line>It is right over the crest and you do not see it until you are on top of it.</Line>
+        <Line>I have put my own car behind it with the lights on. That is all I can do.</Line>
+    </Script>
     <Lines>
         <Approach>It is in a lane with no lights on it and the traffic is swerving. That is the whole call.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

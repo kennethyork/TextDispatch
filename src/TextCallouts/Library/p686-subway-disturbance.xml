@@ -10,9 +10,14 @@
     <Advisory>Two males arguing, staff asking for someone to attend.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>One man going along the platform shouting and pushing people.</Line>
+        <Line>We have held the trains so nobody is stuck down here with him.</Line>
+        <Line>He has gone down onto the track. He is on the track now.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them on the platform and the staff have had enough. It has not turned violent.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

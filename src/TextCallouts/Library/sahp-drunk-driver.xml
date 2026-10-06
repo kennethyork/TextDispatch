@@ -10,8 +10,13 @@
     <Advisory>Vehicle swerving, speed varying between 20 and 60.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am two cars behind it and it cannot hold a lane.</Line>
+        <Line>It was twenty, then sixty, then twenty again.</Line>
+        <Line>It has just clipped the kerb. It is on the kerb now.</Line>
+    </Script>
     <Lines>
         <Approach>The caller is behind it and says it cannot hold a lane. They will stay on the line.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

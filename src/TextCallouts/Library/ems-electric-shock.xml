@@ -10,8 +10,13 @@
     <Advisory>Power isolated, casualty conscious, burns to the hand.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>The breaker was supposed to be locked off. It was not locked off.</Line>
+        <Line>It threw me back about six feet. I remember the bang.</Line>
+        <Line>My hand will not stop. It is still going through me.</Line>
+    </Script>
     <Patient Model="a_m_y_construct_01" TreatmentSeconds="15">My hand is buzzing. It will not stop buzzing.</Patient>
     <Lines>
         <Approach>They have killed the power and he is conscious, with entry and exit burns on the one hand.</Approach>

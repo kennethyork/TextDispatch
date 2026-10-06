@@ -10,8 +10,13 @@
     <Advisory>Conscious, partner present, contractions close.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It started on the way here and it has not stopped since.</Line>
+        <Line>Two minutes apart. I have been counting them.</Line>
+        <Line>I am not going anywhere. This is happening now, in this room.</Line>
+    </Script>
     <Patient Model="a_f_y_bevhills_01" TreatmentSeconds="20">Is she all right? Tell me she is all right.</Patient>
     <Lines>
         <Approach>There is no time for the hospital and she knows it. You are the closest thing to a professional.</Approach>

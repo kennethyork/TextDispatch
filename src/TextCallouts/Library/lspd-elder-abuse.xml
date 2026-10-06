@@ -10,9 +10,14 @@
     <Advisory>Client on scene, carer present, no violence reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>She bruises easily. She is eighty-nine, everybody bruises her.</Line>
+        <Line>I have looked after her four years and nobody has complained before.</Line>
+        <Line>Ask her yourself. She will tell you.</Line>
+    </Script>
     <Lines>
         <Approach>The care worker is describing bruising nobody has explained. Take it seriously and take your time.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

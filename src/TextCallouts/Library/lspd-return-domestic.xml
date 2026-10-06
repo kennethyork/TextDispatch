@@ -10,10 +10,15 @@
     <Advisory>Same address as last night, no weapons reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is the same as last night. It is the same as every night.</Line>
+        <Line>Nobody has been hit. Not tonight, not last night.</Line>
+        <Line>If you take him away I have got nowhere to go. Do you understand?</Line>
+    </Script>
     <Lines>
         <Approach>Same address as last night, same shouting. Somebody has to go back.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

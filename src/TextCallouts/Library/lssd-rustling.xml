@@ -10,9 +10,14 @@
     <Advisory>Two males, trailer backed up to the gate, no weapons seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>There is a trailer at the field gate and they are loading it.</Line>
+        <Line>At half past two in the morning. That tells you everything.</Line>
+        <Line>Two of them, and one is watching the road.</Line>
+    </Script>
     <Lines>
         <Approach>They are loading somebody else cattle into a trailer in the dark. That is not a mistake.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

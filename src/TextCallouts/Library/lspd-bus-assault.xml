@@ -10,9 +10,14 @@
     <Advisory>Suspect on board, victim with staff, no weapon seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>He put his bag on my legs. That is how it started.</Line>
+        <Line>Ask the driver. The driver saw all of it.</Line>
+        <Line>I want him arrested as well. Both of us, that is fair.</Line>
+    </Script>
     <Lines>
         <Approach>The driver has stopped the bus and the suspect is still on it. Victim is with the other passengers.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

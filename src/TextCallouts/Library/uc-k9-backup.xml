@@ -10,9 +10,14 @@
     <Advisory>Suspect in a yard, no weapon seen, handler holding the perimeter.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>He went through the fence and into the field. That way.</Line>
+        <Line>I kept eyes on him as far as the fence and then I lost him.</Line>
+        <Line>He is not armed as far as I know. I am not certain of that.</Line>
+    </Script>
     <Lines>
         <Approach>He is in the yard and the handler wants a dog rather than a foot chase. Hold what you have.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

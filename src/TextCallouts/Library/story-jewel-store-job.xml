@@ -10,9 +10,14 @@
     <Advisory>Three suspects, mopeds waiting outside.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="3" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="3" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>They put a brick through the window and took the tray.</Line>
+        <Line>Two minutes. That is all it took, two minutes.</Line>
+        <Line>They went across the road into the alley. Both of them.</Line>
+    </Script>
     <Lines>
         <Approach>They are in the shop and there are bikes waiting outside. Nobody has stopped them yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

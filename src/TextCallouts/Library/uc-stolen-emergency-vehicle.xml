@@ -10,9 +10,14 @@
     <Advisory>Vehicle heading north, driver in a uniform.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="ambulance" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="ambulance" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It was taken from outside the department with the keys left in it.</Line>
+        <Line>It has a full tank and a radio. That is the problem.</Line>
+        <Line>Whoever has it can hear everything we say.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody has taken an ambulance from the hospital bay. Blue lights, no crew.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

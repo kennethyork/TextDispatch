@@ -10,9 +10,14 @@
     <Advisory>No violence yet, staff want him moved on.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>I am not drunk. I have had a few. I am not drunk.</Line>
+        <Line>They threw me out and I have been stood here since.</Line>
+        <Line>I am going home. Just let me go home.</Line>
+    </Script>
     <Lines>
         <Approach>No violence, they just want him moved on. He has other ideas.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Deep tyre marks, no vehicles present.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>They have torn the trail up for half a mile.</Line>
+        <Line>It is protected ground and they came in the night to do it.</Line>
+        <Line>Four sets of tracks. Big tyres, all four of them.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody has cut the trail up and left. The rangers will want to see it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

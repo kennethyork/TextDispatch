@@ -10,8 +10,13 @@
     <Advisory>Female on foot, no violence, businesses complaining.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am waiting for somebody. That is all I am doing.</Line>
+        <Line>I have been on this corner twenty minutes and I have not spoken to a soul.</Line>
+        <Line>You have got nothing. Everybody on this street knows it.</Line>
+    </Script>
     <Lines>
         <Approach>Businesses have had enough. Nobody is in danger, they just want her moved on.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

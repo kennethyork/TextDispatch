@@ -10,9 +10,14 @@
     <Advisory>Extractor involved, staff outside, no injuries.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It is the kitchen. Everybody is out the front.</Line>
+        <Line>There is a gas line in there and a fryer right beside it.</Line>
+        <Line>The chef has burnt his arm. He is sat on the kerb.</Line>
+    </Script>
     <Lines>
         <Approach>It has gone up the extractor and the staff are outside. Nobody is hurt.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

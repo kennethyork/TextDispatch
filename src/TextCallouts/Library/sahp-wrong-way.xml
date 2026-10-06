@@ -10,9 +10,14 @@
     <Advisory>Multiple callers, near misses reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="asea" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="asea" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It is coming straight at people with its headlights on.</Line>
+        <Line>Three callers now and every one of them saying the same thing.</Line>
+        <Line>Somebody is going to be killed. Somebody needs to shut that road.</Line>
+    </Script>
     <Lines>
         <Approach>Several callers, all saying the same: wrong side of the barrier, headlights on.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>No weapon, no aggression, family on scene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>I do not need an ambulance. I am not the one who called.</Line>
+        <Line>My brother is inside and he has not come out of that room in three days.</Line>
+        <Line>He is not a danger to anybody. He is frightened, that is all.</Line>
+    </Script>
     <Lines>
         <Approach>Nobody has been hurt and nobody is threatening anybody. He is frightened and so is his family.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

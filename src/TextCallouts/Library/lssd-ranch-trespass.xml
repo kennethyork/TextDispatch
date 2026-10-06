@@ -10,9 +10,14 @@
     <Advisory>Male on foot, rifle slung, no shots fired.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_RIFLE" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" />
     </Actors>
     <OnApproach At="25" HandsUp="true" />
+    <Script>
+        <Line>He is walking my fence line with a rifle over his shoulder.</Line>
+        <Line>Nobody has been threatened. Not yet.</Line>
+        <Line>I have been on this land forty years. He is not supposed to be on it.</Line>
+    </Script>
     <Lines>
         <Approach>He is on the rancher land with a rifle on his shoulder. Nobody has been threatened yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

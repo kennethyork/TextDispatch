@@ -10,9 +10,14 @@
     <Advisory>Load unsecured, driver unaware of the problem.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="bobcatxl" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="bobcatxl" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It is sitting on the bump stops and the load is not strapped.</Line>
+        <Line>There are sheets of steel on it and nothing holding them down.</Line>
+        <Line>It came past me and the whole truck was moving sideways.</Line>
+    </Script>
     <Lines>
         <Approach>Whatever is on the back of that is one pothole away from the windscreen behind it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

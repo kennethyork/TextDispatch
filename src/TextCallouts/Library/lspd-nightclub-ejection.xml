@@ -10,9 +10,14 @@
     <Advisory>Door staff holding him at the entrance.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>I paid to get in and I am not leaving.</Line>
+        <Line>The bouncer put his hands on me first.</Line>
+        <Line>One drink. I have had one drink and they threw me out.</Line>
+    </Script>
     <Lines>
         <Approach>The door staff have him outside and he will not walk away. He is not armed, he is just determined.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

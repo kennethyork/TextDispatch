@@ -10,10 +10,15 @@
     <Advisory>Two residents unaccounted for, smoke from the upper floor.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
     <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>There is somebody in the back bedroom. My brother is in the back bedroom.</Line>
+        <Line>I could not get up the stairs. The smoke beat me back.</Line>
+        <Line>He is deaf. You need to know that before you go in, he is deaf.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them unaccounted for and smoke coming out of the top floor. Get there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

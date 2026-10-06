@@ -10,8 +10,13 @@
     <Advisory>Group of three around it, no weapons seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is a fire ban. There are signs at every gate.</Line>
+        <Line>Three of them sat round it and they have been drinking.</Line>
+        <Line>They have seen me and they are not putting it out.</Line>
+    </Script>
     <Lines>
         <Approach>Three of them sat around a fire in a restricted area. They will not be pleased to see you.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

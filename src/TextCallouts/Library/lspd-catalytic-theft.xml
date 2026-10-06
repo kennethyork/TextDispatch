@@ -10,9 +10,14 @@
     <Advisory>One male, car jacked up, no owner present.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I am not cutting anything. I am looking, that is all.</Line>
+        <Line>It is my van. Mine. That is why I am under it.</Line>
+        <Line>The saw is for work. I am a builder.</Line>
+    </Script>
     <Lines>
         <Approach>He has it up on a jack and he is under it with a saw. Owner is not coming.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Conscious, bite to the calf, remote location.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It was on the path, in the shade.</Line>
+        <Line>It went for my calf and it was gone before I saw it properly.</Line>
+        <Line>I have put my leg up and I have not moved since.</Line>
+    </Script>
     <Patient Model="a_m_y_hipster_01" TreatmentSeconds="14">It is going numb. Is that normal?</Patient>
     <Lines>
         <Approach>Bitten on the leg and a long way from the road. Keep him still and get to him.</Approach>

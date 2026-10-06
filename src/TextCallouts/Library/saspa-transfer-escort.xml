@@ -10,8 +10,13 @@
     <Advisory>Inmate ready, vehicle waiting, route clear.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Court in the morning. It has to be a two unit escort.</Line>
+        <Line>He has been violent twice this month. Both times in the van.</Line>
+        <Line>If it is one unit I am not moving him. That is the end of it.</Line>
+    </Script>
     <Lines>
         <Approach>He is ready and the vehicle is waiting. They will not move without a second unit.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

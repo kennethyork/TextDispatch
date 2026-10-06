@@ -10,8 +10,13 @@
     <Advisory>Shivering stopped, caller has him out of the wind.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>The fog came down and the path went with it.</Line>
+        <Line>I sat behind a wall for a while. That made it worse, not better.</Line>
+        <Line>I cannot get warm. I have been shaking for an hour and I cannot get warm.</Line>
+    </Script>
     <Patient Model="a_m_m_farmer_01" TreatmentSeconds="14">I lost the path in the fog. I thought I was going the right way.</Patient>
     <Lines>
         <Approach>He is out of the wind with the caller. The shivering has stopped, which is not good news.</Approach>

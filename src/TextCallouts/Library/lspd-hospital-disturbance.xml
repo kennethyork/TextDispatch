@@ -10,9 +10,14 @@
     <Advisory>One male, no weapon, staff want him removed.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>I have been waiting four hours and nobody has told me anything.</Line>
+        <Line>My father is in there and they will not let me see him.</Line>
+        <Line>I have not threatened anybody. Ask the staff.</Line>
+    </Script>
     <Lines>
         <Approach>He is shouting at people who are trying to work. No weapon, but it is an emergency department.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

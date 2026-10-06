@@ -10,9 +10,14 @@
     <Advisory>Both on foot, rifles slung, landowner confronting them.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_RIFLE" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>We have permission. The farmer down the road gave us permission.</Line>
+        <Line>I am not putting the rifle down until you tell me we can keep it.</Line>
+        <Line>Ring him. He is the man in the white house.</Line>
+    </Script>
     <Lines>
         <Approach>They are on his land with rifles and he is out there arguing with them. Get there before he loses his temper.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

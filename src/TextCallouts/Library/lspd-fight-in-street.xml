@@ -10,10 +10,15 @@
     <Advisory>Six or more involved, bottles seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>It is between the two of us. It has nothing to do with you.</Line>
+        <Line>He has got a bottle. Look at his hand, he has got a bottle.</Line>
+        <Line>Everybody here will tell you the same thing.</Line>
+    </Script>
     <Lines>
         <Approach>Six of them at least, and bottles. Wait for your back-up if you can.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Male on foot, bat or club seen, no victims.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_BAT" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_BAT" />
     </Actors>
     <OnApproach At="25" HandsUp="true" />
+    <Script>
+        <Line>It is a machete and he is walking down the middle of the road with it.</Line>
+        <Line>He has not threatened anybody. Everybody has just moved out of his way.</Line>
+        <Line>Two cars have gone past him and neither of them stopped.</Line>
+    </Script>
     <Lines>
         <Approach>Bat in his hand and no victims yet. He is walking, not running.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Occupants out, fire contained so far.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It is in the chimney. It has been going since the fire was lit.</Line>
+        <Line>The sweep was booked for next month. That is the truth of it.</Line>
+        <Line>I have not put water on it. Somebody told me not to.</Line>
+    </Script>
     <Lines>
         <Approach>It is in the chimney for now and the householder is watching it. That is not a plan.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

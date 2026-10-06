@@ -10,8 +10,13 @@
     <Advisory>Male on foot with a camera, no offence reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am filming a building. That is not a crime.</Line>
+        <Line>It is a public pavement and I am allowed to stand on a public pavement.</Line>
+        <Line>You can look at the camera. There is a building on it. Nothing else.</Line>
+    </Script>
     <Lines>
         <Approach>Nothing has happened, he is just taking pictures of the building. Staff want him spoken to.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

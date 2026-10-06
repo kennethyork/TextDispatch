@@ -10,9 +10,14 @@
     <Advisory>Six campers, fire well established, no injuries.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It is not ours. It was already going when we got here.</Line>
+        <Line>There are three tents inside the ring and nobody in them.</Line>
+        <Line>The wind is taking it towards the trees.</Line>
+    </Script>
     <Lines>
         <Approach>Six of them around a fire that is far bigger than the rules allow. Wind is coming up.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

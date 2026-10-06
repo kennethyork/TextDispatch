@@ -10,8 +10,13 @@
     <Advisory>Knows the trailhead, does not know where she is.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am on a path but I do not know which one.</Line>
+        <Line>I can see a ridge to my left and water below it.</Line>
+        <Line>My battery is nearly gone. I am going to have to stop talking.</Line>
+    </Script>
     <Lines>
         <Approach>She is on the phone and the battery is going. We have a trailhead and nothing else.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

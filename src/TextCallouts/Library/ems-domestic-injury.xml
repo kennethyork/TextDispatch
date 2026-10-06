@@ -10,8 +10,13 @@
     <Advisory>Patient safe with a neighbour, injury to the arm.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It is the door. I walked into the door.</Line>
+        <Line>He has gone. He took the car and he has gone.</Line>
+        <Line>If you write it down, he will see it written down. Do you understand what I am saying?</Line>
+    </Script>
     <Patient Model="a_f_y_vinewood_01" TreatmentSeconds="14">It is not as bad as it looks. He has gone.</Patient>
     <Lines>
         <Approach>She is next door with the neighbour. The injury needs looking at and so does she.</Approach>

@@ -10,10 +10,15 @@
     <Advisory>Family inside and safe, no injuries.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" HandsUp="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>It came through the kitchen window and I was stood right there.</Line>
+        <Line>Two shots. From the field behind the house.</Line>
+        <Line>I have got the round. I picked it up off the floor with a cloth.</Line>
+    </Script>
     <Lines>
         <Approach>They put a shot through a window with the family inside. That is not poaching.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

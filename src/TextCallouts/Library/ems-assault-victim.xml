@@ -10,8 +10,13 @@
     <Advisory>Suspect gone, victim on the pavement, conscious.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>Two of them. It came out of nowhere.</Line>
+        <Line>I did not get a proper look. Baseball cap, dark jacket, that is all.</Line>
+        <Line>Which way did they go? Tell me which way they went.</Line>
+    </Script>
     <Patient Model="a_m_y_business_01" TreatmentSeconds="15">I did not even see him. Is it bad?</Patient>
     <Lines>
         <Approach>Suspect has gone. The victim is on the pavement and the head wound is a bad one.</Approach>

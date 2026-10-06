@@ -10,9 +10,14 @@
     <Advisory>Vehicle continuing at speed, load insecure.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="phantom" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="phantom" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>The HGV has not stopped and the driver is looking at us.</Line>
+        <Line>You cannot PIT that. Nobody is PIT-ing that.</Line>
+        <Line>We need a stinger, and we need it before the junction.</Line>
+    </Script>
     <Lines>
         <Approach>He is not stopping and there is a load on the back of it. Keep your distance.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

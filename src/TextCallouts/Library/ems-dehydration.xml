@@ -10,8 +10,13 @@
     <Advisory>Conscious, hot and dry, event medics on scene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It was a half marathon. I have done the distance plenty of times.</Line>
+        <Line>I stopped sweating about four miles back. That is when it went wrong.</Line>
+        <Line>Water. Not a bottle. All of it.</Line>
+    </Script>
     <Patient Model="a_m_y_musclbeac_01" TreatmentSeconds="12">I finished it. Did I finish it?</Patient>
     <Lines>
         <Approach>Hot, dry and confused at the end of a race. Get fluids into him before anything else.</Approach>

@@ -10,8 +10,13 @@
     <Advisory>Conscious, pale, sitting on a bench.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It came on in the street. I sat down on the first bench I could find.</Line>
+        <Line>I have had one before. This is not that one. It is different.</Line>
+        <Line>Do not let me walk to the ambulance. I know what walking does.</Line>
+    </Script>
     <Patient Model="a_m_m_business_01" TreatmentSeconds="18">It is easing. It does not feel like the last one, but it does not feel right.</Patient>
     <Lines>
         <Approach>Pale, sweating, and he has a history. Do not let him walk anywhere.</Approach>

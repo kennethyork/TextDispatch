@@ -10,9 +10,14 @@
     <Advisory>Two children, no adults seen for hours.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>They are asleep upstairs. I look in on them every hour.</Line>
+        <Line>I went out for twenty minutes. Twenty minutes, that is all.</Line>
+        <Line>Their mother is coming back tonight. She is on a late shift.</Line>
+    </Script>
     <Lines>
         <Approach>Nobody has been in or out for most of the day and the children are on their own. The neighbour is sure.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

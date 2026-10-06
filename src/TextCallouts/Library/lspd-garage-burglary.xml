@@ -10,8 +10,13 @@
     <Advisory>Shed and garage both forced, owner at work.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>The side door was open. I was looking to see what had been taken.</Line>
+        <Line>The bikes are mine. All three of them are mine.</Line>
+        <Line>Check the frames. There are numbers on the frames.</Line>
+    </Script>
     <Lines>
         <Approach>Both doors forced and the bikes are gone. Owner is on his way home.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

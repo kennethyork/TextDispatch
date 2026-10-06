@@ -10,8 +10,13 @@
     <Advisory>One vehicle, driver arguing with licensed drivers.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am giving a mate a lift. That is not a taxi.</Line>
+        <Line>No money has changed hands. Ask him.</Line>
+        <Line>The plate on the roof is for show. It is a joke.</Line>
+    </Script>
     <Lines>
         <Approach>He is taking fares off the rank and the licensed drivers have told him twice. It is getting loud.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

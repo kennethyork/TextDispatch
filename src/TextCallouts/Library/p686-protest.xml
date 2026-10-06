@@ -10,9 +10,14 @@
     <Advisory>Around twenty people, no violence reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>We have a permit to be here and we are not moving.</Line>
+        <Line>Nobody has blocked anything. The pavement is clear behind us.</Line>
+        <Line>There are two hundred people here and all of them are peaceful. Do not change that.</Line>
+    </Script>
     <Lines>
         <Approach>Loud but peaceful so far. Show a presence and keep the road open.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

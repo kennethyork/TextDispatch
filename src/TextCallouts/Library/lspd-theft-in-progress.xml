@@ -10,9 +10,14 @@
     <Advisory>Staff following at a distance, no violence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I was taking it back. That is what I was doing, taking it back.</Line>
+        <Line>The bag is full because I had not put it down yet.</Line>
+        <Line>I have not left the shop. I am still inside the shop.</Line>
+    </Script>
     <Lines>
         <Approach>They are following him at a distance. No violence so far - keep it that way.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

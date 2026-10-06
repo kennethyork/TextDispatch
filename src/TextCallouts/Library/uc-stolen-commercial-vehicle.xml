@@ -10,9 +10,14 @@
     <Advisory>Vehicle loaded with plant equipment, heading out of the city.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="flatbed" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="flatbed" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It went off the yard at about four this morning.</Line>
+        <Line>There is a tracked digger on the back of it. That is the part that worries me.</Line>
+        <Line>The keys were in the office. They are always in the office.</Line>
+    </Script>
     <Lines>
         <Approach>He took the truck with the equipment still on the back. He will be heading out of town.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Staff using extinguishers, fence beginning to catch.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It is the bins round the back. It has been smouldering all night.</Line>
+        <Line>It has taken the fence, and the fence goes to the yard.</Line>
+        <Line>The yard is full of pallets. Hundreds of them.</Line>
+    </Script>
     <Lines>
         <Approach>Staff have extinguishers out but the fence is starting to go. Get there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

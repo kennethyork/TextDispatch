@@ -10,8 +10,13 @@
     <Advisory>Conscious, confused, coaches holding him down.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I went up for the ball and I do not remember landing.</Line>
+        <Line>How long was I out? Nobody will tell me how long.</Line>
+        <Line>I want to go back on. I know what you are going to say.</Line>
+    </Script>
     <Patient Model="a_m_y_musclbeac_02" TreatmentSeconds="14">What was the score? Did we win?</Patient>
     <Lines>
         <Approach>He was out for a second and now he thinks he is fine. He is not going back on that pitch.</Approach>

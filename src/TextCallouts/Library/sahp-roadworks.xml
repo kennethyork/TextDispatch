@@ -10,9 +10,14 @@
     <Advisory>No injuries, cones scattered, workers shaken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="dilettante" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="dilettante" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>He went straight through the closure and the lads had to jump.</Line>
+        <Line>It is forty miles an hour through there and he did not brake.</Line>
+        <Line>The signs were up. They have been up all morning.</Line>
+    </Script>
     <Lines>
         <Approach>Nobody is hurt, which is remarkable. The workers want him found.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

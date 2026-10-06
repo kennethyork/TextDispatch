@@ -10,9 +10,14 @@
     <Advisory>One male, hands in and out of pockets, no violence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I am not working anybody. I am stood in a crowd.</Line>
+        <Line>My hands are in my own pockets. Look at them.</Line>
+        <Line>Everybody in that queue has got a bag. It is not me.</Line>
+    </Script>
     <Lines>
         <Approach>He is working the queue outside the station. Nobody has noticed except the caller.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

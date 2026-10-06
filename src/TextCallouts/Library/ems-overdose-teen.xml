@@ -10,8 +10,13 @@
     <Advisory>Breathing shallow, friends present and frightened.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It is my friend. She took something at the party.</Line>
+        <Line>I do not know what it was. Nobody at that party knows what it was.</Line>
+        <Line>Is she awake? Just tell me if she is awake.</Line>
+    </Script>
     <Patient Model="a_f_y_hipster_01" TreatmentSeconds="12">I did not think it would do that. Is she awake?</Patient>
     <Lines>
         <Approach>Shallow breathing and a room full of frightened teenagers. Get to her and keep the questions for later.</Approach>

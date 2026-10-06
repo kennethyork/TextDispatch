@@ -10,9 +10,14 @@
     <Advisory>Operator seen on a nearby roof, no offence reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>It is my drone. I am filming the sunset.</Line>
+        <Line>It is over my own garden. Look at the screen, it is my garden.</Line>
+        <Line>I will bring it down. It is coming down now.</Line>
+    </Script>
     <Lines>
         <Approach>Low over the gardens, and the operator is up on a roof. Somebody has complained about that specific drone three times.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

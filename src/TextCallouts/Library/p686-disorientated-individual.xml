@@ -10,9 +10,14 @@
     <Advisory>No weapon seen, person cannot say where they live.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>He has been walking in the road for twenty minutes.</Line>
+        <Line>I asked him if he was all right and he did not answer me.</Line>
+        <Line>He is not drunk. I have seen drunk and this is not that.</Line>
+    </Script>
     <Lines>
         <Approach>He is in the road and he does not know where he is. Could be medical, could be drink.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

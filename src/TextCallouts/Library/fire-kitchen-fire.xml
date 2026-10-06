@@ -10,9 +10,14 @@
     <Advisory>Occupants evacuated by a neighbour, smoke from the window.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It was the chip pan. It went up the moment I put water near it.</Line>
+        <Line>Everybody is out. All four of us.</Line>
+        <Line>The flat door is open. I left it open so you could get in.</Line>
+    </Script>
     <Lines>
         <Approach>Everybody is out and the neighbour did the smoke alarm part. Smoke from the back window.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

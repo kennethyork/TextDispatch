@@ -10,8 +10,13 @@
     <Advisory>Male in a parked car, no offence witnessed yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Same man, same car, every morning this week.</Line>
+        <Line>He parks across the road and he just sits there.</Line>
+        <Line>I have the plate and I have the dates. It is all written down.</Line>
+    </Script>
     <Lines>
         <Approach>Third report this week, same car, same spot. He is there now.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

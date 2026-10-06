@@ -10,9 +10,14 @@
     <Advisory>Inmate restrained, officer with a head injury.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>He came at me the moment I opened the hatch. Nothing led up to it.</Line>
+        <Line>He is restrained and he is not injured. I am the one bleeding.</Line>
+        <Line>I want this recorded. I want all of it recorded properly.</Line>
+    </Script>
     <Lines>
         <Approach>He is restrained now but the officer took one to the head. Ambulance is coming.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

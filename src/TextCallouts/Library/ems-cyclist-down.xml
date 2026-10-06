@@ -10,8 +10,13 @@
     <Advisory>Conscious, helmet on, bicycle in the road.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>The door opened in front of me. I had nowhere left to go.</Line>
+        <Line>My wrist went under me, but the arm is the problem, not the wrist.</Line>
+        <Line>Nobody got the number. Do not ask me for the number.</Line>
+    </Script>
     <Patient Model="a_m_y_skater_01" TreatmentSeconds="12">The bike is fine. I am not sure the arm is.</Patient>
     <Lines>
         <Approach>He came off at the junction. Helmet is still on him and he is talking.</Approach>

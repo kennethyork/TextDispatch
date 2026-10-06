@@ -10,10 +10,15 @@
     <Advisory>Caller is a neighbour, shouting heard, no weapons reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is the house at the end, with the trailer outside it.</Line>
+        <Line>Shouting for an hour and then nothing. That is the part that worries me.</Line>
+        <Line>The lights are on and nobody is answering the door.</Line>
+    </Script>
     <Lines>
         <Approach>The neighbour called it in. Shouting, no weapons mentioned, and no answer from the house.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

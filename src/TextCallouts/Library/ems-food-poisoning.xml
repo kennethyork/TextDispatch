@@ -10,9 +10,14 @@
     <Advisory>Four people, all vomiting, same meal.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is the buffet. Everybody who had the buffet is like this.</Line>
+        <Line>Nine of them now. Three went home before we thought to call you.</Line>
+        <Line>It is still out on the table. Nobody has touched it since.</Line>
+    </Script>
     <Lines>
         <Approach>Four of them, all the same meal, and the kitchen is still serving. Start with the worst.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

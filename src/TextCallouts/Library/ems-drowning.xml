@@ -10,8 +10,13 @@
     <Advisory>Bystanders started compressions, water still in the lungs.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>The current took me sideways. I could not get back in.</Line>
+        <Line>Somebody went in after me. I want to know who it was.</Line>
+        <Line>I saw the light on the water and then I saw nothing for a while.</Line>
+    </Script>
     <Patient Model="a_m_y_beach_03" TreatmentSeconds="20">(a cough, then breathing)</Patient>
     <Lines>
         <Approach>They got her out and somebody is doing compressions. Do not stop until you have to.</Approach>

@@ -10,9 +10,14 @@
     <Advisory>No persons, lamping equipment inside.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>It has been there three days. Nobody has come back for it.</Line>
+        <Line>The doors are open and the keys are in it.</Line>
+        <Line>There is blood in the back. Just so you know what you are walking up to.</Line>
+    </Script>
     <Lines>
         <Approach>Nobody with it, but there is lamping kit on the back seat. They will come back for it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

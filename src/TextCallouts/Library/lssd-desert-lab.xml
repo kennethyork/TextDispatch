@@ -10,9 +10,14 @@
     <Advisory>No persons seen, lights on at night.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>Generators running all night. You can hear them from the highway.</Line>
+        <Line>There is a smell takes the back of your throat off.</Line>
+        <Line>Nobody has come out of there. Not once in three days.</Line>
+    </Script>
     <Lines>
         <Approach>Generators running all night and a smell you would not forget. Nobody has seen a soul.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

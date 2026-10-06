@@ -10,8 +10,13 @@
     <Advisory>Hazards on, driver standing behind the barrier.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is in a live lane with the hazards on and I cannot get it moving.</Line>
+        <Line>I am behind the barrier. I am not standing in the lane.</Line>
+        <Line>The recovery is twenty minutes out. That is a long twenty minutes.</Line>
+    </Script>
     <Lines>
         <Approach>It is in a live lane with the hazards on. Get it moved before somebody else arrives.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

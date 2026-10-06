@@ -10,8 +10,13 @@
     <Advisory>Male on foot, following customers, no weapon.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am not begging. I am asking. There is a difference.</Line>
+        <Line>I have been outside this bank two hours and not one person has stopped.</Line>
+        <Line>You want me moved on. Moved on to where, exactly?</Line>
+    </Script>
     <Lines>
         <Approach>He is following people to the cash machine. Nobody has been hurt, everybody is uncomfortable.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

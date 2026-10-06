@@ -10,8 +10,13 @@
     <Advisory>No suspects, vehicle still parked.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Both plates were taken in the night and both were left on the ground.</Line>
+        <Line>I did not hear anything. Not a thing.</Line>
+        <Line>It is a clean removal. That is what they do now.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody has had their plates off in a car park. They will be on something soon.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

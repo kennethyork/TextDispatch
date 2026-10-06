@@ -10,10 +10,15 @@
     <Advisory>Four involved, no firearms seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>He fouled me on the table and then he laughed about it.</Line>
+        <Line>The cue is mine. I brought it in with me.</Line>
+        <Line>Ask the man behind the bar. He saw all of it.</Line>
+    </Script>
     <Lines>
         <Approach>Four of them and one has a cue. Get in there before it becomes something else.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

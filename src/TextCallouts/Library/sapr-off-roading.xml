@@ -10,9 +10,14 @@
     <Advisory>Two vehicles, tracks through protected ground.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="rebel" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="rebel" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>There are two of them and neither is on the trail.</Line>
+        <Line>They have been across the protected ground. You can see the tracks.</Line>
+        <Line>They are heading up the fire road. That is where it comes out.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them cutting through protected ground. The tracks are fresh.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,10 +10,15 @@
     <Advisory>Two males inside, cash seen being bagged.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>We are not opening anything. Not for you.</Line>
+        <Line>Nobody has to get hurt here. Nobody is hurt yet.</Line>
+        <Line>The safe has a timer on it. You can wait as long as you like.</Line>
+    </Script>
     <Lines>
         <Briefing>A bank, a silent alarm, and nobody answering the phone. Assume two armed and treat it that way.</Briefing>
         <Approach>Silent alarm, no answer from the branch. Two males inside. Do not go in alone.</Approach>

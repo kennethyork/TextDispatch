@@ -10,9 +10,14 @@
     <Advisory>Occupants well clear, traffic passing slowly.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It went up while I was driving it. I got out at the lights.</Line>
+        <Line>It runs on gas. There is a tank in the back of it.</Line>
+        <Line>I am insured. Just tell me what to do and I will do it.</Line>
+    </Script>
     <Lines>
         <Approach>Everybody is out of it and standing well back. Traffic is slowing to look, which is its own problem.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

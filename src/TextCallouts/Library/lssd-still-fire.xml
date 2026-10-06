@@ -10,9 +10,14 @@
     <Advisory>No persons seen, smoke visible from the road.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It is the outbuilding, and there is a still in it and it is burning.</Line>
+        <Line>It has taken the roof and there is a propane tank against the wall.</Line>
+        <Line>Nobody is in there. Nobody has been in there tonight.</Line>
+    </Script>
     <Lines>
         <Approach>Smoke you can see from the highway and nobody answering. It could be the still going up.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

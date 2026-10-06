@@ -10,8 +10,13 @@
     <Advisory>No physical threat, calls logged, staff shaken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>He has called three times today. Same voice, same number.</Line>
+        <Line>He says he knows where I live and I believe him.</Line>
+        <Line>I want it written down. I want a reference number.</Line>
+    </Script>
     <Lines>
         <Approach>Nothing physical, but the calls are getting worse and the staff are frightened.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

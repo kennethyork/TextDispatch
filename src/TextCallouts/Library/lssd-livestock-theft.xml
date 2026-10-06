@@ -10,8 +10,13 @@
     <Advisory>Trailer tracks at the gate, no suspects present.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>The gate was cut and there are trailer tracks heading out.</Line>
+        <Line>Twenty head. That is a big trailer and two people.</Line>
+        <Line>They will have gone to the city with them. That is where they go.</Line>
+    </Script>
     <Lines>
         <Approach>The gate was cut and the tracks are fresh. Whoever did it is long gone.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

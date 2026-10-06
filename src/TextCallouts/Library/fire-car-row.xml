@@ -10,9 +10,14 @@
     <Advisory>Four or five vehicles, no persons at risk.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>One went up and then it was two, and then it was all of them.</Line>
+        <Line>They are parked nose to tail. That is the whole problem.</Line>
+        <Line>People are still trying to drive out. Somebody needs to stop them.</Line>
+    </Script>
     <Lines>
         <Approach>Four or five of them and it is moving down the row. Water and distance.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

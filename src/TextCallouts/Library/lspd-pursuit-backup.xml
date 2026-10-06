@@ -10,9 +10,14 @@
     <Advisory>Pursuit heading north, two units involved.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>They went through the junction on red and kept going.</Line>
+        <Line>I am second car. I am asking for a third.</Line>
+        <Line>I have got the plate and the direction. That is all I have.</Line>
+    </Script>
     <Lines>
         <Approach>They are coming through your area now. Join in behind, do not try to head it off.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

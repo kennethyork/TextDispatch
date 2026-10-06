@@ -10,8 +10,13 @@
     <Advisory>One male with tools, no power lines down.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is scrap. Scrap is legal.</Line>
+        <Line>I did not go near the live side. I know what I am doing.</Line>
+        <Line>The cable was already down. It was on the ground when I got here.</Line>
+    </Script>
     <Lines>
         <Approach>He is cutting the cable off the wall. Do not touch the metalwork.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

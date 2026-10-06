@@ -10,10 +10,15 @@
     <Advisory>Two people bitten, dog still loose.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>He is not dangerous. He has never done that before.</Line>
+        <Line>It is hats. He goes for people in hats and I do not know why.</Line>
+        <Line>I have got the lead. Whatever you do, do not run.</Line>
+    </Script>
     <Lines>
         <Approach>Two people bitten and the dog is still loose. Ambulance is coming for them.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

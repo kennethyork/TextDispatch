@@ -10,9 +10,14 @@
     <Advisory>No persons near it, staff clearing the building themselves.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>It was there at eight this morning and it is still there now.</Line>
+        <Line>Nobody has been near it. We cleared the building ourselves.</Line>
+        <Line>Do not open it. I am asking you not to open it.</Line>
+    </Script>
     <Lines>
         <Approach>Nobody near it and the staff are clearing the building themselves. Do not go poking at it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

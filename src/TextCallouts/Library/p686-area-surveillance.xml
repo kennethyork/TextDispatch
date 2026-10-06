@@ -10,8 +10,13 @@
     <Advisory>No crime in progress, several complaints logged.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It happens most nights about this time.</Line>
+        <Line>They come in a dark car and they are gone in ten minutes.</Line>
+        <Line>I am not standing at my window while you are parked on my road.</Line>
+    </Script>
     <Lines>
         <Approach>Nothing to attend as such - show yourself in the area and see what is going on.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

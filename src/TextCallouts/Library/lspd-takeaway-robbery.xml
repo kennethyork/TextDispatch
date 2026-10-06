@@ -10,9 +10,14 @@
     <Advisory>One male, weapon seen, staff unhurt.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>There are two staff locked in the back and they will not come out.</Line>
+        <Line>He went out the side door two minutes ago.</Line>
+        <Line>He took the till. The till is gone, the staff are not.</Line>
+    </Script>
     <Lines>
         <Approach>One male with a weapon and the staff are in the back room with the door shut.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

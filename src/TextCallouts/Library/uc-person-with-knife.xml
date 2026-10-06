@@ -10,9 +10,14 @@
     <Advisory>Male on foot, knife in hand, no victims yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_KNIFE" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_KNIFE" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>He is not doing anything. He is just stood there with it.</Line>
+        <Line>Everybody has backed up to the shop front. That is the whole crowd.</Line>
+        <Line>He said something about his brother. Nobody understood it.</Line>
+    </Script>
     <Lines>
         <Approach>Knife in his hand and people are backing away from him. Nobody has been hurt yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Family present, no insulin taken today.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I have not eaten since yesterday. It slipped my mind completely.</Line>
+        <Line>My hands are shaking and I cannot get a thought to stay still.</Line>
+        <Line>Sugar. Anything with sugar in it. Orange juice if anybody has one.</Line>
+    </Script>
     <Patient Model="a_f_y_business_01" TreatmentSeconds="14">I just need something sweet. I know what it is.</Patient>
     <Lines>
         <Approach>The family are with her. She is confused and has not eaten today.</Approach>

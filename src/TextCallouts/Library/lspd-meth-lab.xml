@@ -10,9 +10,14 @@
     <Advisory>No persons seen, landlord reporting through the letterbox.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>I rent it out. I have never been inside it.</Line>
+        <Line>The smell is the drains. It has been the drains for a year.</Line>
+        <Line>Ask the tenants. Oh wait, you cannot, because they have gone.</Line>
+    </Script>
     <Lines>
         <Approach>Landlord says the smell has been there a week and nobody has been seen going in.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Rider unhurt, animal unable to stand.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>She is down at the bridge and she will not get up.</Line>
+        <Line>The rider is sat with her. The rider is fine, the horse is not.</Line>
+        <Line>There is a vet coming from town. That is an hour away.</Line>
+    </Script>
     <Lines>
         <Approach>The horse is down and the rider is sitting with it. Neither of them is going anywhere fast.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

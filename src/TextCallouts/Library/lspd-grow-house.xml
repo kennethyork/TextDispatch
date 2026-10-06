@@ -10,9 +10,14 @@
     <Advisory>Nobody seen entering for weeks, windows covered.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>It is a rented house. I do not know who is in it.</Line>
+        <Line>I am the landlord. I have not been inside in a year.</Line>
+        <Line>There is a smell, yes. I have reported the smell myself.</Line>
+    </Script>
     <Lines>
         <Approach>Windows covered, humming all night, and nobody has been in or out in weeks.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Four people, all drowsy and headachy.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is the boiler. It has been making that noise for weeks.</Line>
+        <Line>We all went sleepy, one after the other. All of us.</Line>
+        <Line>The children are outside. I put them outside before I called you.</Line>
+    </Script>
     <Lines>
         <Approach>Four of them, all drowsy, all with headaches, and all in the same house. Get them out first.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

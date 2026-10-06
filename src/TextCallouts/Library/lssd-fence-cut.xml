@@ -10,8 +10,13 @@
     <Advisory>No persons present, several animals loose.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It has been cut with a disc cutter. About forty foot of it.</Line>
+        <Line>The stock is on the road and the traffic is not slowing down.</Line>
+        <Line>That is twice this month on the same boundary.</Line>
+    </Script>
     <Lines>
         <Approach>The fence is cut and half the field is on the road. Somebody did that deliberately.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

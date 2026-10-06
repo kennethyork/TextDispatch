@@ -10,10 +10,15 @@
     <Advisory>One male, knife seen, victim still there.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_KNIFE" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_KNIFE" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is the third time this month in that alley.</Line>
+        <Line>Two of them, and they took his wallet and his watch.</Line>
+        <Line>You can see the whole alley from my window. That is how I watch it.</Line>
+    </Script>
     <Lines>
         <Approach>Knife, one male, and the victim is still in the alley with him.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

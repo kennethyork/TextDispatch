@@ -10,9 +10,14 @@
     <Advisory>Male in a clown mask, weapon visible, no victims.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_BAT" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_BAT" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>It is a mask. It is only a mask. The weapon is real enough though.</Line>
+        <Line>He has been stood there an hour and nobody will go near him.</Line>
+        <Line>He was asking people for money. That is why the first call came in.</Line>
+    </Script>
     <Lines>
         <Approach>He is in a mask and he has something in his hand, and he is enjoying the reaction.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

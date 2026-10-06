@@ -10,7 +10,7 @@
     <Advisory>Six or more, bottles and at least one knife.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" Backup="true" />

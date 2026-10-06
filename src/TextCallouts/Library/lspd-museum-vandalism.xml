@@ -10,9 +10,14 @@
     <Advisory>One male, no weapon, no items taken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I put my hand on the case. That is all I did.</Line>
+        <Line>The case was cracked before I got there.</Line>
+        <Line>Ask the staff. There is a camera pointing right at it.</Line>
+    </Script>
     <Lines>
         <Approach>He put a display case through and walked off down the road. Nobody has taken anything.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

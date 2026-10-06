@@ -10,9 +10,14 @@
     <Advisory>Principal in a vehicle, route not yet clear.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>The route has to be clear before the convoy moves.</Line>
+        <Line>I need a left turn and a clear run to the motorway.</Line>
+        <Line>If the route is not clear the convoy does not move. That is the whole of it.</Line>
+    </Script>
     <Lines>
         <Approach>They need the route clear before they move. It is a two-minute job if the road is empty.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

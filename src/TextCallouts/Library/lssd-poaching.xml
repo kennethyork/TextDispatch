@@ -10,9 +10,14 @@
     <Advisory>Vehicle parked at the treeline, no persons seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_RIFLE" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>Shots after dark and a truck parked at the treeline.</Line>
+        <Line>That is not a target shooter. Not at this hour.</Line>
+        <Line>Assume they are armed. That would be my advice.</Line>
+    </Script>
     <Lines>
         <Approach>Shots after dark and a truck at the treeline. Take it slowly, they will have rifles.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

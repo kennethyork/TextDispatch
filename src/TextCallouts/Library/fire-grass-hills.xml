@@ -10,10 +10,15 @@
     <Advisory>Wind towards the houses, no evacuation yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>It is going up the hill rather than across. That is something.</Line>
+        <Line>If the wind turns it comes down onto the gardens.</Line>
+        <Line>Everybody on the top road has been told to leave. Not all of them have.</Line>
+    </Script>
     <Lines>
         <Approach>It is going uphill towards the houses and the wind is helping it. That is the whole job.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Male, no injuries seen, businesses complaining.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>I am asleep. I was not bothering anybody.</Line>
+        <Line>I have got nowhere to go. That is why I am in the doorway.</Line>
+        <Line>I will move. Just let me get my things together.</Line>
+    </Script>
     <Lines>
         <Approach>He is asleep in the doorway and he smells like a brewery. Do not let him sleep it off in this weather.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Number rings out on callback, address known.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I did not mean to call you. It went off in my pocket.</Line>
+        <Line>There is nothing wrong here. Look at me, there is nothing wrong.</Line>
+        <Line>I am sorry. I will not waste your time again.</Line>
+    </Script>
     <Lines>
         <Approach>They rang and hung up and they are not answering now. Somebody has to knock.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Suspect left on foot towards the estate, dark hooded top.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>They made me do it. I am not going to say who.</Line>
+        <Line>Nobody in here is hurt. Nobody has been hurt.</Line>
+        <Line>I am putting it on the counter. Look, I am putting it down.</Line>
+    </Script>
     <Lines>
         <Approach>Male, dark hooded top, gone on foot towards the estate.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

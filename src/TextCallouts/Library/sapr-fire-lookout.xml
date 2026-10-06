@@ -10,9 +10,14 @@
     <Advisory>Smoke to the east, no access road.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>Smoke, three ridges over, and it is not camp smoke.</Line>
+        <Line>I have it from the tower and it is building.</Line>
+        <Line>If it gets over that ridge there is nothing to stop it.</Line>
+    </Script>
     <Lines>
         <Approach>The lookout has smoke to the east and no road within a mile of it. That is the start of something.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

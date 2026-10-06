@@ -10,9 +10,14 @@
     <Advisory>No shots fired, handgun in his waistband.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>It is in my waistband because I am allowed to carry it.</Line>
+        <Line>I have got a permit. It is at the house.</Line>
+        <Line>Nobody has been threatened. Ask anybody here.</Line>
+    </Script>
     <Lines>
         <Approach>Caller says it is in his waistband. No shots yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

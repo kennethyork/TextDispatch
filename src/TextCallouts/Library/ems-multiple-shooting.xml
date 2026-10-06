@@ -10,8 +10,13 @@
     <Advisory>One walking wounded, one on the ground.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>We were both outside. It all happened at once.</Line>
+        <Line>I got down behind the car. He did not get down in time.</Line>
+        <Line>Do not leave him. Whatever else you do, do not leave him.</Line>
+    </Script>
     <Patient Model="a_m_m_business_01" TreatmentSeconds="18">I am fine. Help him first. Help him.</Patient>
     <Lines>
         <Approach>One walking and one not. The walking one is not the priority, whatever he says.</Approach>

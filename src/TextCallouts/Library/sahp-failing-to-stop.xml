@@ -10,9 +10,14 @@
     <Advisory>Vehicle known to the caller, driver not identified.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="premier" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It failed to stop about two minutes ago and it went east.</Line>
+        <Line>I did not get the driver. Only the vehicle.</Line>
+        <Line>I am not pursuing on my own. Not without authorisation.</Line>
+    </Script>
     <Lines>
         <Approach>They failed to stop and went east. Call it in before you do anything.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

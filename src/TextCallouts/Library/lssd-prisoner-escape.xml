@@ -10,10 +10,15 @@
     <Advisory>Suspect on foot in cuffs, last seen crossing the road.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>He is still in cuffs. Cuffed in the front.</Line>
+        <Line>He crossed the road and went down towards the river.</Line>
+        <Line>I am not chasing him on my own across that ground.</Line>
+    </Script>
     <Lines>
         <Approach>He is still in cuffs and he is on foot. He cannot have gone far.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

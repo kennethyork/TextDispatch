@@ -10,10 +10,15 @@
     <Advisory>Vehicle heading for the highway, one passenger boarded.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="premier" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>A car came up to the perimeter road and it did not stop.</Line>
+        <Line>Somebody came over the wall and got straight into it.</Line>
+        <Line>I have half the plate. Do not ask me for the rest of it.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody got into it at the fence line and it went for the highway. That is an escape attempt in progress.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

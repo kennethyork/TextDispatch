@@ -15,6 +15,11 @@
 #   nysp        North Yankton State Patrol               prison     Bolingbroke (saspa)
 #   fib  iaa  noose  swat
 #
+# Every callout's script - what its people say when the player talks to them - lives in
+# tools\callout-dialogue.psd1, keyed by id, because it is the one part of a recipe that is writing
+# rather than wiring. Add attaches it to the entry as it is registered, so the table below stays a table
+# of scenes, and the checks before the write refuse to build a library where any callout has no script.
+#
 # Every access below is by index - $r['count'], never $r.count - because a hashtable's own properties
 # (Count, Keys, Values, Item) are not keys, and $r.count quietly returns the number of keys instead.
 
@@ -29,7 +34,20 @@ if (Test-Path $OutputDirectory) { Remove-Item $OutputDirectory -Recurse -Force }
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
 
 $library = @()
-function Add($entry) { $script:library += $entry }
+
+$dialoguePath = Join-Path $PSScriptRoot 'callout-dialogue.psd1'
+if (-not (Test-Path $dialoguePath)) { throw "the dialogue file is missing: $dialoguePath" }
+$dialogue = Import-PowerShellDataFile -Path $dialoguePath
+
+# An entry may still carry its own talk= and that wins, but nothing should need to: the file is meant to
+# be the whole of what is said, in one place, so that "every callout has a script" is one thing to read.
+function Add($entry) {
+    if (-not $entry.ContainsKey('talk')) {
+        $id = [string]$entry['id']
+        if ($dialogue.ContainsKey($id)) { $entry['talk'] = $dialogue[$id] }
+    }
+    $script:library += $entry
+}
 
 # ============================================================ Los Santos Police
 Add @{ id='lspd-armed-robbery-off-licence'; for='lspd'; name='Armed Robbery - Off Licence'; msg='Armed robbery in progress at an off licence.'; adv='One male with a handgun, staff inside, no shots fired yet.'; line='One male, handgun, in the off licence now. Get there before he leaves.'; brief='Armed robbery in progress. He is still inside and the staff are still in there with him.'; app='Hostile'; armed=$true }
@@ -424,10 +442,49 @@ Add @{ id='fire-alley-rubbish'; for='fire'; name='Fire in an Alleyway'; msg='Rub
 # set-pieces - they still build a scene rather than a cut scene, but the scene now talks back and moves
 # on by itself.
 
-Add @{ id='deep-hostage-standoff'; for='lspd'; name='Standoff - Suspect Inside'; msg='Domestic incident escalated, one person inside refusing to come out.'; adv='One male, no weapon confirmed, occupants out.'; line='He is in there on his own and he will not come out. Start talking - I am holding everybody back.'; app='none'; talk='I have not done anything. I am not coming out for you. | You are not listening to me. None of you ever listen. | If I come out, what happens? Tell me what happens. | Alright. Alright. I am putting my hands on my head.'; stages=@(@{at=20; do='backup'; text='Second unit is on the street behind you.'; }, @{at=50; do='handsup'; text='He has his hands on his head.'; }, @{at=80; do='end'; text='He is in the car. Call finished.'; }); brief='Nobody has been hurt yet and that is the whole job: talk him out.'; backup=$true }
-Add @{ id='deep-bank-siege'; for='lspd'; name='Bank Siege'; msg='Armed robbery turned siege, staff inside with the suspects.'; adv='Two males, weapons seen, no shots fired.'; line='Two of them and staff in there. Do not go in - establish contact and keep them talking.'; app='none'; talk='We are not opening the door. | Nobody has been hurt. We do not want anybody hurt. | We want a way out of here and we want it in writing. | We are sending somebody out. Do not shoot.'; stages=@(@{at=15; do='backup'; text='SWAT is three minutes out.'; }, @{at=60; do='handsup'; text='The door is opening - hands first.'; }, @{at=100; do='end'; text='Both in custody. Tally the staff and let them go.'; }); brief='A siege is a conversation with a clock on it. Keep them talking.'; backup=$true }
-Add @{ id='deep-medical-patient-talks'; for='ems'; name='Patient Who Can Talk'; msg='Person collapsed but conscious, wants to explain before you treat them.'; adv='Conscious, no obvious injury, refusing to be moved.'; line='She is awake and she wants to talk to you before anybody touches her.'; patient='a_f_y_business_02'; seconds=14; pline='It went tight and then it went numb. It is going again now.'; talk='Do not move me yet. Not until I have said this. | I take tablets. The blue ones, twice a day. I have not had them since Thursday. | I feel like I am going to be sick. | Thank you. I am ready now.'; brief='She can talk, which is information. Listen before you treat.'; amb=$true }
-Add @{ id='deep-gang-fight'; for='lspd'; name='Gang Fight in Progress'; msg='Two groups fighting, weapons mentioned by the caller.'; adv='Six or more, bottles and at least one knife.'; line='Six of them and a knife mentioned. Wait for your second unit - I am not sending you in alone.'; app='Hostile'; count=4; backup=$true; amb=$true; talk='He started it. He started it outside the shop. | You are not taking me anywhere. I have not done anything. | My cousin is coming. You want to be gone when he gets here.'; stages=@(@{at=15; do='backup'; text='Second unit is turning into the street.'; }, @{at=45; do='hostile'; text='Knife.'; }, @{at=90; do='end'; text='Two in custody. Ambulance for the one on the ground.'; }) }
+Add @{ id='deep-hostage-standoff'; for='lspd'; name='Standoff - Suspect Inside'; msg='Domestic incident escalated, one person inside refusing to come out.'; adv='One male, no weapon confirmed, occupants out.'; line='He is in there on his own and he will not come out. Start talking - I am holding everybody back.'; app='none'; stages=@(@{at=20; do='backup'; text='Second unit is on the street behind you.'; }, @{at=50; do='handsup'; text='He has his hands on his head.'; }, @{at=80; do='end'; text='He is in the car. Call finished.'; }); brief='Nobody has been hurt yet and that is the whole job: talk him out.'; backup=$true }
+Add @{ id='deep-bank-siege'; for='lspd'; name='Bank Siege'; msg='Armed robbery turned siege, staff inside with the suspects.'; adv='Two males, weapons seen, no shots fired.'; line='Two of them and staff in there. Do not go in - establish contact and keep them talking.'; app='none'; stages=@(@{at=15; do='backup'; text='SWAT is three minutes out.'; }, @{at=60; do='handsup'; text='The door is opening - hands first.'; }, @{at=100; do='end'; text='Both in custody. Tally the staff and let them go.'; }); brief='A siege is a conversation with a clock on it. Keep them talking.'; backup=$true }
+Add @{ id='deep-medical-patient-talks'; for='ems'; name='Patient Who Can Talk'; msg='Person collapsed but conscious, wants to explain before you treat them.'; adv='Conscious, no obvious injury, refusing to be moved.'; line='She is awake and she wants to talk to you before anybody touches her.'; patient='a_f_y_business_02'; seconds=14; pline='It went tight and then it went numb. It is going again now.'; brief='She can talk, which is information. Listen before you treat.'; amb=$true }
+Add @{ id='deep-gang-fight'; for='lspd'; name='Gang Fight in Progress'; msg='Two groups fighting, weapons mentioned by the caller.'; adv='Six or more, bottles and at least one knife.'; line='Six of them and a knife mentioned. Wait for your second unit - I am not sending you in alone.'; app='Hostile'; count=4; backup=$true; amb=$true; stages=@(@{at=15; do='backup'; text='Second unit is turning into the street.'; }, @{at=45; do='hostile'; text='Knife.'; }, @{at=90; do='end'; text='Two in custody. Ambulance for the one on the ground.'; }) }
+# ============================================================ Checks, before anything is written
+#
+# Each of these has caught something real, and each is cheaper than finding it in game. They all fail
+# loudly: a library that is missing a script is not a library with a small mistake in it.
+
+$problems = New-Object System.Collections.Generic.List[string]
+$seen = @{}
+
+foreach ($entry in $library) {
+    $id = [string]$entry['id']
+    if (-not $id) { $problems.Add('a recipe has no id'); continue }
+    if ($seen.ContainsKey($id)) { $problems.Add("two recipes share the id '$id'") } else { $seen[$id] = $true }
+
+    if (-not $entry['for']) { $problems.Add("$id has no duty - it could only ever be offered as police work") }
+    if (-not $entry['name']) { $problems.Add("$id has no name") }
+    if (-not $entry['msg']) { $problems.Add("$id has no message") }
+
+    # The point of the dialogue file: every callout has somebody in it who answers when spoken to.
+    $talk = [string]$entry['talk']
+    if (-not $talk) { $problems.Add("$id has no script - every callout needs one"); continue }
+
+    $spoken = @($talk -split '\s*\|\s*' | Where-Object { $_.Trim().Length -gt 0 })
+    if ($spoken.Count -lt 3) { $problems.Add("$id has only $($spoken.Count) script line(s); three is the floor") }
+    foreach ($line in $spoken) {
+        if ($line.Contains("'")) { $problems.Add("$id has a script line an apostrophe would break: $line") }
+    }
+}
+
+foreach ($key in $dialogue.Keys) {
+    if (-not $seen.ContainsKey([string]$key)) { $problems.Add("the dialogue file has lines for '$key', which is not a callout") }
+}
+
+if ($problems.Count -gt 0) {
+    foreach ($problem in $problems) { Write-Host ("  " + $problem) -ForegroundColor Red }
+    throw ("the library will not be written: " + $problems.Count + " problem(s) above")
+}
+
+Write-Host ("checks passed: " + $library.Count + " recipes, every one with a script") -ForegroundColor Green
+
 # ============================================================ Writing them out
 function Xml($text) {
     if ($null -eq $text) { return '' }
@@ -456,8 +513,12 @@ foreach ($r in $library) {
     $actors = $r['actors']
     if (-not $actors) {
         $count = if ($r['count']) { $r['count'] } else { 1 }
+        # A recipe with a patient has nobody to arrest, so the person standing there is the caller or
+        # the family rather than a suspect. That is also what decides who speaks when the player talks:
+        # the first suspect if there is one, otherwise the patient - see Custom\RecipeCallout.cs.
         $actors = @(@{
             model   = if ($r['pmodel']) { $r['pmodel'] } else { 'a_m_y_business_01' }
+            role    = if ($r['patient']) { 'Bystander' } else { 'Suspect' }
             armed   = $r['armed']
             weapon  = if ($r['weapon']) { $r['weapon'] } else { 'WEAPON_PISTOL' }
             hostile = ($r['app'] -eq 'Hostile')
@@ -470,6 +531,7 @@ foreach ($r in $library) {
     $lines.Add('    <Actors>')
     foreach ($a in $actors) {
         $attributes = @("Model=`"$($a['model'])`"", "Count=`"$(if ($a['count']) { $a['count'] } else { 1 })`"")
+        if ($a['role']) { $attributes += "Role=`"$($a['role'])`"" }
         if ($a['armed']) { $attributes += 'Armed="true"'; $attributes += "Weapon=`"$($a['weapon'])`"" }
         if ($a['hostile']) { $attributes += 'Hostile="true"' }
         if ($a['cower']) { $attributes += 'Cower="true"' }

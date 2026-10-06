@@ -10,9 +10,14 @@
     <Advisory>Nobody about, fire spread to grass.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>The bin at the picnic area is alight and it has taken the table.</Line>
+        <Line>There is nobody here. It is shut for the season.</Line>
+        <Line>It is going towards the gorse and the gorse is dry.</Line>
+    </Script>
     <Lines>
         <Approach>Bin fire and it has taken the grass with it. Wind is doing you no favours.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

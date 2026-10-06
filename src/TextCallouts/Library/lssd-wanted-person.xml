@@ -10,10 +10,15 @@
     <Advisory>Male on foot, description matches a recent warrant.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>I was on the trail and he was coming the other way.</Line>
+        <Line>He looked at me and then he turned round and went back.</Line>
+        <Line>I have seen the picture. It was him. I am sure of it.</Line>
+    </Script>
     <Lines>
         <Approach>The hiker is sure it was him. He is on foot and he is in no hurry.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

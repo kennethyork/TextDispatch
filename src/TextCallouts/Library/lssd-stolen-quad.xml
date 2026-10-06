@@ -10,9 +10,14 @@
     <Advisory>Taken overnight, tracks heading for the trails.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="blazer" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="blazer" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It was in the yard last night and this morning the gate was open.</Line>
+        <Line>Red, with a winch on the front. It is a working machine.</Line>
+        <Line>There are tyre marks running out to the road.</Line>
+    </Script>
     <Lines>
         <Approach>They wheeled it out in the night and it is on the trails somewhere.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

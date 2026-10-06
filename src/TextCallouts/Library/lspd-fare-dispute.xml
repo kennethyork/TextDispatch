@@ -10,8 +10,13 @@
     <Advisory>Both on the pavement, no violence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Nine dollars to here. That is not the price it should be.</Line>
+        <Line>I am not paying a figure that was not on the metre.</Line>
+        <Line>I have the money. It is the amount I am arguing about.</Line>
+    </Script>
     <Lines>
         <Approach>Nobody is hurt, nobody is armed, and they both want you to decide who is right.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

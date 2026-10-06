@@ -10,8 +10,13 @@
     <Advisory>Conscious, sitting up, speaking in short sentences.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It came on in the night. I have been sat up since four.</Line>
+        <Line>The blue inhaler is finished and the other one makes my heart race.</Line>
+        <Line>If I lean forward it is easier. Let me lean forward.</Line>
+    </Script>
     <Patient Model="a_f_y_hipster_01" TreatmentSeconds="12">I can breathe again. I really could not get it in.</Patient>
     <Lines>
         <Approach>She is sitting up and cannot finish a sentence. Inhaler is empty.</Approach>

@@ -10,9 +10,14 @@
     <Advisory>No persons present, containers leaking.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>Six drums and two of them are leaking.</Line>
+        <Line>It is at the beauty spot, right beside the picnic table.</Line>
+        <Line>Do not touch them. That is my advice and I am sticking to it.</Line>
+    </Script>
     <Lines>
         <Approach>Drums tipped over the edge and something coming out of them. Do not touch them.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

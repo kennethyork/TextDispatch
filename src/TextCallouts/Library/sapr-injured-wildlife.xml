@@ -10,8 +10,13 @@
     <Advisory>Animal in the road, traffic slowing.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is a deer and it is still alive on the verge.</Line>
+        <Line>Traffic is slowing right down to look at it.</Line>
+        <Line>Nobody has hit it twice. Not yet.</Line>
+    </Script>
     <Lines>
         <Approach>It is still on its feet and it is in the road. Drivers are slowing down to look.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

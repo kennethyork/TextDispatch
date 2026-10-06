@@ -41,9 +41,9 @@ INSTALL
        <your Grand Theft Auto V folder>\Plugins\LSPDFR\TextCallouts\
 
    ...so the files end up in Plugins\LSPDFR\TextCallouts\Library\. That is TextCallouts' own library:
-   three hundred and twenty-six of its three hundred and forty-four-four callouts, written as XML recipes and sorted by the duty they
+   three hundred and twenty-six of its three hundred and forty-four callouts, written as XML recipes and sorted by the duty they
    belong to - LSPD, Sheriff, Highway Patrol, Rangers, the prison, EMS and fire. Skip this step and the
-   eighteen callouts written in C# still work; you just lose the other three hundred and twenty-two, and the log says so.
+   eighteen callouts written in C# still work; you just lose the other three hundred and twenty-six, and the log says so.
 
 4. Start the game with RagePluginHook.exe, not the normal launcher.
 
@@ -70,7 +70,7 @@ WHAT THEY DO TOGETHER
 
 Installed side by side, they are one experience:
 
-  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - three hundred and forty of them, sorted by what you went on duty as
+  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - three hundred and forty-four of them, sorted by what you went on duty as
 
     Five of those eighteen are not police work: a cardiac arrest, an overdose, a collision with
     somebody trapped in the car, a welfare check and a vehicle fire. They are offered only while you
@@ -81,7 +81,12 @@ Installed side by side, they are one experience:
     is mirrored into the chat box instead of a notification box
   * /calls lists all eighteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>
     starts one on demand, which is the quickest way to see one
-  * people in the callouts answer in text when you talk to them
+  * people in the callouts answer in text when you talk to them - and every callout has its own script,
+    nine hundred and eighty-one lines across the three hundred and twenty-six recipes. Type at the suspect
+    in an armed robbery and he denies it in character, out of that callout's own lines, with no model
+    running at all: TextDispatch asks the callout what its people say *before* it asks its own script or
+    Ollama. In a medical callout it is the patient who answers, so asking how it started gets you the
+    answer before you move her
   * your own callouts - written as XML files in Plugins\LSPDFR\TextCallouts\Custom\ - are offered
     exactly like the built-in eighteen, no compiling involved
   * and the civilian side: /jobs lists every job DriverJobs V has, with what each pays, and

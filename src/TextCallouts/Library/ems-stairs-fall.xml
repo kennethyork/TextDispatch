@@ -10,8 +10,13 @@
     <Advisory>Conscious, hip and wrist pain, family at home.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I missed the last step with a full basket in my arms.</Line>
+        <Line>I went down the whole flight. I remember all of it.</Line>
+        <Line>It is my back and my wrist. The wrist took the landing.</Line>
+    </Script>
     <Patient Model="a_f_y_bevhills_02" TreatmentSeconds="14">I missed the last step. It hurt more than I expected.</Patient>
     <Lines>
         <Approach>Down the whole flight, and she is more worried about the mess than her wrist.</Approach>

@@ -10,8 +10,13 @@
     <Advisory>No persons present, several animals.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Twenty of them at least. The fence is down at the bottom.</Line>
+        <Line>It is a blind bend. Somebody is going to hit one.</Line>
+        <Line>We need lights on that road before we do anything else.</Line>
+    </Script>
     <Lines>
         <Approach>They are on the road in the dark and drivers will not see them. That is the emergency.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

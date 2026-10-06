@@ -10,8 +10,13 @@
     <Advisory>Both parties outside, no violence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>He has been playing music at three in the morning for a month.</Line>
+        <Line>I have complained to the council six times. Six.</Line>
+        <Line>Nobody has touched anybody. It is shouting, that is all.</Line>
+    </Script>
     <Lines>
         <Approach>Same two, same argument, third time this month. Nobody has hit anybody yet.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

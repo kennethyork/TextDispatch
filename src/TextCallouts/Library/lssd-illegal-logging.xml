@@ -10,10 +10,15 @@
     <Advisory>Two vehicles, equipment running, no persons confronted.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>Two chainsaws and a flatbed, going since about six.</Line>
+        <Line>That is protected woodland. There are markers on every tree in it.</Line>
+        <Line>They are loading now. They will be gone inside an hour.</Line>
+    </Script>
     <Lines>
         <Approach>Two trucks and chainsaws going. They are not supposed to be in there at all.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

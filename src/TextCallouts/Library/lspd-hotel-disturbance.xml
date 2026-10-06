@@ -10,9 +10,14 @@
     <Advisory>Two involved, staff asking for attendance.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>They put us in a room next to theirs. That is the whole problem.</Line>
+        <Line>Nobody has thrown a punch. It was shouting, that is all.</Line>
+        <Line>I am going back to my room. I am not staying in this corridor.</Line>
+    </Script>
     <Lines>
         <Approach>Two guests in the corridor and reception cannot get them to their rooms.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

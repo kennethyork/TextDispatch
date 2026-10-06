@@ -10,8 +10,13 @@
     <Advisory>Two of them, no offences committed, walking home.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am fifteen minutes late. That is nothing.</Line>
+        <Line>I missed the bus. That is the only reason I am out.</Line>
+        <Line>My mum is at the corner waiting. Ask her.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them out after curfew and no offence committed. It is a conversation, not an arrest.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

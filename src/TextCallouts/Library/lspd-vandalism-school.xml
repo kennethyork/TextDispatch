@@ -10,8 +10,13 @@
     <Advisory>Nobody on scene, damage to four windows.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Twelve windows. It took them twenty minutes.</Line>
+        <Line>They came over the field and they were gone before I got round there.</Line>
+        <Line>I have got the caretaker key and I am the only one on site.</Line>
+    </Script>
     <Lines>
         <Approach>Four windows and nobody about. The caretaker will meet you there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

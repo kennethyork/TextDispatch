@@ -10,8 +10,13 @@
     <Advisory>Ridge path, no road access, weather closing in.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It has been like this for an hour. I have not moved an inch.</Line>
+        <Line>I heard it go. There is no way I am walking down on it.</Line>
+        <Line>How are you getting me off this hill? Do not say by stretcher, because that is a joke.</Line>
+    </Script>
     <Patient Model="a_f_y_hipster_01" TreatmentSeconds="18">I heard it go. I am not walking down from here.</Patient>
     <Lines>
         <Approach>She is on the ridge path and there is no road up there. Take the kit you can carry.</Approach>

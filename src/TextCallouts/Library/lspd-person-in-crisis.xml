@@ -10,8 +10,13 @@
     <Advisory>Person on foot, no weapon, no crime reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I do not want to talk to anybody. I want to be left alone.</Line>
+        <Line>I have not done anything wrong. I am sat in my own flat.</Line>
+        <Line>You are the fourth person today. The fourth.</Line>
+    </Script>
     <Lines>
         <Approach>Nobody has committed an offence here. He is on his own and somebody has to talk to him.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

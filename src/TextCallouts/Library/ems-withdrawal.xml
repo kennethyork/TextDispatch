@@ -10,8 +10,13 @@
     <Advisory>Conscious, no injuries, refuses to say what.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>Third day. It is always the third day.</Line>
+        <Line>I am not going to hospital. They will only do the same thing again.</Line>
+        <Line>I have done it before. I can do it again. I just need to get through tonight.</Line>
+    </Script>
     <Patient Model="a_m_m_tramp_01" TreatmentSeconds="14">I just need to get through it. I have done it before.</Patient>
     <Lines>
         <Approach>Shaking, sick, and not saying what he has been taking. Keep your kit close.</Approach>

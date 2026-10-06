@@ -10,10 +10,15 @@
     <Advisory>Suspect in a yard, weapon visible, no shots exchanged.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>I am not putting it down until you back off.</Line>
+        <Line>I told you what I want and you were not listening.</Line>
+        <Line>You have got all night. So have I.</Line>
+    </Script>
     <Lines>
         <Approach>He will not put it down and he will not come out. Back-up is two minutes out.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

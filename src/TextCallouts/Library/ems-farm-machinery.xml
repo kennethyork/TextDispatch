@@ -10,8 +10,13 @@
     <Advisory>Conscious, arm trapped, machine switched off.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It was the power take-off. It caught the sleeve and it pulled.</Line>
+        <Line>Do not touch the tractor. It is still in gear.</Line>
+        <Line>Nobody switches it off except me. That is the rule on this farm.</Line>
+    </Script>
     <Patient Model="a_m_m_farmer_01" TreatmentSeconds="20">Do not move it. Whatever you do, do not move it.</Patient>
     <Lines>
         <Approach>His arm is in it and the machine is off, and now it is a question of getting him free without making it worse.</Approach>

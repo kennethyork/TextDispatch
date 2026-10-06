@@ -10,9 +10,14 @@
     <Advisory>Transfer waiting on you, route already cleared.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>The transfer is at four and it has to be a two unit escort.</Line>
+        <Line>He has previous for going for the door on the highway.</Line>
+        <Line>If you are not happy with the route we go the long way. I would rather be late.</Line>
+    </Script>
     <Lines>
         <Approach>They will not move until you are with them. It is a straight run and they want it done quietly.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

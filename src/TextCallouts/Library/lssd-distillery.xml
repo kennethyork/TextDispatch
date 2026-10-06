@@ -10,9 +10,14 @@
     <Advisory>No persons present, set-up unattended.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>Copper tubing, drums, and a fire lit under it.</Line>
+        <Line>I have smelt that smell for a week and today I went and looked.</Line>
+        <Line>Nobody is about, but the fire is lit. So somebody is coming back.</Line>
+    </Script>
     <Lines>
         <Approach>Tubing and drums and nobody about. Somebody has gone to a lot of trouble out here.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

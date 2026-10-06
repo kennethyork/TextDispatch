@@ -10,9 +10,14 @@
     <Advisory>Vehicle seen slowing at the fence, package recovered.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="premier" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It came over on the hour. Same spot as last week.</Line>
+        <Line>It was wrapped in tape and there was a phone inside it.</Line>
+        <Line>There is a vehicle comes past slowly most nights. That is all I have.</Line>
+    </Script>
     <Lines>
         <Approach>Something came over the fence and we have it. The vehicle that threw it did not stop.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

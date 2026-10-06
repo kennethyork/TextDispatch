@@ -10,8 +10,13 @@
     <Advisory>Wound to the shoulder, caller applying pressure.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It came from the car. I did not see a face.</Line>
+        <Line>I felt it before I heard it. That is the strange part.</Line>
+        <Line>Is there a lot of blood? Do not lie to me about the blood.</Line>
+    </Script>
     <Patient Model="a_m_m_hasjew_01" TreatmentSeconds="18">I cannot move my arm. Tell me it is still there.</Patient>
     <Lines>
         <Approach>He has been shot in the shoulder and the caller is holding it. Suspect has gone - the patient comes first.</Approach>

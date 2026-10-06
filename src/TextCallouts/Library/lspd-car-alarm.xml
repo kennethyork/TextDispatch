@@ -10,8 +10,13 @@
     <Advisory>No persons near the vehicle, alarm faulty.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is not my car. I am waiting for whoever owns it.</Line>
+        <Line>It has been going since last night and it is not my car.</Line>
+        <Line>I have called about it twice. Nobody has come.</Line>
+    </Script>
     <Lines>
         <Approach>It has been going two hours and the owner is away. Everybody on the street is awake.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

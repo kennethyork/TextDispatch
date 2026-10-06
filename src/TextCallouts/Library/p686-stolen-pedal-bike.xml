@@ -10,9 +10,14 @@
     <Advisory>Suspect rode off towards the park, description given.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I left it outside for two minutes and it was gone.</Line>
+        <Line>Green frame, white seat. That is distinctive.</Line>
+        <Line>There is a camera on the shop front. It should have all of it.</Line>
+    </Script>
     <Lines>
         <Approach>He rode off on it towards the park five minutes ago. He will not have gone far.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

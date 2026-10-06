@@ -10,9 +10,14 @@
     <Advisory>Driver argumentative, single officer on scene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>I have one vehicle stopped and two occupants.</Line>
+        <Line>The driver is fine. It is the passenger who keeps reaching under the seat.</Line>
+        <Line>Second unit, come up on the offside.</Line>
+    </Script>
     <Lines>
         <Approach>He is arguing with one officer on the hard shoulder and it is getting louder.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Van still on scene, one male, no weapons seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="burrito" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="burrito" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>The van is still there and he is still unloading it.</Line>
+        <Line>That is builders waste. Rubble and plasterboard, the lot.</Line>
+        <Line>He has been at it twenty minutes with a wheelbarrow.</Line>
+    </Script>
     <Lines>
         <Approach>The van is still there and he is still unloading it. He has not seen anybody.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

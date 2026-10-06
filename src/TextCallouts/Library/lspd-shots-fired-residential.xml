@@ -10,9 +10,14 @@
     <Advisory>No victim found by the caller, nobody answering doors.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" HandsUp="true" />
+    <Script>
+        <Line>It was four or five. It came from the alley.</Line>
+        <Line>I put the lights out and got on the floor, like you are told.</Line>
+        <Line>I have not been outside. I am not going outside.</Line>
+    </Script>
     <Lines>
         <Approach>Four or five shots, no victim yet, and nobody is answering their door.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

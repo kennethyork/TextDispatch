@@ -10,8 +10,13 @@
     <Advisory>Single cyclist in a live lane, no lights.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I am allowed to be here. I have as much right as you do.</Line>
+        <Line>The drivers are the ones in the wrong, not me.</Line>
+        <Line>I am not getting in the back of a car. I will ride off at the next junction.</Line>
+    </Script>
     <Lines>
         <Approach>He is in a live lane with no lights on him. Somebody is going to hit him.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

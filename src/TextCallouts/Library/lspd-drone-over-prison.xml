@@ -10,10 +10,15 @@
     <Advisory>Drone still airborne, operator believed nearby.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>I am flying it over the field. The field is public.</Line>
+        <Line>You can look at the footage. There is nothing on the footage.</Line>
+        <Line>I can bring it down. Just tell me to bring it down.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody is flying a drone over the fence and they are not doing it for the view.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

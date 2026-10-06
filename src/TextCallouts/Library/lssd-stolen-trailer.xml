@@ -10,9 +10,14 @@
     <Advisory>Taken overnight, gate left open.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="trailers" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="trailers" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>The hitch was unhitched and the trailer was gone.</Line>
+        <Line>It is a livestock trailer. Thirty foot, grey.</Line>
+        <Line>That needs a vehicle with a hitch, and nobody saw one.</Line>
+    </Script>
     <Lines>
         <Approach>They took the trailer and left the gate wide open. It will be on the highway somewhere.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

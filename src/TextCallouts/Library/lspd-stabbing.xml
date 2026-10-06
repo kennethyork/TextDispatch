@@ -10,10 +10,15 @@
     <Advisory>Suspect ran towards the park, no weapon seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It was one man and it was fast.</Line>
+        <Line>He went towards the park and he was not running.</Line>
+        <Line>The other one is on the ground and there is a lot of blood.</Line>
+    </Script>
     <Lines>
         <Approach>Victim is conscious and losing blood. Suspect ran for the park, and an ambulance is coming.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

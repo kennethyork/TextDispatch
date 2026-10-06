@@ -10,9 +10,14 @@
     <Advisory>Vehicle heading west at speed, driver not identified.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="buffalo" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="buffalo" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It is the second time tonight it has gone past here.</Line>
+        <Line>Same plate, same driver. He is doing laps.</Line>
+        <Line>Do what you have to do. I am not going anywhere.</Line>
+    </Script>
     <Lines>
         <Approach>They are not stopping and they are going west. Call it in before you commit.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

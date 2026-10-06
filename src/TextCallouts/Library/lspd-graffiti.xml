@@ -10,9 +10,14 @@
     <Advisory>Both on foot, cans in hand.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>It is a wall. It is a blank wall and it has been blank for years.</Line>
+        <Line>I am not damaging anything. I am putting something on it.</Line>
+        <Line>Cans are legal. You can buy cans in any shop.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them, cans in hand, on the wall by the underpass.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

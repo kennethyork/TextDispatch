@@ -10,9 +10,14 @@
     <Advisory>No property at risk yet, walking trail nearby.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It started at the path and the wind has it now.</Line>
+        <Line>There are houses behind the ridge. They will not see it until it is on them.</Line>
+        <Line>Two of us have been beating it with coats. It is doing nothing.</Line>
+    </Script>
     <Lines>
         <Approach>Hillside, wind getting up, and there is a walking trail on the other side of it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

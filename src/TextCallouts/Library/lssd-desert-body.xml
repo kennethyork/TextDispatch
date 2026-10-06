@@ -10,9 +10,14 @@
     <Advisory>Deceased, no identification, exposure likely.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>I was out looking for arrowheads and I found that instead.</Line>
+        <Line>It is off the dirt road about two hundred yards.</Line>
+        <Line>I have marked it with my jacket. That is all I did.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody has been out here a while. Nobody has touched anything.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Inmate secured in the van, two officers on scene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>He will not get out of the van. He has been sat there twenty minutes.</Line>
+        <Line>He is cuffed and he is going nowhere, but then neither are we.</Line>
+        <Line>Two of us and one of him, and we both want to go home tonight.</Line>
+    </Script>
     <Lines>
         <Approach>The van is stopped and he will not walk. Two officers are with him and they want a hand.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

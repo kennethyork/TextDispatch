@@ -10,8 +10,13 @@
     <Advisory>Load waiting, route surveyed, timings agreed.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is over the limit on width and it needs an escort to the county line.</Line>
+        <Line>Five miles an hour, and there is no way round it on that road.</Line>
+        <Line>One unit in front and one behind. That is what we agreed.</Line>
+    </Script>
     <Lines>
         <Approach>They cannot move until somebody is in front of it. It is a slow one.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

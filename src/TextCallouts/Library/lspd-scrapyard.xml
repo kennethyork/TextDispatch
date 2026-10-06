@@ -10,9 +10,14 @@
     <Advisory>Vehicle matches a stolen report, driver on site.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>It came in on a truck an hour ago. No paperwork with it.</Line>
+        <Line>I have not crushed it. It is still on the pad, look at it.</Line>
+        <Line>The man who brought it said he would be back with the papers.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody has brought in a car that matches a stolen report and wants it gone by this afternoon.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

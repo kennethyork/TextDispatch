@@ -10,10 +10,15 @@
     <Advisory>Owner on scene, animals still inside, no persons hurt.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It went up in the hay. Hay goes fast, everybody knows that.</Line>
+        <Line>There is a heifer in the end bay and I cannot get to her.</Line>
+        <Line>I have been stood here twenty minutes and it has doubled.</Line>
+    </Script>
     <Lines>
         <Approach>The barn is well alight and there are animals in it. The owner is trying to get them out himself.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

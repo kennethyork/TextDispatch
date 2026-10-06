@@ -10,9 +10,14 @@
     <Advisory>They can describe a waterfall and a fence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>There are four of us and two of them are children.</Line>
+        <Line>The phone is at four per cent. I am going to lose it.</Line>
+        <Line>We came off the trail where the sign was missing.</Line>
+    </Script>
     <Lines>
         <Approach>They have a waterfall and a fence and about four per cent of battery left.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Walkers on the far side, no injuries.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>The trail is blocked and there are people above it.</Line>
+        <Line>Four of them, and they cannot come down this way.</Line>
+        <Line>It is still moving. Every few minutes another one comes down.</Line>
+    </Script>
     <Lines>
         <Approach>The trail is blocked and there are walkers on the wrong side of it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

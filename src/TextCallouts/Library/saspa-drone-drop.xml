@@ -10,8 +10,13 @@
     <Advisory>Package recovered, drone gone.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It came in low over the yard and dropped it by the workshop.</Line>
+        <Line>Two of them, one flying and one watching. That is what it looked like.</Line>
+        <Line>It was gone before anybody could get near it.</Line>
+    </Script>
     <Lines>
         <Approach>It came over the wall and dropped it. The drone is gone and the package is ours.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

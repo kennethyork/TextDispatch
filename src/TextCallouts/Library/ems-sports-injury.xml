@@ -10,8 +10,13 @@
     <Advisory>Conscious, leg deformed, coaches keeping people back.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It was the tackle. Studs up, right on the shin.</Line>
+        <Line>I heard it crack before I felt anything.</Line>
+        <Line>Do not let them carry me off. I can hop, I have done it before.</Line>
+    </Script>
     <Patient Model="a_m_y_musclbeac_01" TreatmentSeconds="14">I heard it crack. I am not walking off.</Patient>
     <Lines>
         <Approach>The leg is not straight and he is being very brave about it. Splint him and keep the crowd off.</Approach>

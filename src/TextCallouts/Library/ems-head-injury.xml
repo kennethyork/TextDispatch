@@ -10,8 +10,13 @@
     <Advisory>Conscious but confused, bleeding from the scalp.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I do not remember anything after the kerb.</Line>
+        <Line>Somebody said I was out for a minute. I do not believe them.</Line>
+        <Line>I keep wanting to go to sleep. Tell me I can go to sleep.</Line>
+    </Script>
     <Patient Model="a_m_y_bevhills_02" TreatmentSeconds="15">I do not remember falling. Did I fall?</Patient>
     <Lines>
         <Approach>Head wounds bleed like nothing else and confuse afterwards. Watch the confusion, not the blood.</Approach>

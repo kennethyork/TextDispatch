@@ -10,9 +10,14 @@
     <Advisory>Vehicle on the weighbridge, driver out of the cab.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>He failed the weight check and he was not polite about it.</Line>
+        <Line>I have got him stopped and he is arguing with me about the paperwork.</Line>
+        <Line>I need a second unit before I start on the load.</Line>
+    </Script>
     <Lines>
         <Approach>He is out of the cab and he is not interested in the weighbridge. The paperwork is probably worse than the weight.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Residents outside, no ignition source yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>I can smell it from here. It has been all morning.</Line>
+        <Line>The engineers are not coming until tomorrow. I have it in writing.</Line>
+        <Line>It is strongest outside number eleven. That is where I would start.</Line>
+    </Script>
     <Lines>
         <Approach>You can smell it from the end of the street. Nobody is to touch a doorbell.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Conscious but unwell, staff on scene, no violence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I came over dizzy in the workshop. It came on out of nowhere.</Line>
+        <Line>I have not felt right since breakfast. Nobody else has been ill.</Line>
+        <Line>Do not take me to the wing. Anything but the wing.</Line>
+    </Script>
     <Patient Model="s_m_m_prisguard_01" TreatmentSeconds="14">I came over dizzy. I have not felt right since breakfast.</Patient>
     <Lines>
         <Approach>He went down in the workshop and the staff have him sitting up. They want the ambulance and so do I.</Approach>

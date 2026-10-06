@@ -10,8 +10,13 @@
     <Advisory>Conscious, suspect gone, caller on scene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>Outside the takeaway. It took two seconds.</Line>
+        <Line>I have a jacket over it. Somebody told me to hold the jacket.</Line>
+        <Line>Is that much blood normal? Somebody answer me.</Line>
+    </Script>
     <Patient Model="a_m_y_vinewood_01" TreatmentSeconds="18">It does not hurt as much as it should. Is that bad?</Patient>
     <Lines>
         <Approach>Stabbed in the stomach and still talking, which is not the same as being all right.</Approach>

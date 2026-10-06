@@ -10,9 +10,14 @@
     <Advisory>Three of them, staff told not to intervene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="3" />
+        <Ped Model="a_m_y_business_01" Count="3" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>We are shopping. All four of us are shopping.</Line>
+        <Line>The bags are ours. They came in with us.</Line>
+        <Line>Nobody has walked out of anything. Nobody has left yet.</Line>
+    </Script>
     <Lines>
         <Approach>Three of them, bags full, and the staff have been told not to get involved. Which leaves it to you.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>No persons seen, generator running.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>There is a trailer parked on the verge and nobody in it.</Line>
+        <Line>The smell is coming off it. You can smell it from the road.</Line>
+        <Line>There is a generator running inside it. That is what I can hear.</Line>
+    </Script>
     <Lines>
         <Approach>Generator going and a smell that is not farmyard. Nobody about.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

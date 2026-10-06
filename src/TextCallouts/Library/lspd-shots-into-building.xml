@@ -10,10 +10,15 @@
     <Advisory>No casualties, vehicle seen leaving.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="premier" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It came through the window while I was sat there.</Line>
+        <Line>I am on the floor, I have been on the floor since.</Line>
+        <Line>My neighbour has got glass in the front room as well.</Line>
+    </Script>
     <Lines>
         <Approach>Windows are out and no casualties, and a car left fast. That is your starting point.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

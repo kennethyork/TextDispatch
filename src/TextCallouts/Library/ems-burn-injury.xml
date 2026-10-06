@@ -10,8 +10,13 @@
     <Advisory>Conscious, burns to both forearms, kitchen staff on scene.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It was the pan. It came off the stove and straight over my arm.</Line>
+        <Line>Somebody put cold water on it and then somebody else said not to.</Line>
+        <Line>It is the fingers. That is the part that will not stop.</Line>
+    </Script>
     <Patient Model="a_m_y_business_02" TreatmentSeconds="15">I poured it over myself. It was on the stove.</Patient>
     <Lines>
         <Approach>Both forearms and he is holding them out like he cannot decide what to do. Cool it and get him moving.</Approach>

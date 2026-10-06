@@ -10,9 +10,14 @@
     <Advisory>Nobody in or near the vehicle, caller keeping people back.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>The wires were hanging down by the pedals.</Line>
+        <Line>I did not touch anything. I called you from across the road.</Line>
+        <Line>I do not know whose it is. It has been there since yesterday.</Line>
+    </Script>
     <Lines>
         <Approach>Wiring under the dash and nobody near it. Do not touch the car - keep the street clear.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

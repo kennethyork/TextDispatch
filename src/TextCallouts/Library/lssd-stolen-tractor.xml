@@ -10,8 +10,13 @@
     <Advisory>Tracks lead towards the highway, no suspect seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>You cannot hide a tractor. That is what I do not understand.</Line>
+        <Line>It went out of the gate and turned left. That is what the tracks say.</Line>
+        <Line>It has a tracker on it. Somebody could find it if they wanted.</Line>
+    </Script>
     <Lines>
         <Approach>It cannot have gone far at that speed. Tracks head for the highway.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

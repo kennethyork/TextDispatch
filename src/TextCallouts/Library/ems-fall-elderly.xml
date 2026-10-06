@@ -10,8 +10,13 @@
     <Advisory>Conscious, hip pain, neighbour has the key.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I went down in the hallway and I have been here since.</Line>
+        <Line>The key is under the plant pot. The neighbour will show you.</Line>
+        <Line>Do not lift me by the arms. Please do not lift me by the arms.</Line>
+    </Script>
     <Patient Model="a_m_m_tramp_01" TreatmentSeconds="12">I cannot put any weight on it. Where is the ambulance?</Patient>
     <Lines>
         <Approach>She has been on the floor since this morning and the neighbour has the key.</Approach>

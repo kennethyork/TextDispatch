@@ -10,9 +10,14 @@
     <Advisory>Staff upset, description of one female.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I put money in that tin. I did not take money out of it.</Line>
+        <Line>It was on the counter and nobody was watching it.</Line>
+        <Line>I have a receipt from the shop next door. Look at the time on it.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody took the tin off the counter. The staff are more upset than they are angry.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Bus heading through the city, no passengers on board.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="bus" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="bus" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It came off the depot with no lights and it has not stopped since.</Line>
+        <Line>The driver is one of ours and he is not answering the radio.</Line>
+        <Line>It cannot get far in a bus. It cannot get far and it cannot hide.</Line>
+    </Script>
     <Lines>
         <Approach>He took it empty, so there is nobody on board to worry about. He is still going.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

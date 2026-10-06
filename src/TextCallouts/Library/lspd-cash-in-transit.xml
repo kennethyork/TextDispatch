@@ -10,9 +10,14 @@
     <Advisory>Two suspects on a black motorbike, cash box taken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" Vehicle="akuma" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Vehicle="akuma" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It was two of them on a bike. I was on the ground.</Line>
+        <Line>They took the box and went north. I did not get a look.</Line>
+        <Line>One of them had a shotgun. You need to know that.</Line>
+    </Script>
     <Lines>
         <Approach>Cash box taken, two on a black bike. Follow it, do not force it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

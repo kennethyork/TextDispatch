@@ -10,10 +10,15 @@
     <Advisory>Occupants out, fuel cans inside.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>There is a motorbike in there and a can of petrol beside it.</Line>
+        <Line>It is attached to the house. That is what I am worried about.</Line>
+        <Line>I opened the door and it went up in my face. That is why my eyebrows have gone.</Line>
+    </Script>
     <Lines>
         <Approach>There is fuel in there and everybody is out. Keep well back from the doors.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

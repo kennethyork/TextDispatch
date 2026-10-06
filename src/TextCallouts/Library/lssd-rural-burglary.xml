@@ -10,8 +10,13 @@
     <Advisory>Rear door forced, suspects gone, owners returning.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>The back door was put in and they took the guns and the silver.</Line>
+        <Line>We were away three days. That was the window.</Line>
+        <Line>Do not touch the back door. I want that photographed properly.</Line>
+    </Script>
     <Lines>
         <Approach>They came in through the back and they are gone. The owners are on their way home.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,10 +10,15 @@
     <Advisory>Two males on foot, phone and wallet taken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>Two of them. One in front and one behind.</Line>
+        <Line>They took the phone and the watch. That is all they took.</Line>
+        <Line>I am not hurt. I am shaken up, I am not hurt.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them, took his phone and ran. He is still there and he is shaken.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

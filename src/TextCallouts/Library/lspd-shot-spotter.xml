@@ -10,8 +10,13 @@
     <Advisory>No caller, no victim reported, exact address given.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>That is the second time tonight on that corner.</Line>
+        <Line>The system does not make it up. It picks up the crack.</Line>
+        <Line>I have got the log on screen. Four rounds, two shooters.</Line>
+    </Script>
     <Lines>
         <Approach>The system heard it and nobody has called it in. Go and have a look.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

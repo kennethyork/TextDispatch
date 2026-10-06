@@ -10,10 +10,15 @@
     <Advisory>Description circulated, no vehicle reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>One missing at roll call and the gate has not been touched.</Line>
+        <Line>He is not on the yard and he is not in the block. That leaves the grounds.</Line>
+        <Line>He has been talking about the wall for a fortnight. Everybody heard him.</Line>
+    </Script>
     <Lines>
         <Approach>One missing at roll call and no vehicle reported, so he is on foot and he is close.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

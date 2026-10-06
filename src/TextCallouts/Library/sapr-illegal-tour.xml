@@ -10,8 +10,13 @@
     <Advisory>Guide with twelve people, no permit.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>Twelve of them and a guide, all well off the marked path.</Line>
+        <Line>They are paying for it, that is why he does it.</Line>
+        <Line>They are heading for the falls, and the falls are closed.</Line>
+    </Script>
     <Lines>
         <Approach>Twelve of them following somebody with no permit. Nobody is in danger, it is just the wrong place for it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

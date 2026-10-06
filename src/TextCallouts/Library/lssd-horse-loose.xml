@@ -10,8 +10,13 @@
     <Advisory>Animal in the road, owner looking for it.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>She got out through the gate somebody left open.</Line>
+        <Line>She is a chestnut mare and she is frightened of traffic.</Line>
+        <Line>Do not chase her. She will go over the barrier if you chase her.</Line>
+    </Script>
     <Lines>
         <Approach>It is in the road and drivers are swerving round it. The owner is out looking.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

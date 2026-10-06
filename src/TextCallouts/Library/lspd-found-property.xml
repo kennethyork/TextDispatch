@@ -10,8 +10,13 @@
     <Advisory>Owner identifiable, no offence.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I found it on the bench outside. Everything was still in it when I looked.</Line>
+        <Line>I did not take anything out of it. I looked and I put it back.</Line>
+        <Line>There is a card in it with a name on. That is why I brought it in.</Line>
+    </Script>
     <Lines>
         <Approach>It is a wallet with a name in it and no crime attached. If you have ten minutes, the owner lives round the corner.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

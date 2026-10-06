@@ -10,8 +10,13 @@
     <Advisory>Conscious, arm trapped, power off, staff with him.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>It came down on the sleeve and then it was my arm.</Line>
+        <Line>It is holding me. I can feel it holding me.</Line>
+        <Line>Talk to me. Just keep talking to me.</Line>
+    </Script>
     <Patient Model="a_m_y_construct_02" TreatmentSeconds="18">I can hear you. I can hear you.</Patient>
     <Lines>
         <Approach>Trapped and conscious, and the fire service are cutting him out. Keep him talking.</Approach>

@@ -10,9 +10,14 @@
     <Advisory>Deceased, no identification, scene untouched.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It caught on the branch and I thought it was a coat at first.</Line>
+        <Line>I have not been in the water. I have not touched anything.</Line>
+        <Line>It has been there a while. That is all I can tell you.</Line>
+    </Script>
     <Lines>
         <Approach>A fisherman has found somebody in the water. Do not let anybody near it until you have been there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

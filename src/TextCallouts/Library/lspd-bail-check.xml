@@ -10,8 +10,13 @@
     <Advisory>Person seen at an address he should not be at.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I have not been near that address. Check the tag.</Line>
+        <Line>You can see the tag on my ankle. It has not gone off once.</Line>
+        <Line>This is harassment. That is what this is.</Line>
+    </Script>
     <Lines>
         <Approach>He is back at the address the bail conditions keep him away from. The complainant is watching him now.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

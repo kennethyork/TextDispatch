@@ -10,9 +10,14 @@
     <Advisory>Group of four, fireworks in a bin, no injuries.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" />
+        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>They are fireworks. It is a birthday.</Line>
+        <Line>We are doing it in the street because the garden is too small.</Line>
+        <Line>There is one left. I will put it down, look, I am putting it down.</Line>
+    </Script>
     <Lines>
         <Approach>Four of them letting them off down the middle of the road. Somebody will lose a hand at this rate.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

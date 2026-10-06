@@ -10,9 +10,14 @@
     <Advisory>Line still open, background noise only.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Backup="true" />
+    <Script>
+        <Line>I cannot talk. He is in the next room and he is awake.</Line>
+        <Line>The address is right. Just come to the address.</Line>
+        <Line>Please do not knock. Please do not knock loud.</Line>
+    </Script>
     <Lines>
         <Approach>The line is open and nobody is talking. Could be a mistake, could be the opposite.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

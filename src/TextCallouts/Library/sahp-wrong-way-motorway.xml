@@ -10,9 +10,14 @@
     <Advisory>Multiple callers, headlights on, no collision yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Vehicle="premier" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="premier" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It is on the wrong side of the barrier and it is not slowing down.</Line>
+        <Line>It has gone past two junctions and nobody is stopping it.</Line>
+        <Line>Shut the carriageway. Shut it now.</Line>
+    </Script>
     <Lines>
         <Approach>Several callers and it is still going. Get ahead of it if you can.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

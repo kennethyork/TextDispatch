@@ -10,9 +10,14 @@
     <Advisory>Vehicle at a fire trail, no persons seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_RIFLE" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_RIFLE" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>Shots, after closing, from the treeline.</Line>
+        <Line>That is not a licensed hunter. The season ended a month ago.</Line>
+        <Line>Assume they are armed and assume they will run.</Line>
+    </Script>
     <Lines>
         <Approach>Shots after dark and a truck on the fire trail. Assume they are armed.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

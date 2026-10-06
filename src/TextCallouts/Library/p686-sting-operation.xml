@@ -10,10 +10,15 @@
     <Advisory>Two vehicles expected, plain-clothes officers already in place.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>The buy is set for ten minutes from now.</Line>
+        <Line>Two of them on a scooter, same as last week.</Line>
+        <Line>Nobody moves until I say so. That is the whole point of this.</Line>
+    </Script>
     <Lines>
         <Approach>Everybody is in position and they are expecting two vehicles. Do not roll up in front of them.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>No offences, item to be disposed of.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>I found the knife in the garden. It was in the flowerbed.</Line>
+        <Line>I brought it in because of the children. There are children next door.</Line>
+        <Line>I have not touched the blade. I picked it up by the handle.</Line>
+    </Script>
     <Lines>
         <Approach>Somebody has handed in a knife they found in their garden. It is paperwork, not a call, but it needs logging.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

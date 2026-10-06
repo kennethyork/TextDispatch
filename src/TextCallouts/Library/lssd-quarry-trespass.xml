@@ -10,8 +10,13 @@
     <Advisory>Three or four on foot, no vehicles.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>They are climbing on the plant. That is all it is.</Line>
+        <Line>It is a disused site and there is a shaft at the back of it.</Line>
+        <Line>If one of them goes down that shaft, this becomes a different call.</Line>
+    </Script>
     <Lines>
         <Approach>Four of them in a place they have no business being. Nobody is hurt, which is not guaranteed there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

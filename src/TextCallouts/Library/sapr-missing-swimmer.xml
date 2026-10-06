@@ -10,9 +10,14 @@
     <Advisory>Friends on the shore, no sighting.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>He went in off the rocks half an hour ago.</Line>
+        <Line>His towel and his keys are still on the rock.</Line>
+        <Line>Nobody has seen him come out of the water.</Line>
+    </Script>
     <Lines>
         <Approach>Thirty minutes and nothing. The friends are on the shore and they are not sure where he went in.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,8 +10,13 @@
     <Advisory>Casualty in the road, driver cooperating, lane blocked.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>My shoulder. I went over the bonnet.</Line>
+        <Line>I had lights on and a jacket on. Ask the driver.</Line>
+        <Line>I am not moving off this kerb until somebody tells me I can.</Line>
+    </Script>
     <Patient Model="a_m_y_skater_01" TreatmentSeconds="16">My shoulder. I went over the bonnet.</Patient>
     <Lines>
         <Approach>Cyclist down and the driver is with him, and he is not moving his arm.</Approach>

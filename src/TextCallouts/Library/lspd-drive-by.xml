@@ -10,9 +10,14 @@
     <Advisory>Vehicle left, one person injured on the pavement.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It came past, there were shots, and then it was gone.</Line>
+        <Line>I did not see the plate. Nobody saw the plate.</Line>
+        <Line>There is a boy on the pavement. Somebody needs to help him.</Line>
+    </Script>
     <Lines>
         <Approach>Car has gone, one injured on the pavement. Ambulance is rolling with you.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

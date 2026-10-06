@@ -10,8 +10,13 @@
     <Advisory>Conscious, burns to face and hands, eyes closed.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>The gas ring. It caught the moment I went to light it.</Line>
+        <Line>I turned away, but I was not quick enough.</Line>
+        <Line>Just tell me it is not my eyes. Somebody tell me it is not my eyes.</Line>
+    </Script>
     <Patient Model="a_m_m_business_02" TreatmentSeconds="15">I cannot open my eyes. Say something so I know where you are.</Patient>
     <Lines>
         <Approach>Face and hands and his eyes are shut. Do not let him touch them.</Approach>

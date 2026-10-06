@@ -10,9 +10,14 @@
     <Advisory>Driver out and unhurt, carriageway blocked both ways.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>The trailer is across both lanes and the cab is in the barrier.</Line>
+        <Line>The driver is out and he is walking about. He is shaken.</Line>
+        <Line>Nobody is getting past. That is the top and bottom of it.</Line>
+    </Script>
     <Lines>
         <Approach>It is across both lanes and the driver is out. Nobody is hurt, everything is stuck.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

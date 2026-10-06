@@ -10,10 +10,15 @@
     <Advisory>Truck abandoned, crew unaccounted for.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>The crew are not answering the radio and the engine is still running.</Line>
+        <Line>There are two in the front and I have not seen either of them move.</Line>
+        <Line>The back door has been worked on. I can see the marks from here.</Line>
+    </Script>
     <Lines>
         <Approach>The truck is stopped and nobody is answering from it. Approach like they are still inside.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Operator on a ridge, drone airborne.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>It is over the nesting area. That is closed this month.</Line>
+        <Line>It has been up twenty minutes and it is filming the whole valley.</Line>
+        <Line>The operator is somewhere by the car park. That is where they always are.</Line>
+    </Script>
     <Lines>
         <Approach>It is over ground it should not be, and the operator is up there flying it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

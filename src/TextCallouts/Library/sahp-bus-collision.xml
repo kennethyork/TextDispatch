@@ -10,8 +10,13 @@
     <Advisory>Passengers shaken, one with a head injury.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>I hit my head on the handrail. I was standing up.</Line>
+        <Line>The bus went into the back of the car and everybody came forward.</Line>
+        <Line>There are people in the aisle and two of them are not getting up.</Line>
+    </Script>
     <Patient Model="a_m_m_business_01" TreatmentSeconds="14">I hit my head on the handrail. I was standing up.</Patient>
     <Lines>
         <Approach>There are passengers on it and one of them has taken a knock to the head. The driver is not hurt.</Approach>

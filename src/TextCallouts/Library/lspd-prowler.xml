@@ -10,9 +10,14 @@
     <Advisory>One male on foot, no weapon seen, no entry made yet.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I am looking for a house. My friend lives round here somewhere.</Line>
+        <Line>I do not know which number. That is why I am trying the handles.</Line>
+        <Line>It is a fair thing to do. I am not breaking anything.</Line>
+    </Script>
     <Lines>
         <Approach>He is going along the row trying every handle. Nobody has caught him at it.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Seven years old, last seen ten minutes ago, mother with staff.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>He was with me on the escalator and then he was not.</Line>
+        <Line>Two minutes. I looked down at my phone for two minutes.</Line>
+        <Line>He is seven. He has a red jacket on. That is all I can tell you.</Line>
+    </Script>
     <Lines>
         <Approach>Seven years old and missing ten minutes in a shopping centre. Staff are checking cameras now.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

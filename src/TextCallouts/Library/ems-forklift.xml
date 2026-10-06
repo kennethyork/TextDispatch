@@ -10,8 +10,13 @@
     <Advisory>Conscious, leg crushed, driver shocked but helping.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>He came round the corner and I had nowhere to step.</Line>
+        <Line>It was slow. That is the part people will not believe, it was slow.</Line>
+        <Line>Do not tell me what it looked like. I do not want to know what it looked like.</Line>
+    </Script>
     <Patient Model="a_m_y_construct_01" TreatmentSeconds="18">Do not look at it. Just do not look at it.</Patient>
     <Lines>
         <Approach>Leg under the machine and he is conscious. This is a get-him-to-hospital call, not a treat-him-here one.</Approach>

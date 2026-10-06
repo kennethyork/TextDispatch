@@ -10,9 +10,14 @@
     <Advisory>Two males, exchange seen twice.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I was buying. Buying is not dealing.</Line>
+        <Line>It is a small amount. Look at it, it is a small amount.</Line>
+        <Line>I am not saying where I got it. I am not saying that.</Line>
+    </Script>
     <Lines>
         <Approach>Two males in the alley, second exchange in ten minutes.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

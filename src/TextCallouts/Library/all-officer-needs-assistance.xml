@@ -10,10 +10,15 @@
     <Advisory>Officer on foot, suspect armed, no further detail.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>We had nothing to do with that. We were walking home.</Line>
+        <Line>Do not come closer. I am telling you, do not come closer.</Line>
+        <Line>You are not taking me in. I am not going back there.</Line>
+    </Script>
     <Lines>
         <Approach>Shots fired and an officer is calling for help. Go, and go carefully.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

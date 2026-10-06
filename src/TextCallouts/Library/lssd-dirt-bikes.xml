@@ -10,9 +10,14 @@
     <Advisory>Four or five bikes, no plates, riders masked.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="3" Vehicle="sanchez" />
+        <Ped Model="a_m_y_business_01" Count="3" Role="Suspect" Vehicle="sanchez" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>Four or five of them, no plates and no helmets.</Line>
+        <Line>They go across the field and they are gone before you get near them.</Line>
+        <Line>They know these tracks better than anybody round here.</Line>
+    </Script>
     <Lines>
         <Approach>Four or five of them, no plates, and they know every track around here.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

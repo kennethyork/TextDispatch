@@ -10,8 +10,13 @@
     <Advisory>Animal not aggressive, campers still on site.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It came into the camp about an hour ago and it has not gone far.</Line>
+        <Line>Nobody has been hurt. Everybody is in their tents.</Line>
+        <Line>It went for the food bin and then it just sat down.</Line>
+    </Script>
     <Lines>
         <Approach>It has not gone for anybody yet. Move the campers on before it changes its mind.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

@@ -10,9 +10,14 @@
     <Advisory>Suspect on foot, victim chasing, no weapon seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>It was on the table outside the cafe. I picked it up.</Line>
+        <Line>I was going to hand it in. I was walking towards the station.</Line>
+        <Line>It is in my pocket. Here. Here it is.</Line>
+    </Script>
     <Lines>
         <Approach>He took the phone out of her hand and ran. She is chasing him, which is not what I would advise.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

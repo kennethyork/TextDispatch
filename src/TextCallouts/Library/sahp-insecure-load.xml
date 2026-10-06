@@ -10,9 +10,14 @@
     <Advisory>Debris across two lanes, driver stopped ahead.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is shedding off the back every hundred yards.</Line>
+        <Line>It is timber and there is a lot of it.</Line>
+        <Line>The driver has pulled onto the shoulder and he is looking at it.</Line>
+    </Script>
     <Lines>
         <Approach>Two lanes full of it and the driver has pulled up ahead. Somebody is going to hit that.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

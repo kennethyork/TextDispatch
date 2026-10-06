@@ -10,8 +10,13 @@
     <Advisory>Customer still in the shop, staff holding the note.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>That is the note they gave me in the change. I am not the one making them.</Line>
+        <Line>The machine took it. Why would I hand over a note the machine takes?</Line>
+        <Line>Check the wallet. If there are more of them in there, charge me.</Line>
+    </Script>
     <Lines>
         <Approach>Staff have the note and the customer is still in there. They want a report, not a scene.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

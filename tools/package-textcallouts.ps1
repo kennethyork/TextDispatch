@@ -37,7 +37,13 @@ $stage = Join-Path ([System.IO.Path]::GetTempPath()) ("textcallouts-" + [guid]::
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
 try {
     Copy-Item $dll $stage
-    Copy-Item (Join-Path $repo 'src\TextCallouts\INSTALL.txt') $stage
+
+    # The install notes state their own version, so a download can be identified without opening the
+    # DLL. Stamped here rather than typed in there, because the one that is typed in is the one that
+    # goes stale.
+    $install = [System.IO.File]::ReadAllText((Join-Path $repo 'src\TextCallouts\INSTALL.txt'))
+    $install = $install.Replace('%VERSION%', $Version)
+    [System.IO.File]::WriteAllText((Join-Path $stage 'INSTALL.txt'), $install)
 
     # The callout library: the pack's own recipes, in the same format a player's are. They go in the
     # player's data folder beside the DLL, in a folder of their own - Library, next to Custom - and the

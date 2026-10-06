@@ -10,8 +10,13 @@
     <Advisory>No suspects, siphon marks at the tank.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>They drilled the tank. That is a proper job, that is not children.</Line>
+        <Line>Six hundred litres. That needs a trailer and a pump.</Line>
+        <Line>There are tracks running out to the road and they are fresh.</Line>
+    </Script>
     <Lines>
         <Approach>They have had the whole tank away. Owner is more annoyed than anything.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

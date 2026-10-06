@@ -10,10 +10,15 @@
     <Advisory>One male inside, family outside with a neighbour.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Hostile="true" />
     </Actors>
     <OnApproach At="25" Hostile="true" />
     <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>There are guns in that house. I have seen them.</Line>
+        <Line>He has not threatened anybody with them, he threatened to use one on himself.</Line>
+        <Line>That is why I called. Nobody else was going to.</Line>
+    </Script>
     <Lines>
         <Approach>The family are out and they say there are guns in the house. He is still in there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

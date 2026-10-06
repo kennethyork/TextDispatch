@@ -10,10 +10,15 @@
     <Advisory>One person believed inside, no vehicle seen.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>The shutter has been up about an inch since midnight.</Line>
+        <Line>I have watched it on the camera and I am not going in.</Line>
+        <Line>There is somebody moving inside. I can see it on the screen.</Line>
+    </Script>
     <Lines>
         <Approach>Camera shows somebody inside and the shutter has been forced. He is still in there.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

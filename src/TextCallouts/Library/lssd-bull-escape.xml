@@ -10,8 +10,13 @@
     <Advisory>Animal agitated, walkers in the area.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>He went through the gate when the post van came up. He hates that van.</Line>
+        <Line>He is not vicious. He is a bull, and he is out on a footpath.</Line>
+        <Line>If anybody runs, that is when it goes wrong. Tell people not to run.</Line>
+    </Script>
     <Lines>
         <Approach>It is on the footpath and there are walkers up there. Keep everybody back and wait for the owner.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

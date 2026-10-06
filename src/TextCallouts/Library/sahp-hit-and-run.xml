@@ -10,9 +10,14 @@
     <Advisory>Victim conscious in the road, vehicle described as a white van.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
+    <Script>
+        <Line>It was a white van and it did not slow down.</Line>
+        <Line>The pedestrian is in the road and he is talking.</Line>
+        <Line>The van went north. It went north and it was still accelerating.</Line>
+    </Script>
     <Lines>
         <Approach>White van gone, victim is in the road and conscious. Ambulance is on its way.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

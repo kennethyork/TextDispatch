@@ -10,10 +10,15 @@
     <Advisory>Occupants out, smoke filling the tunnel.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
     <OnApproach At="25" Fire="true" />
     <Support Ambulance="true" />
+    <Script>
+        <Line>It is alight inside and cars are still going past it.</Line>
+        <Line>The smoke is going along the roof. It is filling the tunnel.</Line>
+        <Line>Nobody has shut the tunnel at either end.</Line>
+    </Script>
     <Lines>
         <Approach>They are out of it but the smoke has nowhere to go and people are still driving in.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

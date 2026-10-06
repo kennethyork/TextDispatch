@@ -10,8 +10,13 @@
     <Advisory>Conscious, hand caught, machinery stopped.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
+    <Script>
+        <Line>The guard came off the machine. It should never have been off.</Line>
+        <Line>I have been on that line eleven years. Nothing has ever done that.</Line>
+        <Line>The foreman is not here. Nobody knows where the foreman is.</Line>
+    </Script>
     <Patient Model="a_m_y_construct_02" TreatmentSeconds="18">I cannot see how bad it is. Tell me how bad it is.</Patient>
     <Lines>
         <Approach>His hand was in it when it went. The machinery is stopped and so is the bleeding, for now.</Approach>

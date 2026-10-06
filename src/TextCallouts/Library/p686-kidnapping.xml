@@ -10,10 +10,15 @@
     <Advisory>Two suspects, victim in the back seat, vehicle still moving.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="2" Armed="true" Weapon="WEAPON_PISTOL" />
+        <Ped Model="a_m_y_business_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
     <Support Backup="true" />
+    <Script>
+        <Line>They put him in the back of a blue van and drove off.</Line>
+        <Line>I am following it. Two cars back, that is all.</Line>
+        <Line>It has turned towards the docks. It is going towards the docks.</Line>
+    </Script>
     <Lines>
         <Approach>They put somebody in the back of it and drove. The caller is behind them and staying on the line.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>

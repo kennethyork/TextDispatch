@@ -10,8 +10,13 @@
     <Advisory>Two pupils in a park, no offence reported.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" />
+        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
     </Actors>
+    <Script>
+        <Line>It is a free period. Everybody in my year has a free period.</Line>
+        <Line>I am not even supposed to be in today.</Line>
+        <Line>You can ring the school. They will tell you.</Line>
+    </Script>
     <Lines>
         <Approach>Two of them in the park when they should be in a lesson. The school wants them brought back.</Approach>
         <SignOff>Show me 10-8 when you are clear.</SignOff>
