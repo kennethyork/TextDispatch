@@ -305,6 +305,7 @@ and is loaded when you go on duty. So the civilian jobs got their own plugin, bu
 |---|---|
 | Where | `scripts\TextJobs.dll`, beside DriverJobs |
 | Opens with | **the left arrow** - or **F9** when TextDispatch's box is loaded in the same session (`OpenKey=auto`), because two boxes on one key would both open and both read the same keystrokes |
+| On duty | **not there at all** - the police box is the interface and it has `/jobs` and `/job`; this one stands down on duty and comes back off duty |
 | Needs | the game, ScriptHookV, ScriptHookVDotNet, DriverJobs V. **Not** LSPDFR, not RAGE Plugin Hook |
 | Commands | `/jobs [filter]`, `/job <name or number>`, `/key`, `/pos`, `/hide on\|off`, `/hardware on\|off`, `/clear`, `/help` |
 | Its files | `scripts\TextJobs.ini` (settings), `scripts\TextJobs.log` (what it did, and the whole job list) |

@@ -32,6 +32,16 @@ namespace TextJobs
         private static JobCommands _commands;
         private static bool _sawProbeKey;
 
+        /// <summary>Set while the player is on duty: the jobs box is not there then.</summary>
+        private static bool _suppressed;
+
+        /// <summary>When the duty state was last read - once a second is plenty, and a file read a frame
+        /// is not.</summary>
+        private static int _stateCheckedAt;
+
+        /// <summary>True when OpenKey is auto, so this plugin may choose the key itself.</summary>
+        private static bool _autoKey;
+
         public Main()
         {
             try
@@ -80,9 +90,11 @@ namespace TextJobs
                 // knows - unless TextDispatch's box is loaded in this game, where the left arrow
                 // belongs to it and this box uses F9 instead.
                 var openKey = _settings.OpenKey == null ? "auto" : _settings.OpenKey.Trim();
-                if (openKey.Length == 0 || openKey.Equals("auto", StringComparison.OrdinalIgnoreCase))
+                _autoKey = openKey.Length == 0 || openKey.Equals("auto", StringComparison.OrdinalIgnoreCase);
+                if (_autoKey)
                 {
-                    var policeBox = PoliceBoxLoaded();
+                    bool policeBox, policeOnDuty;
+                    PoliceBoxState(out policeBox, out policeOnDuty);
                     openKey = policeBox ? "F9" : "Left";
                     Log.Line(policeBox
                         ? "OpenKey is auto: TextDispatch's box is loaded, so the left arrow is its key and this box uses F9"
@@ -145,26 +157,89 @@ namespace TextJobs
         }
 
         /// <summary>
-        /// Whether TextDispatch's chat box is loaded in this game.
+        /// What the police box is doing, read from the file it refreshes while it runs.
         ///
-        /// It cannot be asked, so it says so itself: TextDispatch refreshes a file beside its log
-        /// about twice a second while it is running, and only a session that is going on now has a
-        /// fresh one. The window is a minute rather than two seconds because this is read once, at
-        /// startup, and a heartbeat that has just started should not be missed by a hair.
+        /// It cannot be asked - LSPDFR keeps its plugins in an AppDomain of their own - so it says so
+        /// itself, twice a second, in a file beside its log: "on" or "off" and the time. Fresh means
+        /// the police box is loaded in this session; the word means whether the player is on duty,
+        /// which is the part that decides whether this box should be there at all.
+        ///
+        /// The freshness window is a minute rather than two seconds because this is read once, at
+        /// startup, and a heartbeat that has just started should not be missed by a hair. Stale means
+        /// a leftover from a session that has ended - which must not count, or the wrong key would be
+        /// bound for the whole of the next one.
         /// </summary>
-        private static bool PoliceBoxLoaded()
+        private static void PoliceBoxState(out bool present, out bool onDuty)
         {
+            present = false;
+            onDuty = false;
+
             try
             {
                 var game = TextJobs.Settings.GameFolder();
-                if (game == null) return false;
+                if (game == null) return;
 
                 var path = System.IO.Path.Combine(game, "Plugins", "LSPDFR", TextJobs.Settings.PoliceAliveFile);
-                if (!System.IO.File.Exists(path)) return false;
+                if (!System.IO.File.Exists(path)) return;
+                if (DateTime.UtcNow - System.IO.File.GetLastWriteTimeUtc(path) >= TimeSpan.FromSeconds(60)) return;
 
-                return DateTime.UtcNow - System.IO.File.GetLastWriteTimeUtc(path) < TimeSpan.FromSeconds(60);
+                present = true;
+                onDuty = System.IO.File.ReadAllText(path).Trim()
+                             .StartsWith("on", StringComparison.OrdinalIgnoreCase);
             }
-            catch { return false; }
+            catch { }
+        }
+
+        /// <summary>
+        /// Stand down while the player is on duty, and come back when they are not.
+        ///
+        /// The civilian jobs box is for off duty: on duty the police box is the interface, and it has
+        /// /jobs and /job in it already. Leaving both up means two panels and two sets of keystrokes
+        /// for the same errand, which is what the player pointed at.
+        ///
+        /// Standing down means all three things, not just closing: nothing drawn, nothing typed into,
+        /// and nothing hidden from the rest of the game - a box that is invisible but still swallowing
+        /// keystrokes would be worse than one that is simply there.
+        /// </summary>
+        private static void UpdateDutyState()
+        {
+            var now = Environment.TickCount;
+            if (now - _stateCheckedAt < 1000) return;
+            _stateCheckedAt = now;
+
+            bool present, onDuty;
+            PoliceBoxState(out present, out onDuty);
+
+            if (onDuty && !_suppressed)
+            {
+                _suppressed = true;
+                _box.IsOpen = false;
+
+                Log.Line("on duty: the jobs box stands down - the police box is the interface, and it has /jobs");
+                try { GTA.UI.Notification.PostTicker("Jobs box off while on duty - the police box has /jobs.", false, false); }
+                catch { }
+                return;
+            }
+
+            if (!onDuty && _suppressed)
+            {
+                _suppressed = false;
+
+                // The key is decided again, because what it depends on has changed: with the police
+                // box loaded its left arrow is still its own, so this box takes F9; without it, the
+                // left arrow is free and is the obvious key. Only when the setting is auto - a key the
+                // player named themselves is not overruled.
+                if (_autoKey && _input != null)
+                {
+                    var key = present ? "F9" : "Left";
+                    if (_input.SetOpenKey(key)) Log.Line("OpenKey is auto: off duty, so this box is on " + _input.OpenKeyDescription);
+                }
+
+                _box.Notice("Jobs box up - off duty. " + (_input == null ? "" : _input.OpenKeyDescription + " opens it."));
+                Log.Line("off duty: the jobs box is back");
+                try { GTA.UI.Notification.PostTicker("Jobs box is up - off duty.", false, false); }
+                catch { }
+            }
         }
 
         /// <summary>
@@ -188,6 +263,12 @@ namespace TextJobs
         {
             try
             {
+                UpdateDutyState();
+
+                // On duty the box is not here at all: not drawn, not typed into, and - the part that
+                // would be easy to get wrong - not hiding keystrokes from the rest of the game either.
+                if (_suppressed) return;
+
                 _capture.Update(_box.IsOpen);
                 _input.Update();
                 _box.Render();

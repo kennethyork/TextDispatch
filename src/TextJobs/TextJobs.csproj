@@ -9,9 +9,9 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <!-- Keep this in step with the release tag so a downloaded DLL can be identified. -->
-    <Version>1.1.4</Version>
-    <AssemblyVersion>1.1.4.0</AssemblyVersion>
-    <FileVersion>1.1.4.0</FileVersion>
+    <Version>1.1.5</Version>
+    <AssemblyVersion>1.1.5.0</AssemblyVersion>
+    <FileVersion>1.1.5.0</FileVersion>
     <Product>TextJobs</Product>
     <Description>DriverJobs V through a chat box: the job list, what it pays, and where each one starts.</Description>
 

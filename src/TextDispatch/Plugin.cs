@@ -306,7 +306,17 @@ namespace TextDispatch
         private static void Announce()
         {
             var now = Environment.TickCount;
-            if (now - _announcedAt < 2000) return;
+
+            // The duty state is read every tick, because it is the part that matters to the other box:
+            // the jobs interface is for off duty, and on duty it should not be there at all. A change
+            // is written immediately rather than at the next heartbeat - going on duty is a moment, not
+            // a gradual thing, and a box that lingers for two seconds looks broken.
+            var onDuty = false;
+            try { onDuty = _api != null && _api.PedIsCop(Game.LocalPlayer.Character); }
+            catch { }
+
+            if (onDuty == _announcedDuty && now - _announcedAt < 2000) return;
+            _announcedDuty = onDuty;
             _announcedAt = now;
 
             try
@@ -314,8 +324,10 @@ namespace TextDispatch
                 var folder = System.IO.Path.GetDirectoryName(Log.Path);
                 if (string.IsNullOrEmpty(folder)) return;
 
+                // "on" or "off", and when it was said. The timestamp is for a reader that wants to
+                // check the file is not a leftover; the word is the answer.
                 System.IO.File.WriteAllText(System.IO.Path.Combine(folder, AliveFile),
-                                            DateTime.UtcNow.ToString("o"));
+                    (onDuty ? "on" : "off") + " " + DateTime.UtcNow.ToString("o"));
             }
             catch (Exception ex) { Log.Error("announcing this plugin to the other chat box", ex); }
         }
@@ -324,6 +336,7 @@ namespace TextDispatch
         public const string AliveFile = "TextDispatch-alive";
 
         private static int _announcedAt;
+        private static bool? _announcedDuty;
 
         /// <summary>
         /// Say what loaded, and what did not. A plugin folder that quietly does nothing is the

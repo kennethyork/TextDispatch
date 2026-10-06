@@ -62,6 +62,17 @@ The box says which key it is on when it loads:
 ...or "F9 opens the box" when TextDispatch is in the session. That is what OpenKey=auto means, and
 off LSPDFR - when this is the only box - the left arrow is yours with nothing to clash with.
 
+THE BOX IS NOT THERE WHILE YOU ARE ON DUTY
+
+-----------------------------------------
+
+On duty the police box is the interface - it has /jobs and /job inside it - so this one stands down: not
+drawn, not typed into, and not hiding keystrokes from the game either. TextDispatch says which it is, in
+that file beside its log, and this box reads it once a second. Go off duty and it comes back, saying which
+key it is on.
+
+Naming a key yourself still wins: OpenKey=auto is what follows the duty state.
+
 
 THE FILES IT MAKES
 ------------------

@@ -42,6 +42,7 @@ as you are in a suitable vehicle — `/job` says so when it applies.
 | | |
 |---|---|
 | **Left arrow** | open the box - or **F9** when TextDispatch's box is loaded in the same session (`OpenKey=auto` in `TextJobs.ini`; the box names its key when it loads) |
+| | **While you are on duty this box is not there at all** - the police box is the interface and it has `/jobs` |
 | **Enter** | run the command · **Esc** close and clear |
 | **Up / Down** | command history |
 | **Backspace** | delete a character |

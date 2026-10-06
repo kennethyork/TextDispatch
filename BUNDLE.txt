@@ -66,6 +66,11 @@ INSTALL
    the police box and the jobs box says so on screen: "F9 opens the box". TextJobs.ini's OpenKey is
    auto, and naming a key there wins.
 
+   And while you are ON DUTY the jobs box is not there at all: that is the civilian interface, and the
+   police box is the one that should be up - it has /jobs and /job in it. The duty state travels in the
+   same small file, so the jobs box knows without being able to see LSPDFR's plugins. Going on duty
+   closes it; going off duty brings it back.
+
    Neither is T, which other mods claim on a lot of installs. /chatter quiet|brief|full decides how
    much of the dispatcher's radio traffic reaches the police box.
 
