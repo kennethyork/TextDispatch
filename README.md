@@ -189,6 +189,8 @@ If TextDispatch is installed, each callout's lines are mirrored into the chat bo
 TextDispatch lists them in `/calls` and can start any of them with `/callout <name>` — so the two
 work as one thing while depending on nothing.
 
+**Every callout in it has a script.** Three hundred and twenty-six recipes, nine hundred and eighty-one lines of dialogue between them, three or four each: open the box, type at the suspect in an armed robbery, and they answer in character out of that callout's own lines - and TextDispatch asks for those lines *before* it asks its own script or a model, so the answer is instant and needs no LLM. In a medical callout it is the patient who answers rather than the bystander beside them. The lines live in `tools/callout-dialogue.psd1`, and `tools/make-callout-library.ps1` will not build a library in which a callout is missing one.
+
 Eighteen of its callouts are written in C#, and three hundred and twenty-six more ship as **XML recipes** in its Library folder, sorted by the duty they belong to; **your own are written the same way** - drop a file in
 `Plugins\LSPDFR\TextCallouts\Custom\`, go on duty, and it is offered like any other callout. A file
 it cannot make sense of is refused with the reason in the log, never ignored.
