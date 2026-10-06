@@ -162,10 +162,23 @@ CHECKING IT
 Log: Plugins\LSPDFR\textcallouts.log - what was registered, what was accepted, what each callout
 said, and any native that did not resolve.
 
+After you go on duty, two lines are worth finding. The first says the library loaded:
+
+    callouts from files: 326 loaded, 0 skipped (326 from the library, 0 of your own)
+
+...and one line named every one of them as it went, so a callout that is missing from the game is
+missing from that list too, with the reason. The second is what actually went to LSPDFR:
+
+    registered for this duty: 18 of 18 built-in callouts, 326 of 326 from the library, 0 of 0 of your own
+
+If the second says "0 of 0 from the library", the Library folder is not where the pack looks for it:
+Plugins\LSPDFR\TextCallouts\Library. Copy it in from the download - the plugin and its recipes ship
+together and are meant to move together.
+
 In the F4 console:
 
-    tcstatus     how many callouts are in the pack, whether they are registered, and the log path
-    tccallouts   list them by their dispatch names
+    tcstatus     what is registered, how many from the library, how many of your own, the log path
+    tccallouts   list them all by their dispatch names - the pack's own, the library, and yours
 
 
 REQUIREMENTS

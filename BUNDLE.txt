@@ -108,6 +108,15 @@ Rage Plugin Hook's log (RagePluginHook.log, and dated copies in Logs\) shows wha
 "Creating plugin: TextDispatch.Main" and "Creating plugin: TextCallouts.Main" - they only appear
 after you go on duty.
 
+In textcallouts.log, after going on duty, two lines say whether the callout library is in the game:
+
+    callouts from files: 326 loaded, 0 skipped (326 from the library, 0 of your own)
+    registered for this duty: 18 of 18 built-in callouts, 326 of 326 from the library, 0 of 0 of your own
+
+If the second says "0 of 0 from the library", the Library folder is not in
+Plugins\LSPDFR\TextCallouts\ - copy it in from this download and go on duty again. The plugin and its
+326 recipes ship together, and they are meant to be installed together.
+
     Plugins\LSPDFR\textdispatch.log    what loaded, and what each plugin in the folder is missing
     Plugins\LSPDFR\textcallouts.log    which callouts registered, what each one said, which native ran
     scripts\TextJobs.log               the job list it read, and the whole list every time /jobs runs

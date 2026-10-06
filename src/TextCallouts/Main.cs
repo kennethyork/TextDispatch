@@ -122,29 +122,47 @@ namespace TextCallouts
                 catch (Exception ex) { Log.Error("registering " + type.Name, ex); }
             }
 
-            // The player's own, from Plugins\LSPDFR\TextCallouts\Custom - each one a type built at run
-            // time from an XML file. A bad file is named in the log and skipped; the rest still load.
-            var custom = 0;
-            foreach (var type in Custom.CustomCallouts.CalloutTypes())
+            // Everything built from a file: the pack's own library of recipes first, then the player's
+            // own from Custom. Each is a type built at run time from an XML file. A bad file is named in
+            // the log and skipped; the rest still load.
+            //
+            // Counted apart, and named apart in the log, because "326" on its own is the number the
+            // player uses to answer "did the library actually load?" - 326 of their own callouts would
+            // be a very different thing from 326 that came with the pack.
+            var fromLibrary = 0;
+            foreach (var type in Custom.CustomCallouts.LibraryTypes())
             {
                 try
                 {
                     Functions.RegisterCallout(type);
-                    custom++;
+                    fromLibrary++;
                 }
-                catch (Exception ex) { Log.Error("registering the custom callout " + type.Name, ex); }
+                catch (Exception ex) { Log.Error("registering the library callout " + type.Name, ex); }
+            }
+
+            var ofTheirOwn = 0;
+            foreach (var type in Custom.CustomCallouts.CustomTypes())
+            {
+                try
+                {
+                    Functions.RegisterCallout(type);
+                    ofTheirOwn++;
+                }
+                catch (Exception ex) { Log.Error("registering your own callout " + type.Name, ex); }
             }
 
             _registered = true;
-            Log.Line("registered for this duty: " + registered + " of " + CalloutTypes.Length + " built-in callouts" +
-                     (custom > 0 ? ", plus " + custom + " of your own" : "") +
+            Log.Line("registered for this duty: " + registered + " of " + CalloutTypes.Length + " built-in callouts, " +
+                     fromLibrary + " of " + Custom.CustomCallouts.LibraryCount + " from the library, " +
+                     ofTheirOwn + " of " + Custom.CustomCallouts.CustomCount + " of your own" +
                      (Custom.CustomCallouts.Problems > 0
-                         ? "; " + Custom.CustomCallouts.Problems + " custom file(s) were skipped - see above"
+                         ? "; " + Custom.CustomCallouts.Problems + " file(s) were skipped - see above"
                          : ""));
 
-            Hud.Say("~g~TextCallouts~s~: " + registered + " callouts" +
-                    (custom > 0 ? " and " + custom + " of your own." : ".") +
-                    (Custom.CustomCallouts.Problems > 0 ? "  (" + Custom.CustomCallouts.Problems + " custom file(s) skipped - textcallouts.log says why.)" : ""));
+            Hud.Say("~g~TextCallouts~s~: " + (registered + fromLibrary + ofTheirOwn) + " callouts  (" +
+                    registered + " built in, " + fromLibrary + " from the library" +
+                    (ofTheirOwn > 0 ? ", " + ofTheirOwn + " of your own" : "") + ")" +
+                    (Custom.CustomCallouts.Problems > 0 ? "  (" + Custom.CustomCallouts.Problems + " file(s) skipped - textcallouts.log says why.)" : ""));
         }
 
         /// <summary>
@@ -153,18 +171,20 @@ namespace TextCallouts
         /// </summary>
         public static class ConsoleCommands
         {
-            [ConsoleCommand("tcstatus", Description = "TextCallouts: what is registered, your own callouts, and where the log is.")]
+            [ConsoleCommand("tcstatus", Description = "TextCallouts: what is registered, the library, your own callouts, and where the log is.")]
             public static void Status()
             {
                 Game.Console.Print("[TextCallouts] " + CalloutTypes.Length + " callouts in the pack, re-registered on");
                 Game.Console.Print("[TextCallouts]   every duty transition" +
                                    (_registered ? " (last one done)." : " - not registered yet, so go on duty."));
 
-                var custom = Custom.CustomCallouts.Count;
-                Game.Console.Print("[TextCallouts] " + custom + " custom callout(s) from your own files" +
+                Game.Console.Print("[TextCallouts] " + Custom.CustomCallouts.LibraryCount +
+                                   " more from the library that ships with it");
+                Game.Console.Print("[TextCallouts] " + Custom.CustomCallouts.CustomCount + " from your own files" +
                                    (Custom.CustomCallouts.Problems > 0
                                        ? ", and " + Custom.CustomCallouts.Problems + " file(s) skipped"
                                        : ""));
+                Game.Console.Print("[TextCallouts] library: " + Custom.CustomCallouts.LibraryFolder);
                 Game.Console.Print("[TextCallouts] your folder: " + Custom.CustomCallouts.Folder);
                 Game.Console.Print("[TextCallouts] log: " + Log.Path);
             }
@@ -172,11 +192,20 @@ namespace TextCallouts
             [ConsoleCommand("tccallouts", Description = "TextCallouts: list what this pack provides, including your own.")]
             public static void List()
             {
-                Game.Console.Print("[TextCallouts] in the pack:");
+                Game.Console.Print("[TextCallouts] in the pack, written in C#:");
                 foreach (var type in CalloutTypes) Print(type);
 
+                Game.Console.Print("[TextCallouts] the library that ships with it (" + Custom.CustomCallouts.LibraryFolder + "):");
+                var library = Custom.CustomCallouts.LibraryTypes();
+                if (library.Length == 0)
+                {
+                    Game.Console.Print("   none - the Library folder is missing from Plugins\\LSPDFR\\TextCallouts\\.");
+                    Game.Console.Print("   Copy it in from the download and go on duty again.");
+                }
+                foreach (var type in library) Print(type);
+
                 Game.Console.Print("[TextCallouts] yours (" + Custom.CustomCallouts.Folder + "):");
-                var custom = Custom.CustomCallouts.CalloutTypes();
+                var custom = Custom.CustomCallouts.CustomTypes();
                 if (custom.Length == 0) Game.Console.Print("   none yet - put an .xml file in that folder");
                 foreach (var type in custom) Print(type);
             }

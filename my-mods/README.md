@@ -439,7 +439,7 @@ for SSStuartCallouts and StoryCallouts, and an empty `ParksCommon\ParksModsWebCh
 is no longer installed. Nothing was deleted, so putting one back is a drag. Delete that folder once you are
 sure.
 
-Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.9.0**, and the interaction plugins
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.9.1**, and the interaction plugins
 that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
 ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
 CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
@@ -447,7 +447,7 @@ CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
 `Plugins\` itself is now just LSPD First Response, CommonDataFramework, DamageTrackingFramework and the
 LSPDFR folder - no stray ini files from packs that have gone.
 
-**TextCallouts 1.9.0** is at 344 callouts, and **every one of them has a script.**
+**TextCallouts 1.9.1** is at 344 callouts, and **every one of them has a script.**
 
 Previously only four did. Now all 326 recipes carry three or four lines - 981 lines in total - for the
 person in that scene to say, and TextDispatch asks the callout for those lines before it asks its own
@@ -475,6 +475,31 @@ the previous library in place - a pack that looked like it had stopped working, 
 were simply not in the folder it reads. It now replaces `Plugins\LSPDFR\TextCallouts\Library` as well,
 says how many recipes and how many script lines went in, and names any recipe that arrived without a
 script. Your own `Custom\` folder is beside it and is never touched.
+
+**The library is in the game, and the loader has been run against it.** `tools\LoaderCheck\` is a small
+console program that runs the pack's *real* loader - `CustomCallouts.cs`, compiled from `src` - against a
+real `TextCallouts` folder, and reports what it built. Against the game's own folder it says:
+
+    326 loaded, 0 skipped (326 from the library, 0 of your own)
+    326 callout types built, none skipped, none colliding, all carrying the name LSPDFR shows
+    326 bound to the recipe they came from, 326 carrying a script (981 lines)
+    PASS: 14 checks, 0 failed
+
+The one substitution is `RecipeCallout`, which cannot be loaded outside the game at all - it derives from
+LSPDFR's `Callout` and its signatures mention Rage types, and the only `RagePluginHook` assembly on this
+machine is the SDK reference assembly, whose members have no implementation, so the CLR refuses to load
+it. The loader uses exactly two things from it, so the check uses a stand-in with those two. That is why
+this proves the loader and not the scenes.
+
+**In game, two lines say it.** After you go on duty, in `Plugins\LSPDFR\textcallouts.log`:
+
+    callouts from files: 326 loaded, 0 skipped (326 from the library, 0 of your own)
+    registered for this duty: 18 of 18 built-in callouts, 326 of 326 from the library, 0 of 0 of your own
+
+The second line used to call the library's 326 callouts "of your own", which is what the Custom folder
+is for and had nothing to do with them - it now counts the three groups apart, and so does the on-screen
+message and `tcstatus`. If it ever says "0 of 0 from the library", the folder is not where the pack looks
+for it.
 
 `tools\verify-bridge.ps1` checks the bridge between the two plugins by reading their metadata - the
 compiler cannot see across a reflection boundary, and a rename there would fail silently in game.

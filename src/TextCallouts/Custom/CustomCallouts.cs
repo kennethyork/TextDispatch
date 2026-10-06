@@ -28,6 +28,12 @@ namespace TextCallouts.Custom
         private static bool _loaded;
         private static int _problems;
 
+        // Kept apart because they are two different things and the player is told which is which: the
+        // library ships with the pack and is replaced when it is updated, the Custom folder is theirs.
+        // Types holds both, library first, which is what the two views below rely on.
+        private static int _libraryCount;
+        private static int _customCount;
+
         internal static string Folder
         {
             get { return Path.Combine(Log.PluginFolder(), "TextCallouts", "Custom"); }
@@ -47,14 +53,32 @@ namespace TextCallouts.Custom
             get { return Path.Combine(Log.PluginFolder(), "TextCallouts", "Library"); }
         }
 
-        /// <summary>The callout types built from the player's files. Loads them on first call.</summary>
+        /// <summary>Every callout built from a file, the library and the player's own. Loads them on first call.</summary>
         internal static Type[] CalloutTypes()
         {
             Load();
             return Types.ToArray();
         }
 
+        /// <summary>The pack's own recipes, from Plugins\LSPDFR\TextCallouts\Library.</summary>
+        internal static Type[] LibraryTypes()
+        {
+            Load();
+            return Types.GetRange(0, _libraryCount).ToArray();
+        }
+
+        /// <summary>The player's recipes, from Plugins\LSPDFR\TextCallouts\Custom.</summary>
+        internal static Type[] CustomTypes()
+        {
+            Load();
+            return Types.GetRange(_libraryCount, _customCount).ToArray();
+        }
+
         internal static int Count { get { Load(); return Types.Count; } }
+
+        internal static int LibraryCount { get { Load(); return _libraryCount; } }
+
+        internal static int CustomCount { get { Load(); return _customCount; } }
 
         internal static int Problems { get { Load(); return _problems; } }
 
@@ -82,7 +106,8 @@ namespace TextCallouts.Custom
                 LoadFrom(LibraryFolder, "library");
                 LoadFrom(Folder, "custom");
 
-                Log.Line("callouts from files: " + Types.Count + " loaded, " + _problems + " skipped");
+                Log.Line("callouts from files: " + Types.Count + " loaded, " + _problems + " skipped" +
+                         " (" + _libraryCount + " from the library, " + _customCount + " of your own)");
                 if (Types.Count == 0)
                     Log.Line("no callouts from files: put .xml files in " + Folder + " to add your own");
             }
@@ -119,6 +144,7 @@ namespace TextCallouts.Custom
                         RecipeCallout.Bind(type.Name, recipe);
                         Recipes.Add(recipe);
                         Types.Add(type);
+                        if (what == "library") _libraryCount++; else _customCount++;
                         Log.Line(what + " callout: " + recipe.Display + "  [" + recipe.For + "]  <-  " + Path.GetFileName(file));
                     }
                     catch (Exception ex)

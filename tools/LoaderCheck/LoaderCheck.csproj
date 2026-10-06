@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Runs TextCallouts' real callout loader against a real TextCallouts folder, and says what it loaded.
+
+        dotnet build tools\LoaderCheck -c Release, then run the exe in bin\Release.
+
+    Why this exists: a recipe is only a callout once Reflection.Emit has built a type for it and bound
+    that type to the recipe. Everything upstream of that - the parser, the schema, the scripts - is
+    covered by the recipe harness, and none of it is worth anything if the loader cannot turn a file
+    into a callout. That step cannot be seen from outside the game otherwise: it happens in LSPDFR's
+    own AppDomain, after going on duty, and a loader that skips every file looks exactly like a pack
+    with no callouts in it.
+
+    What is real here: CustomCallouts.cs and CalloutRecipe.cs, compiled from src, so this is the code
+    that ships. What is not: RecipeCallout, which the loader refers to twice - one Bind call and one
+    typeof - and which cannot be loaded outside the game at all, because it derives from LSPDFR's
+    Callout and its signatures mention Rage types, and the only RagePluginHook assembly on this machine
+    is the SDK reference assembly, whose members have no implementation. In game that is the real
+    RecipeCallout; here it is the stand-in beside this project, with the same name, namespace and the
+    two members the loader uses. That is the whole of the substitution, and it is why this check proves
+    the loader and not the scenes.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>LoaderCheck</AssemblyName>
+    <RootNamespace>LoaderCheck</RootNamespace>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- Where LSPDFR lives. Override with -p:GtaFolder="E:\Games\GTAV". -->
+    <GtaFolder Condition="'$(GtaFolder)' == ''">D:\Grand Theft Auto V Legacy</GtaFolder>
+    <LspdfrDll>$(GtaFolder)\plugins\LSPD First Response.dll</LspdfrDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Xml.Linq" />
+
+    <!-- LSPDFR's real assembly: it has to run, because the emitted types carry a callout
+         [CalloutInfo] attribute and the loader reads CalloutProbability. Copied beside the exe. -->
+    <Reference Include="LSPD First Response">
+      <HintPath>$(LspdfrDll)</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\TextCallouts\Custom\CustomCallouts.cs" />
+    <Compile Include="..\..\src\TextCallouts\Custom\CalloutRecipe.cs" />
+  </ItemGroup>
+
+</Project>
