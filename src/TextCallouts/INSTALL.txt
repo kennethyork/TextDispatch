@@ -67,6 +67,32 @@ out of time, twenty minutes after they started, with nothing the player could do
 arrived, dispatch said its line, and the call sat there. Now they finish the way the hand-written ones
 do - you deal with the scene and it closes behind you.
 
+WHO IS IN THE SCENE
+-------------------
+
+**The people a callout sends you to are drawn at random each time it runs.** Forty-two ped models across the
+three hundred and twenty-six recipes, in pools of two to thirteen, chosen to suit the callout: city work draws
+on the downtown crowd, county work on the farms and the hills, the parks on people dressed for the outdoors,
+robberies and drug calls on a rougher cut. Three suspects in a street are three different men, and the man in
+the armed robbery is rarely the same man twice.
+
+**They are men, and that is deliberate.** The dispatch prose these recipes carry says "he" - a hundred and
+three of the three hundred and twenty-six do - so a random woman in a scene dispatch is calling "he" would be
+the pack being wrong about its own scene. Varying the sex as well is a pass of its own, and it means rewording
+that prose first.
+
+**A pool cannot cost you the callout.** Before spawning anybody the pack checks the model against your game
+and takes the first of the pool that exists; if none of them do - a pool that is wrong for your install - the
+actor falls back to a model that certainly exists, and the log says which. A scene with nobody in it closes the
+moment it starts, so this is the one thing that had to be certain.
+
+The log names them as it goes:
+
+    custom callout scene: 2 suspect(s), 0 other(s), drawn from the pool: a_m_y_stlat_01, a_m_y_genstreet_02
+
+Patient models are not randomised: each medical callout names the person it is about, and there are fifty-three
+different ones, so they are already varied and already match what they say.
+
 WHAT THEY SAY
 ------------
 

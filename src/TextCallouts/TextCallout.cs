@@ -149,6 +149,16 @@ namespace TextCallouts
             return ped;
         }
 
+        /// <summary>The same, for a model that has already been chosen and checked.</summary>
+        protected Ped SpawnPed(Model model, Vector3 position, float heading)
+        {
+            var ped = new Ped(model, position, heading);
+            _spawned.Add(ped);
+            ped.IsPersistent = true;
+            ped.BlockPermanentEvents = true;
+            return ped;
+        }
+
         protected Vehicle SpawnVehicle(string model, Vector3 position, float heading)
         {
             var vehicle = new Vehicle(model, position, heading);

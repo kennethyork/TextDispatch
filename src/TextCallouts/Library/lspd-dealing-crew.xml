@@ -10,7 +10,7 @@
     <Advisory>Three or four males, one keeping watch.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="4" Role="Suspect" Armed="true" Weapon="WEAPON_KNIFE" />
+        <Ped Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02" Count="4" Role="Suspect" Armed="true" Weapon="WEAPON_KNIFE" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Script>

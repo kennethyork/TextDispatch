@@ -10,7 +10,7 @@
     <Advisory>Friends on the shore, no sighting.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
+        <Ped Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01" Count="1" Role="Suspect" />
     </Actors>
     <Support Ambulance="true" />
     <Script>

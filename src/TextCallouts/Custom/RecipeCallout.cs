@@ -31,6 +31,10 @@ namespace TextCallouts.Custom
 
         private CalloutRecipe _recipe;
         private readonly List<Ped> _suspects = new List<Ped>();
+
+        // Who the scene's people turned out to be, for the log. The same callout twice running is two
+        // different men, and the log is the only place that can be seen from outside the game.
+        private readonly List<string> _people = new List<string>();
         private readonly List<Ped> _bystanders = new List<Ped>();
         private bool _approached;
         private bool _supportCalled;
@@ -139,7 +143,9 @@ namespace TextCallouts.Custom
                     // Spread a group out a little, so three suspects are not one suspect standing in
                     // a puddle of its own geometry.
                     var offset = i == 0 ? new Vector3(0f, 0f, 0f) : new Vector3(1.6f * i, 1.1f, 0f);
-                    var ped = SpawnPed(actor.Model, position + offset, heading);
+                    var model = PickModel(actor);
+                    var ped = SpawnPed(model, position + offset, heading);
+                    if (actor.Models.Length > 1) _people.Add(model.Name);
 
                     if (vehicle != null) PutInVehicle(ped, vehicle, i == 0 ? -1 : i);
 
@@ -187,6 +193,7 @@ namespace TextCallouts.Custom
             Log.Line("custom callout scene: " + _suspects.Count + " suspect(s), " + _bystanders.Count +
                      " other(s)" + (recipe.Patient != null ? ", one patient" : "") +
                      (recipe.Stages.Count > 0 ? ", " + recipe.Stages.Count + " stage(s)" : "") +
+                     (_people.Count > 0 ? ", drawn from the pool: " + string.Join(", ", _people.ToArray()) : "") +
                      " at " + Where(position));
         }
 
@@ -264,6 +271,38 @@ namespace TextCallouts.Custom
                     Close("every suspect is dealt with");
                     return false;
             }
+        }
+
+        /// <summary>
+        /// Who this actor is this time.
+        ///
+        /// A pool is drawn from at random, starting at a random place in it so the same few names are
+        /// not always tried first, and the first candidate that exists in the game wins. That check is
+        /// the point: a pool with a typo in it, or a model a player's game does not have, must not cost
+        /// the callout its suspect - a scene with nobody in it closes the moment it starts, and that is
+        /// a far worse thing than a familiar face. If nothing in the pool exists, the actor falls back
+        /// to the model the recipe named.
+        /// </summary>
+        private static Model PickModel(ActorRecipe actor)
+        {
+            var pool = actor.Models;
+            if (pool == null || pool.Length == 0) return new Model(actor.Model);
+
+            var start = Rng.Next(pool.Length);
+            for (var i = 0; i < pool.Length; i++)
+            {
+                var name = pool[(start + i) % pool.Length];
+                try
+                {
+                    var candidate = new Model(name);
+                    if (candidate.IsValid) return candidate;
+                    Log.Line("the model " + name + " is not in this game - the next one in the pool is used");
+                }
+                catch (Exception ex) { Log.Error("checking the model " + name, ex); }
+            }
+
+            Log.Line("none of the " + pool.Length + " models in this recipe's pool exist here - falling back to " + actor.Model);
+            return new Model(actor.Model);
         }
 
         /// <summary>

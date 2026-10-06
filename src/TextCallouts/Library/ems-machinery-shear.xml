@@ -10,7 +10,7 @@
     <Advisory>Conscious, arm trapped, power off, staff with him.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
+        <Ped Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>It came down on the sleeve and then it was my arm.</Line>

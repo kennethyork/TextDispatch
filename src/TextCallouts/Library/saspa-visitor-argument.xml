@@ -10,7 +10,7 @@
     <Advisory>Two visitors, no violence, staff holding them apart.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" />
+        <Ped Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01" Count="1" Role="Suspect" />
     </Actors>
     <Script>
         <Line>It is two families in the visitors hall and it is getting loud.</Line>

@@ -439,7 +439,7 @@ for SSStuartCallouts and StoryCallouts, and an empty `ParksCommon\ParksModsWebCh
 is no longer installed. Nothing was deleted, so putting one back is a drag. Delete that folder once you are
 sure.
 
-Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.9.2**, and the interaction plugins
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.10.0**, and the interaction plugins
 that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
 ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
 CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
@@ -447,7 +447,7 @@ CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
 `Plugins\` itself is now just LSPD First Response, CommonDataFramework, DamageTrackingFramework and the
 LSPDFR folder - no stray ini files from packs that have gone.
 
-**TextCallouts 1.9.2** is at 344 callouts, and **every one of them has a script and can be finished.**
+**TextCallouts 1.10.0** is at 344 callouts, and **every one of them has a script, can be finished, and sends you to a different man each time.**
 
 Previously only four did. Now all 326 recipes carry three or four lines - 981 lines in total - for the
 person in that scene to say, and TextDispatch asks the callout for those lines before it asks its own
@@ -520,10 +520,25 @@ The recipe harness now refuses a library containing a callout that cannot be end
 29 checks, no failures. It also checks that nothing in the pack closes the instant it starts, which is what
 a recipe with a resolution and nobody to resolve would do.
 
-**One known rough edge, cosmetic: every suspect in the pack is the same ped model** (`a_m_y_business_01`),
-so the man in the armed robbery is the man in the bank siege. It does not affect playability - the scenes,
-the scripts and the endings are all per-callout - but it is the thing you would notice first in game.
-Varying it is a change to the generator's table, not to any callout's behaviour.
+**The people are randomised now, which was the last rough edge.** Every suspect used to be
+`a_m_y_business_01` - the same man in the armed robbery, the bank siege and the corner dealing - and it was
+the first thing you would notice in game. Each scene now draws from a pool of two to thirteen models chosen
+to suit the callout: forty-two models in the pack, so three suspects in a street are three different men and
+the same callout twice running is rarely the same face.
+
+Two things about how that is done, because both were decisions:
+
+  * **A pool cannot cost you a callout.** A scene with nobody in it closes the moment it starts, so before
+    spawning anybody the pack checks the model against the game and takes the first of the pool that exists,
+    falling back to a model that certainly exists if none of them do. A typo in a pool is survivable by
+    design, and the log names the men it picked.
+  * **They are men.** The dispatch prose these recipes carry says "he" - 103 of the 326 do - so randomising
+    the sex as well would have the pack calling a woman "he" in its own scene description. That needs the
+    prose reworded first, which is a pass of its own.
+
+Patient models are not randomised: each medical callout names the person it is about, and the 53 are already
+different from each other and already match what the patient says. Your own recipes can use either form:
+`<Ped Model="..." />` or `<Ped Models="a,b,c" />`.
 
 `tools\verify-bridge.ps1` checks the bridge between the two plugins by reading their metadata - the
 compiler cannot see across a reflection boundary, and a rename there would fail silently in game.

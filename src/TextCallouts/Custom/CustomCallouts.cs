@@ -258,6 +258,10 @@ Every field, and nothing more than you need:
   <Actors>
      <Ped ... />   one per person. Attributes:
                      Model      any GTA ped model, e.g. a_m_y_business_01
+                     Models     a pool to draw from at random instead, e.g. a_m_y_business_01,
+                                a_m_y_downtown_01,a_m_y_genstreet_01. The pack checks each one
+                                against the game and takes the first that exists, so a name that
+                                is wrong costs you nothing but that name. Model is the fallback.
                      Role       Suspect (counts towards the resolution) or Bystander
                      Count      how many of them, 1-8
                      Armed      true/false

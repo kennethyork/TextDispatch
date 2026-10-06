@@ -10,7 +10,7 @@
     <Advisory>Power isolated, casualty conscious, burns to the hand.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Role="Bystander" />
+        <Ped Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>The breaker was supposed to be locked off. It was not locked off.</Line>

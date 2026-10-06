@@ -49,6 +49,73 @@ function Add($entry) {
     $script:library += $entry
 }
 
+# ============================================================ Who is in the scene
+#
+# Every recipe's people are drawn at random from a pool, so the man in an armed robbery is rarely the
+# same man twice, and three suspects in one street are three different men. Three things about them:
+#
+#   * They are men, because the dispatch text these recipes carry says "he" - 103 of the 326 do, and a
+#     random woman in a scene dispatch is calling "he" is a worse look than a familiar face. Varying the
+#     sex as well means rewording that prose first, which is a pass of its own.
+#   * The pack checks each candidate against the game before it spawns it and falls back if none exist,
+#     so a pool with a typo in it cannot leave a callout with nobody in it - a scene with nobody in it
+#     closes the moment it starts.
+#   * A pool is a theme, not a costume list: city work draws on the downtown crowd, county work on the
+#     farms and the hills, the parks on people dressed for the outdoors. Nothing here should read as a
+#     joke at the scene's expense.
+#
+# The first name in the city pool is the fallback the pack uses when nothing else exists, so it stays
+# first.
+
+$peopleCity = @(
+    'a_m_y_business_01', 'a_m_y_business_02', 'a_m_m_business_01', 'a_m_y_downtown_01',
+    'a_m_y_downtown_02', 'a_m_y_genstreet_01', 'a_m_y_genstreet_02', 'a_m_y_hipster_01',
+    'a_m_y_hipster_02', 'a_m_y_vinewood_01', 'a_m_y_bevhills_01', 'a_m_m_mlcrisis_01'
+)
+
+$peopleRough = @(
+    'a_m_y_genstreet_01', 'a_m_y_genstreet_02', 'a_m_y_methhead_01', 'a_m_y_eastsa_01',
+    'a_m_y_eastsa_02', 'a_m_m_eastsa_01', 'a_m_y_soucent_01', 'a_m_y_soucent_02',
+    'a_m_m_soucent_01', 'a_m_y_stlat_01', 'a_m_y_stwhi_01', 'a_m_m_genfat_01', 'a_m_m_genfat_02'
+)
+
+$peopleCounty = @(
+    'a_m_m_farmer_01', 'a_m_m_hillbilly_01', 'a_m_m_hillbilly_02', 'a_m_y_salton_01',
+    'a_m_m_salton_01', 'a_m_m_salton_02', 'a_m_m_salton_03', 'a_m_m_salton_04'
+)
+
+$peopleOutdoors = @(
+    'a_m_y_hipster_01', 'a_m_y_hipster_02', 'a_m_y_beach_01', 'a_m_y_beach_02',
+    'a_m_y_runner_01', 'a_m_y_runner_02', 'a_m_m_farmer_01', 'a_m_y_sunbathe_01'
+)
+
+$peopleBeach = @(
+    'a_m_y_beach_01', 'a_m_y_beach_02', 'a_m_y_beach_03', 'a_m_y_sunbathe_01',
+    'a_m_y_musclbeac_01', 'a_m_y_musclbeac_02', 'a_m_y_jetski_01', 'a_m_y_runner_01'
+)
+
+$peopleWork = @(
+    'a_m_y_construct_01', 'a_m_y_construct_02', 'a_m_m_mlcrisis_01', 'a_m_y_downtown_01',
+    'a_m_m_genfat_01', 'a_m_y_business_01'
+)
+
+# The pool a callout draws on, from what the callout is about. A recipe can name its own with
+# models='...' and that wins - the ones that matter are the ones where the look of the person is part of
+# the scene rather than scenery.
+function People-For($entry) {
+    if ($entry['models']) { return $entry['models'] }
+
+    $about = ("" + $entry['id'] + ' ' + $entry['name'] + ' ' + $entry['msg'] + ' ' + $entry['adv']).ToLowerInvariant()
+
+    if ($about -match 'beach|sunbathe|jetski|marina|boat|pier|swim|drown') { return ($peopleBeach -join ',') }
+    if ($about -match 'ranch|farm|cattle|livestock|horse|barn|rustl|tractor|county|sandy|desert|hillbilly|moonshine|distill|poach|hunt|quarry|dirt bike|sheep|wild dog|fence|trail|hiker') { return ($peopleCounty -join ',') }
+    if ($about -match 'park|ranger|camp|wildlife|logging|forest') { return ($peopleOutdoors -join ',') }
+    if ($about -match 'construct|forklift|industrial|machinery|depot|factory|warehouse|scaffold|electric|trench|loading|site') { return ($peopleWork -join ',') }
+    if ($about -match 'drug|meth|deal|gang|shoot|turf|robber|burgl|mug|carjack|snatch|pickpocket|steal|stolen|graffiti|vandal|dumping|copper|theft|clown|knife|weapon|gun') { return ($peopleRough -join ',') }
+
+    return ($peopleCity -join ',')
+}
+
 # ============================================================ Los Santos Police
 Add @{ id='lspd-armed-robbery-off-licence'; for='lspd'; name='Armed Robbery - Off Licence'; msg='Armed robbery in progress at an off licence.'; adv='One male with a handgun, staff inside, no shots fired yet.'; line='One male, handgun, in the off licence now. Get there before he leaves.'; brief='Armed robbery in progress. He is still inside and the staff are still in there with him.'; app='Hostile'; armed=$true }
 Add @{ id='lspd-armed-robbery-pharmacy'; for='lspd'; name='Armed Robbery - Pharmacy'; msg='Armed robbery reported at a pharmacy.'; adv='Suspect left on foot towards the estate, dark hooded top.'; line='Male, dark hooded top, gone on foot towards the estate.'; app='Flee'; armed=$true; res='AnyArrest' }
@@ -327,7 +394,7 @@ Add @{ id='lspd-rough-sleeper'; for='lspd'; name='Rough Sleeper Concern'; msg='P
 Add @{ id='lspd-unlicensed-cab'; for='lspd'; name='Unlicensed Cab'; msg='Unlicensed driver picking up at a taxi rank.'; adv='One vehicle, driver arguing with licensed drivers.'; line='He is taking fares off the rank and the licensed drivers have told him twice. It is getting loud.'; res='Manual' }
 Add @{ id='lspd-obstruction'; for='lspd'; name='Obstruction of the Highway'; msg='Vehicle parked on double yellows blocking a bus route.'; adv='No driver present, buses diverted.'; line='The buses cannot get through and the driver is nowhere. It needs moving.'; res='Manual' }
 Add @{ id='lspd-return-domestic'; for='lspd'; name='Return to a Domestic Address'; msg='Neighbours reporting shouting again at an address attended last night.'; adv='Same address as last night, no weapons reported.'; line='Same address as last night, same shouting. Somebody has to go back.'; app='Hostile'; amb=$true }
-Add @{ id='lspd-shoplifter-detained'; for='lspd'; name='Detained Shoplifter'; msg='Store staff holding a shoplifter in the office.'; adv='Suspect detained, cooperative, goods recovered.'; line='They have him in the office and the goods are on the desk. He is not fighting anybody.'; actors=@(@{model='a_m_y_business_01'; cower=$true}) }
+Add @{ id='lspd-shoplifter-detained'; for='lspd'; name='Detained Shoplifter'; msg='Store staff holding a shoplifter in the office.'; adv='Suspect detained, cooperative, goods recovered.'; line='They have him in the office and the goods are on the desk. He is not fighting anybody.'; actors=@(@{models=($peopleCity -join ','); role='Suspect'; cower=$true}) }
 Add @{ id='lspd-bike-theft-crew'; for='lspd'; name='Bike Theft in Progress'; msg='People cutting locks off bicycles at a rack.'; adv='Two of them with bolt croppers, several bikes.'; line='Two of them at the rack with croppers and they have already had two.'; app='Flee'; count=2 }
 Add @{ id='lspd-van-theft'; for='lspd'; name='Theft from a Van'; msg='Tools being taken from a parked van.'; adv='One male, van broken into, tools on the pavement.'; line='He is unloading a van that is not his. The owner is a builder who is going to notice at seven.'; app='Flee' }
 Add @{ id='lspd-parcel-theft'; for='lspd'; name='Parcel Theft'; msg='Person taking deliveries from doorsteps.'; adv='One male on foot, following a delivery van.'; line='He is walking the same street as the van and picking up what it leaves.'; app='Flee' }
@@ -478,6 +545,20 @@ foreach ($key in $dialogue.Keys) {
     if (-not $seen.ContainsKey([string]$key)) { $problems.Add("the dialogue file has lines for '$key', which is not a callout") }
 }
 
+# The people: a pool has to be a pool, and a name that cannot be a ped model name is a spawn that
+# silently falls back - which is survivable, and still worth not shipping.
+foreach ($entry in $library) {
+    $pool = [string]$entry['models']
+    if (-not $pool) { continue }
+
+    $names = @($pool -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    if ($names.Count -lt 2) { $problems.Add("$($entry['id']) has a pool of $($names.Count) - pools are for more than one") }
+    if (($names | Sort-Object -Unique).Count -ne $names.Count) { $problems.Add("$($entry['id']) names the same person twice in its pool") }
+    foreach ($name in $names) {
+        if ($name -notmatch '^[a-z0-9_]+$') { $problems.Add("$($entry['id']) has '$name' in its pool, which is not a model name") }
+    }
+}
+
 if ($problems.Count -gt 0) {
     foreach ($problem in $problems) { Write-Host ("  " + $problem) -ForegroundColor Red }
     throw ("the library will not be written: " + $problems.Count + " problem(s) above")
@@ -518,6 +599,7 @@ foreach ($r in $library) {
         # the first suspect if there is one, otherwise the patient - see Custom\RecipeCallout.cs.
         $actors = @(@{
             model   = if ($r['pmodel']) { $r['pmodel'] } else { 'a_m_y_business_01' }
+            models  = if ($r['pmodel']) { $null } else { People-For $r }
             role    = if ($r['patient']) { 'Bystander' } else { 'Suspect' }
             armed   = $r['armed']
             weapon  = if ($r['weapon']) { $r['weapon'] } else { 'WEAPON_PISTOL' }
@@ -530,7 +612,11 @@ foreach ($r in $library) {
 
     $lines.Add('    <Actors>')
     foreach ($a in $actors) {
-        $attributes = @("Model=`"$($a['model'])`"", "Count=`"$(if ($a['count']) { $a['count'] } else { 1 })`"")
+        $attributes = @("Count=`"$(if ($a['count']) { $a['count'] } else { 1 })`"")
+        # A pool where there is one, a single model where there is not. Both go in as Models: the pack
+        # then spawns through one path, and a pool of one is simply a pool of one.
+        if ($a['models']) { $attributes = @("Models=`"$($a['models'])`"") + $attributes }
+        else { $attributes = @("Model=`"$($a['model'])`"") + $attributes }
         if ($a['role']) { $attributes += "Role=`"$($a['role'])`"" }
         if ($a['armed']) { $attributes += 'Armed="true"'; $attributes += "Weapon=`"$($a['weapon'])`"" }
         if ($a['hostile']) { $attributes += 'Hostile="true"' }

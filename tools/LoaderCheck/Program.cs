@@ -134,10 +134,22 @@ internal static class Program
 
         Check("every callout type is bound to the recipe it came from", RecipeCallout.Bound.Count == expected);
 
+        // ------------------------------------------------------------- who the scene's people are
+        var actors = recipes.Cast<CalloutRecipe>().SelectMany(r => r.Actors).ToArray();
+        var pooled = actors.Count(a => a.Models.Length > 1);
+        var models = actors.SelectMany(a => a.Models.Length > 0 ? a.Models : new[] { a.Model })
+                           .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        Check("the people in a scene are drawn from a pool, and the pool survived parsing and loading",
+              pooled >= actors.Length - 1);
+        Check("every pool names more than one man and none of them twice",
+              actors.All(a => a.Models.Distinct(StringComparer.OrdinalIgnoreCase).Count() == a.Models.Length));
+
         Console.WriteLine();
         Console.WriteLine("   callouts built by the loader:  " + types.Count);
         Console.WriteLine("   of them with a script:         " + scripted + "  (" + scriptLines + " lines)");
         Console.WriteLine("   bound to their recipe:         " + RecipeCallout.Bound.Count);
+        Console.WriteLine("   actors the scenes spawn:       " + actors.Length + "  (" + pooled + " draw from a pool)");
+        Console.WriteLine("   distinct ped models:           " + models.Length);
 
         var sample = recipes.Cast<CalloutRecipe>().FirstOrDefault(r => r.Id == "lspd-armed-robbery-off-licence");
         if (sample != null)

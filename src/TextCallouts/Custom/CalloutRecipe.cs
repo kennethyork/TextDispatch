@@ -54,6 +54,16 @@ namespace TextCallouts.Custom
     internal sealed class ActorRecipe
     {
         public string Model = "a_m_y_business_01";
+
+        /// <summary>
+        /// The people this actor may be, drawn from at random each time the callout runs - so the man in
+        /// an armed robbery is rarely the same man twice. Empty means Model, and only Model.
+        ///
+        /// A pool is a theme rather than a costume list, and it is never a risk to the scene: the spawn
+        /// checks each candidate against the game and falls back if none of them exist, so a pool with a
+        /// typo in it cannot leave a callout with nobody in it. See RecipeCallout.PickModel.
+        /// </summary>
+        public string[] Models = new string[0];
         public string Role = "Suspect";          // Suspect | Bystander
         public bool Armed;
         public string Weapon = "WEAPON_PISTOL";
@@ -259,6 +269,25 @@ namespace TextCallouts.Custom
         {
             var actor = new ActorRecipe();
             actor.Model = AttributeText(element, "Model", actor.Model);
+
+            // Models="a,b,c" - the pool the actor is picked from. Model is what it falls back to, and
+            // is added to the end of the pool so a single-model recipe and a pooled one take the same
+            // path through the spawn.
+            var pool = AttributeText(element, "Models", null);
+            if (!string.IsNullOrWhiteSpace(pool))
+            {
+                var names = new List<string>();
+                foreach (var name in pool.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var trimmed = name.Trim();
+                    if (trimmed.Length > 0 &&
+                        !names.Exists(n => string.Equals(n, trimmed, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        names.Add(trimmed);
+                    }
+                }
+                if (names.Count > 0) actor.Models = names.ToArray();
+            }
             actor.Role = AttributeText(element, "Role", actor.Role);
             actor.Armed = Flag(element, "Armed", actor.Armed);
             actor.Weapon = AttributeText(element, "Weapon", actor.Weapon);

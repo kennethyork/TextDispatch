@@ -10,7 +10,7 @@
     <Advisory>Taken overnight, tracks heading for the trails.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
     <Actors>
-        <Ped Model="a_m_y_business_01" Count="1" Role="Suspect" Vehicle="blazer" />
+        <Ped Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04" Count="1" Role="Suspect" Vehicle="blazer" />
     </Actors>
     <OnApproach At="25" FleeInVehicle="true" />
     <Script>
