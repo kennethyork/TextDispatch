@@ -105,6 +105,13 @@ Installed side by side, they are one experience:
 Both boxes hide what you type from every other plugin and script while they are open, so typing
 "10-97" or "San Andreas Freight" cannot open somebody else's menu.
 
+**And both boxes are the same box.** Same corner, same half-transparent panel, same 15px text with the
+same line spacing, same width, same ten lines, same colours, the same "> " input line with the blinking
+caret, and the same transcript that stays on screen when the box closes. The one difference is the
+letters: TextDispatch draws Arial - an LSPDFR plugin can, through RAGE Plugin Hook's frame render - and a
+ScriptHookVDotNet script can only use the game's own fonts, so the jobs box uses one of those, sized in
+pixels to match.
+
 None of that is a hard dependency. Each plugin works alone: TextDispatch runs with no callout pack,
 TextCallouts runs with no text interface - its lines simply arrive as normal notifications instead -
 and TextJobs runs with no LSPDFR at all. The link between TextDispatch and TextCallouts is made at

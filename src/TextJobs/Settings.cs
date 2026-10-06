@@ -30,11 +30,24 @@ namespace TextJobs
         public string ChatPosition = "top-right";
 
         public float ChatMargin = 16f;
-        public float FontScale = 0.34f;
-        public int Lines = 12;
 
-        /// <summary>How long the last output stays on screen after the box closes.</summary>
-        public int TranscriptSeconds = 25;
+        /// <summary>
+        /// The text size, in pixels at 1080p - the same units and the same default as TextDispatch's
+        /// FontSize, because the two boxes are meant to be the same box.
+        /// </summary>
+        public float FontSize = 15f;
+
+        /// <summary>Everything scales from this, as TextDispatch's own UiScale does.</summary>
+        public float UiScale = 1f;
+
+        /// <summary>Ten, the same as TextDispatch's box, so both show the same screenful.</summary>
+        public int Lines = 10;
+
+        /// <summary>
+        /// Seconds the transcript stays after the box closes. Zero means it stays, which is what the
+        /// police box does and therefore what this one does now.
+        /// </summary>
+        public int TranscriptSeconds = 0;
 
         /// <summary>Hide what is typed from the other plugins, as TextDispatch does.</summary>
         public bool BlockOtherModsKeys = true;
@@ -44,7 +57,7 @@ namespace TextJobs
 
         private static readonly string[] KnownKeys =
         {
-            "openkey", "chatposition", "chatmargin", "fontscale", "lines", "transcriptseconds",
+            "openkey", "chatposition", "chatmargin", "fontsize", "uiscale", "lines", "transcriptseconds",
             "blockothermodskeys", "hidehardwarekeys"
         };
 
@@ -111,7 +124,18 @@ namespace TextJobs
                         case "openkey": settings.OpenKey = value; break;
                         case "chatposition": settings.ChatPosition = value; break;
                         case "chatmargin": settings.ChatMargin = AsFloat(value, settings.ChatMargin); break;
-                        case "fontscale": settings.FontScale = AsFloat(value, settings.FontScale); break;
+                        case "fontsize": settings.FontSize = AsFloat(value, settings.FontSize); break;
+                        case "uiscale": settings.UiScale = AsFloat(value, settings.UiScale); break;
+
+                        // The first version of this file sized the text as a ScriptHookVDotNet scale,
+                        // 0.34 by default. A file from then still works: 0.34 was 15px, so the old
+                        // number is converted rather than ignored, and the ini is rewritten with the
+                        // pixel names the next time it is opened.
+                        case "fontscale":
+                            var legacy = AsFloat(value, 0f);
+                            if (legacy > 0f) settings.FontSize = 15f * (legacy / 0.34f);
+                            break;
+
                         case "lines": settings.Lines = AsInt(value, settings.Lines); break;
                         case "transcriptseconds": settings.TranscriptSeconds = AsInt(value, settings.TranscriptSeconds); break;
                         case "blockothermodskeys": settings.BlockOtherModsKeys = AsBool(value, settings.BlockOtherModsKeys); break;
@@ -155,11 +179,14 @@ namespace TextJobs
                     "ChatPosition=" + settings.ChatPosition,
                     "; Distance from the screen edge, in pixels.",
                     "ChatMargin=" + settings.ChatMargin.ToString(CultureInfo.InvariantCulture),
-                    "; How big the text is, and how many lines of the transcript are shown.",
-                    "FontScale=" + settings.FontScale.ToString(CultureInfo.InvariantCulture),
+                    "; How big the text is, and how many lines of the transcript are shown. FontSize is",
+                    "; in pixels at 1080p, the same units TextDispatch.ini uses.",
+                    "FontSize=" + settings.FontSize.ToString(CultureInfo.InvariantCulture),
+                    "UiScale=" + settings.UiScale.ToString(CultureInfo.InvariantCulture),
                     "Lines=" + settings.Lines.ToString(CultureInfo.InvariantCulture),
                     "",
-                    "; How long the last output stays on screen after the box closes, in seconds.",
+                    "; How long the transcript stays after the box closes, in seconds. 0 means it stays,",
+                    "; which is what the police box does.",
                     "TranscriptSeconds=" + settings.TranscriptSeconds.ToString(CultureInfo.InvariantCulture),
                     "",
                     "; Whether what you type is hidden from the other plugins while the box is open.",

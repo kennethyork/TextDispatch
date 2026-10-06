@@ -94,6 +94,17 @@ namespace TextDispatch.Chat
         /// <summary>Default is top-right: the left side belongs to whoever else is drawing.</summary>
         public ChatCorner Position = ChatCorner.TopRight;
 
+        /// <summary>
+        /// Shown inside the box, on the input line, when nothing has been typed yet.
+        ///
+        /// It used to read "Press T to chat" and went on saying it for two releases after T stopped
+        /// being the key - the same mistake as the on-duty notification, in the one place the player
+        /// was actually looking. So it no longer names a key at all: while the box is open the key has
+        /// already done its job, and the key that matters is named where it belongs, in the notification
+        /// when the plugin loads.
+        /// </summary>
+        public string EmptyHint = "Type here. /help for the commands, Esc to close.";
+
         /// <summary>Distance from the screen edge, in pixels.</summary>
         public float Margin = 16f;
 
@@ -308,7 +319,7 @@ namespace TextDispatch.Chat
             if (!open) return;
 
             string typed = Input ?? "";
-            string shown = typed.Length == 0 ? "Press T to chat. /help for commands." : typed;
+            string shown = typed.Length == 0 ? EmptyHint : typed;
             var shownColour = typed.Length == 0
                 ? Color.FromArgb(160, 200, 200, 200)
                 : Color.FromArgb(255, 255, 255, 255);

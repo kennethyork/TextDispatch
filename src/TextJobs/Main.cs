@@ -51,7 +51,8 @@ namespace TextJobs
                 {
                     Position = corner,
                     Margin = _settings.ChatMargin,
-                    Scale = _settings.FontScale,
+                    FontSize = _settings.FontSize,
+                    UiScale = _settings.UiScale,
                     Lines = _settings.Lines,
                     TranscriptSeconds = _settings.TranscriptSeconds
                 };
@@ -77,7 +78,7 @@ namespace TextJobs
                 if (!_input.SetOpenKey(_settings.OpenKey))
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with F8");
 
-                _box.OpenHint = "press " + _input.OpenKeyDescription + " for the job list";
+                _box.OpenHint = "Type a job name or /jobs. Esc closes.";
 
                 // The one thing a command cannot do for itself: the key belongs to the input and the
                 // ini, both of which live here.
@@ -91,7 +92,7 @@ namespace TextJobs
 
                     _settings.OpenKey = wanted;
                     _settings.Save();
-                    _box.OpenHint = "press " + _input.OpenKeyDescription + " for the job list";
+                    _box.OpenHint = "Type a job name or /jobs. Esc closes.";
                     _box.Notice("The box now opens with " + _input.OpenKeyDescription + ", saved to the ini.");
                 };
 
