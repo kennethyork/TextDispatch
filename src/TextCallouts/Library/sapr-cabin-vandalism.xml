@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sapr-cabin-vandalism</Id>
+    <Name>Vandalism - Ranger Cabin</Name>
+    <For>ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Damage to a ranger cabin overnight.</Message>
+    <Advisory>Door forced, nobody inside.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Script>
+        <Line>The door has been kicked in and nothing has been taken.</Line>
+        <Line>There is nothing in there to take, which is rather the point.</Line>
+        <Line>They came in, had a look and left.</Line>
+    </Script>
+    <Lines>
+        <Approach>The door has been put in and there is nothing worth taking in there.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

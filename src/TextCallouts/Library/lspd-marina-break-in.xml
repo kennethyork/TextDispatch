@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-marina-break-in</Id>
+    <Name>Break-In at the Marina</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Break-in reported at a marina office.</Message>
+    <Advisory>Window forced, suspects believed inside.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01,a_f_y_beach_01,a_f_m_beach_01,a_f_y_fitness_01,a_f_y_fitness_02,a_f_y_tourist_01,a_f_y_hipster_02" Count="2" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>There is a torch on in the office and it is not mine.</Line>
+        <Line>I look after the boats, not the office. I have no key to the office.</Line>
+        <Line>Two of them went in through the window about ten minutes ago.</Line>
+    </Script>
+    <Lines>
+        <Approach>The office window is in and there is a torch moving about inside.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

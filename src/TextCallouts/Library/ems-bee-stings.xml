@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-bee-stings</Id>
+    <Name>Multiple Bee Stings</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person stung repeatedly, swelling spreading.</Message>
+    <Advisory>Conscious, stung on the arms and neck.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
+    </Actors>
+    <Script>
+        <Line>I was moving a hive and it went wrong.</Line>
+        <Line>My neck feels thick and my tongue does not feel right.</Line>
+        <Line>Where is the ambulance? Tell me the ambulance is coming.</Line>
+    </Script>
+    <Patient Model="a_m_m_farmer_01" TreatmentSeconds="14">My throat feels thick. That is not right, is it.</Patient>
+    <Lines>
+        <Approach>A dozen stings at least and the swelling is moving up the neck.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-cash-van-ambush</Id>
+    <Name>Cash Van Ambush</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Crew ambushed while loading a cash machine.</Message>
+    <Advisory>Two suspects on foot, cash box taken.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Support Ambulance="true" />
+    <Script>
+        <Line>It was not us. We were on the other side of the road.</Line>
+        <Line>Two of them and they went into the estate on foot.</Line>
+        <Line>One of them had something in their hand. I am not saying what.</Line>
+    </Script>
+    <Lines>
+        <Approach>They took the box and went on foot into the estate. The crew are shaken and unhurt.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

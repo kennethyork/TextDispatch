@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-weapons-cache</Id>
+    <Name>Weapons Cache - Woodland</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Cache of weapons reported in woodland.</Message>
+    <Advisory>Cache under a tarpaulin, no persons present.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>I walk the dog here every day and it has been there three days.</Line>
+        <Line>I did not look under it. I am not going to look under it.</Line>
+        <Line>There is a padlock and a chain and I am not the one who owns it.</Line>
+    </Script>
+    <Lines>
+        <Approach>It is under a tarpaulin with a padlock on it, about forty metres off the track.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-laundrette-robbery</Id>
+    <Name>Robbery - Laundrette</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Robbery at a laundrette, staff shaken.</Message>
+    <Advisory>Suspect gone on foot, till taken.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>It came off the counter and I ran.</Line>
+        <Line>I did not push anybody. Look at the staff, nobody has been touched.</Line>
+        <Line>It is in the bag. Take the bag.</Line>
+    </Script>
+    <Lines>
+        <Approach>They took the till and ran, and the staff are sat on the floor behind the counter.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

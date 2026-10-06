@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-counter-terror-raid</Id>
+    <Name>Counter-Terrorism Raid</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Warrant to be executed at an address under investigation.</Message>
+    <Advisory>Occupants believed armed, property covered front and rear.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>You have got the wrong address.</Line>
+        <Line>I have lived here eleven years. Ask anybody on the street.</Line>
+        <Line>The back door. He has gone out of the back door.</Line>
+    </Script>
+    <Stages>
+        <Stage At="20" Do="line">Both doors covered. Entry when you are ready.</Stage>
+        <Stage At="65" Do="hostile">One has come out of the back with something in hand.</Stage>
+        <Stage At="140" Do="end">Address secure. Evidence teams going in.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>Both doors are covered and the warrant is in my hand. Entry on your word.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

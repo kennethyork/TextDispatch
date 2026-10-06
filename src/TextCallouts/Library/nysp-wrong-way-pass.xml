@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>nysp-wrong-way-pass</Id>
+    <Name>Wrong Way - Mountain Pass</Name>
+    <For>nysp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Vehicle driving the wrong way on the pass.</Message>
+    <Advisory>Several callers, fog reported.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" Vehicles="sultan,buffalo,premier,asea,dilettante,blista,asterope,primo" Vehicle="premier" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>I took the wrong turning in the fog and there is nowhere to turn round.</Line>
+        <Line>I have had my lights on since the last junction.</Line>
+        <Line>Tell me where to go and I will go there.</Line>
+    </Script>
+    <Lines>
+        <Approach>In that fog, on that road, going the wrong way down it. Shut the top and the bottom.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

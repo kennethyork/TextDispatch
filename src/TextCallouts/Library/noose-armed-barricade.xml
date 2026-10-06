@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-armed-barricade</Id>
+    <Name>Armed Barricade - Federal Warrant</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Armed suspect barricaded in a flat.</Message>
+    <Advisory>One inside, weapon seen at the window.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>I am not coming out. There is nothing for me out here.</Line>
+        <Line>You can stand in that hall all night. I have got all night.</Line>
+        <Line>If you come through that door somebody is going to get hurt. It does not have to be me.</Line>
+    </Script>
+    <Stages>
+        <Stage At="40" Do="line">Negotiators are on the phone with them.</Stage>
+        <Stage At="110" Do="handsup">The door is open and there are hands in the doorway.</Stage>
+        <Stage At="170" Do="end">In custody. Stand the cordon down.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>They are in the flat with the door barricaded and something at the window. Nobody goes through that door yet.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -5,7 +5,7 @@ LSPDFR - and DriverJobs - in text. Three plugins that are meant to be installed 
 
     TextDispatch %DISPATCH_VERSION%    the police side: dispatch, the people in the callouts,
                                        traffic stops, records, all through a chat box
-    TextCallouts %CALLOUTS_VERSION%    three hundred and forty-four callouts, written from scratch, needing nothing but
+    TextCallouts %CALLOUTS_VERSION%    four hundred and sixty-two callouts, written from scratch, needing nothing but
                                        LSPDFR and RAGE Plugin Hook
     TextJobs %TEXTJOBS_VERSION%        the civilian side: DriverJobs V's jobs in a box of their own,
                                        needing neither LSPDFR nor RAGE Plugin Hook
@@ -41,9 +41,9 @@ INSTALL
        <your Grand Theft Auto V folder>\Plugins\LSPDFR\TextCallouts\
 
    ...so the files end up in Plugins\LSPDFR\TextCallouts\Library\. That is TextCallouts' own library:
-   three hundred and twenty-six of its three hundred and forty-four callouts, written as XML recipes and sorted by the duty they
+   four hundred and forty-four of its four hundred and sixty-two callouts, written as XML recipes and sorted by the duty they
    belong to - LSPD, Sheriff, Highway Patrol, Rangers, the prison, EMS and fire. Skip this step and the
-   eighteen callouts written in C# still work; you just lose the other three hundred and twenty-six, and the log says so.
+   eighteen callouts written in C# still work; you just lose the other four hundred and forty-four, and the log says so.
 
 4. Start the game with RagePluginHook.exe, not the normal launcher.
 
@@ -70,7 +70,7 @@ WHAT THEY DO TOGETHER
 
 Installed side by side, they are one experience:
 
-  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - three hundred and forty-four of them, sorted by what you went on duty as
+  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - four hundred and sixty-two of them, sorted by what you went on duty as
 
     Five of those eighteen are not police work: a cardiac arrest, an overdose, a collision with
     somebody trapped in the car, a welfare check and a vehicle fire. They are offered only while you
@@ -88,8 +88,11 @@ Installed side by side, they are one experience:
     where the vehicle *is* the callout. Every recipe carries a fallback model as well as a pool, checked
     against your game before anything spawns, so a pool that is wrong for an install cannot leave a
     scene with nobody in it
+  * the agencies that had nothing have work of their own: the FIB, the IAA, the DOA, the NOOSE and North
+    Yankton were getting fifteen calls each and none of them federal, because no recipe said "any police
+    agency". They now have warrants, watches, informant meets, raids and sieges - 21 to 35 calls each
   * people in the callouts answer in text when you talk to them - and every callout has its own script,
-    nine hundred and eighty-one lines across the three hundred and twenty-six recipes. Type at the suspect
+    one thousand three hundred and thirty-five lines across the four hundred and forty-four recipes. Type at the suspect
     in an armed robbery and he denies it in character, out of that callout's own lines, with no model
     running at all: TextDispatch asks the callout what its people say *before* it asks its own script or
     Ollama. In a medical callout it is the patient who answers, so asking how it started gets you the

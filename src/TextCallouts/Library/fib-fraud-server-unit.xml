@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-fraud-server-unit</Id>
+    <Name>Cyber Fraud - Server Address</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Server address linked to a fraud network.</Message>
+    <Advisory>Unit in a business park, nobody outside.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>It is a server room. It does what servers do.</Line>
+        <Line>I rent the unit, I pay the rent, I keep it locked.</Line>
+        <Line>You want a name? I do not have a name. The money comes by transfer.</Line>
+    </Script>
+    <Lines>
+        <Approach>The address is a unit in a business park and it has been paid for a year in advance.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

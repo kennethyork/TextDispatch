@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-city-siege</Id>
+    <Name>Siege - City Centre Building</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Armed suspects refusing to leave a building in the city centre.</Message>
+    <Advisory>Two suspects, staff still inside.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>We are not opening the door. Not yet.</Line>
+        <Line>The staff are fine. Nobody has been touched.</Line>
+        <Line>Send one car, one driver, and we are gone. That is the offer.</Line>
+    </Script>
+    <Stages>
+        <Stage At="60" Do="line">Talking to them by phone. They want a car.</Stage>
+        <Stage At="130" Do="handsup">The front door is opening.</Stage>
+        <Stage At="200" Do="end">Both detained. Staff are out and being checked over.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>Two of them, staff inside, and the street is shut. Nobody goes in until I say.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

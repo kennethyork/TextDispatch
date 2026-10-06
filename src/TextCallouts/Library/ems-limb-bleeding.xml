@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-limb-bleeding</Id>
+    <Name>Severe Limb Bleeding</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person bleeding heavily from a leg wound.</Message>
+    <Advisory>Conscious, pressure applied by a bystander.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
+    </Actors>
+    <Script>
+        <Line>The glass came down with the window and it went into the leg.</Line>
+        <Line>The man in the van is still holding it. He has not let go.</Line>
+        <Line>I am cold. Is it the blood? Is that why I am cold.</Line>
+    </Script>
+    <Patient Model="a_m_m_eastsa_01" TreatmentSeconds="15">It has gone cold. Why has it gone cold?</Patient>
+    <Lines>
+        <Approach>The bystander is doing the right thing and has not let go. That is the only reason this is not worse.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

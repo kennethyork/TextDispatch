@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-coast-drop</Id>
+    <Name>Contraband Drop - Coast Road</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Contraband believed to be landing on the coast road.</Message>
+    <Advisory>Vehicle waiting on the verge with its lights off.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Vehicles="burrito,rumpo,youga,minivan" Vehicle="burrito" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>I am waiting for the tide. I fish off this road.</Line>
+        <Line>The lights are off to keep the battery for the morning.</Line>
+        <Line>Nothing has come in tonight. Nothing and nobody.</Line>
+    </Script>
+    <Lines>
+        <Approach>A van with its lights off on the coast road at two in the morning. Nobody does that for the view.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

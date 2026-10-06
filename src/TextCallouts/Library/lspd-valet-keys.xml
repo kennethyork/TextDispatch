@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-valet-keys</Id>
+    <Name>Valet - Keys Taken</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Car keys taken from a valet desk.</Message>
+    <Advisory>Two suspects, one seen going through the desk.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="2" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>The board was open and the desk was empty.</Line>
+        <Line>I was looking for my own keys.</Line>
+        <Line>There are forty keys on that board. Count them and tell me which one is missing.</Line>
+    </Script>
+    <Lines>
+        <Approach>They took the keys off the board, so they can take any car on that lot.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

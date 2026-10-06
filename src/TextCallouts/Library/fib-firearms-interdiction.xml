@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-firearms-interdiction</Id>
+    <Name>Firearms Interdiction</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Vehicle believed to be carrying firearms into the city.</Message>
+    <Advisory>Two occupants, vehicle known to the agency.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Vehicles="sultan,buffalo,premier,asea,dilettante,blista,asterope,primo" Vehicle="asea" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>There is nothing in the car. Search it, go on.</Line>
+        <Line>I am insured. Everything on this car is legal.</Line>
+        <Line>You are not opening the boot. You are not opening it.</Line>
+    </Script>
+    <Lines>
+        <Briefing>If it runs it runs, but the weapons go with it. Take the lay-by stop.</Briefing>
+        <Approach>It came off the highway twenty minutes ago. Do not stop it in traffic - wait for the lay-by.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

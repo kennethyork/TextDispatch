@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-bomb-threat</Id>
+    <Name>Bomb Threat - Public Building</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Threat called in against a public building.</Message>
+    <Advisory>Building being evacuated by staff.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>We brought everybody out through the fire exits. Nobody went back for anything.</Line>
+        <Line>There are two hundred people on the pavement. Somebody has to tell them where to go.</Line>
+        <Line>The call was four minutes long and he knew the layout of the building.</Line>
+    </Script>
+    <Stages>
+        <Stage At="45" Do="line">Evacuation is complete and nobody is unaccounted for.</Stage>
+        <Stage At="120" Do="end">Search finished. Nothing found, building handed back.</Stage>
+    </Stages>
+    <Lines>
+        <Briefing>A threat is not a device. Clear the building, hold the cordon, let the team work.</Briefing>
+        <Approach>The call came to the front desk and the building is coming out now. Nobody goes in.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

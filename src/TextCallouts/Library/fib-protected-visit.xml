@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-protected-visit</Id>
+    <Name>Threat Assessment - Protected Visit</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Protected person arriving, route to be checked first.</Message>
+    <Advisory>No specific threat, the route has been used before.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>The route is clear. I have walked it twice.</Line>
+        <Line>There is one blind corner by the hotel and I want a unit on it.</Line>
+        <Line>If it goes wrong it goes wrong there. That is where I would do it.</Line>
+    </Script>
+    <Lines>
+        <Approach>The route is straightforward, which is exactly why I want it walked before they move.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

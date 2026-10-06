@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>iaa-counter-surveillance</Id>
+    <Name>Counter-Surveillance - Watched Office</Name>
+    <For>iaa</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person repeatedly seen watching an office.</Message>
+    <Advisory>One suspect, parked up, camera to hand.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I am a photographer. Buildings are what I photograph.</Line>
+        <Line>It is a public pavement and I can put a camera on it.</Line>
+        <Line>Look at the card. There is a building on every frame.</Line>
+    </Script>
+    <Lines>
+        <Approach>Same corner four days running with a camera. That is not tourism.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

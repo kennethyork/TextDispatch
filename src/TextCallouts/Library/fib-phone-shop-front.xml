@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-phone-shop-front</Id>
+    <Name>Front Business - Stolen Handsets</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Shop believed to be re-selling stolen handsets.</Message>
+    <Advisory>Shop open, display cases full.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Script>
+        <Line>Every handset has a box and every box has a receipt.</Line>
+        <Line>I buy in bulk from a wholesaler. I do not ask where a wholesaler gets them.</Line>
+        <Line>Take the books. Take all of the books.</Line>
+    </Script>
+    <Lines>
+        <Approach>Every handset in that window came from somewhere it should not have been. Ask for the books.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

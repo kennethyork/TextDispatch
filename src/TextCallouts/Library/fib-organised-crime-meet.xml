@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-organised-crime-meet</Id>
+    <Name>Organised Crime - Meeting in Progress</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Meeting of two groups at a rural property.</Message>
+    <Advisory>Six or more vehicles at the address.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="4" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>We are having a barbecue. Six cars, two people and a barbecue.</Line>
+        <Line>Nothing is happening here tonight. Nothing has ever happened here.</Line>
+        <Line>If I go over that fence you are not going to like what happens next.</Line>
+    </Script>
+    <Stages>
+        <Stage At="30" Do="line">Two of them are at the gate, watching the road.</Stage>
+        <Stage At="70" Do="flee">They have seen the unit. They are going over the back fence.</Stage>
+        <Stage At="140" Do="end">Four detained. Two vehicles seized.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>Six vehicles at a house that holds two people. Nobody meets in that car park by accident.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

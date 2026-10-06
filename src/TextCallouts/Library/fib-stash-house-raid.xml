@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-stash-house-raid</Id>
+    <Name>Raid - Suspected Stash House</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Warrant to be executed at an address holding stolen goods.</Message>
+    <Advisory>Occupants inside, possibly armed.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>The door is locked and it stays locked.</Line>
+        <Line>You have got paperwork? Slip it under the door.</Line>
+        <Line>Alright. Alright, I am opening it. Do not shoot.</Line>
+    </Script>
+    <Stages>
+        <Stage At="20" Do="line">Team is at the door. Entry on your word.</Stage>
+        <Stage At="60" Do="hostile">One of them has gone for the back door.</Stage>
+        <Stage At="120" Do="end">Property recovered and the address is secure.</Stage>
+    </Stages>
+    <Lines>
+        <Briefing>A signed warrant and a front door. Go in loud, go in together.</Briefing>
+        <Approach>The warrant is signed. Nobody moves until the team is at the door.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

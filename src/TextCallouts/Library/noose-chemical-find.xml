@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-chemical-find</Id>
+    <Name>Chemical Find - Secure It</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Drums found at a disused site, strong smell reported.</Message>
+    <Advisory>No persons present, wind taking it toward the road.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>We have not used that part of the site in two years.</Line>
+        <Line>The drums are not ours. I can show you the delivery notes.</Line>
+        <Line>Do not open them. I am asking you not to open them.</Line>
+    </Script>
+    <Lines>
+        <Approach>Nobody is there and the wind is taking it towards the road. That is the problem.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

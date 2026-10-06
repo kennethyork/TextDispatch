@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>iaa-detained-national</Id>
+    <Name>Detained Foreign National</Name>
+    <For>iaa</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Foreign national detained, identity documents in question.</Message>
+    <Advisory>One suspect, compliant, documents held.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Script>
+        <Line>That passport is mine and it was issued to me.</Line>
+        <Line>I have been in this country two weeks. Ask the hotel.</Line>
+        <Line>You are holding me over a stamp somebody does not like.</Line>
+    </Script>
+    <Lines>
+        <Approach>The passport is either very good or very bad and the difference matters.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

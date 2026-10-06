@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>nysp-remote-fuel-theft</Id>
+    <Name>Fuel Theft - Remote Station</Name>
+    <For>nysp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Fuel taken from a station with nobody on site.</Message>
+    <Advisory>Vehicle at the pump with covered plates.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Suspect" Vehicles="sultan,buffalo,premier,asea,dilettante,blista,asterope,primo" Vehicle="asea" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>The pump runs on a card and I have got a card.</Line>
+        <Line>The tape on the plate is from a repair. Ask any garage.</Line>
+        <Line>I have paid for the fuel. Look at the receipt.</Line>
+    </Script>
+    <Lines>
+        <Approach>Nobody on site, plates covered with tape, and the pump is still running.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

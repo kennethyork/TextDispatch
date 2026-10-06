@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-property-recovery</Id>
+    <Name>Stolen Property - Recovery</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>High-value property believed held in a garage.</Message>
+    <Advisory>Nobody visible, garage locked.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Script>
+        <Line>The garage has been locked since we moved in.</Line>
+        <Line>I have never been in the garage. The landlord keeps the key.</Line>
+        <Line>You can break it down. It is not my door.</Line>
+    </Script>
+    <Lines>
+        <Approach>The property went missing three weeks ago and it is in that garage. The rest is paperwork.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

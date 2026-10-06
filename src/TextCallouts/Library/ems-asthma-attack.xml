@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-asthma-attack</Id>
+    <Name>Asthma Attack</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person unable to breathe properly, inhaler not working.</Message>
+    <Advisory>Conscious, sitting, speaking in short sentences.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
+    </Actors>
+    <Script>
+        <Line>It came on about an hour ago and the blue one is empty.</Line>
+        <Line>I cannot finish a sentence. I know what that means.</Line>
+        <Line>Sit me up. Do not lay me down.</Line>
+    </Script>
+    <Patient Model="a_f_y_hipster_01" TreatmentSeconds="12">I can get air in. It is the getting it out that I cannot do.</Patient>
+    <Lines>
+        <Approach>She is sat on the step and cannot get a full sentence out. The inhaler is empty.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

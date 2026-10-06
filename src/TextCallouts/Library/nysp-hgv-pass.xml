@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>nysp-hgv-pass</Id>
+    <Name>HGV Check - Mountain Pass</Name>
+    <For>nysp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Lorry stopped for a check, driver refusing to get out.</Message>
+    <Advisory>Driver in the cab, engine running.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Script>
+        <Line>The load is legal and the paperwork is in the cab.</Line>
+        <Line>I am not getting out on ice. That is how people get killed.</Line>
+        <Line>Close the pass if you want. I am not moving.</Line>
+    </Script>
+    <Lines>
+        <Approach>The engine is running and nobody is getting out. There is ice on the pass.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

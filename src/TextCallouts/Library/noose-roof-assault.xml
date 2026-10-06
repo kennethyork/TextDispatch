@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-roof-assault</Id>
+    <Name>Air Support - Roof Assault</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Suspect on a roof, ground units unable to reach.</Message>
+    <Advisory>One suspect, armed, refusing to come down.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>Do not come up here. I mean it.</Line>
+        <Line>I can see the whole street from up here. You are not surrounding anything.</Line>
+        <Line>Put the aircraft off me and I will talk to you.</Line>
+    </Script>
+    <Stages>
+        <Stage At="50" Do="line">Air unit overhead and holding.</Stage>
+        <Stage At="120" Do="handsup">Weapon down and on their knees.</Stage>
+        <Stage At="180" Do="end">Brought down and in custody.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>They are on the roof and the only way up is the air unit. Ground teams have the building.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-electrical-burns</Id>
+    <Name>Electrical Burns</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person burnt by a live cable at a site.</Message>
+    <Advisory>Power isolated, casualty conscious.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Bystander" />
+    </Actors>
+    <Script>
+        <Line>The cable was supposed to be dead. It was signed off.</Line>
+        <Line>It was in both hands and then it was not.</Line>
+        <Line>My hands are buzzing. They have been buzzing since it happened.</Line>
+    </Script>
+    <Patient Model="a_m_y_construct_01" TreatmentSeconds="16">My hands feel like they are still holding it.</Patient>
+    <Lines>
+        <Approach>The power is off and the burns are on both hands. That is where the current went in and out.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

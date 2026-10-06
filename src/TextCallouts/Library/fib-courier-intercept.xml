@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-courier-intercept</Id>
+    <Name>Courier Intercept</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Courier believed to be carrying evidence out of the city.</Message>
+    <Advisory>One suspect on foot, bag over the shoulder.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Flee="true" />
+    <Script>
+        <Line>I am going to the station. What is wrong with the station?</Line>
+        <Line>The bag is mine. It came off a courier van.</Line>
+        <Line>You cannot look in the bag. You need to tell me why.</Line>
+    </Script>
+    <Lines>
+        <Briefing>The bag is the evidence. The person is secondary.</Briefing>
+        <Approach>They are walking for the station with a bag they did not have this morning. Do not lose sight of the bag.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

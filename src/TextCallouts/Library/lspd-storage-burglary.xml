@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lspd-storage-burglary</Id>
+    <Name>Storage Unit Burglary</Name>
+    <For>lspd</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Storage units broken into overnight.</Message>
+    <Advisory>Several doors forced, nobody on site.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Script>
+        <Line>Four doors open and none of them is mine.</Line>
+        <Line>I came to get a bike and the padlocks were on the ground.</Line>
+        <Line>I have not touched anything that belongs to anybody else. Not one thing.</Line>
+    </Script>
+    <Lines>
+        <Approach>Four units opened in the night and the padlocks are all on the ground.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

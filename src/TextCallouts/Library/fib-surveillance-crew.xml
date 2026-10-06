@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-surveillance-crew</Id>
+    <Name>Surveillance - Suspected Robbery Crew</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Request for surveillance of a crew believed to be planning a robbery.</Message>
+    <Advisory>Two vehicles, three suspects, no weapons seen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="3" Role="Suspect" Vehicles="sultan,buffalo,premier,asea,dilettante,blista,asterope,primo" Vehicle="asea" />
+    </Actors>
+    <Script>
+        <Line>We have been parked here an hour and nobody has said anything about it.</Line>
+        <Line>I am waiting for a mate. That is all this is.</Line>
+        <Line>You want to search the car? Go ahead. It is not my car.</Line>
+    </Script>
+    <Stages>
+        <Stage At="40" Do="line">One of them is out and walking the block.</Stage>
+        <Stage At="90" Do="fleeinvehicle">They are moving. Both vehicles, northbound.</Stage>
+        <Stage At="150" Do="end">Vehicle recovered. Two in custody, one on the floor.</Stage>
+    </Stages>
+    <Lines>
+        <Briefing>Watch them. If they move on a target, that is when we go, and we go as one.</Briefing>
+        <Approach>They have been sat on that corner an hour. Keep out of sight and keep the log.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

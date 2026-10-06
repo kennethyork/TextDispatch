@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>iaa-consular-incident</Id>
+    <Name>Consular Incident - Protected Property</Name>
+    <For>iaa</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Incident at a consular building, staff requesting attendance.</Message>
+    <Advisory>Crowd outside, no weapons seen.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Script>
+        <Line>They are protesting something that happened a thousand miles away.</Line>
+        <Line>Nobody has touched the building. Nobody has touched anybody.</Line>
+        <Line>The staff inside want them moved and I am not moving them.</Line>
+    </Script>
+    <Lines>
+        <Approach>There are thirty people outside and the staff want a presence, not an arrest.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

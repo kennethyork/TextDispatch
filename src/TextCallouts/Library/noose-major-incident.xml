@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-major-incident</Id>
+    <Name>Major Incident - Forward Command</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Major incident declared, forward command point needed.</Message>
+    <Advisory>Several agencies on scene, no unified command.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>Nobody knows who is in charge. That is the problem.</Line>
+        <Line>Three services, three radios, and I have been on all three.</Line>
+        <Line>Give me one frequency and one point and I will sort the rest.</Line>
+    </Script>
+    <Lines>
+        <Approach>Everybody is shouting into a different radio. What is needed is one point and one voice.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

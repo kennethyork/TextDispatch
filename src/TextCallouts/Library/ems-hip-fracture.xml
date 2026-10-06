@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-hip-fracture</Id>
+    <Name>Suspected Hip Fracture</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person fallen, unable to stand, hip pain.</Message>
+    <Advisory>Conscious on the pavement, leg rotated.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
+    </Actors>
+    <Script>
+        <Line>I went down on the step and I have not been able to get up.</Line>
+        <Line>The leg is turned out. I can see that it is turned out.</Line>
+        <Line>Do not sit me up. Whatever you do, do not sit me up.</Line>
+    </Script>
+    <Patient Model="a_f_y_business_02" TreatmentSeconds="16">It is the hip. I heard it go before I felt it.</Patient>
+    <Lines>
+        <Approach>She has been down since the morning and the leg is turned out at the foot.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

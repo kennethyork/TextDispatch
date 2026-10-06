@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>doa-shore-landing</Id>
+    <Name>Smuggling - Shore Landing</Name>
+    <For>doa</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Boat landing at a remote beach reported.</Message>
+    <Advisory>One vehicle on the beach, lights off.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01,a_f_y_beach_01,a_f_m_beach_01,a_f_y_fitness_01,a_f_y_fitness_02,a_f_y_tourist_01,a_f_y_hipster_02" Count="1" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Vehicles="burrito,rumpo,youga,minivan" Vehicle="burrito" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>The boat is not mine. I am watching it for the owner.</Line>
+        <Line>Nobody came off it. Nobody went near it.</Line>
+        <Line>The van has nothing to do with the boat.</Line>
+    </Script>
+    <Lines>
+        <Approach>A boat and a van at that beach at this hour, and neither of them is fishing.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

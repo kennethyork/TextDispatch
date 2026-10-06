@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>saspa-yard-standoff</Id>
+    <Name>Yard Standoff - Two Groups</Name>
+    <For>prison</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Two groups refusing to leave the exercise yard.</Message>
+    <Advisory>Eight or more, no weapons seen yet.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="4" Role="Suspect" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Backup="true" />
+    <Script>
+        <Line>Two groups and they have been face to face twenty minutes.</Line>
+        <Line>Nobody has thrown a punch yet. That is the part that changes.</Line>
+        <Line>Go in there now and it becomes one fight instead of two.</Line>
+    </Script>
+    <Lines>
+        <Approach>Two groups, neither moving, and the staff will not go in with those numbers.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-counterfeit-workshop</Id>
+    <Name>Counterfeit Currency - Workshop</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Print workshop found in a unit on an industrial estate.</Message>
+    <Advisory>Presses running, nobody outside the unit.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>It is a job. I get paid to run a press.</Line>
+        <Line>I have never spent any of it. Look at my shoes and tell me I have spent any of it.</Line>
+        <Line>The paper came on a pallet. It was on a pallet and I did not ask.</Line>
+    </Script>
+    <Lines>
+        <Briefing>A press that is running is evidence. Take the room before anybody clears it.</Briefing>
+        <Approach>The presses are running and there is paper stacked to the roof. Nobody has come out.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

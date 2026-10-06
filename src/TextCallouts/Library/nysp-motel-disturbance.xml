@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>nysp-motel-disturbance</Id>
+    <Name>Motel Disturbance</Name>
+    <For>nysp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Disturbance at a roadside motel.</Message>
+    <Advisory>Several guests in the car park, one injured.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="3" Role="Suspect" Hostile="true" />
+    </Actors>
+    <OnApproach At="25" Hostile="true" />
+    <Support Ambulance="true" />
+    <Script>
+        <Line>It is the room next to ours and it has been going all night.</Line>
+        <Line>Two of them, and one is worse off than the other.</Line>
+        <Line>I am not part of it. I came out because of the noise.</Line>
+    </Script>
+    <Lines>
+        <Approach>It has spilled out into the car park and somebody is sat against a car.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

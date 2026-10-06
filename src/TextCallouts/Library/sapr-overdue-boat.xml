@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sapr-overdue-boat</Id>
+    <Name>Overdue Boat - Lake</Name>
+    <For>ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Boat overdue on the lake, trailer still at the slip.</Message>
+    <Advisory>One boat, two on board, no radio contact.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01,a_f_y_beach_01,a_f_m_beach_01,a_f_y_fitness_01,a_f_y_fitness_02,a_f_y_tourist_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>The trailer is here and the boat is not.</Line>
+        <Line>They said two hours on the water. It has been five.</Line>
+        <Line>There is no radio on the boat. They never ran one.</Line>
+    </Script>
+    <Lines>
+        <Approach>The trailer is at the slip and the light went an hour ago.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

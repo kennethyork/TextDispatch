@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-substation</Id>
+    <Name>Fire at a Substation</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Fire at an electrical substation.</Message>
+    <Advisory>Power company on the way, area being cleared.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>It is the substation and there is oil in those units.</Line>
+        <Line>The power company is twenty minutes out and I cannot hold that fence forever.</Line>
+        <Line>Nobody goes in there. I have told everybody twice.</Line>
+    </Script>
+    <Lines>
+        <Approach>It is the substation and the power company is twenty minutes out. Keep everybody back from the fence.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sahp-bike-filtering</Id>
+    <Name>Motorcycles Filtering at Speed</Name>
+    <For>sahp</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Motorcycles filtering through traffic at speed.</Message>
+    <Advisory>Three bikes, no plates visible.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="3" Role="Suspect" Vehicles="akuma,bati,sanchez,ruffian,pcj,faggio" Vehicle="bati" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>It is legal to filter. Ask anybody on a bike.</Line>
+        <Line>We are not doing anything wrong.</Line>
+        <Line>You are not keeping up with three of us.</Line>
+    </Script>
+    <Lines>
+        <Approach>Three of them going through the traffic like it is standing still, and none of the plates are readable.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

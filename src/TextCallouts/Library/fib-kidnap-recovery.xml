@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-kidnap-recovery</Id>
+    <Name>Kidnap - Recovery Operation</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person taken from a street and believed held locally.</Message>
+    <Advisory>One vehicle involved, direction of travel known.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" Vehicles="sultan,buffalo,premier,asea,dilettante,blista,asterope,primo" Vehicle="buffalo" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Support Backup="true" />
+    <Script>
+        <Line>The passenger asked for a lift. That is all.</Line>
+        <Line>Nobody is being held anywhere. Turn round and look for yourself.</Line>
+        <Line>You are not opening that door from the outside.</Line>
+    </Script>
+    <Lines>
+        <Approach>The car went east and there is somebody in the back of it. This is a recovery, not a chase.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

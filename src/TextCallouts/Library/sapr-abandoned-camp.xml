@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sapr-abandoned-camp</Id>
+    <Name>Abandoned Campsite</Name>
+    <For>ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>Manual</Resolution>
+    <Message>Campsite abandoned with the belongings still there.</Message>
+    <Advisory>No persons present, tent up several days.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Script>
+        <Line>The tent has been up since Tuesday and the zip is open.</Line>
+        <Line>There is a sleeping bag in it and a pan outside.</Line>
+        <Line>Nobody has been near it and the food is still there.</Line>
+    </Script>
+    <Lines>
+        <Approach>The tent has been up three days and nobody has been in it since Tuesday.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

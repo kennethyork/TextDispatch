@@ -179,7 +179,7 @@ rather than TextDispatch's left arrow.
 
 ## Also in this repository: TextCallouts
 
-[`src/TextCallouts/`](src/TextCallouts/) is a companion **callout pack** — three hundred and forty-four callouts, written
+[`src/TextCallouts/`](src/TextCallouts/) is a companion **callout pack** — four hundred and sixty-two callouts, written
 from scratch, that need **nothing but LSPDFR and RAGE Plugin Hook**: no StopThePed, no Ultimate
 Backup, no CompuLite, no Callout Interface, no Common Data Framework, no RAGENativeUI. Its whole
 reference table is `LSPD First Response`, `RagePluginHook` and the .NET framework, verified by
@@ -189,9 +189,9 @@ If TextDispatch is installed, each callout's lines are mirrored into the chat bo
 TextDispatch lists them in `/calls` and can start any of them with `/callout <name>` — so the two
 work as one thing while depending on nothing.
 
-**Every callout in it has a script.** Three hundred and twenty-six recipes, nine hundred and eighty-one lines of dialogue between them, three or four each: open the box, type at the suspect in an armed robbery, and they answer in character out of that callout's own lines - and TextDispatch asks for those lines *before* it asks its own script or a model, so the answer is instant and needs no LLM. In a medical callout it is the patient who answers rather than the bystander beside them. The lines live in `tools/callout-dialogue.psd1`, and `tools/make-callout-library.ps1` will not build a library in which a callout is missing one.
+**Every callout in it has a script.** Four hundred and forty-four recipes, one thousand three hundred and thirty-five lines of dialogue between them, three or four each: open the box, type at the suspect in an armed robbery, and they answer in character out of that callout's own lines - and TextDispatch asks for those lines *before* it asks its own script or a model, so the answer is instant and needs no LLM. In a medical callout it is the patient who answers rather than the bystander beside them. The lines live in `tools/callout-dialogue.psd1`, and `tools/make-callout-library.ps1` will not build a library in which a callout is missing one.
 
-Eighteen of its callouts are written in C#, and three hundred and twenty-six more ship as **XML recipes** in its Library folder, sorted by the duty they belong to; **your own are written the same way** - drop a file in
+Eighteen of its callouts are written in C#, and four hundred and forty-four more ship as **XML recipes** in its Library folder, sorted by the duty they belong to; **your own are written the same way** - drop a file in
 `Plugins\LSPDFR\TextCallouts\Custom\`, go on duty, and it is offered like any other callout. A file
 it cannot make sense of is refused with the reason in the log, never ignored.
 
@@ -238,7 +238,7 @@ the chat box rendering once per frame rather than once per game tick. The integr
 the part most likely to have rough edges. Issues and log excerpts are welcome.
 
 **TextCallouts 1.1.0** is the pack described above, in [`src/TextCallouts/`](src/TextCallouts/) —
-three hundred and forty-four callouts, plus **your own callouts written as XML recipes**. It is released separately from
+four hundred and sixty-two callouts, plus **your own callouts written as XML recipes**. It is released separately from
 TextDispatch, which is at **1.0.13** (the inventory wording fix) and does not depend on it.
 
 **1.0.12 answers the question that costs the most evenings.** A plugin that is installed in the wrong

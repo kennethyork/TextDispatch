@@ -172,9 +172,14 @@ namespace TextCallouts.Custom
             }
 
             // The patient, for the medical recipes: on the ground and alive, with nothing to arrest.
+            //
+            // Checked against the game like everything else that spawns, and for a sharper reason than
+            // the pools have: a patient who never appears is a callout that cannot be finished. The
+            // medical path waits on the patient, so there would be nothing to treat and no way to end
+            // the call except the timeout. A model that is wrong for an install costs a face, not a call.
             if (recipe.Patient != null)
             {
-                _patient = SpawnPed(recipe.Patient.Model, position, heading);
+                _patient = SpawnPed(SafeModel(recipe.Patient.Model, "a_m_m_business_01"), position, heading);
                 _patient.Health = 70;
                 try { _patient.BlockPermanentEvents = true; } catch { }
                 try { Rage.Native.NativeFunction.Natives.SetPedToRagdoll(_patient, -1, -1, 0, false, false, false); }
@@ -278,6 +283,24 @@ namespace TextCallouts.Custom
                     Close("every suspect is dealt with");
                     return false;
             }
+        }
+
+        /// <summary>
+        /// A model that exists in this game, or one that certainly does. For the things that are spawned
+        /// once and cannot fall back on a pool of their own: a recipe's patient.
+        /// </summary>
+        private static string SafeModel(string wanted, string fallback)
+        {
+            if (string.IsNullOrEmpty(wanted)) return fallback;
+
+            try
+            {
+                if (new Model(wanted).IsValid) return wanted;
+                Log.Line("the model " + wanted + " is not in this game - " + fallback + " is used instead");
+            }
+            catch (Exception ex) { Log.Error("checking the model " + wanted, ex); }
+
+            return fallback;
         }
 
         /// <summary>

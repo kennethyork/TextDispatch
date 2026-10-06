@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-scrapyard</Id>
+    <Name>Fire at a Scrapyard</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Fire at a scrapyard, dense smoke.</Message>
+    <Advisory>No persons on site, wind taking smoke over houses.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Script>
+        <Line>There is nobody on site. The gates are locked.</Line>
+        <Line>There are cars stacked three high and there is fuel in all of them.</Line>
+        <Line>The smoke is going over the houses. That is what I would worry about.</Line>
+    </Script>
+    <Lines>
+        <Approach>The smoke is going straight over the houses and there are cars stacked in there.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

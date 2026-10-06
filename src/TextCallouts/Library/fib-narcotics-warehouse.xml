@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-narcotics-warehouse</Id>
+    <Name>Narcotics - Warehouse Raid</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Warrant for a warehouse believed to hold narcotics.</Message>
+    <Advisory>Shutter down, movement heard inside.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="3" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>The shutter is down. Nobody is inside.</Line>
+        <Line>I am the night watchman. That is the job.</Line>
+        <Line>They came at four and they left at four. I am not making that up.</Line>
+    </Script>
+    <Stages>
+        <Stage At="25" Do="line">The shutter is coming up on its own.</Stage>
+        <Stage At="55" Do="hostile">They are not coming out. They are going for the yard.</Stage>
+        <Stage At="130" Do="end">Yard secured and the seizure is starting.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>The shutter is down, there is movement inside, and the warrant covers all of it.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

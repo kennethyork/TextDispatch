@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>lssd-farm-shop-robbery</Id>
+    <Name>Robbery at a Farm Shop</Name>
+    <For>sheriff</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Robbery at a farm shop, till taken.</Message>
+    <Advisory>Suspect left in a vehicle, staff unhurt.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04,a_f_y_hipster_02,a_f_y_hipster_01,a_f_m_fatwhite_01,a_f_y_soucent_01,a_f_m_bodybuild_01" Count="1" Role="Suspect" Vehicles="sultan,buffalo,premier,asea,dilettante,blista,asterope,primo" Vehicle="asea" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>They came in at closing with a bar and took the till.</Line>
+        <Line>Two of them and both had their faces covered.</Line>
+        <Line>They went south in a car. I did not get the number.</Line>
+    </Script>
+    <Lines>
+        <Approach>They went in at closing with a bar and took the till. Nobody was hurt and the vehicle went south.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -405,7 +405,7 @@ is also the horn while driving (that is LSPDFR's choice, not a collision with an
 
 ### 1.13 What can now come out, and what cannot
 
-TextCallouts is at three hundred and forty-four callouts, and every callout the other packs offer has an
+TextCallouts is at four hundred and sixty-two callouts, and every callout the other packs offer has an
 equivalent in it - so the callout packs can be uninstalled.
 
 | Pack | Callouts | Covered? |
@@ -439,7 +439,7 @@ for SSStuartCallouts and StoryCallouts, and an empty `ParksCommon\ParksModsWebCh
 is no longer installed. Nothing was deleted, so putting one back is a drag. Delete that folder once you are
 sure.
 
-Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.12.0**, and the interaction plugins
+Still in `Plugins\LSPDFR`: **TextDispatch 1.0.21**, **TextCallouts 1.13.0**, and the interaction plugins
 that are not callout packs - StopThePed, Ultimate Backup, Policing Redefined, CompuLite, Traffic Policer,
 ALPRLite, SpeedRadarLite, CommonDataFramework, ExternalPoliceComputer, RiskierTrafficStops, plus
 CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
@@ -447,29 +447,34 @@ CalloutInterfaceAPI, which ExternalPoliceComputer still needs.
 `Plugins\` itself is now just LSPD First Response, CommonDataFramework, DamageTrackingFramework and the
 LSPDFR folder - no stray ini files from packs that have gone.
 
-**TextCallouts 1.12.0** is at 344 callouts, and **every one of them has a script, can be finished, sends
+**TextCallouts 1.13.0** is at 462 callouts, and **every one of them has a script, can be finished, sends
 you to a different person each time, and follows the duty you went on as.**
 
 What each duty actually gives you, counted against this install's own `lspdfr\data\agency.xml`:
 
 | Duty you pick | Callouts offered |
 |---|---|
-| **LSPD**, LSPD SWAT, LSPD Air Support | 159 |
-| **Sheriff** (lssd) | 75 |
-| **Sheriff SWAT** | 76 |
-| **Highway Patrol** (sahp) | 55 |
-| **Park Rangers** (sapr) | 43 |
-| **Bolingbroke** (saspa) | 31 |
-| **LSFD - EMS** | 66 |
-| **LSFD - Fire** | 35 |
-| North Yankton (nysp), FIB, IAA, DOA, NOOSE | 15 each |
+| **LSPD**, LSPD SWAT, LSPD Air Support | 179 |
+| **Sheriff** (lssd) | 85 |
+| **Sheriff SWAT** | 86 |
+| **Highway Patrol** (sahp) | 63 |
+| **Park Rangers** (sapr) | 49 |
+| **Bolingbroke** (saspa) | 37 |
+| **LSFD - EMS** | 74 |
+| **LSFD - Fire** | 41 |
+| **FIB** | 35 |
+| **NOOSE** (and NOOSE Air Support) | 27 |
+| **North Yankton** (nysp) | 25 |
+| **IAA** | 21 |
+| **DOA** | 21 |
 
-That the last row is thin is a real limit and it is written down rather than left to be discovered: the
-recipes name a police family - LSPD, Sheriff, Highway Patrol, Rangers, the prison - or a medical or a fire
-branch, and not one of them says "any police agency", so an agency outside those families gets the two
-shared callouts and the thirteen generic police ones. Proper federal and state work is a job of its own.
+Every agency in that table has callouts of its own now. The federal and state rows used to be fifteen
+calls each with none of them federal, because every recipe named a police family - LSPD, Sheriff, Highway
+Patrol, Rangers, the prison - or a medical or a fire branch, and not one of them said "any police agency".
+They have warrants, watches, informant meets, raids and sieges now, and North Yankton has snow on the
+ground: 21 to 35 calls each instead of 15.
 
-Previously only four did. Now all 326 recipes carry three or four lines - 981 lines in total - for the
+Previously only four did. Now all 444 recipes carry three or four lines - 1,335 lines in total - for the
 person in that scene to say, and TextDispatch asks the callout for those lines before it asks its own
 script and before it asks the model:
 
@@ -528,7 +533,7 @@ and fourteen recipes were like that. They now end the way the hand-written ones 
 leave the area, or stay a minute and be plainly done with it - and the timeout is only the backstop for a
 call nobody turns up to.
 
-What the three hundred and twenty-six recipes are, by how they end:
+What the four hundred and forty-four recipes are, by how they end:
 
 | | Callouts | How it ends |
 |---|---|---|
@@ -559,7 +564,7 @@ Two things about how that is done, because both were decisions:
     pack gives that call and sends a man; `Theft from a Charity Shop` describes one female and sends one.
     The generator now refuses a recipe whose text describes a sex while its pool draws from both, so it
     cannot drift back.
-  * **The vehicles are pooled too.** 19 of the 27 callouts that involve a vehicle pick from a pool of their
+  * **The vehicles are pooled too.** 30 of the 41 callouts that involve a vehicle pick from a pool of their
     own kind; the 8 where the vehicle *is* the callout keep the one they name - a stolen bus is a bus.
 
   * **And the fallback bug that fell out of doing it:** a pooled vehicle had no single vehicle to fall

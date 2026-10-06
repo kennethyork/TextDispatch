@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-crushing-injury</Id>
+    <Name>Crushing Injury</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person crushed by machinery, now released.</Message>
+    <Advisory>Casualty on the ground, colleagues keeping pressure.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_construct_01,a_m_y_construct_02,a_m_m_mlcrisis_01,a_m_y_downtown_01,a_m_m_genfat_01,a_m_y_business_01,a_f_m_bodybuild_01,a_f_y_fitness_01,a_f_y_business_01,a_f_m_business_02" Count="1" Role="Bystander" />
+    </Actors>
+    <Script>
+        <Line>It came down on the leg and they got me out with a jack.</Line>
+        <Line>Do not take the coat off. It is keeping the blood in.</Line>
+        <Line>I can feel my toes. Tell me that means something.</Line>
+    </Script>
+    <Patient Model="a_m_y_construct_02" TreatmentSeconds="20">I can feel it. That is good, they told me that is good.</Patient>
+    <Lines>
+        <Approach>They have got him out from under it and his mate is holding a coat over the leg.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

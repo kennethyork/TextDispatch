@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>ems-spinal-injury</Id>
+    <Name>Suspected Spinal Injury</Name>
+    <For>ems</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Person fallen from a wall, back pain.</Message>
+    <Advisory>Conscious, not moved, tingling in the legs.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Bystander" />
+    </Actors>
+    <Script>
+        <Line>I came off the wall on my back and nobody has moved me.</Line>
+        <Line>There is a buzzing in both feet and I do not like it.</Line>
+        <Line>Do not tell me it is fine. Nobody knows if it is fine.</Line>
+    </Script>
+    <Patient Model="a_m_y_beach_02" TreatmentSeconds="18">My feet are buzzing. Is that the thing you worry about?</Patient>
+    <Lines>
+        <Approach>He went off the wall onto the path and he says his legs feel wrong. Nobody has moved him.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

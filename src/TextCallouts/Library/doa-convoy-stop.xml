@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>doa-convoy-stop</Id>
+    <Name>Convoy Stop - Suspected Load</Name>
+    <For>doa</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Two-vehicle convoy believed to be carrying narcotics.</Message>
+    <Advisory>Both vehicles travelling together, rear plate not readable.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="2" Role="Suspect" Vehicles="sultan,buffalo,premier,asea,dilettante,blista,asterope,primo" Vehicle="buffalo" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>We are travelling together. That is not a crime.</Line>
+        <Line>The plate fell off on the highway. You can see where it was.</Line>
+        <Line>There is nothing in the back of either vehicle.</Line>
+    </Script>
+    <Lines>
+        <Approach>Two vehicles running together and the rear plate is unreadable. Stop the front one and the back one stops too.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

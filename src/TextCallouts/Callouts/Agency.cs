@@ -16,7 +16,7 @@ namespace TextCallouts.Callouts
     /// separated by commas:
     ///
     ///     police              any police agency - the default
-    ///     lspd, sheriff, sahp, nysp, ranger, prison, fib, iaa, noose
+    ///     lspd, sheriff, sahp, nysp, ranger, prison, fib, iaa, noose, doa, swat
     ///                         one agency family, by the name a player would use for it
     ///     ems, fire           the medical and fire branches
     ///     any                 anybody, including agencies nobody here has heard of
@@ -52,6 +52,7 @@ namespace TextCallouts.Callouts
                 { "fib",      new[] { "fib" } },
                 { "iaa",      new[] { "iaa" } },
                 { "noose",    new[] { "noose" } },
+                { "doa",      new[] { "doa", "drug observation" } },
                 { "swat",     new[] { "swat" } },
             };
 

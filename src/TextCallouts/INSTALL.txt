@@ -7,7 +7,7 @@ LSPDFR callouts that need nothing but LSPDFR and RAGE Plugin Hook.
 WHAT IT IS
 ----------
 
-Three hundred and forty-four callouts in the style of the big callout packs, written from scratch, with no dependency on
+Four hundred and sixty-two callouts in the style of the big callout packs, written from scratch, with no dependency on
 StopThePed, Ultimate Backup, CompuLite, Callout Interface, ExternalPoliceComputer, Common Data
 Framework or RAGENativeUI. You can run it on a bare LSPDFR install, and it will not conflict with
 anything, because it never reaches into another plugin.
@@ -42,16 +42,17 @@ pack has:
 
 | Duty | Callouts | What it is |
 |---|---|---|
-| **LSPD** | 144 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances |
-| **Sheriff** (lssd) | 60 | county work: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
-| **EMS** (lsfd) | 59 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
-| **Highway Patrol** (sahp) | 40 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
-| **Fire** (lsfd_fire) | 33 | fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
-| **Park Rangers** (sapr) | 28 | the parks: illegal fires, poaching, lost walkers, injured wildlife, off-roading |
-| **Prison** (saspa) | 16 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
+| **LSPD** | 164 | city work: robberies, drugs, shots fired, burglary, assaults, disturbances |
+| **Sheriff** (lssd) | 70 | county work: ranch trespass, poaching, livestock theft, rural burglary, the desert, Sandy Shores |
+| **EMS** (lsfd) | 67 | patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
+| **Highway Patrol** (sahp) | 48 | traffic: racing, wrong-way drivers, hit and run, insecure loads, road rage |
+| **Fire** (lsfd_fire) | 39 | fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
+| **Park Rangers** (sapr) | 34 | the parks: illegal fires, poaching, lost walkers, injured wildlife, off-roading |
+| **Prison** (saspa) | 22 | Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
+| **Federal and state** | fib 20, noose 12, nysp 10, iaa 6, doa 6 | warrants, surveillance, informants, seizures, and North Yankton in the snow |
 | **Any agency** | 2 | an officer needs assistance, an assault on an officer - offered to whoever is on duty |
 
-Three hundred and twenty-six of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
+Four hundred and forty-four of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
 player's own callouts use, so you can read them, copy them and edit them. The other eighteen are written
 in C# because their behaviour is particular (the medical ones, and the police ones that need a scene the
 recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`
@@ -65,32 +66,37 @@ the recipes above, plus the thirteen hand-written police callouts, or the five m
 
 | Duty | Callouts offered |
 |---|---|
-| **LSPD**, LSPD SWAT, LSPD Air Support | 159 |
-| **Sheriff** (lssd), Sheriff SWAT | 75, 76 |
-| **Highway Patrol** (sahp) | 55 |
-| **Park Rangers** (sapr) | 43 |
-| **Bolingbroke** (saspa) | 31 |
-| **LSFD - EMS** | 66 |
-| **LSFD - Fire** | 35 |
-| North Yankton (nysp), FIB, IAA, DOA, NOOSE | 15 each |
+| **LSPD**, LSPD SWAT, LSPD Air Support | 179 |
+| **Sheriff** (lssd) | 85 |
+| **Sheriff SWAT** | 86 |
+| **Highway Patrol** (sahp) | 63 |
+| **Park Rangers** (sapr) | 49 |
+| **Bolingbroke** (saspa) | 37 |
+| **LSFD - EMS** | 74 |
+| **LSFD - Fire** | 41 |
+| **FIB** | 35 |
+| **NOOSE** (and NOOSE Air Support) | 27 |
+| **North Yankton** (nysp) | 25 |
+| **IAA** | 21 |
+| **DOA** | 21 |
 
-**Be straight with the last row: it is thin.** The pack's recipes name a police family - LSPD, Sheriff,
-Highway Patrol, Rangers, the prison - or a medical or fire branch. None of them says "any police agency",
-so an agency outside those families gets the two shared callouts and the thirteen hand-written police
-ones, which are generic work. If you spend a shift as the FIB or the NOOSE that is what you will get:
-thirteen calls, none of them federal. Writing work for them is a job of its own, and the honest thing is
-to say so rather than let you find out at a roadblock.
+Every agency LSPDFR offers you in this install now has work of its own. That was not true until 1.13.0:
+the recipes named a police family - LSPD, Sheriff, Highway Patrol, Rangers, the prison - or a medical or
+fire branch, and none of them said "any police agency", so the federal and state agencies were getting
+the two shared callouts and the thirteen generic police ones and nothing else. A shift as the FIB was
+fifteen calls and none of them federal. They have their own now: a warrant, a watch, an informant, a
+seizure - and for North Yankton, a county with snow on it.
 
 HOW A CALL ENDS
 --------------
 
 A call with somebody to catch ends when you have dealt with them - every suspect dealt with, or the
 first arrest, whichever the recipe asks for. A call with **nothing** to catch - a report, a welfare
-check, a scene to look at; there are a hundred and fourteen of them - ends when you have been there and
+check, a scene to look at; there are a hundred and sixty-two of them - ends when you have been there and
 are done with it: leave the area, or give it a minute on scene. `/endcall` ends the call you are on at
 any time, whatever it is.
 
-That last part is recent, and it was a real gap. Those hundred and fourteen used to end only by running
+That last part is recent, and it was a real gap. Those used to end only by running
 out of time, twenty minutes after they started, with nothing the player could do to finish them: you
 arrived, dispatch said its line, and the call sat there. Now they finish the way the hand-written ones
 do - you deal with the scene and it closes behind you.
@@ -99,7 +105,7 @@ WHO IS IN THE SCENE
 -------------------
 
 **The people a callout sends you to are drawn at random each time it runs, and they are men and women.**
-Sixty-three ped models across the three hundred and twenty-six recipes, in pools of two to twenty, chosen to
+Sixty-three ped models across the four hundred and forty-four recipes, in pools of two to twenty, chosen to
 suit the callout: city work draws on the downtown crowd, county work on the farms and the hills, the parks on
 people dressed for the outdoors, robberies and drug calls on a rougher cut. Three suspects in a street are
 three different people, and the person in the armed robbery is rarely the same one twice.
@@ -120,7 +126,7 @@ The log names them as it goes:
 
     custom callout scene: 2 suspect(s), 0 other(s), drawn from the pool: a_m_y_stlat_01, a_f_y_genstreet_01
 
-**Vehicles are drawn the same way.** Nineteen of the twenty-seven callouts with a vehicle pick from a pool of
+**Vehicles are drawn the same way.** Thirty of the forty-one callouts with a vehicle pick from a pool of
 their own kind - a car that fails to stop is any car a person might own, a motorbike chase is a motorbike, the
 van is any van. The eight where the vehicle *is* the callout keep the one they name: a stolen bus is a bus, an
 ambulance is an ambulance, a livestock trailer is a trailer. Same safety net: the pool is checked against your
@@ -142,7 +148,7 @@ callout's own lines, in order, with no language model involved:
     The gun is not real. Look at it, it is not real.
     I came in for cigarettes. That is the whole of it.
 
-Three or four lines each, nine hundred and eighty-one of them across the three hundred and twenty-six
+Three or four lines each, one thousand three hundred and thirty-five of them across the four hundred and forty-four
 recipes. Somebody who has said their piece repeats their last line rather than going mute. In a medical
 callout it is the patient who answers, not the person stood next to them - so asking a woman with chest
 pain how it started gets you the answer you want before you move her.
@@ -152,9 +158,10 @@ WITH TEXTDISPATCH below. Without it the lines are simply never asked for, and a 
 it did before they existed.
 
 A callout can also say what happens after you have been at the scene a while - backup twenty seconds in, a
-suspect's nerve breaking at fifty, the fire catching once they have had a chance to talk. Four callouts use
-that to start with: a standoff, a bank siege, a gang fight, and a patient who wants to talk to you before
-you treat her.
+suspect's nerve breaking at fifty, the fire catching once they have had a chance to talk. Fourteen callouts
+use that now: the standoff, the bank siege and the gang fight it started with, and then raids, sieges and
+stings where the sequence is the callout - an entry team on its way, a door opening on its own, a suspect
+whose nerve goes.
 
 THE CALLOUTS
 ------------

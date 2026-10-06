@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>sapr-lost-child</Id>
+    <Name>Lost Child - Trail Head</Name>
+    <For>ranger</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Child missing from a trail head car park.</Message>
+    <Advisory>Family on scene, child gone ten minutes.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04,a_f_y_hipster_02,a_f_y_hipster_01,a_f_m_fatwhite_01,a_f_y_soucent_01,a_f_m_bodybuild_01" Count="1" Role="Suspect" />
+    </Actors>
+    <Support Backup="true" />
+    <Script>
+        <Line>He was at the map board two minutes ago and then he was not.</Line>
+        <Line>He has a red coat on. That is the only thing I can tell you.</Line>
+        <Line>He will have gone down the path. He always goes down the path.</Line>
+    </Script>
+    <Lines>
+        <Approach>Ten minutes gone and the family are already heading four different ways. That is how this gets worse.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

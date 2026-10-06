@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fib-trafficking-lorry</Id>
+    <Name>Trafficking - Lorry Intercept</Name>
+    <For>fib</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Lorry believed to be moving people into the county.</Message>
+    <Advisory>Curtain-sided lorry, one driver, last seen on the highway.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_m_farmer_01,a_m_m_hillbilly_01,a_m_m_hillbilly_02,a_m_y_salton_01,a_m_m_salton_01,a_m_m_salton_02,a_m_m_salton_03,a_m_m_salton_04,a_f_y_hipster_02,a_f_y_hipster_01,a_f_m_fatwhite_01,a_f_y_soucent_01,a_f_m_bodybuild_01" Count="1" Role="Suspect" Vehicle="phantom" />
+    </Actors>
+    <OnApproach At="25" FleeInVehicle="true" />
+    <Script>
+        <Line>I am the driver. I drive where I am told.</Line>
+        <Line>What is in the back is not mine. I never look in the back.</Line>
+        <Line>They paid me in cash and they paid me a lot. That tells you everything about what I am.</Line>
+    </Script>
+    <Lines>
+        <Briefing>There are people in the back of that lorry. Whatever happens, they are not the suspects.</Briefing>
+        <Approach>It is a curtain-sider and it has not stopped at the last two checks. Get it off the road.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

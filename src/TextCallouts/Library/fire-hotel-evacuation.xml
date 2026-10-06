@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>fire-hotel-evacuation</Id>
+    <Name>Hotel Fire - Evacuation</Name>
+    <For>fire</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Fire in a hotel, guests being woken.</Message>
+    <Advisory>Staff counting guests at the assembly point.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+    </Actors>
+    <OnApproach At="25" Fire="true" />
+    <Support Ambulance="true" />
+    <Script>
+        <Line>We are counting heads and two rooms are not answering.</Line>
+        <Line>The fire is on the second floor and the doors are heavy.</Line>
+        <Line>I have got the master key. Tell me where to start.</Line>
+    </Script>
+    <Lines>
+        <Approach>Staff are knocking doors and counting heads at the front. Two rooms are not answering.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tools\make-callout-library.ps1 - edit that, not this file. -->
+<Callout>
+    <Id>noose-hostage-rescue</Id>
+    <Name>Hostage Rescue - Staged Assault</Name>
+    <For>noose</For>
+    <Probability>Medium</Probability>
+    <Resolution>ArrestOrDeath</Resolution>
+    <Message>Hostage held inside a business premises.</Message>
+    <Advisory>Two suspects and at least one hostage.</Advisory>
+    <Distance Min="150" Max="320" Radius="40" />
+    <Actors>
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="2" Role="Suspect" Armed="true" Weapon="WEAPON_PISTOL" />
+    </Actors>
+    <Support Ambulance="true" Backup="true" />
+    <Script>
+        <Line>Nobody has to be hurt here. Nobody.</Line>
+        <Line>The door is locked and I have the key.</Line>
+        <Line>We are coming out. Keep your people back and we are coming out.</Line>
+    </Script>
+    <Stages>
+        <Stage At="35" Do="line">Entry teams are set on both doors.</Stage>
+        <Stage At="80" Do="hostile">They are at the back door with the hostage.</Stage>
+        <Stage At="150" Do="end">Hostage out and both suspects detained.</Stage>
+    </Stages>
+    <Lines>
+        <Approach>Two of them, at least one hostage, and they have stopped answering the phone.</Approach>
+        <SignOff>Show me 10-8 when you are clear.</SignOff>
+    </Lines>
+</Callout>
