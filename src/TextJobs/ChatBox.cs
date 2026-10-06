@@ -257,6 +257,7 @@ namespace TextJobs
                     {
                         Log.Line("the measured text scale came out at " + _textScale.ToString("0.###") +
                                  " - using 0.34 instead, and the ini has FontSize and UiScale to taste");
+                        Notice("Box size: the game reported an odd text width - using the default. FontSize and UiScale in TextJobs.ini will change it.");
                         _textScale = 0.34f;
                         measured = wantedPixelsPerCharacter;
                     }
@@ -274,8 +275,11 @@ namespace TextJobs
             }
             catch (Exception ex)
             {
-                // Measuring is a nicety; not measuring is not worth losing the box over.
+                // Measuring is a nicety; not measuring is not worth losing the box over - but the
+                // player is told, because otherwise the numbers are invisible and the box size is
+                // a mystery that costs another session to work out.
                 Log.Line("could not measure the game's text width: " + ex.Message);
+                Notice("Box size: could not measure the game's text - using the default size.");
                 _textScale = 0.34f;
                 _pixelsPerCharacter = wantedPixelsPerCharacter;
                 _measuredFor = wantedPixelsPerCharacter;

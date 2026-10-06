@@ -65,11 +65,17 @@ namespace TextJobs
         /// The folder the script is in, which is the game's scripts folder.
         ///
         /// Assembly.Location cannot be relied on: ScriptHookVDotNet loads its scripts from memory, and
-        /// an assembly loaded that way reports an empty location - the same trap TextDispatch hit. The
-        /// first session this ran in therefore wrote no ini and no log at all, because the path it fell
-        /// back to was neither the game folder nor the scripts folder. So: the assembly's own location
-        /// when there is one, and otherwise the game's scripts folder, found from the process directory
-        /// and from the working directory.
+        /// an assembly loaded that way reports an empty location - the same trap TextDispatch hit.
+        ///
+        /// What it falls back to matters more than it looks. A session on 6 October loaded this script,
+        /// drew its box, and wrote no log at all: the path it settled on was writable by nobody, the
+        /// write failed, and the failure was swallowed - which is the worst way for a diagnostic to
+        /// fail, because it looks exactly like a script that never ran. So the game's own folder is
+        /// found from the running process, and the candidates below are tried in order, each one having
+        /// to exist before it is accepted.
+        ///
+        /// <see cref="Log"/> then goes further and checks that a file can actually be written before
+        /// it commits to a path.
         /// </summary>
         public static string Folder()
         {
@@ -79,6 +85,17 @@ namespace TextJobs
                 if (!string.IsNullOrEmpty(beside) && Directory.Exists(beside)) return beside;
             }
             catch { }
+
+            // Where the game is, from the process that is running it. This is the one path that cannot
+            // be wrong, and it is what a native host - which is what ScriptHookVDotNet runs inside -
+            // does not always provide as AppDomain.BaseDirectory.
+            var game = GameFolder();
+            if (game != null)
+            {
+                var scripts = Path.Combine(game, "scripts");
+                if (Directory.Exists(scripts)) return scripts;
+                return game;
+            }
 
             foreach (var root in new[] { AppDomain.CurrentDomain.BaseDirectory, Environment.CurrentDirectory })
             {
@@ -92,6 +109,26 @@ namespace TextJobs
             }
 
             return Environment.CurrentDirectory;
+        }
+
+        /// <summary>
+        /// The folder the game is running from, worked out from the process.
+        ///
+        /// This is the answer that does not depend on how the host happened to set the AppDomain up:
+        /// the process that is running this script is GTA5.exe, and its folder is the game folder.
+        /// Null when the process cannot be asked, and the caller then falls back as it always did.
+        /// </summary>
+        public static string GameFolder()
+        {
+            try
+            {
+                var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule;
+                if (exe == null || string.IsNullOrEmpty(exe.FileName)) return null;
+
+                var folder = Path.GetDirectoryName(exe.FileName);
+                return !string.IsNullOrEmpty(folder) && Directory.Exists(folder) ? folder : null;
+            }
+            catch { return null; }
         }
 
         public static string IniPath() { return Path.Combine(Folder(), "TextJobs.ini"); }

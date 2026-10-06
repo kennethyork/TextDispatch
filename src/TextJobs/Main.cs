@@ -102,6 +102,13 @@ namespace TextJobs
 
                 Log.Line("starting: driverjobs chat box, script location " + TextJobs.Settings.Folder());
                 Log.Line("keys: " + _capture.Note);
+                Log.Line("log: " + Log.Path + "  (game " + (TextJobs.Settings.GameFolder() ?? "not found from the process") + ")");
+
+                // If the log is not where it should be, the box says where it is. That is one line
+                // while something is wrong and none when nothing is, which is the right way round.
+                var wanted = System.IO.Path.Combine(TextJobs.Settings.Folder(), "TextJobs.log");
+                if (!string.Equals(Log.Path, wanted, StringComparison.OrdinalIgnoreCase))
+                    _box.Notice("Log is at " + Log.Path + " (not the scripts folder).");
 
                 _box.Notice("TextJobs ready. DriverJobs V's work, in text.");
                 if (jobs.Count > 0)
