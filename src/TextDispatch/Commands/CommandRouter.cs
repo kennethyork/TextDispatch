@@ -247,6 +247,11 @@ namespace TextDispatch.Commands
                 case "bridges":
                 case "frameworks": ShowBridges(); return;
 
+                // ---------------------------------------------------- characters
+                case "chars":
+                case "characters": ListCharacters(argument); return;
+                case "rename": RenameCharacter(argument); return;
+
                 // ---------------------------------------------------- the install
                 case "plugins":
                 case "plugin": ShowPlugins(); return;
@@ -377,6 +382,108 @@ namespace TextDispatch.Commands
 
             foreach (var callout in _api.ListCallouts(filter, int.MaxValue, out int _))
                 Log.Line("callout: " + callout);
+        }
+
+        /// <summary>
+        /// The preset characters, numbered - the same list the station shows when you go on duty, read
+        /// out of lspdfr\data\cop_presets.xml, so /rename can name one by number.
+        /// </summary>
+        private void ListCharacters(string argument)
+        {
+            var characters = CharacterNames.All();
+            if (characters.Count == 0)
+            {
+                _chat.Error("No characters to list: " + CharacterNames.Problem + ".");
+                return;
+            }
+
+            var filter = (argument ?? "").Trim();
+            var matching = new List<CharacterNames.Character>();
+            foreach (var character in characters)
+                if (filter.Length == 0 ||
+                    character.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    character.Agency.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    matching.Add(character);
+
+            if (matching.Count == 0)
+            {
+                _chat.Error("No character matches '" + filter + "'.");
+                return;
+            }
+
+            var scope = filter.Length == 0 ? "" : " matching '" + filter + "'";
+            _chat.Notice("Characters" + scope + ": " + matching.Count + "  (lspdfr\\data\\cop_presets.xml)");
+
+            foreach (var character in matching)
+                _chat.Notice("  " + character.Number + ". " + character.Name + "  -  " + character.Agency + "  " + character.Model);
+
+            _chat.Notice("Name one with '/rename <number> <new name>' - the new name shows the next time the character menu opens.");
+            foreach (var character in matching)
+                Log.Line("character: " + character.Number + ". " + character.Name + "  [" + character.ScriptName + "]  " + character.Agency + "  " + character.Model);
+        }
+
+        /// <summary>
+        /// Names a preset character. The name lives in lspdfr\data\cop_presets.xml, so this writes that
+        /// file: it is backed up first and parsed afterwards, and LSPDFR reads it for the character
+        /// menu - which is where the new name appears, because that is when the menu is built.
+        /// </summary>
+        private void RenameCharacter(string argument)
+        {
+            var text = (argument ?? "").Trim();
+            if (text.Length == 0)
+            {
+                _chat.Error("Name one: '/rename 6 Alex Doyle', or '/rename Victor Reyes = Alex Doyle'.");
+                return;
+            }
+
+            // Two ways in, because the number is quicker and the name is what you remember: an equals
+            // sign for 'this character = this name', or a leading number for '/rename 6 Alex Doyle'.
+            // A bare name with no equals is not accepted: names have spaces in them, so there is no
+            // way to tell where the old one ends and the new one begins.
+            CharacterNames.Character renamed;
+            string newName, problem;
+
+            var equals = text.IndexOf('=');
+            if (equals > 0)
+            {
+                newName = text.Substring(equals + 1).Trim();
+                renamed = CharacterNames.Rename(text.Substring(0, equals).Trim(), newName, out problem);
+            }
+            else
+            {
+                var split = text.IndexOf(' ');
+                if (split < 0)
+                {
+                    _chat.Error("Name one: '/rename 6 Alex Doyle' - /chars lists the numbers.");
+                    return;
+                }
+
+                int number;
+                if (!int.TryParse(text.Substring(0, split).Trim(), out number))
+                {
+                    _chat.Error("That is not a number. '/rename 6 Alex Doyle', or '/rename Victor Reyes = Alex Doyle'.");
+                    return;
+                }
+
+                newName = text.Substring(split + 1).Trim();
+                renamed = CharacterNames.Rename(number, newName, out problem);
+            }
+
+            if (renamed == null)
+            {
+                _chat.Error("Could not rename: " + problem + ".");
+                return;
+            }
+
+            if (string.Equals(renamed.Name, newName, StringComparison.Ordinal))
+            {
+                _chat.Notice(renamed.Name + " is already called that - nothing to write.");
+                return;
+            }
+
+            _chat.Notice(renamed.Name + "  ->  " + newName);
+            _chat.Notice("It shows when the character menu opens next - LSPDFR reads that file for the menu.");
+            _chat.Notice("The file was backed up first, and parsed again after the write.");
         }
 
         /// <summary>
@@ -1481,6 +1588,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /key  /clear");
             _chat.Notice("  Typing:   /typing  whether the other plugins can see what you type, and what it found");
             _chat.Notice("  Install:  /plugins  what LSPDFR actually loaded, and what it did not");
+            _chat.Notice("  Names:    /chars [filter]  /rename <number> <new name>  -  what the character menu shows");
             _chat.Notice("  Open the box with " + Plugin.OpenKeyDescription + ", or / to start a command.");
             _chat.Notice("  Chatter:  /chatter quiet|brief|full  - how much of dispatch's traffic you see.");
             _chat.Notice("  Frameworks: /bridges shows what the other plugins can do, and which are running");

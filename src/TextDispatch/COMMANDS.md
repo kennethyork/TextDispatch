@@ -160,6 +160,23 @@ Reached by reflection, so a missing plugin costs only its own commands. `/bridge
 
 ---
 
+## Characters
+
+| | |
+|---|---|
+| `/chars [text]` | the preset characters, numbered, with the agency and ped model each one uses |
+| `/rename <number> <new name>` | names one - the name the character menu shows |
+| `/rename <current name> = <new name>` | the same, when you know the name but not the number |
+
+The characters you pick from at a police station are LSPDFR's preset characters, and each one's name is
+in `lspdfr\data\cop_presets.xml`. `/rename` writes that file for you: a `.bak-names-<date>` copy is kept
+beside it before anything is written, and the file is parsed again afterwards - if it no longer parses,
+the copy goes back and nothing has changed. The new name shows the next time the character menu opens,
+because that is when LSPDFR reads the file. A custom character is named in the game's own character
+creator instead.
+
+---
+
 ## The box, and the install
 
 | | |
