@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Rage;
 using Color = System.Drawing.Color;
 using PointF = System.Drawing.PointF;
@@ -130,6 +131,14 @@ namespace TextDispatch.Chat
         {
             if (string.IsNullOrEmpty(text)) return;
 
+            // GTA's formatting tokens belong to the notification system, not to a box that draws words.
+            // A callout pack that says a thing through both arrives here as
+            // "~g~TextCallouts~s~: 462 callouts (18 built in, 444 from the library)" and the box drew
+            // the tokens themselves, which is what was in the picture. They are taken out here, once,
+            // so nothing that sends a line has to remember - and so the log shows what the player saw
+            // rather than what the sender wrote.
+            text = Plain(text);
+
             // The same line twice in a moment is never information - it is a loop somewhere upstream,
             // and a box that fills with it is unusable. Three seconds is long enough to catch the
             // repeat and short enough that a genuinely repeated radio call still gets through.
@@ -175,6 +184,40 @@ namespace TextDispatch.Chat
         public void Local(string tag, string text) { Write(ChatChannel.Local, tag, text); }
         public void Me(string who, string text) { Write(ChatChannel.Me, "", "* " + who + " " + text); }
         public void Do(string text) { Write(ChatChannel.Do, "", "(( " + text + " ))"); }
+
+        /// <summary>
+        /// A line with GTA's ~tokens~ taken out of it.
+        ///
+        /// One or two letters between tildes is a colour or an effect - ~g~, ~s~, ~y~, ~r~ - and the
+        /// game's own text renderer is the only thing that understands them. A tilde that is not part
+        /// of a token (a path, a price, an approximation) is left alone, and ~n~, which is a line break
+        /// where this draws, becomes a space: the box does its own wrapping and counts the rows it
+        /// makes, so a line break hidden inside the text is a row it did not count.
+        /// </summary>
+        private static string Plain(string text)
+        {
+            if (string.IsNullOrEmpty(text) || text.IndexOf('~') < 0) return text;
+
+            var clean = new StringBuilder(text.Length);
+            for (var i = 0; i < text.Length; i++)
+            {
+                if (text[i] != '~') { clean.Append(text[i]); continue; }
+
+                var end = text.IndexOf('~', i + 1);
+                var length = end - i - 1;
+                if (end < 0 || length < 1 || length > 2)
+                {
+                    clean.Append(text[i]);   // a tilde that is not a token is just a tilde
+                    continue;
+                }
+
+                var code = text.Substring(i + 1, length);
+                if (code.Equals("n", StringComparison.OrdinalIgnoreCase)) clean.Append(' ');
+                i = end;
+            }
+
+            return clean.ToString();
+        }
 
         public void Clear()
         {

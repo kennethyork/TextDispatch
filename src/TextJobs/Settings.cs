@@ -57,7 +57,8 @@ namespace TextJobs
         /// <summary>Everything scales from this, as TextDispatch's own UiScale does.</summary>
         public float UiScale = 1f;
 
-        /// <summary>Ten, the same as TextDispatch's box, so both show the same screenful.</summary>
+        /// <summary>Ten, the same as TextDispatch's box, so both show the same screenful. It is rows,
+        /// not entries: a line long enough to wrap inside the panel takes two of them.</summary>
         public int Lines = 10;
 
         /// <summary>
@@ -257,8 +258,9 @@ namespace TextJobs
                     "ChatPosition=" + settings.ChatPosition,
                     "; Distance from the screen edge, in pixels.",
                     "ChatMargin=" + settings.ChatMargin.ToString(CultureInfo.InvariantCulture),
-                    "; How big the text is, and how many lines of the transcript are shown. FontSize is",
-                    "; in pixels at 1080p, the same units TextDispatch.ini uses.",
+                    "; How big the text is, and how many rows of the transcript are shown. FontSize is",
+                    "; in pixels at 1080p, the same units TextDispatch.ini uses. A row is not an entry:",
+                    "; a line too long for the panel wraps and takes two or three of them.",
                     "FontSize=" + settings.FontSize.ToString(CultureInfo.InvariantCulture),
                     "UiScale=" + settings.UiScale.ToString(CultureInfo.InvariantCulture),
                     "Lines=" + settings.Lines.ToString(CultureInfo.InvariantCulture),

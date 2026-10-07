@@ -44,6 +44,11 @@ namespace TextDispatch
         /// </summary>
         public override void Finally()
         {
+            // The other chat box has to hear this, and this is the only moment LSPDFR offers for it:
+            // the jobs box stands down while the player is on duty, and comes back - on its own key -
+            // when they are not.
+            TextDispatch.Plugin.SetOnDuty(false);
+
             Log.Line("LSPDFR called Finally - which happens on going off duty as well as at shutdown, " +
                      "so the engine is deliberately left running");
         }

@@ -102,6 +102,11 @@ namespace TextDispatch
         /// </summary>
         public static void Start()
         {
+            // LSPDFR loads this plugin when the player goes on duty - that is the only time it is
+            // called - so being started is being on duty. It is said before the early return: a
+            // reload while the engine is already up is still a player going on duty.
+            SetOnDuty(true);
+
             if (_running) return;
 
             try
@@ -241,16 +246,26 @@ namespace TextDispatch
             {
                 try
                 {
+                    // Off duty this box is not here either: the jobs box is the interface then, and
+                    // it has this corner. One box on screen at a time, one key each - which is the
+                    // whole reason there are two plugins rather than one that does everything. The
+                    // services below keep running, because they are what notice the player going
+                    // back on duty, and the handshake keeps being written, because the jobs box
+                    // reads it to know when it may come back.
+                    var here = _onDuty;
+                    if (!here && _chat.IsOpen) _chat.IsOpen = false;
+
                     // Before the input: this decides whether the player is typing into the game, or
                     // into something else on another monitor, and it is also where the keystrokes are
-                    // taken away from the other plugins.
-                    _keys.Update(_chat.IsOpen);
+                    // taken away from the other plugins. Closed off duty, so nothing at all is hidden
+                    // from the game while this box is not the one being used.
+                    _keys.Update(here && _chat.IsOpen);
 
-                    _input.Update();
+                    if (here) _input.Update();
 
                     // While the box is open the player is typing, not driving. Freezing the game's
                     // controls is what makes typing "10-97" not also steer the car.
-                    if (_chat.IsOpen) DisableGameControls();
+                    if (here && _chat.IsOpen) DisableGameControls();
 
                     _dispatch.Update();
                     _dialogue.Update();
@@ -307,15 +322,19 @@ namespace TextDispatch
         {
             var now = Environment.TickCount;
 
-            // The duty state is read every tick, because it is the part that matters to the other box:
-            // the jobs interface is for off duty, and on duty it should not be there at all. A change
-            // is written immediately rather than at the next heartbeat - going on duty is a moment, not
-            // a gradual thing, and a box that lingers for two seconds looks broken.
-            var onDuty = false;
-            try { onDuty = _api != null && _api.PedIsCop(Game.LocalPlayer.Character); }
-            catch { }
+            // The word is whether the player is on duty, and it comes from LSPDFR's own two moments:
+            // Initialize() when they go on duty, Finally() when they go off. It used to be asked of
+            // the game instead - is the player's ped a cop - which sounds like the same question and
+            // is not one: LSPDFR's cop database is the officers it spawns, and the player is not in
+            // it, so the file said "off" on every patrol. The jobs box read that and stayed up on
+            // duty, on the same key as this box, which is what two chat boxes drawn through each
+            // other on the screen were. A change is written immediately rather than at the next
+            // heartbeat, because going on duty is a moment and the box on the other side acts on it.
+            var onDuty = _onDuty;
 
             if (onDuty == _announcedDuty && now - _announcedAt < 2000) return;
+            if (onDuty != _announcedDuty)
+                Log.Line("other chat box: telling it that this player is " + (onDuty ? "on" : "off") + " duty");
             _announcedDuty = onDuty;
             _announcedAt = now;
 
@@ -337,6 +356,25 @@ namespace TextDispatch
 
         private static int _announcedAt;
         private static bool? _announcedDuty;
+
+        /// <summary>
+        /// Whether the player is on duty. True from the moment this plugin is loaded, which is what
+        /// going on duty does, and false when LSPDFR says the player has gone off duty again.
+        /// </summary>
+        private static volatile bool _onDuty = true;
+
+        /// <summary>
+        /// LSPDFR has said the player went on or off duty.
+        ///
+        /// The other chat box is the reason this is said out loud: the jobs interface is for off duty,
+        /// and on duty it should not be there at all. Announced at once rather than at the next
+        /// heartbeat, because a box that lingers for two seconds looks broken.
+        /// </summary>
+        public static void SetOnDuty(bool onDuty)
+        {
+            _onDuty = onDuty;
+            Announce();
+        }
 
         /// <summary>
         /// Say what loaded, and what did not. A plugin folder that quietly does nothing is the
@@ -389,8 +427,15 @@ namespace TextDispatch
         private static void OnFrameRender(object sender, GraphicsEventArgs e)
         {
             if (_rendering) return;
-            _rendering = true;
             _renderCalls++;
+
+            // Nothing is drawn off duty. The transcript is meant to stay on screen rather than fade,
+            // which is right while this box is the one in use - and off duty it means two of them,
+            // this box's and the jobs box's, in the same corner and drawn through each other. The
+            // count above still happens, so the render check reports what the game is doing.
+            if (!_onDuty) return;
+
+            _rendering = true;
 
             try
             {

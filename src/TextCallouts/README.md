@@ -96,14 +96,20 @@ work matches the agency you went on duty as:
 | **Park Rangers** (sapr) |  the parks: illegal fires, poaching, lost walkers, injured wildlife, off-roading |
 | **Prison** (saspa) |  Bolingbroke: escapes, contraband drops, transport incidents, assaults on staff |
 | **EMS** (lsfd) |  patients: falls, overdoses, seizures, chest pain, cyclists, exposure |
-| **Fire** (lsfd_fire) |  fires: refuse, kitchens, grass, vehicles, a commercial bin fire |
+| **Fire** (lsfd_fire) |  fires: refuse, kitchens, grass, vehicles, a commercial bin fire - and, because a fire crew runs medical calls, the patients as well |
 
 Three hundred and twenty-six of those live in `Plugins\LSPDFR\TextCallouts\Library` as XML recipes - the same format a
 player's own callouts use, so you can read them, copy them and edit them. The other eighteen are written
 in C# because their behaviour is particular (the medical ones, and the police ones that need a scene the
 recipes cannot describe). A recipe names a duty with `police`, one agency, or several: `<For>lspd,sheriff,sahp</For>`
-is offered to all three. An agency the pack has never heard of gets the police work, because a patrol
-with no calls at all is a worse failure than a misfiled one.
+is offered to all three. `ems` means the medical work and `any` means anybody.
+
+The fire branch is offered the medical work as well as its own: a fire crew runs medical calls, and the
+pack's own fire callout - Vehicle Fire - is written as a medical one, so a fire patrol that accepted
+only `fire` work was offered neither. One way only: an ambulance is still not sent to a fire.
+
+An agency the pack has never heard of gets the police work, because a patrol with no calls at all is a
+worse failure than a misfiled one.
 
 ### The five that are not police work
 

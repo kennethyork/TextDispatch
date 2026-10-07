@@ -13,11 +13,11 @@ metadata, not from memory of what was downloaded.
 | ScriptHookV | **3889.0.1158.13 ✓** — installed, matches your game build 1.0.3889.0 (§1.1) |
 | ScriptHookVDotNet | **nightly 3.7.0.191 ✓** — installed for the civilian jobs mod (§1.6) |
 | LemonUI | **2.2 ✓** — `LemonUI.SHVDN3.dll` in `scripts\`, the menu library the jobs mod draws with |
-| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.20**, TextCallouts **1.3.0** and TextJobs 1.0.2 |
+| LSPDFR plugins | **17** DLLs in `Plugins\LSPDFR` — 686 Callouts and External Police Computer are back, TextDispatch is **1.0.27**, TextCallouts **1.13.1** (§1.16, §1.17) and TextJobs 1.1.8 in `scripts\` |
 | ASI mods | **4** installed — ELS should load now that ScriptHookV is in place; unverified until the next launch (§1.1) |
 | Civilian jobs | **DriverJobs V 1.6.0 ✓** — 31 jobs, `Shift+J` for its menu, in `scripts\` (**§1.6**), all of them now running **as your own character** (**§1.8**), and listed in the chat box by **`/jobs`** |
 | Non-police duty | **LSFD — EMS and Fire ✓** — added to LSPDFR's duty menu (**§1.7**) |
-| Jobs in text | **TextJobs 1.0.1 ✓** — DriverJobs V in a chat box, **F9**, no LSPDFR needed (**§1.10**) |
+| Jobs in text | **TextJobs 1.1.8 ✓** — DriverJobs V in a chat box, **F9**, no LSPDFR needed (**§1.10**, fixes in **§1.15** and **§1.16**) |
 | The bundle | **bundle 1.4.0 ✓** — all three in one download: the two police plugins into `Plugins\LSPDFR`, TextJobs into `scripts\` |
 | Scanner audio packs | 7 mods' audio installed |
 | Vehicles | 12 ELS police models in `patchday25ng\dlc.rpf` |
@@ -580,6 +580,142 @@ different from each other, and each matches what that patient says. Your own rec
 
 `tools\verify-bridge.ps1` checks the bridge between the two plugins by reading their metadata - the
 compiler cannot see across a reflection boundary, and a rename there would fail silently in game.
+
+### 1.15 TextJobs' box was drawn a third too large, and its long lines landed on the line below ✓ FIXED
+
+The picture was the box printing two lines through each other:
+
+```
+Log is at D:\Grand Theft Auto V Legacy\TextJobs.log (not the scripts
+folder).            <- the wrap of the line above, drawn through the line below
+TextJobs ready. DriverJobs V's work, in text. Left opens the box.
+```
+
+Two separate drawing faults, and one picture that showed both at once.
+
+**The box was 1.5x too large and most of the way off the screen.** TextJobs 1.1.5 laid itself out in
+real screen pixels - 15px text, an 820px panel, a 16px margin, the police box's own numbers - and then
+handed those numbers to ScriptHookVDotNet's `Draw()`, which reads them as pixels of a screen 720 tall
+and `Screen.ScaledWidth` wide (1280 at 16:9). At 1920x1080 every position and size was multiplied by
+1.5, so the panel was 1230px wide starting at x=1614: two thirds of it hung off the right edge of the
+screen, and the *visible* part of a line was only as wide as the gap between the text and the screen
+edge. The log line said the text was fine ("text scale 0.254, 8.7px per character, 27.8px lines, 15.0px
+text wanted") and it was - a font scale is relative to the 720-high base and is not affected by any of
+this - which is exactly why the fault was invisible in the numbers and obvious on the screen. The fix
+is to draw the box in ScriptHookVDotNet's own base (`ScaledDraw`, with one conversion in
+`MeasureUnits`: `Screen.ScaledWidth / screen width` across, `720 / screen height` down), so at 1080p
+the panel is 820px and sits at the top right where the ini says.
+
+**The overlap needed a second fault, and it was the wrap.** A `TextElement` that is not given a wrap
+width does not set one, so where a long line breaks is whatever the last script to call
+`SET_TEXT_WRAP` left behind - here, a boundary inside the panel - and the continuation is drawn one
+font line lower. The box's own line spacing is 27.8px at that text size and the game's font line is
+about 25px, so the second row of "Log is at ..." landed 3px above "TextJobs ready...", which is why
+the two were printed almost exactly on top of each other. The box now passes its own width to every
+line (`WrapWidth` = the panel's text width), asks the game how many rows each line takes
+(`ScaledLineCount`, which uses the same wrap width it will draw with), and moves the next line down by
+that many rows. The line spacing is now the police box's own `1.55 x FontSize`, held above the width of
+an 'M' so a wrapped row cannot touch the row below it.
+
+TextDispatch's own box never had either fault: RAGE Plugin Hook's render draws in real pixels, and it
+clips a long line to the panel with GDI+ instead of letting the game wrap it. That is why the police
+box looks right and its civilian twin did not.
+
+**Installed:** `scripts\TextJobs.dll` **1.1.6** (1.1.5 kept as `TextJobs.dll.bak-<date>`), built from
+`src\TextJobs\ChatBox.cs`. Verified by compiling it and by reading `ScaledDraw` and `ScaledLineCount`
+out of the installed ScriptHookVDotNet 3.7.0.191 - both take `Screen.ScaledWidth` and 720 - not yet in
+game.
+
+### 1.16 Two chat boxes were up at once on duty, and one of them printed ~g~ codes ✓ FIXED
+
+The second picture was the police box with the jobs box drawn through it: two transcripts in the
+top-right corner a few pixels apart, both reading the left arrow's keystrokes, and
+`~g~TextCallouts~s~: 462 callouts (18 built in, 444 from the library)` sitting in the box with the
+colour codes showing.
+
+**The jobs box was never told the player was on duty.** The two boxes share exactly one fact, through
+`Plugins\LSPDFR\TextDispatch-alive`: the jobs box stands down while the player is on duty, and comes
+back off duty on **F9** so the left arrow stays the police box's. The file was being written twice a
+second with the right timestamp and the wrong word, because TextDispatch asked the game whether the
+player's ped is a cop (`IsPedACop`) — and LSPDFR's cop database is the officers it spawns; the player
+is not one of them. So the file said "off" on every patrol, the jobs box stayed up, and both boxes
+opened on the left arrow. What said where to look was TextJobs' own log: no "on duty: the jobs box
+stands down" line for the whole session.
+
+It now comes from LSPDFR's own two moments — `Initialize()` when the player goes on duty, `Finally()`
+when they go off — which are the only two things that actually mean it, and a change is written to the
+file at once instead of at the next heartbeat.
+
+**And standing down now includes the keyboard.** The jobs box hides what you type from every other
+plugin while it is open, and nothing else in the box is asked to update while it is stood down — so a
+box that was open at the moment the player went on duty would have kept every keystroke to itself for
+the whole patrol: invisible, and the exact failure its own comments call worse than being seen. It is
+told to stop hiding as it goes down.
+
+**The `~g~` codes belong to the notification system, not to a box that draws words.** TextCallouts says
+a line through `Game.DisplayNotification` and through the chat bridge, and only the game's own renderer
+understands `~g~…~s~`. The tokens are now taken out where every line enters TextDispatch's box, once,
+so nothing that sends a line has to remember — and a lone tilde (a path, a price) is left alone.
+
+**And the 444 library callouts are live, in the same session's log** — worth writing down, because it
+was the open question: `callouts from files: 444 loaded, 0 skipped`, `registered for this duty: 13 of
+13 built-in callouts, 444 of 444 from the library, 0 of 0 of your own`, and a minute later `recipe
+saspa_visitor_contraband is prison work; this patrol is 'lspd' - not offering it`. 457 callouts were
+live on that LSPD patrol (13 police built-ins + 444 library). The HUD line in the box said 462 because
+the *installed* TextCallouts reports the pack's total there while the source reports the duty's — the
+source is ahead of the deployed build in that one line, which is a rebuild away from matching.
+
+**And the police box steps aside off duty, so only one box is ever on screen.** Both transcripts used
+to stay drawn — the police one deliberately, because it does not fade, and the jobs one as soon as it
+came back — so off duty the same corner had both, through each other. Off duty the police box now
+draws nothing, hides nothing from the keyboard and lets go of its key; on duty it is back on the first
+frame. The handshake keeps being written either way, which is what tells the jobs box it may return on
+F9. Its README's "the box disappears when you go off duty" line now reads *by design* instead of the
+1.0.14 fault it used to describe.
+
+**Installed:** `Plugins\LSPDFR\TextDispatch.dll` **1.0.27** and `scripts\TextJobs.dll` **1.1.8**,
+both previous versions kept as `.bak-<date>`. Verified by reading the shipped assemblies back —
+`Announce` reads the duty flag, `Main.Finally` clears it, `ChatBox.Write` strips the tokens, and both
+`Loop` and `OnFrameRender` read the flag on their way in — and `tools\verify-bridge.ps1` still passes
+18 checks, which is what says both plugins look for the same alive file. Not yet in game.
+
+### 1.17 On a fire patrol almost nothing could be offered - not even Vehicle Fire ✓ FIXED
+
+Fire was the one duty with nearly nothing to be sent to, and it was two faults in one rule.
+
+**The rule knew two worlds and LSPDFR has three duties.** Every callout says which duty it belongs to
+in its `<For>` element, and `Agency.AllowsFor` sorted a patrol into Fire, Medical or Police and then
+matched. A fire crew is `lsfd_fire`, which this code called Fire - and the fire *branch* was offered
+"fire" work and nothing else. So on a fire patrol, against what the library actually contains:
+
+| Offered to a fire patrol | was | now |
+|---|---|---|
+| built-in callouts | **0 of 18** | **5 of 18** |
+| library recipes | 39 of 444 | **103 of 444** |
+
+The five built-ins are the medical ones - Cardiac Arrest, Collision with Injuries, **Vehicle Fire**,
+Overdose, Welfare Check - which is the absurd part: *Vehicle Fire* is written as a medical callout, and
+a fire crew could not be sent to it. And 39 recipes out of 444 is worse than it reads, because LSPDFR
+picks one candidate per offer and a refused candidate wastes that turn - an LSPD patrol passed 166 of
+the 444, so a fire crew waited roughly four times as long for a callout, and had nothing at all in the
+built-in pool. It is 103 against 166 now.
+
+The fix is one line of the rule: the fire branch is offered the medical work as well. One way only -
+a fire crew runs medical calls, an ambulance is still not sent to a fire. The counts above come out of
+`Agency.AllowsFor` itself, run over all 444 recipes.
+
+**The second fault was documentation.** `<For>` was never described where a player writes a recipe, so
+the shipped `Custom\README.txt` and the worked example now document it: `police`, an agency family,
+`ems`, `fire`, `any`, or several separated by commas.
+
+Worth saying plainly: the logs contain **no fire-duty registration at all** - the only two sessions today
+that could have reached one died on duty first (18:12 and 19:04, the Policing Redefined crash), so this
+gap has not actually been exercised yet. It would have been, on the next fire patrol.
+
+**Installed:** `Plugins\LSPDFR\TextCallouts.dll` **1.13.1** (1.13.0 kept as `.bak-<date>`), and the two
+generated files in `Plugins\LSPDFR\TextCallouts\Custom` were deleted so they come back with the new
+text. The check next fire duty is `registered for this duty: 5 of 5 built-in callouts, 444 of 444 from
+the library` in `textcallouts.log`, and a Vehicle Fire offered to a fire truck. Not yet in game.
 
 ## 2. Every mod installed
 

@@ -37,6 +37,11 @@ does it: a system-wide keyboard hook and a hook on the game window's procedure, 
 Freight" cannot open another mod's menu. Alt with any key, and anything another program synthesises, is
 always let through.
 
+**A line too long for the panel wraps inside it**, and the rows it takes are counted, so nothing is
+ever drawn over a line below. The width it wraps at is the box's own - a chat line is broken where the
+panel ends, not where the last other script to draw text happened to leave its boundary. `Lines` in the
+ini is a number of rows, so a wrapped line uses two or three of them.
+
 ## Install
 
 1. **Close the game.**
@@ -52,6 +57,11 @@ needs), and **DriverJobs V** itself — without it the box still opens and says 
 Not required: LSPDFR, RAGE Plugin Hook, or TextDispatch. If you run TextDispatch too, keep the two on
 different keys — TextDispatch uses the left arrow, this uses F9, and two boxes on one key would both
 open and both read the same keystrokes.
+
+**While you are on duty this box is not there at all.** The police box is the interface then and it
+has `/jobs` and `/job` in it; this one stands down, keystrokes included, and comes back when you go
+off duty. It learns that from TextDispatch, through a small file the police plugin refreshes beside
+its log — so with TextDispatch installed the two are never up together.
 
 ## What it deliberately is not
 

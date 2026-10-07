@@ -39,6 +39,10 @@ namespace TextJobs
         /// is not.</summary>
         private static int _stateCheckedAt;
 
+        /// <summary>Set when the heartbeat could not be read, so that is said once and not once a
+        /// second.</summary>
+        private static bool _stateReadFailed;
+
         /// <summary>True when OpenKey is auto, so this plugin may choose the key itself.</summary>
         private static bool _autoKey;
 
@@ -187,7 +191,17 @@ namespace TextJobs
                 onDuty = System.IO.File.ReadAllText(path).Trim()
                              .StartsWith("on", StringComparison.OrdinalIgnoreCase);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Once, not once a second: this is asked every second, and a heartbeat that cannot be
+                // read is one line in the log rather than a transcript of them. It used to be
+                // swallowed - which is the worst of both, because the box then stays up on duty and
+                // nothing anywhere says why.
+                if (_stateReadFailed) return;
+                _stateReadFailed = true;
+                Log.Line("could not read the police box's heartbeat: " + ex.Message +
+                         " - the jobs box will stay up and keep the left arrow");
+            }
         }
 
         /// <summary>
@@ -214,6 +228,12 @@ namespace TextJobs
             {
                 _suppressed = true;
                 _box.IsOpen = false;
+
+                // And stop hiding the keyboard from the rest of the game. Nothing else in this box is
+                // asked to update while it is stood down, so a box that was open at the moment the
+                // player went on duty would otherwise keep every keystroke to itself for the whole
+                // patrol - invisible, and the one failure this design says is worse than being seen.
+                if (_capture != null) _capture.Update(false);
 
                 Log.Line("on duty: the jobs box stands down - the police box is the interface, and it has /jobs");
                 try { GTA.UI.Notification.PostTicker("Jobs box off while on duty - the police box has /jobs.", false, false); }

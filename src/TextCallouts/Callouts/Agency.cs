@@ -18,7 +18,9 @@ namespace TextCallouts.Callouts
     ///     police              any police agency - the default
     ///     lspd, sheriff, sahp, nysp, ranger, prison, fib, iaa, noose, doa, swat
     ///                         one agency family, by the name a player would use for it
-    ///     ems, fire           the medical and fire branches
+    ///     ems, fire           the medical and fire branches (a fire crew is also offered the
+    ///                         medical work, because LSFD Fire runs medical calls and the pack's own
+    ///                         fire callout - a vehicle fire - is written as a medical one)
     ///     any                 anybody, including agencies nobody here has heard of
     ///
     /// The names are matched loosely, because agencies are named in agency.xml by whoever wrote the
@@ -88,6 +90,20 @@ namespace TextCallouts.Callouts
             {
                 if (kind == Any) return true;
                 if (kind == category) return true;
+
+                // The fire branch is the medical branch as well.
+                //
+                // LSPDFR splits LSFD in two - lsfd is the ambulance, lsfd_fire is the fire truck - and
+                // this file treated them as separate worlds, so a fire crew was offered "fire" work and
+                // nothing else. That is not how the department works, and it is not how this pack is
+                // written: fire crews run medical calls, and the pack's own fire callout, Vehicle Fire,
+                // is a medical one - so a fire patrol was offered neither the medical callouts nor its
+                // own. Worse than it sounds, because it is a fire patrol with the *fewest* callouts in
+                // the pack: 0 of the 18 built-ins and a small slice of the library.
+                //
+                // One way only. A fire crew gets the medical work; an ambulance is still not sent to a
+                // fire.
+                if (category == Fire && kind == Medical) return true;
 
                 // An agency family by the name a player would use for it.
                 string[] words;

@@ -481,7 +481,7 @@ It keeps two things apart on purpose, because confusing them is worse than sayin
 
 | Symptom | Look at |
 |---|---|
-| **The box disappears when you go off duty** | Fixed in 1.0.14. LSPDFR calls a plugin's `Finally()` when you clock off, not only at shutdown, and the engine used to shut itself down there - so the box was gone for the rest of the session, with `stopping` as the last line of the log. |
+| **The box disappears when you go off duty** | By design. Off duty the civilian jobs box is the interface and it has this corner, so this one stops drawing, stops hiding keystrokes and lets go of its key until you go back on duty - one box at a time, one key each. It used to be a *fault* instead: before 1.0.14, LSPDFR's `Finally()` (clocking off, as well as shutdown) shut the engine down, so the box was gone for the rest of the session, with `stopping` as the last line of the log. |
 | **Nothing loaded at all - not this plugin, not the callout packs** | You have not been on duty. Press **E** at a police station: LSPDFR scans `Plugins\LSPDFR` at that moment, and not before it. |
 | A plugin you installed is not in LSPDFR's list | `/plugins` - or `tdplugins` in F4, or the log. It names every DLL in the folder, which ones loaded, and which are in `Plugins\` or `lspdfr\` where LSPDFR never looks for them. |
 | The game crashed after a while on duty | `/plugins` sorts the two cases apart. **Did not load** and **Missing dependency** mean something is actually broken. **Optional integrations not installed** means a feature is switched off and nothing is wrong - a callout pack's StopThePed or Callout Interface link, for instance. |

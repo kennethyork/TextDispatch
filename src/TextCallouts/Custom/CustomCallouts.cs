@@ -254,6 +254,15 @@ Every field, and nothing more than you need:
                                  you have been at the scene and are done with it: leave the
                                  area, or give it a minute on scene. Twenty minutes is the
                                  backstop for a call nobody ever turns up to.
+  <For>           which duty it belongs to. Default police.
+                    police          any police agency
+                    lspd, sheriff, sahp, nysp, ranger, prison, fib, iaa, noose, doa, swat
+                                    one agency family, by the name a player would use for it
+                    ems, medical    the ambulance branch
+                    fire            the fire branch - which is offered the medical work as well,
+                                    because LSFD Fire runs medical calls
+                    any             anybody
+                    Several, separated by commas, means any of them: <For>lspd,sheriff</For>
   <Distance Min Max Radius>   how far away it appears (metres), and the area blip on the map.
   <Actors>
      <Ped ... />   one per person. Attributes:
@@ -307,6 +316,8 @@ In the F4 console, tcstatus says how many custom callouts loaded, and tccallouts
 -->
 <Callout>
   <Name>Armed Robbery At The Pier</Name>
+  <!-- Which duty this belongs to. police is the default; lspd, sheriff, ems, fire and any also work. -->
+  <For>police</For>
   <Probability>Medium</Probability>
   <Message>Armed robbery in progress at the pier.</Message>
   <Advisory>Two males, one of them with a handgun. Staff and customers still inside.</Advisory>
