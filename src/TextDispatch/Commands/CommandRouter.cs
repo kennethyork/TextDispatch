@@ -149,6 +149,7 @@ namespace TextDispatch.Commands
                 case "callout":
                 case "start": StartCallout(argument); return;
                 case "calls": ListCallouts(argument); return;
+                case "auto": SetAuto(argument); return;
 
                 // DriverJobs V's civilian work. It is a ScriptHookV script with no API to ask, so
                 // the list is read out of the file the mod itself loads.
@@ -344,6 +345,35 @@ namespace TextDispatch.Commands
             }
 
             _chat.Dispatch("Dispatch is raising a " + argument + " call for you. Stand by.");
+        }
+
+        /// <summary>
+        /// Automatic calls: /auto on|off, /auto accept on|off, /auto &lt;seconds&gt;. Saved to the ini.
+        /// </summary>
+        private void SetAuto(string argument)
+        {
+            if (_settings == null) { _chat.Error("Settings are not loaded."); return; }
+
+            var parts = (argument ?? "").Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            int seconds;
+
+            if (parts.Length == 0) { }
+            else if (parts[0] == "on" || parts[0] == "off")
+                _dispatch.AutoCallouts = parts[0] == "on";
+            else if (parts[0] == "accept" && parts.Length > 1 && (parts[1] == "on" || parts[1] == "off"))
+                _settings.AutoAccept = parts[1] == "on";
+            else if (int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out seconds) && seconds >= 30 && seconds <= 3600)
+                _settings.AutoCalloutSeconds = seconds;
+            else
+            {
+                _chat.Error("Usage: /auto on|off  ·  /auto accept on|off  ·  /auto <seconds, 30-3600>");
+                return;
+            }
+
+            if (parts.Length > 0) _settings.Save();
+
+            _chat.Notice("Automatic calls are " + (_settings.AutoCallouts ? "on - one comes after " + _settings.AutoCalloutSeconds + "s free" : "off") +
+                         ". Calls are " + (_settings.AutoAccept ? "accepted for you" : "accepted by typing 'accept'") + ".");
         }
 
         /// <summary>
@@ -1575,7 +1605,7 @@ namespace TextDispatch.Commands
             _chat.Notice("            /who  list who is nearby    /talk <n>  speak to one of them");
             _chat.Notice("  Radio:    /r <text>  or just type a status code below");
             _chat.Notice("  Status:   10-8  10-7  10-97  10-98  10-6  code 3  code 4");
-            _chat.Notice("  Calls:    /accept  /decline  /calls [filter]  /callout <name>  /endcall  /available on|off");
+            _chat.Notice("  Calls:    /accept  /decline  /calls [filter]  /callout <name>  /endcall  /available on|off  /auto");
             _chat.Notice("  Civilian: /jobs [filter]  /job <name>  -  DriverJobs V's work, what it pays, where it starts");
             _chat.Notice("  Quick:    /yes accept  /no decline  (or just type 'accept')   /talk  whoever is nearest");
             _chat.Notice("  Stops:    /stop  /endstop  /tow   (or pull over with LSPDFR and it is picked up)");

@@ -50,6 +50,7 @@ namespace TextCallouts
         };
 
         private static bool _registered;
+        private static string _dutyRegistered = "";
 
         public override void Initialize()
         {
@@ -146,9 +147,16 @@ namespace TextCallouts
             // Counted apart, and named apart in the log, because "326" on its own is the number the
             // player uses to answer "did the library actually load?" - 326 of their own callouts would
             // be a very different thing from 326 that came with the pack.
+            //
+            // Recipes are gated by duty here as well, not only when LSPDFR offers one. A recipe for
+            // another duty that is registered anyway is still picked by LSPDFR's timer and then aborts
+            // in OnBeforeCalloutDisplayed - and every abort costs a whole callout interval, which is
+            // how an LSPD patrol went twelve minutes without a call.
             var fromLibrary = 0;
+            var otherDuty = 0;
             foreach (var type in Custom.CustomCallouts.LibraryTypes())
             {
+                if (!Agency.AllowsFor(Custom.CustomCallouts.DutyOf(type))) { otherDuty++; continue; }
                 try
                 {
                     Functions.RegisterCallout(type);
@@ -160,6 +168,7 @@ namespace TextCallouts
             var ofTheirOwn = 0;
             foreach (var type in Custom.CustomCallouts.CustomTypes())
             {
+                if (!Agency.AllowsFor(Custom.CustomCallouts.DutyOf(type))) { otherDuty++; continue; }
                 try
                 {
                     Functions.RegisterCallout(type);
@@ -169,9 +178,14 @@ namespace TextCallouts
             }
 
             _registered = true;
+            _dutyRegistered = registered + " built-in, " + fromLibrary + " from the library, " + ofTheirOwn +
+                              " of your own (duty: " + (Agency.Current() ?? "unknown") + ")";
             Log.Line("registered for this duty: " + registered + " of " + forThisDuty + " built-in callouts, " +
                      fromLibrary + " of " + Custom.CustomCallouts.LibraryCount + " from the library, " +
                      ofTheirOwn + " of " + Custom.CustomCallouts.CustomCount + " of your own" +
+                     (otherDuty > 0
+                         ? " (" + otherDuty + " are another duty's work and are not registered; /calls still lists them)"
+                         : "") +
                      (Custom.CustomCallouts.Problems > 0
                          ? "; " + Custom.CustomCallouts.Problems + " file(s) were skipped - see above"
                          : ""));
@@ -194,6 +208,8 @@ namespace TextCallouts
                 Game.Console.Print("[TextCallouts] " + CalloutTypes.Length + " callouts in the pack, re-registered on");
                 Game.Console.Print("[TextCallouts]   every duty transition" +
                                    (_registered ? " (last one done)." : " - not registered yet, so go on duty."));
+                if (_registered && _dutyRegistered.Length > 0)
+                    Game.Console.Print("[TextCallouts] registered " + _dutyRegistered);
 
                 Game.Console.Print("[TextCallouts] " + Custom.CustomCallouts.LibraryCount +
                                    " more from the library that ships with it");

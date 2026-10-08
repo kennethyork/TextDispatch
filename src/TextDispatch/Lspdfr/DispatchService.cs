@@ -76,6 +76,7 @@ namespace TextDispatch.Lspdfr
                 WatchPursuit();
                 WatchPullover();
                 WatchArrest();
+                AutoDispatch();
             }
             catch (Exception ex) { Log.Error("dispatch tick", ex); }
         }
@@ -88,6 +89,7 @@ namespace TextDispatch.Lspdfr
             {
                 if (_callout != null)
                 {
+                    _lastCallAt = Environment.TickCount;
                     _callout = null;
                     _calloutState = "";
                     _calloutName = "";
@@ -97,21 +99,36 @@ namespace TextDispatch.Lspdfr
                 return;
             }
 
-            if (!Equals(handle, _callout))
+            // The same call is recognised by its name and state, not by the handle: LSPDFR can hand back
+            // a different object for the same pending call, and comparing handles announced it again
+            // every time that happened.
+            var state = _api.AcceptanceState(handle) ?? "";
+            var name = _api.CalloutFriendlyName(handle);
+            if (string.IsNullOrEmpty(name)) name = _api.CalloutName(handle);
+            if (string.IsNullOrEmpty(name)) name = "a call";
+
+            bool sameCall = name == _calloutName;
+            bool sameState = state == _calloutState;
+            _callout = handle;
+            _lastCallAt = Environment.TickCount;
+            if (!sameCall) _onScene = false;
+
+            // A call that is still waiting is taken for the player, a moment after it is announced so
+            // the announcement is read first.
+            if (state == "Pending" && _settings.AutoAccept)
             {
-                _callout = handle;
-                _calloutState = "";
-                _onScene = false;
+                if (!sameCall || !sameState) { _pendingSince = Environment.TickCount; _autoAccepted = false; }
+                else if (!_autoAccepted && Environment.TickCount - _pendingSince > 2500)
+                {
+                    _autoAccepted = true;
+                    _api.AcceptCallout(handle);
+                    _chat.Radio("You: " + _unit + ", I'm taking it.");
+                }
             }
 
-            var state = _api.AcceptanceState(handle) ?? "";
-            if (state != _calloutState)
+            if (!(sameCall && sameState))
             {
                 _calloutState = state;
-
-                var name = _api.CalloutFriendlyName(handle);
-                if (string.IsNullOrEmpty(name)) name = _api.CalloutName(handle);
-                if (string.IsNullOrEmpty(name)) name = "a call";
                 _calloutName = name;
 
                 switch (state)
@@ -131,6 +148,105 @@ namespace TextDispatch.Lspdfr
                         break;
                 }
             }
+        }
+
+        // ------------------------------------------------------------------ automatic calls
+
+        private int _lastCallAt = Environment.TickCount;
+        private int _pendingSince;
+        private bool _autoAccepted;
+
+        /// <summary>A call asked of LSPDFR by name, waiting to see whether it actually started.</summary>
+        private string _asked;
+        private int _askedAt;
+
+        /// <summary>What the 911 caller said, while its callout is still being found.</summary>
+        private string _911Details;
+
+        /// <summary>
+        /// Names LSPDFR would not start - another duty's callouts, which the packs list but do not
+        /// register. Remembered so the next pick does not waste its turn on them.
+        /// </summary>
+        private readonly HashSet<string> _notRegistered = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Random _random = new Random();
+
+        /// <summary>
+        /// Keep the calls coming. LSPDFR's own timer still runs and its calls are welcome; this only
+        /// steps in when the patrol is free and nothing has come for AutoCalloutSeconds.
+        ///
+        /// LSPDFR's StartCallout gives no answer - a name it does not have registered is silently
+        /// ignored - so whether a call really started is read back a few seconds later, and a name
+        /// that started nothing is set aside and another one tried.
+        /// </summary>
+        private void AutoDispatch()
+        {
+            if (_asked != null)
+            {
+                if (_api.CurrentCallout() != null) { _asked = null; return; }
+                if (Environment.TickCount - _askedAt < 5000) return;
+
+                // Nothing came of it: not a callout this duty has. A 911 call goes straight on to the
+                // next best fit; an automatic one simply picks again on the next pass.
+                _notRegistered.Add(_asked);
+                Log.Line("auto callouts: '" + _asked + "' did not start - not registered for this duty; trying another");
+                _asked = null;
+
+                if (_911Details != null)
+                {
+                    var next = _api.MatchCallout(_911Details, _notRegistered) ?? PickRandom();
+                    if (next != null) Ask(next, true);
+                    else _911Details = null;
+                }
+                else
+                {
+                    _lastCallAt = Environment.TickCount - Math.Max(30, _settings.AutoCalloutSeconds) * 1000;
+                }
+                return;
+            }
+
+            _911Details = null;
+
+            if (!_settings.AutoCallouts || !Plugin.OnDuty) return;
+            if (_callout != null || _pursuit || _pullover || _arresting) { _lastCallAt = Environment.TickCount; return; }
+            if (!_api.PlayerAvailable()) { _lastCallAt = Environment.TickCount; return; }
+
+            var waitMs = Math.Max(30, _settings.AutoCalloutSeconds) * 1000;
+            if (Environment.TickCount - _lastCallAt < waitMs) return;
+
+            var pick = PickRandom();
+            if (pick == null)
+            {
+                // Everything was tried and nothing started. Start again from the full list later
+                // rather than never - a duty change re-registers everything.
+                _notRegistered.Clear();
+                _lastCallAt = Environment.TickCount;
+                return;
+            }
+
+            Ask(pick, false);
+        }
+
+        private string PickRandom()
+        {
+            var choices = new List<string>();
+            foreach (var label in _api.CalloutLabels())
+                if (!_notRegistered.Contains(label)) choices.Add(label);
+            return choices.Count == 0 ? null : choices[_random.Next(choices.Count)];
+        }
+
+        private void Ask(string label, bool by911)
+        {
+            _asked = label;
+            _askedAt = Environment.TickCount;
+            _lastCallAt = Environment.TickCount;
+            Log.Line("auto callouts: asking LSPDFR for '" + label + "'" + (by911 ? " (from a 911 call)" : ""));
+            _api.StartCallout(label);
+        }
+
+        public bool AutoCallouts
+        {
+            get { return _settings.AutoCallouts; }
+            set { _settings.AutoCallouts = value; _lastCallAt = Environment.TickCount; }
         }
 
         private void WatchPursuit()
@@ -222,6 +338,21 @@ namespace TextDispatch.Lspdfr
 
             var transcript = Transcript(6);
             Echo(line);
+
+            // A free unit gets the call itself: the callout whose name best fits what the caller
+            // said, or any call for this duty if nothing fits. If none of those turns out to be
+            // registered, AutoDispatch moves on to the next fit by itself.
+            if (Plugin.OnDuty && _callout == null && _asked == null && !string.IsNullOrWhiteSpace(details))
+            {
+                var label = _api.MatchCallout(details, _notRegistered) ?? PickRandom();
+                if (label != null)
+                {
+                    _911Details = details;
+                    Ask(label, true);
+                    Transmit("Copy " + _unit + ", 911 caller reports " + details.Trim() + ". Raising it now - stand by.");
+                    return;
+                }
+            }
 
             // The details decide the response, not the wrapper: "...man with a gun" gets units sent.
             var intent = DispatcherBrain.Classify(details);

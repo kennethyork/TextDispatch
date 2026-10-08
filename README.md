@@ -70,6 +70,9 @@ assembly, so every callout you have is announced in text and can be started by n
   `/frisk`, `/cuff`, `/record` and `/owner` all act on the driver you stopped.
 - **Every installed callout pack is supported automatically.** `/calls` lists them with the pack each
   came from; `/callout <name>` starts any of them.
+- **The calls keep coming.** A free patrol with nothing for two minutes is given a call for its duty,
+  every call is accepted for you, and `/911 man with a gun` starts the callout that fits it. `/auto`
+  turns any of that off.
 - **An optional local model** (Ollama or LM Studio) behind both the dispatcher and the pedestrians.
   No API key, no internet, nothing leaves your machine.
 - **Your civilian jobs are in the box too.** With DriverJobs V installed, `/jobs` lists all 37 of its

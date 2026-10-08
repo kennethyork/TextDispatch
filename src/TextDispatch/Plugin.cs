@@ -363,6 +363,8 @@ namespace TextDispatch
         /// </summary>
         private static volatile bool _onDuty = true;
 
+        public static bool OnDuty { get { return _onDuty; } }
+
         /// <summary>
         /// LSPDFR has said the player went on or off duty.
         ///

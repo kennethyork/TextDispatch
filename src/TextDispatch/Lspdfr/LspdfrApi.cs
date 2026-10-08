@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Text;
 using Rage;
 
 namespace TextDispatch.Lspdfr
@@ -473,8 +474,12 @@ namespace TextDispatch.Lspdfr
         }
 
         /// <summary>
-        /// What to hand to StartCallout for whatever the player typed. LSPDFR starts a callout by
-        /// its class name; the catalogue shows a friendly label first, so both are accepted here.
+        /// What to hand to StartCallout for whatever the player typed.
+        ///
+        /// LSPDFR's StartCallout looks a callout up by the Name in its CalloutInfo attribute - the
+        /// label /calls shows - and silently does nothing for anything else. Handing it the class
+        /// name, which this used to do, meant "/callout armed robbery" asked for "ArmedRobbery" and
+        /// never started anything. Either is accepted from the player; the label is what goes out.
         /// </summary>
         public string ResolveCallout(string query)
         {
@@ -483,30 +488,104 @@ namespace TextDispatch.Lspdfr
             var needle = query.Trim();
             foreach (var entry in FindCallouts())
             {
-                if (string.Equals(entry.TypeName, needle, StringComparison.OrdinalIgnoreCase)) return entry.TypeName;
-                if (string.Equals(entry.Label, needle, StringComparison.OrdinalIgnoreCase)) return entry.TypeName;
+                if (string.Equals(entry.TypeName, needle, StringComparison.OrdinalIgnoreCase)) return entry.Label;
+                if (string.Equals(entry.Label, needle, StringComparison.OrdinalIgnoreCase)) return entry.Label;
             }
 
             foreach (var entry in FindCallouts())
             {
-                if (entry.TypeName.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return entry.TypeName;
-                if (entry.Label.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return entry.TypeName;
+                if (entry.TypeName.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return entry.Label;
+                if (entry.Label.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return entry.Label;
             }
 
             return needle;
         }
 
+        /// <summary>The name LSPDFR starts each callout by, for every callout this install has.</summary>
+        public System.Collections.Generic.List<string> CalloutLabels()
+        {
+            var labels = new System.Collections.Generic.List<string>();
+            foreach (var entry in FindCallouts())
+                if (!labels.Contains(entry.Label)) labels.Add(entry.Label);
+            return labels;
+        }
+
+        /// <summary>
+        /// The callout whose name best fits a description such as a 911 call's: "man with a gun at the
+        /// gas station" scores on every word it shares with a callout's name. Null when nothing shares
+        /// a single meaningful word. Names in 'skip' are passed over - the ones that turned out not to
+        /// be registered for this duty.
+        /// </summary>
+        public string MatchCallout(string details, System.Collections.Generic.ICollection<string> skip)
+        {
+            if (string.IsNullOrWhiteSpace(details)) return null;
+
+            var words = Words(details);
+            if (words.Count == 0) return null;
+
+            string best = null;
+            int bestScore = 0;
+            foreach (var entry in FindCallouts())
+            {
+                if (skip != null && skip.Contains(entry.Label)) continue;
+
+                int score = 0;
+                var name = Words(entry.Label + " " + entry.TypeName.Replace('_', ' '));
+                foreach (var word in words)
+                    foreach (var part in name)
+                        if (part == word || (word.Length >= 4 && part.StartsWith(word, StringComparison.Ordinal)) ||
+                            (part.Length >= 4 && word.StartsWith(part, StringComparison.Ordinal)))
+                        { score++; break; }
+
+                if (score > bestScore) { bestScore = score; best = entry.Label; }
+            }
+
+            return best;
+        }
+
+        private static readonly System.Collections.Generic.HashSet<string> NoiseWords =
+            new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal)
+            {
+                "a", "an", "the", "at", "in", "on", "of", "and", "or", "to", "with", "is", "are", "there",
+                "some", "someone", "guy", "man", "woman", "person", "people", "near", "by", "my", "i", "we",
+                "have", "has", "got", "call", "report", "reported", "reports", "please", "help", "911", "lspd"
+            };
+
+        private static System.Collections.Generic.List<string> Words(string text)
+        {
+            var words = new System.Collections.Generic.List<string>();
+            var current = new StringBuilder();
+            foreach (var c in (text ?? "").ToLowerInvariant() + " ")
+            {
+                if (char.IsLetterOrDigit(c)) { current.Append(c); continue; }
+                if (current.Length > 0)
+                {
+                    var word = current.ToString();
+                    if (word.Length > 1 && !NoiseWords.Contains(word)) words.Add(word);
+                    current.Clear();
+                }
+            }
+            return words;
+        }
+
+        private DateTime _calloutsFound = DateTime.MinValue;
+
         /// <summary>
         /// Every callout this install actually has - LSPDFR's own plus every callout pack's.
-        /// Found by walking the assembly's types and reading the callout attribute, so new packs
-        /// appear here without this plugin knowing anything about them.
+        /// Found by walking every assembly in LSPDFR's AppDomain and reading the callout attribute,
+        /// so new packs appear here without this plugin knowing anything about them.
+        ///
+        /// Every assembly, not just LSPDFR's: the packs define their callouts in their own
+        /// assemblies, and TextCallouts builds its recipes into a dynamic one when you go on duty -
+        /// which can be after this first runs, so the list is rebuilt once it is a minute old.
         /// </summary>
         private System.Collections.Generic.List<CalloutEntry> FindCallouts()
         {
-            if (_callouts != null) return _callouts;
+            if (_callouts != null && (DateTime.UtcNow - _calloutsFound).TotalSeconds < 60) return _callouts;
 
             var found = new System.Collections.Generic.List<CalloutEntry>();
             _callouts = found;
+            _calloutsFound = DateTime.UtcNow;
 
             Probe();
             if (!_available) return found;
@@ -522,11 +601,13 @@ namespace TextDispatch.Lspdfr
 
             if (baseType == null) return found;
 
-            Type[] types;
-            try { types = _assembly.GetTypes(); }
-            catch (ReflectionTypeLoadException ex) { types = ex.Types; }
-            catch { types = null; }
-            if (types == null) return found;
+            var types = new System.Collections.Generic.List<Type>();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try { types.AddRange(assembly.GetTypes()); }
+                catch (ReflectionTypeLoadException ex) { if (ex.Types != null) types.AddRange(ex.Types); }
+                catch { }
+            }
 
             foreach (var type in types)
             {

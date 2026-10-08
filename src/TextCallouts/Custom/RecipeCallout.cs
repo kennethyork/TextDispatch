@@ -98,6 +98,12 @@ namespace TextCallouts.Custom
             }
         }
 
+        internal static string DutyOf(string typeName)
+        {
+            CalloutRecipe recipe;
+            return Bindings.TryGetValue(typeName, out recipe) ? recipe.For : null;
+        }
+
         public override bool OnBeforeCalloutDisplayed()
         {
             var recipe = Recipe;

@@ -67,6 +67,13 @@ namespace TextCallouts.Custom
             return Types.GetRange(0, _libraryCount).ToArray();
         }
 
+        /// <summary>The duty a recipe type belongs to, from its recipe's 'for' - null if it has none.</summary>
+        internal static string DutyOf(Type type)
+        {
+            Load();
+            return type == null ? null : RecipeCallout.DutyOf(type.Name);
+        }
+
         /// <summary>The player's recipes, from Plugins\LSPDFR\TextCallouts\Custom.</summary>
         internal static Type[] CustomTypes()
         {

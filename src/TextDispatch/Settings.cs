@@ -150,6 +150,17 @@ namespace TextDispatch
         public float WhisperRange = 3f;
         public float ShoutRange = 35f;
 
+        /// <summary>
+        /// Whether dispatch keeps the calls coming on its own. LSPDFR has a callout timer of its own,
+        /// but it pauses for anything it counts as busy and can go many minutes without a call; with
+        /// this on, a patrol that is free and has had nothing for AutoCalloutSeconds is given one.
+        /// </summary>
+        public bool AutoCallouts = true;
+        public int AutoCalloutSeconds = 120;
+
+        /// <summary>Whether a call that comes in is taken without typing 'accept'.</summary>
+        public bool AutoAccept = true;
+
         // ---------------------------------------------------------------- load
 
         /// <summary>
@@ -171,7 +182,8 @@ namespace TextDispatch
             "aimode", "aiprovider", "aiendpoint", "aimodel", "aitimeoutms", "aimaxtokens",
             "aitemperature", "aihistorylines", "openkey", "chatter", "blockothermodskeys",
             "hidehardwarekeys", "chatposition", "chatmargin",
-            "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange"
+            "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange",
+            "autocallouts", "autocalloutseconds", "autoaccept"
         };
 
         public static Settings Load()
@@ -238,6 +250,9 @@ namespace TextDispatch
                         case "sayrange": settings.SayRange = AsFloat(value, settings.SayRange); break;
                         case "whisperrange": settings.WhisperRange = AsFloat(value, settings.WhisperRange); break;
                         case "shoutrange": settings.ShoutRange = AsFloat(value, settings.ShoutRange); break;
+                        case "autocallouts": settings.AutoCallouts = AsBool(value, settings.AutoCallouts); break;
+                        case "autocalloutseconds": settings.AutoCalloutSeconds = AsInt(value, settings.AutoCalloutSeconds); break;
+                        case "autoaccept": settings.AutoAccept = AsBool(value, settings.AutoAccept); break;
                     }
                 }
 
@@ -331,7 +346,15 @@ namespace TextDispatch
                     "; Chat ranges in metres.",
                     "SayRange=" + settings.SayRange.ToString(CultureInfo.InvariantCulture),
                     "WhisperRange=" + settings.WhisperRange.ToString(CultureInfo.InvariantCulture),
-                    "ShoutRange=" + settings.ShoutRange.ToString(CultureInfo.InvariantCulture)
+                    "ShoutRange=" + settings.ShoutRange.ToString(CultureInfo.InvariantCulture),
+                    "",
+                    "; Automatic callouts. With AutoCallouts=1, a patrol that is free and has had no call",
+                    "; for AutoCalloutSeconds is given one by dispatch, picked from the calls for your duty.",
+                    "; AutoAccept=1 takes every call that comes in without typing 'accept'.",
+                    "; /auto changes these while playing.",
+                    "AutoCallouts=" + (settings.AutoCallouts ? "1" : "0"),
+                    "AutoCalloutSeconds=" + settings.AutoCalloutSeconds.ToString(CultureInfo.InvariantCulture),
+                    "AutoAccept=" + (settings.AutoAccept ? "1" : "0")
                 });
             }
             catch (Exception ex) { Log.Error("write settings", ex); }

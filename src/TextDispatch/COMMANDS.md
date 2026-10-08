@@ -77,6 +77,10 @@ fire  firetruck     tow              transport
 |---|---|
 | `/calls [filter]` | every callout this install has — yours, LSPDFR's, and every pack's |
 | `/callout <name>` `/start <name>` | start one by name |
+| `/911 <details>` | a 911 call: starts the callout that best fits what the caller said |
+| `/auto` `/auto on\|off` | automatic calls: one comes after AutoCalloutSeconds (120 by default) free |
+| `/auto <seconds>` | how long a free patrol waits for an automatic call, 30-3600 |
+| `/auto accept on\|off` | whether calls are accepted for you (on by default) |
 | `accept` or `/accept` or `/yes` | take the call dispatch announced |
 | `/decline` `/no` | decline it |
 | `/endcall` | close the call you are on |
