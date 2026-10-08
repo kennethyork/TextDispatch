@@ -1,0 +1,46 @@
+[package]
+name = "hush"
+version = "0.1.0"
+description = "Local-only Ollama desktop agent that keeps your GPU quiet"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "hush_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1.53.2", features = ["full"] }
+futures-util = "0.3.34"
+anyhow = "1.0.104"
+thiserror = "2.0.21"
+nvml-wrapper = "0.13.0"
+sysinfo = "0.39.6"
+
+# Local-first by design: Ollama listens on 127.0.0.1, so we deliberately opt out
+# of reqwest's default rustls/aws-lc-rs stack. aws-lc-sys needs NASM to assemble
+# on Windows, and this project should not require native build tooling beyond the
+# MSVC linker. Schannel (`native-tls`) is pure Rust bindings to the OS TLS stack
+# and keeps https:// base URLs working if someone points Hush at a remote host.
+reqwest = { version = "0.13.5", default-features = false, features = ["json", "stream", "native-tls"] }
+
+
+# Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true
