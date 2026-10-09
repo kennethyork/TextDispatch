@@ -90,8 +90,6 @@ Installed side by side, they are one experience:
     and your callsign are still on file tomorrow, and a few minutes after an arrest or a citation
     dispatch radios back what the court did with it - likelier to stick with a /report behind it
   * /search car, /report, /status, and a shift that 10-8 starts and 10-7 ends with a summary on the radio
-  * push to talk: /voice on, hold N and speak, and a speech-to-text server on your own machine types
-    it in for you - whisper.cpp's server by default
   * every line a callout says - the ambulance request, the pursuit call-in, the suspect description -
     is mirrored into the chat box instead of a notification box
   * /calls lists all eighteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>

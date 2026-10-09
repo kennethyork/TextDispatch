@@ -265,12 +265,6 @@ assembly — and `/callout` starts any of them by name.
 `/id` (or `/licence`) · `/frisk` (or `/search`) · `/search car` · `/cuff` · `/detain` · `/release` (or `/uncuff`) ·
 `/transport`
 
-**Voice** — push to talk, off until you turn it on
-`/voice on` · `/voice test` · `/voice key <key>` · `/voice send on|off`. Hold **N**, speak, let go: what you
-said is typed in for you. It needs a microphone and a speech-to-text server on this machine - whisper.cpp's
-`whisper-server -m ggml-base.en.bin --port 8080` is the default, and anything answering OpenAI's
-`/v1/audio/transcriptions` works with `VoiceProvider=openai`. Nothing leaves the machine.
-
 **Services**
 `/ems` (or `/ambulance`, `/medic`) · `/fire` · `/backup [swat|air|state|ems|fire|transport|code2]` ·
 `/zone`

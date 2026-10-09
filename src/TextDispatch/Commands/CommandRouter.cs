@@ -229,7 +229,6 @@ namespace TextDispatch.Commands
                 case "status": ShowStatus(); return;
                 case "shift": ShowShift(); return;
                 case "shifts": ListShifts(); return;
-                case "voice": SetVoice(argument); return;
                 case "pursuit": StartPursuit(); return;
                 case "endpursuit": EndPursuit(); return;
                 case "calledin": CalledIn(); return;
@@ -1508,8 +1507,7 @@ namespace TextDispatch.Commands
             if (_dispatch.OnTrafficStop) _chat.Notice("  On a traffic stop.");
 
             _chat.Notice("  Auto calls " + (_settings.AutoCallouts ? "on (" + _settings.AutoCalloutSeconds + "s)" : "off") +
-                         ", auto accept " + (_settings.AutoAccept ? "on" : "off") +
-                         ", voice " + (_settings.VoiceInput ? "on (" + _settings.VoiceKey + ")" : "off") + ".");
+                         ", auto accept " + (_settings.AutoAccept ? "on" : "off") + ".");
 
             if (_shift.Running)
             {
@@ -1552,81 +1550,6 @@ namespace TextDispatch.Commands
             _chat.Notice("  Career: " + _records.Shifts.Count + " shift(s), " + totalCalls + " call(s), " +
                          _records.ArrestCount + " arrest(s), " + _records.CitationCount + " citation(s), " +
                          _records.Reports.Count + " report(s).");
-        }
-
-        // ------------------------------------------------------------------ voice
-
-        /// <summary>/voice, /voice on|off, /voice test, /voice key &lt;key&gt;, /voice send on|off.</summary>
-        private void SetVoice(string argument)
-        {
-            var voice = Plugin.Voice;
-            if (voice == null) { _chat.Error("Voice input is not running."); return; }
-
-            var parts = (argument ?? "").Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            var what = parts.Length > 0 ? parts[0].ToLowerInvariant() : "";
-
-            switch (what)
-            {
-                case "":
-                    _chat.Notice(voice.Describe());
-                    if (!string.IsNullOrEmpty(voice.LastHeard)) _chat.Notice("  Last heard: \"" + voice.LastHeard + "\"");
-                    if (!string.IsNullOrEmpty(voice.LastError)) _chat.Notice("  Last problem: " + voice.LastError);
-                    _chat.Notice("Usage: /voice on|off  ·  /voice test  ·  /voice key <key>  ·  /voice send on|off");
-                    return;
-
-                case "on":
-                case "off":
-                    _settings.VoiceInput = what == "on";
-                    _settings.Save();
-                    _chat.Notice(_settings.VoiceInput
-                        ? "Voice is on: hold " + voice.KeyName + " and speak. Checking the speech server..."
-                        : "Voice is off. Saved to the ini.");
-                    if (_settings.VoiceInput) TestVoice();
-                    return;
-
-                case "test":
-                    _chat.Notice("Checking the speech server at " + voice.Endpoint + "...");
-                    TestVoice();
-                    return;
-
-                case "key":
-                    if (parts.Length < 2 || !voice.SetKey(parts[1]))
-                    {
-                        _chat.Error("Usage: /voice key <key>   e.g. /voice key N, /voice key CapsLock");
-                        return;
-                    }
-                    _settings.VoiceKey = voice.KeyName;
-                    _settings.Save();
-                    _chat.Notice("Push to talk is now " + voice.KeyName + ", saved to the ini.");
-                    return;
-
-                case "send":
-                    if (parts.Length < 2 || (parts[1] != "on" && parts[1] != "off"))
-                    {
-                        _chat.Error("Usage: /voice send on|off  -  on sends what is heard at once, off leaves it in the box.");
-                        return;
-                    }
-                    _settings.VoiceSend = parts[1] == "on";
-                    _settings.Save();
-                    _chat.Notice(_settings.VoiceSend ? "What you say is sent at once." : "What you say waits in the box for Enter.");
-                    return;
-            }
-
-            _chat.Error("Usage: /voice on|off  ·  /voice test  ·  /voice key <key>  ·  /voice send on|off");
-        }
-
-        /// <summary>Ask the speech server for something, off the game fiber, and say how it went.</summary>
-        private void TestVoice()
-        {
-            var settings = _settings;
-            var chat = _chat;
-            System.Threading.ThreadPool.QueueUserWorkItem(_ =>
-            {
-                var problem = Voice.VoiceInput.Probe(settings);
-                chat.Notice(problem == null
-                    ? "Speech server answered at " + Voice.VoiceInput.EndpointFor(settings) + ". Hold " + settings.VoiceKey + " to talk."
-                    : "Voice: " + problem + ". Start whisper.cpp's server (whisper-server -m ggml-base.en.bin --port 8080), or set VoiceEndpoint in the ini.");
-            });
         }
 
         private void StartPursuit()
@@ -2050,7 +1973,6 @@ namespace TextDispatch.Commands
             _chat.Notice("            (all of those act on the driver you stopped)");
             _chat.Notice("  Paperwork: /report <what happened>  /reports [name]  /court  - what the courts still owe you");
             _chat.Notice("  Shift:    /status  /shift  /shifts   (10-8 starts a shift, 10-7 ends it and reads it back)");
-            _chat.Notice("  Voice:    /voice on|off|test|key <key>  - hold the key and speak instead of typing");
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
             _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model>");
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest [name] [for <charge>]  /cite <name> <offence>");

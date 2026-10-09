@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Rage;
 using TextDispatch.Bridges;
 using TextDispatch.Chat;
@@ -6,7 +6,6 @@ using TextDispatch.Commands;
 using TextDispatch.Dialogue;
 using TextDispatch.Lspdfr;
 using TextDispatch.Records;
-using TextDispatch.Voice;
 
 namespace TextDispatch
 {
@@ -33,7 +32,6 @@ namespace TextDispatch
         private static CommandRouter _router;
         private static PluginInventory _inventory;
         private static ShiftLog _shift;
-        private static VoiceInput _voice;
         private static string _recordsPath;
         private static int _savedAt;
         private static bool _saveErrorLogged;
@@ -63,7 +61,6 @@ namespace TextDispatch
         internal static DispatchService Dispatch { get { return _dispatch; } }
         internal static Settings Settings { get { return _settings; } }
         internal static PluginInventory Inventory { get { return _inventory; } }
-        internal static VoiceInput Voice { get { return _voice; } }
         internal static RecordsLedger Records { get { return _records; } }
 
         /// <summary>What other plugins can do - K9 units, spike strips, the checks they own.</summary>
@@ -178,10 +175,6 @@ namespace TextDispatch
 
                 _input = new TextInput(_chat, _router.Handle, _keys);
 
-                // Push to talk. What is heard is typed in for the player: sent at once, or left in the
-                // box for Enter, as the ini says.
-                _voice = new VoiceInput(_settings, Heard, problem => _chat.Error(problem));
-
                 if (!_input.SetOpenKey(_settings.OpenKey))
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with T");
 
@@ -229,8 +222,6 @@ namespace TextDispatch
                     _chat.Dispatch("Your last shift was never closed - it is on file as unfinished. /shifts lists it.");
                 if (_records.FollowUps.Count > 0)
                     _chat.Dispatch(_records.FollowUps.Count + " case(s) of yours are still with the courts. I will pass on what comes back.");
-                if (_settings.VoiceInput)
-                    _chat.Notice("Voice is on: hold " + _voice.KeyName + " to talk. /voice test checks the speech server.");
 
                 // Pull the model into memory now rather than on the player's first sentence.
                 Ai.LocalModel.WarmUp(_settings);
@@ -305,9 +296,6 @@ namespace TextDispatch
 
                     _dispatch.Update();
                     _dialogue.Update();
-
-                    // Not while the box is open: the key is a letter then.
-                    _voice.Update(here && !_chat.IsOpen);
 
                     SaveRecords(false);
 
@@ -454,24 +442,6 @@ namespace TextDispatch
                 _saveErrorLogged = true;
                 Log.Line("records: could not save to " + _recordsPath + " - " + problem);
                 if (_chat != null) _chat.Error("Records could not be saved: " + problem + ". The log has the path.");
-            }
-        }
-
-        /// <summary>Something said into the microphone, typed into the box as if from the keyboard.</summary>
-        private static void Heard(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text) || _router == null) return;
-
-            if (_settings.VoiceSend)
-            {
-                _chat.Remember(text);
-                _router.Handle(text);
-            }
-            else
-            {
-                _chat.IsOpen = true;
-                _chat.Input = text;
-                _chat.Scroll = 0;
             }
         }
 

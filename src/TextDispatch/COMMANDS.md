@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.31, taken out of the router rather than remembered —
-**140 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.32, taken out of the router rather than remembered —
+**139 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -166,21 +166,6 @@ the same.
 
 ---
 
-## Voice
-
-| | |
-|---|---|
-| `/voice` | how voice is set up, what it last heard, and what last went wrong |
-| `/voice on\|off` | push to talk on or off (off by default) |
-| `/voice test` | ask the speech server for an answer |
-| `/voice key <key>` | the push-to-talk key (N by default) |
-| `/voice send on\|off` | send what is heard at once, or leave it in the box for Enter |
-
-Hold the key, speak, let go. It needs a microphone and a speech-to-text server on this machine - whisper.cpp's
-(`whisper-server -m ggml-base.en.bin --port 8080`), or anything answering `/v1/audio/transcriptions`.
-"Ten ninety-seven" becomes `10-97`, and a sentence that starts "Dispatch, ..." goes on the radio.
-
----
 
 ## Features other plugins own — new in 1.0.16
 

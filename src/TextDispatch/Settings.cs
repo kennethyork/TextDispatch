@@ -161,32 +161,6 @@ namespace TextDispatch
         /// <summary>Whether a call that comes in is taken without typing 'accept'.</summary>
         public bool AutoAccept = true;
 
-        // ---------------------------------------------------------------- voice
-
-        /// <summary>
-        /// Push to talk into the box. Off by default, because it needs a speech server running on this
-        /// machine - whisper.cpp's, or anything OpenAI-compatible - and a key held for nothing is a
-        /// key that only produces an error.
-        /// </summary>
-        public bool VoiceInput = false;
-
-        /// <summary>The push-to-talk key. N is push to talk in GTA Online, and nothing in story mode.</summary>
-        public string VoiceKey = "N";
-
-        /// <summary>whispercpp | openai.</summary>
-        public string VoiceProvider = "whispercpp";
-
-        /// <summary>Blank means the provider's default on this machine.</summary>
-        public string VoiceEndpoint = "";
-
-        /// <summary>Only for an OpenAI-style server, which wants a model name.</summary>
-        public string VoiceModel = "";
-
-        /// <summary>Whether what is heard is sent at once, or left in the box for Enter.</summary>
-        public bool VoiceSend = true;
-
-        public int VoiceTimeoutMs = 15000;
-
         // ---------------------------------------------------------------- load
 
         /// <summary>
@@ -209,8 +183,7 @@ namespace TextDispatch
             "aitemperature", "aihistorylines", "openkey", "chatter", "blockothermodskeys",
             "hidehardwarekeys", "chatposition", "chatmargin",
             "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange",
-            "autocallouts", "autocalloutseconds", "autoaccept",
-            "voiceinput", "voicekey", "voiceprovider", "voiceendpoint", "voicemodel", "voicesend", "voicetimeoutms"
+            "autocallouts", "autocalloutseconds", "autoaccept"
         };
 
         public static Settings Load()
@@ -279,15 +252,7 @@ namespace TextDispatch
                         case "shoutrange": settings.ShoutRange = AsFloat(value, settings.ShoutRange); break;
                         case "autocallouts": settings.AutoCallouts = AsBool(value, settings.AutoCallouts); break;
                         case "autocalloutseconds": settings.AutoCalloutSeconds = AsInt(value, settings.AutoCalloutSeconds); break;
-                        case "autoaccept": settings.AutoAccept = AsBool(value, settings.AutoAccept); break;
-                        case "voiceinput": settings.VoiceInput = AsBool(value, settings.VoiceInput); break;
-                        case "voicekey": settings.VoiceKey = value; break;
-                        case "voiceprovider": settings.VoiceProvider = value; break;
-                        case "voiceendpoint": settings.VoiceEndpoint = value; break;
-                        case "voicemodel": settings.VoiceModel = value; break;
-                        case "voicesend": settings.VoiceSend = AsBool(value, settings.VoiceSend); break;
-                        case "voicetimeoutms": settings.VoiceTimeoutMs = AsInt(value, settings.VoiceTimeoutMs); break;
-                    }
+                        case "autoaccept": settings.AutoAccept = AsBool(value, settings.AutoAccept); break;                    }
                 }
 
                 // A file written by an older version is missing whatever was added since, and answers
@@ -300,6 +265,12 @@ namespace TextDispatch
                     incomplete = true;
                     break;
                 }
+
+                // And the other way: a key this version no longer has - 1.0.31's voice settings - is
+                // dropped by the same rewrite, rather than left in the file looking as if it did something.
+                var current = new HashSet<string>(KnownKeys, StringComparer.OrdinalIgnoreCase);
+                foreach (var key in seen)
+                    if (!current.Contains(key)) { incomplete = true; break; }
 
                 if (incomplete)
                 {
@@ -388,23 +359,7 @@ namespace TextDispatch
                     "; /auto changes these while playing.",
                     "AutoCallouts=" + (settings.AutoCallouts ? "1" : "0"),
                     "AutoCalloutSeconds=" + settings.AutoCalloutSeconds.ToString(CultureInfo.InvariantCulture),
-                    "AutoAccept=" + (settings.AutoAccept ? "1" : "0"),
-                    "",
-                    "; Push to talk. Hold VoiceKey, speak, let go - what you said goes into the box.",
-                    "; Needs a speech-to-text server on this machine; nothing leaves it:",
-                    ";   whispercpp  whisper.cpp's server: whisper-server -m ggml-base.en.bin --port 8080",
-                    ";               (default endpoint http://127.0.0.1:8080/inference)",
-                    ";   openai      anything answering /v1/audio/transcriptions, e.g. faster-whisper-server",
-                    ";               (default endpoint http://127.0.0.1:8000/v1/audio/transcriptions; set VoiceModel)",
-                    "; VoiceSend=1 sends what is heard at once; 0 leaves it in the box for Enter.",
-                    "; /voice on|off|test|key <key> changes these while playing.",
-                    "VoiceInput=" + (settings.VoiceInput ? "1" : "0"),
-                    "VoiceKey=" + settings.VoiceKey,
-                    "VoiceProvider=" + settings.VoiceProvider,
-                    "VoiceEndpoint=" + settings.VoiceEndpoint,
-                    "VoiceModel=" + settings.VoiceModel,
-                    "VoiceSend=" + (settings.VoiceSend ? "1" : "0"),
-                    "VoiceTimeoutMs=" + settings.VoiceTimeoutMs.ToString(CultureInfo.InvariantCulture)
+                    "AutoAccept=" + (settings.AutoAccept ? "1" : "0")
                 });
             }
             catch (Exception ex) { Log.Error("write settings", ex); }
