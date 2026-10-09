@@ -63,7 +63,7 @@ namespace TextCallouts.Callouts
             SuspectVehicle.EngineHealth = 90f;
             Patient = SpawnPed(People[Rng.Next(People.Length)], position, Rng.Next(360));
             PutInVehicle(Patient, SuspectVehicle, -1);
-            Patient.Health = 75;
+            Hurt(Patient, 75);
 
             // The other driver, out of the car and on their feet, which is how most of these look.
             _walkingWounded = SpawnPed(People[Rng.Next(People.Length)], position + new Vector3(4f, 2f, 0f), Rng.Next(360));

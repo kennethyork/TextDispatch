@@ -79,7 +79,7 @@ namespace TextCallouts.Callouts
             catch (Exception ex) { Log.Error("lighting the fire", ex); }
 
             Patient = SpawnPed(People[Rng.Next(People.Length)], position + new Vector3(6f, 3f, 0f), Rng.Next(360));
-            Patient.Health = 70;
+            Hurt(Patient, 70);
             Collapse(Patient);
 
             _onlooker = SpawnPed(People[Rng.Next(People.Length)], position + new Vector3(8f, 4f, 0f), Rng.Next(360));

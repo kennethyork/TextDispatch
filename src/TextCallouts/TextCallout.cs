@@ -72,17 +72,44 @@ namespace TextCallouts
             // are not saying it any more, and a reused handle must not inherit a script.
             try { Scripts.CalloutScript.Clear(); } catch { }
 
-            Log.Line("accepted: " + FriendlyName + " at " + Where(CalloutPosition));
+            Log.Line("accepted: " + FriendlyName + " at " + Where(CalloutPosition) +
+                     " - the scene is built when you are within " + (int)BuildDistance + "m");
             if (!string.IsNullOrEmpty(Briefing)) Say(Briefing);
 
-            try { Build(); }
+            // Not built here. The scene is hundreds of metres away at this moment, in a part of the map
+            // the game has not loaded, and people spawned there have no ground under them: they drop
+            // through the world, and the player arrives at an empty street. Building it as the player
+            // closes in - Process, below - puts them on ground that is really there.
+            _built = false;
+            if (PlayerDistance() <= BuildDistance) BuildNow();
+
+            return base.OnCalloutAccepted();
+        }
+
+        /// <summary>How close the player has to be before the scene is spawned: inside the loaded world.</summary>
+        protected const float BuildDistance = 180f;
+
+        private bool _built;
+
+        private float PlayerDistance()
+        {
+            try { return Game.LocalPlayer.Character.Position.DistanceTo(CalloutPosition); }
+            catch { return 0f; }
+        }
+
+        private void BuildNow()
+        {
+            _built = true;
+            try
+            {
+                Build();
+                Log.Line("scene built for " + FriendlyName + ", " + (int)PlayerDistance() + "m from the player");
+            }
             catch (Exception ex)
             {
                 Log.Error("building " + FriendlyName, ex);
                 End();
             }
-
-            return base.OnCalloutAccepted();
         }
 
         /// <summary>Build the scene. Called once, on acceptance.</summary>
@@ -100,6 +127,14 @@ namespace TextCallouts
             {
                 if (!Game.LocalPlayer.Character.IsAlive) { Close("the officer went down"); return; }
                 if (Environment.TickCount - _startedAt > TimeoutMs) { Close("nothing came of it"); return; }
+
+                // Nothing to run until there is a scene; it is built as the player arrives.
+                if (!_built)
+                {
+                    if (PlayerDistance() <= BuildDistance) BuildNow();
+                    if (!_built || _ended) return;
+                }
+
                 Tick();
             }
             catch (Exception ex) { Log.Error("tick " + FriendlyName, ex); }
@@ -241,15 +276,35 @@ namespace TextCallouts
         {
             if (ped == null || !ped.Exists()) return;
 
+            // The "face this ped" argument is 0 for nobody. A (Ped)null there is what RPH cannot marshal -
+            // it threw a NullReferenceException in both shapes, every time - so nobody ever put their
+            // hands up.
             try
             {
-                Rage.Native.NativeFunction.Natives.TaskHandsUp(ped, -1, (Ped)null, -1, true, false);
+                Rage.Native.NativeFunction.Natives.TaskHandsUp(ped, -1, 0, -1, true);
                 return;
             }
-            catch (Exception six) { Log.Line("TaskHandsUp with six arguments failed: " + six.GetType().Name); }
+            catch (Exception five) { Log.Line("TaskHandsUp with five arguments failed: " + five.GetType().Name); }
 
-            try { Rage.Native.NativeFunction.Natives.TaskHandsUp(ped, -1, (Ped)null, -1, true); }
-            catch (Exception five) { Log.Error("TaskHandsUp with five arguments", five); }
+            try { Rage.Native.NativeFunction.Natives.TaskHandsUp(ped, -1, 0, -1, true, false); }
+            catch (Exception six) { Log.Error("TaskHandsUp with six arguments", six); }
+        }
+
+        /// <summary>
+        /// Hurt, not dead. GTA counts a ped at or below 100 health as dead - the scale runs from 100 to
+        /// their maximum, usually 200 - so "Health = 70" killed every patient the moment they spawned.
+        /// `percent` is how much of their life they have left.
+        /// </summary>
+        protected static void Hurt(Ped ped, int percent)
+        {
+            if (ped == null || !ped.Exists()) return;
+            try
+            {
+                var max = ped.MaxHealth > 100 ? ped.MaxHealth : 200;
+                var health = 100 + (max - 100) * Math.Max(1, Math.Min(100, percent)) / 100;
+                ped.Health = Math.Max(101, health);
+            }
+            catch (Exception ex) { Log.Error("setting a ped's health", ex); }
         }
 
         /// <summary>Out of the car, hands up, and stop running - the "make them give up" button.</summary>

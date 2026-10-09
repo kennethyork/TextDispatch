@@ -65,7 +65,7 @@ namespace TextCallouts.Callouts
             var position = CalloutPosition;
 
             Patient = SpawnPed(People[Rng.Next(People.Length)], position, Rng.Next(360));
-            Patient.Health = 70;
+            Hurt(Patient, 70);
             Collapse(Patient);
 
             _friend = SpawnPed(People[Rng.Next(People.Length)], position + new Vector3(1.6f, 0.7f, 0f), Rng.Next(360));

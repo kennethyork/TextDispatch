@@ -54,7 +54,7 @@ namespace TextCallouts.Callouts
             SuspectVehicle.EngineHealth = 120f;
             Suspect = SpawnPed(Civilians[Rng.Next(Civilians.Length)], position, Rng.Next(360));
             PutInVehicle(Suspect, SuspectVehicle, -1);
-            Suspect.Health = 90;                    // hurt, not dying
+            Hurt(Suspect, 90);                    // hurt, not dying
             MarkStoppable(Suspect);
 
             // The other car, a couple of metres away, driver out and complaining.

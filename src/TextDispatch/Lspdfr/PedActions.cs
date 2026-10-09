@@ -43,31 +43,32 @@ namespace TextDispatch.Lspdfr
         }
 
         /// <summary>
-        /// TASK_HANDS_UP. This is the one that carries the risk: six arguments in later game builds,
-        /// five in earlier ones. Try the longer signature, then the shorter.
+        /// TASK_HANDS_UP(ped, duration, facingPed, p3, p4). The ped to face is 0 for nobody: a (Ped)null
+        /// there is what RPH cannot marshal, and it threw a NullReferenceException in TextCallouts every
+        /// time. Five arguments is the native's real shape; six is kept as the fallback.
         /// </summary>
         private static bool HandsUp(Ped ped, out string detail)
         {
             try
             {
-                NativeFunction.Natives.TaskHandsUp(ped, -1, (Ped)null, -1, true, false);
-                detail = "TaskHandsUp(ped,-1,null,-1,true,false)";
-                return true;
-            }
-            catch (Exception six)
-            {
-                detail = "six arguments failed (" + six.GetType().Name + ")";
-            }
-
-            try
-            {
-                NativeFunction.Natives.TaskHandsUp(ped, -1, (Ped)null, -1, true);
-                detail = "TaskHandsUp(ped,-1,null,-1,true)";
+                NativeFunction.Natives.TaskHandsUp(ped, -1, 0, -1, true);
+                detail = "TaskHandsUp(ped,-1,0,-1,true)";
                 return true;
             }
             catch (Exception five)
             {
-                detail = detail + "; five arguments failed too (" + five.GetType().Name + ")";
+                detail = "five arguments failed (" + five.GetType().Name + ")";
+            }
+
+            try
+            {
+                NativeFunction.Natives.TaskHandsUp(ped, -1, 0, -1, true, false);
+                detail = "TaskHandsUp(ped,-1,0,-1,true,false)";
+                return true;
+            }
+            catch (Exception six)
+            {
+                detail = detail + "; six arguments failed too (" + six.GetType().Name + ")";
                 return false;
             }
         }

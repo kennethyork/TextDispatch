@@ -186,7 +186,7 @@ namespace TextCallouts.Custom
             if (recipe.Patient != null)
             {
                 _patient = SpawnPed(SafeModel(recipe.Patient.Model, "a_m_m_business_01"), position, heading);
-                _patient.Health = 70;
+                Hurt(_patient, 70);
                 try { _patient.BlockPermanentEvents = true; } catch { }
                 try { Rage.Native.NativeFunction.Natives.SetPedToRagdoll(_patient, -1, -1, 0, false, false, false); }
                 catch (Exception ex) { Log.Error("putting a recipe's patient on the ground", ex); }
@@ -224,6 +224,7 @@ namespace TextCallouts.Custom
                 Game.LocalPlayer.Character.Position.DistanceTo(CalloutPosition) < recipe.ApproachDistance)
             {
                 _approached = true;
+                LogArrival();
 
                 if (!string.IsNullOrEmpty(recipe.ApproachLine)) Say(recipe.ApproachLine);
 
@@ -289,6 +290,36 @@ namespace TextCallouts.Custom
                     Close("every suspect is dealt with");
                     return false;
             }
+        }
+
+        /// <summary>
+        /// Who is actually there when the player arrives. A scene built and then lost - fallen through
+        /// the map, wandered off - looks from inside the game like a callout with no scene at all, and
+        /// this line is what tells the two apart.
+        /// </summary>
+        private void LogArrival()
+        {
+            try
+            {
+                var people = new List<Ped>(_suspects);
+                people.AddRange(_bystanders);
+                if (_patient != null) people.Add(_patient);
+
+                var present = 0;
+                var details = new List<string>();
+                foreach (var ped in people)
+                {
+                    if (ped == null || !ped.Exists()) { details.Add("gone"); continue; }
+                    var metres = ped.Position.DistanceTo(CalloutPosition);
+                    var dropped = ped.Position.Z < CalloutPosition.Z - 5f;
+                    if (ped.IsAlive && metres < 60f && !dropped) present++;
+                    details.Add((ped.IsAlive ? "" : "dead ") + (int)metres + "m" + (dropped ? " (below the ground)" : ""));
+                }
+
+                Log.Line("on arrival at " + FriendlyName + ": " + present + " of " + people.Count + " at the scene" +
+                         (details.Count > 0 ? " [" + string.Join(", ", details.ToArray()) + "]" : ""));
+            }
+            catch (Exception ex) { Log.Error("checking the scene on arrival", ex); }
         }
 
         /// <summary>

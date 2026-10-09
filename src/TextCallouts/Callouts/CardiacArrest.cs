@@ -60,7 +60,7 @@ namespace TextCallouts.Callouts
             var position = CalloutPosition;
 
             Patient = SpawnPed(People[Rng.Next(People.Length)], position + new Vector3(0.5f, 0.4f, 0f), Rng.Next(360));
-            Patient.Health = 60;
+            Hurt(Patient, 60);
             Collapse(Patient);
 
             // Somebody who called it in and is still standing over him, which is why the scene reads as

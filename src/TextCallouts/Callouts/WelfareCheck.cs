@@ -71,7 +71,7 @@ namespace TextCallouts.Callouts
             _line = _needsHelp ? Unwell[Rng.Next(Unwell.Length)] : Fine[Rng.Next(Fine.Length)];
 
             Patient = SpawnPed(People[Rng.Next(People.Length)], position, Rng.Next(360));
-            Patient.Health = _needsHelp ? 70 : 100;
+            if (_needsHelp) Hurt(Patient, 70);
             try { Patient.Tasks.StandStill(-1); } catch { }
 
             if (_needsHelp) Collapse(Patient);
