@@ -173,7 +173,9 @@ namespace TextDispatch
                 _keys.SetHardware(_settings.HideHardwareKeys);
                 _keys.Start();
 
-                _input = new TextInput(_chat, _router.Handle, _keys);
+                // Tab completes commands, and the names they take - callouts, people on file.
+                var router = _router;
+                _input = new TextInput(_chat, _router.Handle, _keys, new Completion(kind => router.CompletionSource(kind)));
 
                 if (!_input.SetOpenKey(_settings.OpenKey))
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with T");

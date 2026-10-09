@@ -37,11 +37,38 @@ namespace TextDispatch.Chat
 
         // Internal, unlike the rest of this class: the key capture it is handed is an implementation
         // detail of the plugin, not something another plugin could ever be given.
-        internal TextInput(ChatBox chat, Action<string> submit, KeyCapture capture)
+        internal TextInput(ChatBox chat, Action<string> submit, KeyCapture capture, Commands.Completion completion = null)
         {
             _chat = chat;
             _submit = submit;
             _capture = capture;
+            _completion = completion;
+        }
+
+        private readonly Commands.Completion _completion;
+
+        /// <summary>
+        /// Tab: the next completion of what is typed, and on the first press of a cycle a line saying what
+        /// else would match, so a player who does not know the name can see the choices.
+        /// </summary>
+        private void Complete(bool backwards)
+        {
+            if (_completion == null) return;
+
+            List<string> matches;
+            var completed = _completion.Next(_chat.Input, backwards, out matches);
+            if (completed == _chat.Input) return;
+
+            _chat.Input = completed;
+            _chat.Scroll = 0;
+
+            if (matches != null && matches.Count > 1)
+            {
+                var shown = new List<string>();
+                for (var i = 0; i < matches.Count && i < 10; i++) shown.Add(matches[i].Trim());
+                _chat.Notice("Tab: " + string.Join("  ", shown.ToArray()) +
+                             (matches.Count > 10 ? "  ... " + (matches.Count - 10) + " more" : ""));
+            }
         }
 
         /// <summary>
@@ -132,6 +159,11 @@ namespace TextDispatch.Chat
                 return;
             }
 
+            // Anything but Tab ends a completion cycle: what is typed next is the player's, not ours.
+            if (key == Keys.Tab) { Complete(shift); return; }
+            if (_completion != null && key != Keys.ShiftKey && key != Keys.LShiftKey && key != Keys.RShiftKey)
+                _completion.Reset();
+
             switch (key)
             {
                 case Keys.Escape:
@@ -161,7 +193,6 @@ namespace TextDispatch.Chat
                 case Keys.Down: _chat.HistoryNext(); return;
                 case Keys.PageUp: _chat.Scroll += 3; return;
                 case Keys.PageDown: _chat.Scroll = Math.Max(0, _chat.Scroll - 3); return;
-                case Keys.Tab: return;   // reserved for completion
             }
 
             // Everything else becomes text. Note the open key is only special while the box is

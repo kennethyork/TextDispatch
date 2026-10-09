@@ -161,6 +161,15 @@ namespace TextDispatch
         /// <summary>Whether a call that comes in is taken without typing 'accept'.</summary>
         public bool AutoAccept = true;
 
+        /// <summary>
+        /// Whether the other units are heard on the radio - going on scene, clearing, running plates.
+        /// Shown at brief and full chatter, never at quiet.
+        /// </summary>
+        public bool RadioTraffic = true;
+
+        /// <summary>Whether dispatch sometimes sends the player after somebody from their own records who has a warrant.</summary>
+        public bool WarrantCalls = true;
+
         // ---------------------------------------------------------------- load
 
         /// <summary>
@@ -183,7 +192,7 @@ namespace TextDispatch
             "aitemperature", "aihistorylines", "openkey", "chatter", "blockothermodskeys",
             "hidehardwarekeys", "chatposition", "chatmargin",
             "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange",
-            "autocallouts", "autocalloutseconds", "autoaccept"
+            "autocallouts", "autocalloutseconds", "autoaccept", "radiotraffic", "warrantcalls"
         };
 
         public static Settings Load()
@@ -252,7 +261,9 @@ namespace TextDispatch
                         case "shoutrange": settings.ShoutRange = AsFloat(value, settings.ShoutRange); break;
                         case "autocallouts": settings.AutoCallouts = AsBool(value, settings.AutoCallouts); break;
                         case "autocalloutseconds": settings.AutoCalloutSeconds = AsInt(value, settings.AutoCalloutSeconds); break;
-                        case "autoaccept": settings.AutoAccept = AsBool(value, settings.AutoAccept); break;                    }
+                        case "autoaccept": settings.AutoAccept = AsBool(value, settings.AutoAccept); break;
+                        case "radiotraffic": settings.RadioTraffic = AsBool(value, settings.RadioTraffic); break;
+                        case "warrantcalls": settings.WarrantCalls = AsBool(value, settings.WarrantCalls); break;                    }
                 }
 
                 // A file written by an older version is missing whatever was added since, and answers
@@ -359,7 +370,15 @@ namespace TextDispatch
                     "; /auto changes these while playing.",
                     "AutoCallouts=" + (settings.AutoCallouts ? "1" : "0"),
                     "AutoCalloutSeconds=" + settings.AutoCalloutSeconds.ToString(CultureInfo.InvariantCulture),
-                    "AutoAccept=" + (settings.AutoAccept ? "1" : "0")
+                    "AutoAccept=" + (settings.AutoAccept ? "1" : "0"),
+                    "",
+                    "; RadioTraffic=1: the other units are heard on the radio now and then - going on scene,",
+                    "; clearing, running plates. Shown at Chatter=brief and full, never at quiet.",
+                    "; /chatter traffic on|off changes it while playing.",
+                    "RadioTraffic=" + (settings.RadioTraffic ? "1" : "0"),
+                    "; WarrantCalls=1: dispatch sometimes sends you after somebody from your own records who",
+                    "; has a warrant now. /warrants lists them; /warrants serve sends you after one.",
+                    "WarrantCalls=" + (settings.WarrantCalls ? "1" : "0")
                 });
             }
             catch (Exception ex) { Log.Error("write settings", ex); }

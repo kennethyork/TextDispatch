@@ -54,6 +54,24 @@ namespace TextDispatch.Lspdfr
         /// <summary>When the next follow-up may be said: not in the first moments of a session, and not back to back.</summary>
         private int _nextFollowUpAt = Environment.TickCount + 20000;
 
+        /// <summary>A warrant service in progress - a call raised from the records, not from a callout pack.</summary>
+        private WarrantService _warrant;
+        private int _lastWarrantAt = Environment.TickCount;
+
+        /// <summary>The rest of the city on the radio.</summary>
+        private RadioTraffic _traffic;
+        private int _nextTrafficAt = Environment.TickCount + 60000;
+
+        /// <summary>A unit asked for and sent, so /units can say where it is.</summary>
+        internal sealed class SentUnit
+        {
+            public string What;
+            public Vehicle Vehicle;
+            public int At;
+        }
+
+        private readonly List<SentUnit> _units = new List<SentUnit>();
+
         public DispatchService(ChatBox chat, LspdfrApi api, Settings settings, RecordsLedger records, ShiftLog shift)
         {
             _chat = chat;
@@ -71,6 +89,163 @@ namespace TextDispatch.Lspdfr
                 records.Dirty = true;
             }
             _unit = records.Unit;
+            _traffic = new RadioTraffic(_unit, Environment.TickCount);
+        }
+
+        // ------------------------------------------------------------------ units sent
+
+        private void Sent(string what, Vehicle vehicle)
+        {
+            if (vehicle == null) return;
+            _units.Add(new SentUnit { What = what, Vehicle = vehicle, At = Environment.TickCount });
+            if (_units.Count > 12) _units.RemoveAt(0);
+        }
+
+        /// <summary>The units sent in the last fifteen minutes that are still in the world.</summary>
+        public List<SentUnit> Units()
+        {
+            _units.RemoveAll(u =>
+            {
+                try { return u.Vehicle == null || !u.Vehicle.Exists() || Environment.TickCount - u.At > 15 * 60 * 1000; }
+                catch { return true; }
+            });
+            return new List<SentUnit>(_units);
+        }
+
+        // ------------------------------------------------------------------ warrant service
+
+        public WarrantService Warrant { get { return _warrant != null && _warrant.Active ? _warrant : null; } }
+
+        /// <summary>
+        /// Send the player to pick somebody up on a warrant. With no person named, the one on file
+        /// longest - anyone the player has met who is wanted now. Returns why not, or null.
+        /// </summary>
+        public string ServeWarrant(PersonRecord person)
+        {
+            if (!Plugin.OnDuty) return "you are off duty";
+            if (Warrant != null) return "you are already on a warrant service, for " + _warrant.Person.Name;
+            if (_callout != null) return "you are on a call";
+
+            if (person == null)
+            {
+                var wanted = _records.KnownWanted();
+                if (wanted.Count == 0) return "nobody you have dealt with has a warrant";
+                person = wanted[_random.Next(wanted.Count)];
+            }
+            if (!person.Wanted) return person.Name + " has no warrant";
+
+            var job = new WarrantService(_api, _records, person);
+            if (!job.Start()) return "the game would not put them anywhere - try again in a moment";
+
+            _warrant = job;
+            _lastWarrantAt = Environment.TickCount;
+            _lastCallAt = Environment.TickCount;
+            _lastCallName = job.Name;
+            _onScene = false;
+            _shift.Call(job.Name);
+            _records.Touch(person);
+
+            Transmit(_unit + ", warrant service: " + person.Name + ", " + person.Age + ", wanted for " +
+                     (person.WarrantFor ?? "an outstanding warrant") + ". Last known at " + job.Location +
+                     ". It is on your map. Advise 10-97.");
+            return null;
+        }
+
+        public void CancelWarrant()
+        {
+            if (Warrant == null) return;
+            _warrant.Cancel();
+            _warrant = null;
+            _lastCallAt = Environment.TickCount;
+        }
+
+        private void WatchWarrant()
+        {
+            if (_warrant == null) return;
+
+            bool served;
+            var closing = _warrant.Update(out served);
+            if (closing == null) return;
+
+            if (served) _shift.Arrest();
+            Log.Line("warrant service closed: " + closing);
+            Transmit(_unit + ", " + closing + (served ? " Show me 10-8 when you are clear." : ""));
+            _warrant = null;
+            _onScene = false;
+            _lastCallAt = Environment.TickCount;
+        }
+
+        // ------------------------------------------------------------------ the rest of the city
+
+        private void OtherUnits()
+        {
+            if (!_settings.RadioTraffic || _settings.ChatterLevel < 1) return;
+            if (Environment.TickCount - _nextTrafficAt < 0) return;
+
+            // Every minute and a half to four minutes, and never over the top of the player's own business.
+            _nextTrafficAt = Environment.TickCount + (90 + _random.Next(150)) * 1000;
+            if (_pursuit || _pump.Busy) return;
+
+            var line = _traffic.Next();
+            _chat.Radio(line);
+        }
+
+        // ------------------------------------------------------------------ the stop: who is in the car
+
+        /// <summary>
+        /// When a stop starts, run the plate and the driver the way a dispatcher would without being
+        /// asked - and say so loudly when something comes back: stolen, a BOLO, a warrant.
+        /// </summary>
+        private void RunTheStop()
+        {
+            try
+            {
+                var vehicle = _api.PulloverVehicle();
+                var driver = _api.PulloverSuspect();
+
+                PersonRecord person = null;
+                if (driver != null && driver.Exists())
+                {
+                    var handle = unchecked((int)driver.Handle.Value);
+                    person = _records.EnsurePerson(handle, Dialogue.Identities.NameFor(handle));
+                    _records.Touch(person);
+                }
+
+                VehicleRecord plate = null;
+                if (vehicle != null && vehicle.Exists())
+                {
+                    string number = null, model = null;
+                    try { number = vehicle.LicensePlate; } catch { }
+                    try { model = vehicle.Model.Name; } catch { }
+                    if (!string.IsNullOrWhiteSpace(number)) plate = _records.EnsureVehicle(number, model);
+                }
+
+                var flags = new List<string>();
+                if (plate != null)
+                {
+                    if (plate.ReportedStolen) flags.Add(plate.Plate + " is reported STOLEN");
+                    if (!plate.Insured) flags.Add("no insurance on " + plate.Plate);
+                    foreach (var bolo in _records.Bolos)
+                        if (BoloMatches(bolo, plate.Plate)) flags.Add(plate.Plate + " matches a BOLO: " + bolo.Reason);
+                }
+                if (person != null)
+                {
+                    if (person.Wanted) flags.Add("your driver, " + person.Name + ", has a WARRANT for " + person.WarrantFor);
+                    foreach (var bolo in _records.Bolos)
+                        if (BoloMatches(bolo, person.Name)) flags.Add(person.Name + " matches a BOLO: " + bolo.Reason);
+                }
+
+                if (flags.Count > 0)
+                {
+                    Transmit(_unit + ", be advised: " + string.Join("; ", flags.ToArray()) + ".");
+                }
+                else if (plate != null)
+                {
+                    Transmit(plate.Plate + " comes back to " + plate.OwnerName + ", " + plate.Model + ", no flags" +
+                             (person != null ? ". Driver " + person.Name + " is clear." : "."), 1);
+                }
+            }
+            catch (Exception ex) { Log.Error("running the stop", ex); }
         }
 
         public string Unit { get { return _unit; } }
@@ -78,8 +253,23 @@ namespace TextDispatch.Lspdfr
         // ------------------------------------------------------------------ what /status and /report read
 
         /// <summary>The call in progress, or null.</summary>
-        public string CurrentCallName { get { return _callout == null || string.IsNullOrEmpty(_calloutName) ? null : _calloutName; } }
-        public string CurrentCallState { get { return _callout == null ? null : _calloutState; } }
+        public string CurrentCallName
+        {
+            get
+            {
+                if (Warrant != null) return _warrant.Name;
+                return _callout == null || string.IsNullOrEmpty(_calloutName) ? null : _calloutName;
+            }
+        }
+
+        public string CurrentCallState
+        {
+            get
+            {
+                if (Warrant != null) return _warrant.Fled ? "pursuit" : "running";
+                return _callout == null ? null : _calloutState;
+            }
+        }
 
         /// <summary>The call in progress, or the last one taken - what a report is written about.</summary>
         public string ReportCallName { get { return CurrentCallName ?? _lastCallName; } }
@@ -96,7 +286,7 @@ namespace TextDispatch.Lspdfr
         {
             get
             {
-                if (!_settings.AutoCallouts || _callout != null || _pursuit || _pullover) return -1;
+                if (!_settings.AutoCallouts || _callout != null || Warrant != null || _pursuit || _pullover) return -1;
                 var waitMs = Math.Max(30, _settings.AutoCalloutSeconds) * 1000;
                 return Math.Max(0, (waitMs - (Environment.TickCount - _lastCallAt)) / 1000);
             }
@@ -155,8 +345,10 @@ namespace TextDispatch.Lspdfr
                 WatchPursuit();
                 WatchPullover();
                 WatchArrest();
+                WatchWarrant();
                 AutoDispatch();
                 FollowUps();
+                OtherUnits();
             }
             catch (Exception ex) { Log.Error("dispatch tick", ex); }
         }
@@ -312,11 +504,21 @@ namespace TextDispatch.Lspdfr
             _911Details = null;
 
             if (!_settings.AutoCallouts || !Plugin.OnDuty) return;
-            if (_callout != null || _pursuit || _pullover || _arresting) { _lastCallAt = Environment.TickCount; return; }
+            if (_callout != null || Warrant != null || _pursuit || _pullover || _arresting) { _lastCallAt = Environment.TickCount; return; }
             if (!_api.PlayerAvailable()) { _lastCallAt = Environment.TickCount; return; }
 
             var waitMs = Math.Max(30, _settings.AutoCalloutSeconds) * 1000;
             if (Environment.TickCount - _lastCallAt < waitMs) return;
+
+            // Now and then the call is one of the player's own: somebody they dealt with who has a warrant
+            // now. Not more than once in ten minutes, so the records season the shift rather than run it.
+            if (_settings.WarrantCalls && Environment.TickCount - _lastWarrantAt > 10 * 60 * 1000 &&
+                _records.KnownWanted().Count > 0 && _random.Next(100) < 30)
+            {
+                var why = ServeWarrant(null);
+                if (why == null) return;
+                Log.Line("auto callouts: no warrant service - " + why);
+            }
 
             var pick = PickRandom();
             if (pick == null)
@@ -376,6 +578,7 @@ namespace TextDispatch.Lspdfr
             _pullover = stopping;
 
             if (stopping) { _shift.Stop(); _records.Dirty = true; }
+            if (stopping) RunTheStop();
 
             if (stopping)
                 Transmit(_unit + ", I show you on a traffic stop. Run the plate and tell me what you have.", 1);
@@ -579,7 +782,9 @@ namespace TextDispatch.Lspdfr
         /// <summary>Used by /backup - an explicit request, with the spoken line worked out by the caller.</summary>
         public void RequestBackup(string response, string unit, string spoken)
         {
-            bool asked = _api.RequestBackup(response, unit) != null;
+            var vehicle = _api.RequestBackup(response, unit);
+            bool asked = vehicle != null;
+            Sent(spoken, vehicle);
 
             if (!asked)
             {
@@ -601,14 +806,23 @@ namespace TextDispatch.Lspdfr
             switch (intent)
             {
                 case DispatcherIntent.Backup:
-                    if (_api.RequestBackup("Code3", "LocalUnit") != null) { _dispatched = "a backup unit, code 3"; _shift.Backup(); }
+                {
+                    var sent = _api.RequestBackup("Code3", "LocalUnit");
+                    if (sent != null) { _dispatched = "a backup unit, code 3"; _shift.Backup(); Sent("backup, code 3", sent); }
                     break;
+                }
                 case DispatcherIntent.Ems:
-                    if (_api.RequestBackup("Code3", "Ambulance") != null) _dispatched = "an ambulance";
+                {
+                    var sent = _api.RequestBackup("Code3", "Ambulance");
+                    if (sent != null) { _dispatched = "an ambulance"; Sent("an ambulance", sent); }
                     break;
+                }
                 case DispatcherIntent.Fire:
-                    if (_api.RequestBackup("Code3", "Firetruck") != null) _dispatched = "the fire department";
+                {
+                    var sent = _api.RequestBackup("Code3", "Firetruck");
+                    if (sent != null) { _dispatched = "the fire department"; Sent("the fire department", sent); }
                     break;
+                }
                 case DispatcherIntent.Transport:
                     var ped = _api.NearestPed(15f);
                     if (ped != null) { _api.RequestTransport(ped); _dispatched = "a transport unit"; }

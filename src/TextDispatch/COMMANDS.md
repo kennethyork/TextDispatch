@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.32, taken out of the router rather than remembered —
-**139 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.33, taken out of the router rather than remembered —
+**147 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -144,12 +144,27 @@ Kept between sessions, in `Plugins\LSPDFR\TextDispatch.records.json`.
 |---|---|
 | `/report <what happened>` | a report on the person you last dealt with, for the call you are on |
 | `/report <name>: <text>` · `/report general: <text>` | on somebody named, or on nobody in particular |
+| `/report draft [name]` | a draft written from what you actually did, put in the box to finish and send |
 | `/reports [name, call or #number]` | the reports on file, newest first |
-| `/court` `/followups` | what is still with the courts - arrests and citations, and whether a report is behind each |
+| `/court` `/followups` | what is still with the courts, what each case has behind it, and its chance of being charged |
+| `/evidence <item>` · `/evidence <name>: <item>` · `/evidence` | log evidence against them, or list what is held |
+| `/miranda` `/rights` | read the person in front of you their rights |
+| `/interview` `/question` | question them - what they say goes on the case, and counts only after `/miranda` |
+| `/cite <name> <offence>` · `/cite <offence>` | the fine comes from the schedule; with no name it is whoever is in front of you; `$400` on the end names your own |
+| `/fines [filter]` | the fine schedule |
+| `/warrants` · `/warrants serve [name]` | who you know is wanted, and a warrant service to go and get one |
 
 An arrest or a citation comes back on the radio three to eight minutes later: charged, pleaded, bailed or
-dropped; paid, contested, or a warrant for not paying. An arrest with a report behind it is far likelier to
-be charged.
+dropped; paid, contested, or a warrant for not paying. What decides an arrest is what it has behind it - a
+report, the evidence (`/search car` and `/frisk` log what they find), and a statement taken after
+`/miranda`. A confession without Miranda counts for nothing. `/court` shows each case's chance.
+
+**Warrant service.** Somebody you have dealt with who is wanted now - an unpaid citation does it - is sent
+to you as a call of its own now and then, or whenever you ask with `/warrants serve`. They are placed a few
+streets away; how they take the knock depends on who they are. `/endcall` stands it down.
+
+**Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
+so when something comes back - stolen, uninsured, a BOLO, a warrant.
 
 ---
 
@@ -160,6 +175,11 @@ be charged.
 | `/status` | your unit, status, call, time on scene, the next automatic call, and the shift so far |
 | `/shift` | this shift in full |
 | `/shifts` | past shifts, and the career totals |
+| `/units` | the units sent to you: what, how far out, and whether they are on scene |
+| `/chatter traffic on\|off` | whether the other units are heard on the radio (on; never at `quiet`) |
+
+**Tab** completes a command, and then its argument - a callout's name, a person on file, a corner of the
+screen. Tab again goes to the next match, Shift+Tab back; the first press lists what matches.
 
 `10-8` starts a shift and `10-7` ends it - dispatch reads the summary back and files it. Going off duty does
 the same.

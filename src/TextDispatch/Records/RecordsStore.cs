@@ -36,6 +36,7 @@ namespace TextDispatch.Records
             public List<ReportRecord> Reports = new List<ReportRecord>();
             public List<FollowUp> FollowUps = new List<FollowUp>();
             public List<ShiftSummary> Shifts = new List<ShiftSummary>();
+            public List<CaseAction> Actions = new List<CaseAction>();
             public ShiftSummary CurrentShift;
         }
 
@@ -69,6 +70,7 @@ namespace TextDispatch.Records
                     Reports = new List<ReportRecord>(ledger.Reports),
                     FollowUps = new List<FollowUp>(ledger.FollowUps),
                     Shifts = new List<ShiftSummary>(ledger.Shifts),
+                    Actions = new List<CaseAction>(ledger.Actions),
                     CurrentShift = shift == null ? null : shift.Current
                 };
 
@@ -130,7 +132,10 @@ namespace TextDispatch.Records
             ledger.Bolos.Clear();
             if (file.Bolos != null) ledger.Bolos.AddRange(file.Bolos);
             if (file.Reports != null) ledger.Reports.AddRange(file.Reports);
-            if (file.FollowUps != null) ledger.FollowUps.AddRange(file.FollowUps);
+            if (file.FollowUps != null)
+                foreach (var followUp in file.FollowUps)
+                    if (followUp != null) { if (followUp.Evidence == null) followUp.Evidence = new List<string>(); ledger.FollowUps.Add(followUp); }
+            if (file.Actions != null) ledger.Actions.AddRange(file.Actions);
             if (file.Shifts != null)
                 foreach (var shift in file.Shifts)
                     if (shift != null) { if (shift.Calls == null) shift.Calls = new List<string>(); ledger.Shifts.Add(shift); }

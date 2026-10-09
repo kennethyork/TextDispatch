@@ -28,6 +28,24 @@ namespace TextDispatch.Records
         /// <summary>Whether the player has dealt with them, as opposed to being one of the seeded town.</summary>
         public bool Met;
 
+        /// <summary>
+        /// Evidence and a statement gathered before there is a case to put them on. An arrest moves
+        /// them onto its follow-up; until then they wait here.
+        /// </summary>
+        public List<string> Evidence = new List<string>();
+        public string Statement;
+        public bool StatementMirandized;
+
+        /// <summary>When they were read their rights, as DateTime.Now ticks; 0 if never.</summary>
+        public long MirandizedTicks;
+
+        /// <summary>Whether they have been read their rights in the last hour - the same contact.</summary>
+        [System.Web.Script.Serialization.ScriptIgnore]
+        public bool Mirandized
+        {
+            get { return MirandizedTicks != 0 && DateTime.Now.Ticks - MirandizedTicks < TimeSpan.FromHours(1).Ticks; }
+        }
+
         public string Summary()
         {
             if (Wanted && Priors.Count > 0) return "wanted, with priors";
@@ -105,6 +123,32 @@ namespace TextDispatch.Records
         public string Made;      // local time it was made, "yyyy-MM-dd HH:mm"
         public long DueTicks;    // DateTime.UtcNow.Ticks it is due at
         public bool ReportFiled;
+
+        /// <summary>What the case has behind it besides the report.</summary>
+        public List<string> Evidence = new List<string>();
+        public string Statement;     // confession | admission | lawyer | denial, or null
+        public bool Mirandized;      // whether the statement was taken after the rights were read
+    }
+
+    /// <summary>What an interview got: the kind of statement, the words, and whether it will stand up.</summary>
+    public sealed class Interview
+    {
+        public string Kind;
+        public string Line;
+        public bool Mirandized;
+    }
+
+    /// <summary>
+    /// One thing the officer did, kept so a report can be drafted from what actually happened rather
+    /// than from memory.
+    /// </summary>
+    public sealed class CaseAction
+    {
+        public long Ticks;       // DateTime.Now.Ticks
+        public string PersonId;
+        public string Name;
+        public string Call;
+        public string Text;      // past tense, ready for a report: "searched the vehicle (ABC123)..."
     }
 
     /// <summary>One shift, as it was summed up when it ended.</summary>
@@ -149,6 +193,7 @@ namespace TextDispatch.Records
         private readonly List<ReportRecord> _reports = new List<ReportRecord>();
         private readonly List<FollowUp> _followUps = new List<FollowUp>();
         private readonly List<ShiftSummary> _shifts = new List<ShiftSummary>();
+        private readonly List<CaseAction> _actions = new List<CaseAction>();
 
         public int CitationCount { get; internal set; }
         public int ArrestCount { get; internal set; }
@@ -175,6 +220,7 @@ namespace TextDispatch.Records
         public List<ReportRecord> Reports { get { return _reports; } }
         public List<FollowUp> FollowUps { get { return _followUps; } }
         public List<ShiftSummary> Shifts { get { return _shifts; } }
+        public List<CaseAction> Actions { get { return _actions; } }
 
         public PersonRecord LastSubject
         {
@@ -201,6 +247,7 @@ namespace TextDispatch.Records
             if (string.IsNullOrEmpty(person.Id)) person.Id = Key(person.Name);
             if (person.Priors == null) person.Priors = new List<string>();
             if (person.Notes == null) person.Notes = new List<string>();
+            if (person.Evidence == null) person.Evidence = new List<string>();
             _people[person.Id] = person;
         }
 
@@ -257,6 +304,13 @@ namespace TextDispatch.Records
         }
 
         // ------------------------------------------------------------------ filing
+
+        /// <summary>This game entity is this person - for somebody spawned to be a particular record.</summary>
+        public void Bind(int handle, PersonRecord person)
+        {
+            if (person == null) return;
+            _byHandle[handle] = person.Id;
+        }
 
         public PersonRecord EnsurePerson(int handle, string name)
         {
@@ -327,19 +381,23 @@ namespace TextDispatch.Records
             return false;
         }
 
-        public string IssueCitation(PersonRecord person, string offence, double fine)
+        public string IssueCitation(PersonRecord person, string offence, double fine, string call = null)
         {
             person.UnpaidFines += fine;
             person.Citations++;
             CitationCount++;
             FinesIssued += fine;
             Touch(person);
+            Act(person, call, "cited them for " + offence + " ($" + fine.ToString("0") + ")");
 
             return "citation issued - " + person.Name + " - " + offence + " - $" + fine.ToString("0.00");
         }
 
-        public string RecordArrest(PersonRecord person, string offence)
+        public string RecordArrest(PersonRecord person, string offence, string call = null)
         {
+            var onWarrant = person.Wanted && string.Equals(offence, person.WarrantFor, StringComparison.OrdinalIgnoreCase);
+            Act(person, call, onWarrant ? "arrested them on the outstanding warrant for " + offence : "arrested them for " + offence);
+
             person.Arrests++;
             if (!string.IsNullOrEmpty(offence)) person.Priors.Add(offence);
 
@@ -389,11 +447,24 @@ namespace TextDispatch.Records
         /// chance of something illegal follows what is on file: a stolen car, or a driver with a
         /// warrant or a history, is likelier to be carrying something.
         /// </summary>
-        public VehicleRecord SearchVehicle(string plate, string model, PersonRecord driver)
+        public VehicleRecord SearchVehicle(string plate, string model, PersonRecord driver, string call = null)
         {
             var vehicle = EnsureVehicle(plate, model);
             if (vehicle == null) return null;
             if (vehicle.SearchFind != null) return vehicle;
+
+            vehicle = DecideSearch(vehicle, plate, driver);
+
+            if (driver != null)
+            {
+                Act(driver, call, "searched the vehicle (" + vehicle.Plate + ") and found " + vehicle.SearchFind);
+                if (vehicle.SearchIllegal) AddEvidence(driver, vehicle.SearchFind + ", found in vehicle " + vehicle.Plate, call, false);
+            }
+            return vehicle;
+        }
+
+        private VehicleRecord DecideSearch(VehicleRecord vehicle, string plate, PersonRecord driver)
+        {
 
             var rng = new Random(unchecked(PlateKey(plate).GetHashCode() * 17 + 3));
 
@@ -411,6 +482,177 @@ namespace TextDispatch.Records
             if (driver != null) Touch(driver);
             Dirty = true;
             return vehicle;
+        }
+
+        // ------------------------------------------------------------------ the case: what was done, and what it rests on
+
+        /// <summary>Write down something the officer did, for a report to be drafted from.</summary>
+        public void Act(PersonRecord person, string call, string text)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+
+            _actions.Add(new CaseAction
+            {
+                Ticks = DateTime.Now.Ticks,
+                PersonId = person == null ? null : person.Id,
+                Name = person == null ? null : person.Name,
+                Call = string.IsNullOrEmpty(call) ? null : call,
+                Text = text
+            });
+            if (_actions.Count > 200) _actions.RemoveAt(0);
+            Dirty = true;
+        }
+
+        /// <summary>The arrest still waiting on the courts for this person, if there is one.</summary>
+        public FollowUp OpenCase(PersonRecord person)
+        {
+            if (person == null) return null;
+            foreach (var followUp in _followUps)
+                if (followUp.PersonId == person.Id && followUp.Kind == "arrest") return followUp;
+            return null;
+        }
+
+        /// <summary>
+        /// Put evidence against someone. On the arrest waiting for the courts if there is one - evidence
+        /// logged after the cuffs are on still counts - and held on the person until an arrest otherwise.
+        /// </summary>
+        public void AddEvidence(PersonRecord person, string item, string call, bool logAction = true)
+        {
+            if (person == null || string.IsNullOrWhiteSpace(item)) return;
+            item = item.Trim();
+
+            var open = OpenCase(person);
+            var list = open != null ? open.Evidence : person.Evidence;
+            if (!list.Contains(item)) list.Add(item);
+
+            if (logAction) Act(person, call, "logged into evidence: " + item);
+            Touch(person);
+        }
+
+        /// <summary>Everything against them, on the open case and waiting on the person.</summary>
+        public List<string> EvidenceOn(PersonRecord person)
+        {
+            var all = new List<string>();
+            if (person == null) return all;
+            var open = OpenCase(person);
+            if (open != null) all.AddRange(open.Evidence);
+            all.AddRange(person.Evidence);
+            return all;
+        }
+
+        public void ReadRights(PersonRecord person, string call)
+        {
+            if (person == null) return;
+            person.MirandizedTicks = DateTime.Now.Ticks;
+            Act(person, call, "read them their Miranda rights");
+            Touch(person);
+        }
+
+        /// <summary>
+        /// Question them about the offence. What they say follows their temperament (0 compliant,
+        /// 1 nervous, 2 defensive, 3 hostile) and how much evidence they are faced with, and it is kept
+        /// on the case - but a statement taken without the rights read is worthless in court, which
+        /// the result says.
+        /// </summary>
+        public Interview Interview(PersonRecord person, int temperament, string call)
+        {
+            if (person == null) return null;
+
+            var evidence = EvidenceOn(person).Count;
+            var rng = new Random(unchecked(person.Id.GetHashCode() * 7 + (int)(DateTime.Now.Ticks / TimeSpan.TicksPerMinute)));
+
+            // Out of 100: a confession is likelier the more they are shown, and the calmer they are.
+            var confess = 15 + 15 * Math.Min(3, evidence) - 8 * temperament;
+            var admit = 25;
+            var lawyer = 10 + 10 * temperament;
+            var roll = rng.Next(100);
+
+            string kind;
+            if (roll < confess) kind = "confession";
+            else if (roll < confess + admit) kind = "admission";
+            else if (roll < confess + admit + lawyer) kind = "lawyer";
+            else kind = "denial";
+
+            var result = new Interview
+            {
+                Kind = kind,
+                Mirandized = person.Mirandized,
+                Line = Pick(rng, kind)
+            };
+
+            var open = OpenCase(person);
+            if (open != null) { open.Statement = kind; open.Mirandized = result.Mirandized; }
+            else { person.Statement = kind; person.StatementMirandized = result.Mirandized; }
+
+            Act(person, call, "interviewed them" + (result.Mirandized ? " after reading their rights" : " without reading their rights") +
+                              " - " + Describe(kind));
+            Touch(person);
+            return result;
+        }
+
+        private static string Pick(Random rng, string kind)
+        {
+            string[] lines;
+            switch (kind)
+            {
+                case "confession":
+                    lines = new[] { "Alright. Alright, it was me. I did it.", "Fine. Yes. I did it - I'm not going to keep lying to you.", "Okay... it's mine. All of it. I'm sorry." };
+                    break;
+                case "admission":
+                    lines = new[] { "I was there, okay? But it's not what you think.", "Maybe I had something to do with it. Maybe.", "I knew about it. I didn't do the worst of it." };
+                    break;
+                case "lawyer":
+                    lines = new[] { "I want a lawyer. I'm not saying anything else.", "Lawyer. Now.", "I know my rights. I want to speak to an attorney." };
+                    break;
+                default:
+                    lines = new[] { "I didn't do anything. You've got the wrong person.", "That's not mine and I wasn't there.", "No. No way. I want to go home." };
+                    break;
+            }
+            return lines[rng.Next(lines.Length)];
+        }
+
+        public static string Describe(string statement)
+        {
+            switch (statement)
+            {
+                case "confession": return "they confessed";
+                case "admission": return "they admitted being involved";
+                case "lawyer": return "they asked for a lawyer";
+                case "denial": return "they denied it";
+                default: return "no statement";
+            }
+        }
+
+        /// <summary>
+        /// The chance in a hundred that an arrest is charged: the report, the evidence and the statement
+        /// each add to it. A statement only counts if it was taken after the rights were read.
+        /// </summary>
+        public static int ChargeChance(FollowUp followUp)
+        {
+            var chance = 40;
+            if (followUp.ReportFiled) chance += 30;
+            chance += Math.Min(30, 12 * (followUp.Evidence == null ? 0 : followUp.Evidence.Count));
+
+            if (followUp.Mirandized)
+            {
+                switch (followUp.Statement)
+                {
+                    case "confession": chance += 25; break;
+                    case "admission": chance += 12; break;
+                    case "denial": chance -= 5; break;
+                }
+            }
+
+            return Math.Max(5, Math.Min(97, chance));
+        }
+
+        /// <summary>People with a warrant the player already knows - the ones a warrant service call is for.</summary>
+        public List<PersonRecord> KnownWanted()
+        {
+            var found = new List<PersonRecord>();
+            foreach (var person in _people.Values)
+                if (person.Met && person.Wanted) found.Add(person);
+            return found;
         }
 
         // ------------------------------------------------------------------ reports
@@ -479,6 +721,17 @@ namespace TextDispatch.Records
                     string.Equals(report.Call ?? "", call ?? "", StringComparison.OrdinalIgnoreCase))
                     followUp.ReportFiled = true;
 
+            // What was gathered before the arrest goes onto it: the evidence, and what they said.
+            if (kind == "arrest")
+            {
+                followUp.Evidence.AddRange(person.Evidence);
+                person.Evidence.Clear();
+                followUp.Statement = person.Statement;
+                followUp.Mirandized = person.StatementMirandized;
+                person.Statement = null;
+                person.StatementMirandized = false;
+            }
+
             _followUps.Add(followUp);
             Dirty = true;
             return followUp;
@@ -532,13 +785,17 @@ namespace TextDispatch.Records
             }
             else
             {
-                var charged = followUp.ReportFiled ? roll < 85 : roll < 50;
+                var charged = roll < ChargeChance(followUp);
+                if (followUp.Evidence == null) followUp.Evidence = new List<string>();
+                var strength = followUp.Mirandized && followUp.Statement == "confession" ? " on the strength of the confession"
+                             : followUp.Evidence.Count > 0 ? " on the evidence"
+                             : "";
                 if (charged)
                 {
                     var sentence = rng.Next(3);
                     if (sentence == 0)
                     {
-                        outcome = followUp.Name + " has been charged with " + followUp.Offence + " and is held for arraignment.";
+                        outcome = followUp.Name + " has been charged with " + followUp.Offence + strength + " and is held for arraignment.";
                         note = "charged with " + followUp.Offence;
                     }
                     else if (sentence == 1)
@@ -549,14 +806,16 @@ namespace TextDispatch.Records
                     }
                     else
                     {
-                        outcome = followUp.Name + " was charged with " + followUp.Offence + " and released on bail pending trial.";
+                        outcome = followUp.Name + " was charged with " + followUp.Offence + strength + " and released on bail pending trial.";
                         note = "charged with " + followUp.Offence + ", on bail";
                     }
                 }
                 else
                 {
-                    outcome = "The DA declined to charge " + followUp.Name + " with " + followUp.Offence +
-                              (followUp.ReportFiled ? " - not enough evidence." : " - there was no report on file.");
+                    var why = !followUp.ReportFiled ? " - there was no report on file."
+                            : followUp.Statement != null && !followUp.Mirandized ? " - the statement was taken without Miranda, and there was not enough without it."
+                            : " - not enough evidence.";
+                    outcome = "The DA declined to charge " + followUp.Name + " with " + followUp.Offence + why;
                     note = "not charged with " + followUp.Offence;
                     if (person != null) person.Priors.Remove(followUp.Offence);
                 }

@@ -164,8 +164,23 @@ namespace TextDispatch.Dialogue
             "Mackenzie", "Doyle", "Farrow", "Ellison", "Greaves", "Ibarra", "Lomax", "Pruitt"
         };
 
+        /// <summary>
+        /// People who are somebody in particular - the subject of a warrant service is the person on the
+        /// warrant, not whoever their handle would have made them.
+        /// </summary>
+        private static readonly Dictionary<int, string> Named = new Dictionary<int, string>();
+
+        public static void Name(int handle, string name)
+        {
+            if (string.IsNullOrEmpty(name)) Named.Remove(handle);
+            else Named[handle] = name;
+        }
+
         public static string NameFor(int handle)
         {
+            string named;
+            if (Named.TryGetValue(handle, out named)) return named;
+
             var rng = new Random(handle);
             return FirstNames[rng.Next(FirstNames.Length)] + " " + LastNames[rng.Next(LastNames.Length)];
         }

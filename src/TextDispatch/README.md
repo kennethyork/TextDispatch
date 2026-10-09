@@ -310,7 +310,7 @@ the chat box shows - and keeps it.
 | `/warrant [name]` | outstanding warrants only |
 | `/bolo` · `/bolo add <plate or name> <reason>` · `/bolo clear <subject>` | file, read and clear BOLOs |
 | `/arrest [name] [for <charge>]` | books them; if they are in front of you it also cuffs them |
-| `/cite <name> <offence>` | a $250 citation on their record |
+| `/cite <name> <offence>` | a citation on their record, at the schedule's fine for that offence (`/fines`) |
 | `/report <what happened>` | a written report on the person you last dealt with, for the call you are on |
 | `/reports [name]` · `/court` | the reports on file; what is still with the courts |
 
@@ -325,8 +325,21 @@ shift history, and your callsign. Delete the file to start the town over.
 
 **What comes back.** An `/arrest` or a `/cite` is answered on the radio three to eight minutes later -
 charged, pleaded guilty, bailed or dropped; paid, contested, or a warrant for not paying - and the outcome
-goes on the person's record. An arrest with a `/report` behind it is far likelier to be charged, which is
-the reason to write one. A case still open when the game closes is delivered next session.
+goes on the person's record. A case still open when the game closes is delivered next session.
+
+**Building the case.** Whether an arrest is charged rests on what is behind it: a `/report` (or
+`/report draft`, which writes one from what you did for you to finish), evidence - `/search car` and
+`/frisk` log what they find, `/evidence <item>` logs anything else - and a statement. `/miranda` reads the
+person in front of you their rights and `/interview` questions them; what they say depends on who they are
+and what you have on them, and a confession taken without Miranda counts for nothing. `/court` shows every
+open case with its chance of being charged.
+
+**Fines** come from a schedule - speeding $200, no insurance $600, a red light $300 - and `/fines` lists
+it. `/cite speeding` cites whoever is in front of you; `$400` on the end names your own amount.
+
+**Warrant service.** Somebody you have dealt with who is wanted now is sent to you as a call of its own
+now and then (`WarrantCalls` in the ini), or when you ask with `/warrants serve`. When a traffic stop
+starts, dispatch runs the plate and the driver and calls out a stolen car, a BOLO or a warrant.
 
 **Vehicle searches.** `/search car` searches the car you stopped, or the one beside you. What is in it is
 decided once from the plate and kept, so the same car holds the same thing every time; a stolen car, or a
@@ -344,6 +357,14 @@ arrests, citations, searches and reports, and files it. `/status` is the one-lin
 
 **Pursuit**
 `/pursuit` · `/calledin` · `/endpursuit` · `/panic` · `/911 <details>`
+
+**The radio, and who is coming**
+`/units` - the units sent to you, how far out, and whether they are on scene. The other units in the
+city are heard on the radio now and then - going on scene, clearing, running plates - at `brief` and
+`full` chatter; `/chatter traffic off` (or `RadioTraffic=0`) silences them.
+
+**Tab** completes commands, then their arguments: callout names, people on file, corners. Tab again for
+the next match, Shift+Tab for the one before.
 
 **The box itself**
 `/pos <corner>` · `/margin <px>` · `/ui <scale>` · `/font <name>` · `/fontsize <n>` · `/lines <n>` · `/clear`

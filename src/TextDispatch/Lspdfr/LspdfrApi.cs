@@ -405,6 +405,11 @@ namespace TextDispatch.Lspdfr
 
         public object CreatePursuit() { return Call("CreatePursuit"); }
 
+        /// <summary>Hand somebody to LSPDFR's pursuit AI - its own "run and do not stop", driving included.</summary>
+        public void AddPedToPursuit(object pursuit, Ped ped) { Call("AddPedToPursuit", pursuit, ped); }
+
+        public void SetPursuitActiveForPlayer(object pursuit, bool active) { Call("SetPursuitIsActiveForPlayer", pursuit, active); }
+
         // ------------------------------------------------------------------ callout catalogue
 
         private sealed class CalloutEntry
