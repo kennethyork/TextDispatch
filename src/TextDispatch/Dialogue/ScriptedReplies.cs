@@ -72,6 +72,27 @@ namespace TextDispatch.Dialogue
             var rng = new Random(talker.Handle * 397 + talker.Memory.Count * 13 + (int)intent * 7919);
             var mood = talker.Mood;
 
+            // Their car has been searched. What was found is the first thing on their mind, so it is
+            // what they talk about when asked anything about what happened or what they have.
+            if (state != null && state.CarSearched &&
+                (intent == DialogueIntent.WhatHappened || intent == DialogueIntent.Weapons ||
+                 intent == DialogueIntent.Explain || intent == DialogueIntent.Question ||
+                 intent == DialogueIntent.WhyStopped || intent == DialogueIntent.Arrest))
+            {
+                if (state.CarIllegal)
+                    return Pick(rng, mood, state,
+                        new[] { "Okay. Okay, that's mine. I'm not going to lie to you.", "I know how that looks. I can explain.", "Yeah... I should have told you about that." },
+                        new[] { "That's not mine! I swear, I borrowed the car!", "I don't know how that got there, I swear to God.", "Please - please, that's not what it looks like." },
+                        new[] { "You can't prove that's mine.", "That was there when I bought it.", "I want a lawyer before I say anything about that." },
+                        new[] { "Never seen it before in my life.", "You planted that.", "I'm not saying a word about it." });
+
+                return Pick(rng, mood, state,
+                    new[] { "See? Nothing in there. Told you.", "Happy now? It's just my stuff.", "Nothing to find. Can I go?" },
+                    new[] { "There's nothing, right? I told you there was nothing.", "Is - is that it? Am I okay?", "I didn't have anything, I promise." },
+                    new[] { "You went through my whole car for nothing.", "Was that really necessary?", "I hope you put it all back." },
+                    new[] { "Found nothing, did you?", "Waste of your time and mine.", "Told you. Now get out of my car." });
+            }
+
             switch (intent)
             {
                 case DialogueIntent.Greeting:

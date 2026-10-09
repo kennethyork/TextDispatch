@@ -80,13 +80,18 @@ WHAT THEY DO TOGETHER
 
 Installed side by side, they are one experience:
 
-  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - four hundred and sixty-two of them, sorted by what you went on duty as
+  * the callouts arrive as radio traffic in the chat box, and you accept or decline by typing - all four
+    hundred and sixty-two of them, on whatever duty you go on as
 
-    Five of those eighteen are not police work: a cardiac arrest, an overdose, a collision with
-    somebody trapped in the car, a welfare check and a vehicle fire. They are offered only while you
-    are on duty as an emergency-medical agency - LSFD, or any agency whose name says ems, medic,
-    paramedic, ambulance or fire - and stay out of the way on a police patrol. Going on duty as LSFD
-    is how you get them.
+    Each one still says which duty it belongs to - sheriff work, highway patrol, the medical calls -
+    and Duties=mine in Plugins\LSPDFR\TextCallouts.ini puts that filter back, so an LSPD patrol gets
+    only city work and the five medical callouts go only to LSFD. Duties=all is the default.
+  * the records are kept between sessions: the people you booked, the cars you searched, your reports
+    and your callsign are still on file tomorrow, and a few minutes after an arrest or a citation
+    dispatch radios back what the court did with it - likelier to stick with a /report behind it
+  * /search car, /report, /status, and a shift that 10-8 starts and 10-7 ends with a summary on the radio
+  * push to talk: /voice on, hold N and speak, and a speech-to-text server on your own machine types
+    it in for you - whisper.cpp's server by default
   * every line a callout says - the ambulance request, the pursuit call-in, the suspect description -
     is mirrored into the chat box instead of a notification box
   * /calls lists all eighteen alongside LSPDFR's own callouts and any other pack's, and /callout <name>
@@ -137,12 +142,13 @@ after you go on duty.
 
 In textcallouts.log, after going on duty, two lines say whether the callout library is in the game:
 
-    callouts from files: 326 loaded, 0 skipped (326 from the library, 0 of your own)
-    registered for this duty: 18 of 18 built-in callouts, 326 of 326 from the library, 0 of 0 of your own
+    callouts from files: 444 loaded, 0 skipped (444 from the library, 0 of your own)
+    registered for this duty: 18 of 18 built-in callouts, 444 of 444 from the library, 0 of 0 of your own
 
 If the second says "0 of 0 from the library", the Library folder is not in
 Plugins\LSPDFR\TextCallouts\ - copy it in from this download and go on duty again. The plugin and its
-326 recipes ship together, and they are meant to be installed together.
+444 recipes ship together, and they are meant to be installed together. Fewer than 444 registered
+means TextCallouts.ini says Duties=mine.
 
     Plugins\LSPDFR\textdispatch.log    what loaded, and what each plugin in the folder is missing
     Plugins\LSPDFR\textcallouts.log    which callouts registered, what each one said, which native ran

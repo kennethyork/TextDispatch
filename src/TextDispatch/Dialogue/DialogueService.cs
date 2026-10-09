@@ -266,11 +266,41 @@ namespace TextDispatch.Dialogue
                                      _api.PlayerPerformingPullover();
 
                 state.Zone = _api.ZoneAt(ped.Position);
+
+                CarSearch(ped, state);
             }
             catch (Exception ex) { Log.Error("dialogue state", ex); }
 
             talker.Mood = Identities.Adjust(talker.Mood, state);
             return state;
+        }
+
+        /// <summary>
+        /// Whether this person's car has been searched, read from the records: the car they were stopped
+        /// in, or the one they are in or last got out of. What a search found is decided once and kept
+        /// there, so what they say about it matches what the officer was told.
+        /// </summary>
+        private void CarSearch(Ped ped, PedState state)
+        {
+            if (_records == null) return;
+
+            Vehicle vehicle = null;
+            try
+            {
+                var suspect = _api.PulloverSuspect();
+                if (suspect != null && ReferenceEquals(suspect, ped)) vehicle = _api.PulloverVehicle();
+                if (vehicle == null) vehicle = ped.CurrentVehicle;
+                if (vehicle == null) vehicle = ped.LastVehicle;
+                if (vehicle == null || !vehicle.Exists()) return;
+
+                var record = _records.FindVehicle(vehicle.LicensePlate);
+                if (record == null || record.SearchFind == null) return;
+
+                state.CarSearched = true;
+                state.CarIllegal = record.SearchIllegal;
+                state.CarFind = record.SearchFind;
+            }
+            catch { }
         }
 
         // ------------------------------------------------------------------ who is around

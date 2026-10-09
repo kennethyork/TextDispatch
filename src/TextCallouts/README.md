@@ -85,6 +85,17 @@ metadata and confirms the names they look each other up by still match - the com
 that boundary, and a rename there would be silent in game.
 ### The library, and which duty gets what
 
+**Since 1.13.3 every callout is offered on every duty**, so an LSPD patrol gets all 444 of the library
+rather than the 166 that are city work. `Plugins\LSPDFR\TextCallouts.ini` holds the switch, written with
+the default the first time you go on duty:
+
+```ini
+Duties=all    ; every callout on every duty (default)
+Duties=mine   ; only the work for what you went on duty as - the rules below
+```
+
+It is read again on every duty, so a change needs no restart. With `Duties=mine`:
+
 Three hundred and forty callouts, and each one says which duty it belongs to in its `<For>` element, so the
 work matches the agency you went on duty as:
 

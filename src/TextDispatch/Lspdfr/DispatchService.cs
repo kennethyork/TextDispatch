@@ -44,18 +44,97 @@ namespace TextDispatch.Lspdfr
         private string _lastStatus = "";
         private int _tick;
         private readonly RecordsLedger _records;
+        private readonly ShiftLog _shift;
 
-        public DispatchService(ChatBox chat, LspdfrApi api, Settings settings, RecordsLedger records)
+        /// <summary>The call most recently taken, kept after it closes so a report can still name it.</summary>
+        private string _lastCallName;
+        private string _countedCall;
+        private int _onSceneAt;
+
+        /// <summary>When the next follow-up may be said: not in the first moments of a session, and not back to back.</summary>
+        private int _nextFollowUpAt = Environment.TickCount + 20000;
+
+        public DispatchService(ChatBox chat, LspdfrApi api, Settings settings, RecordsLedger records, ShiftLog shift)
         {
             _chat = chat;
             _api = api;
             _settings = settings;
             _records = records;
+            _shift = shift;
             _pump = new ReplyPump(settings);
-            _unit = "2A" + new Random().Next(10, 99);
+
+            // The same callsign every session once one has been given - a unit number that changes
+            // every time the game starts is not much of an identity.
+            if (string.IsNullOrEmpty(records.Unit))
+            {
+                records.Unit = "2A" + new Random().Next(10, 99);
+                records.Dirty = true;
+            }
+            _unit = records.Unit;
         }
 
         public string Unit { get { return _unit; } }
+
+        // ------------------------------------------------------------------ what /status and /report read
+
+        /// <summary>The call in progress, or null.</summary>
+        public string CurrentCallName { get { return _callout == null || string.IsNullOrEmpty(_calloutName) ? null : _calloutName; } }
+        public string CurrentCallState { get { return _callout == null ? null : _calloutState; } }
+
+        /// <summary>The call in progress, or the last one taken - what a report is written about.</summary>
+        public string ReportCallName { get { return CurrentCallName ?? _lastCallName; } }
+
+        public string LastStatus { get { return _lastStatus; } }
+        public bool InPursuit { get { return _pursuit; } }
+        public bool OnTrafficStop { get { return _pullover; } }
+
+        /// <summary>Seconds on scene, or -1 when not on scene.</summary>
+        public int OnSceneSeconds { get { return _onScene && _onSceneAt != 0 ? (Environment.TickCount - _onSceneAt) / 1000 : -1; } }
+
+        /// <summary>Seconds until dispatch raises a call by itself, or -1 when it will not.</summary>
+        public int NextAutoCallSeconds
+        {
+            get
+            {
+                if (!_settings.AutoCallouts || _callout != null || _pursuit || _pullover) return -1;
+                var waitMs = Math.Max(30, _settings.AutoCalloutSeconds) * 1000;
+                return Math.Max(0, (waitMs - (Environment.TickCount - _lastCallAt)) / 1000);
+            }
+        }
+
+        /// <summary>Something dispatch says in answer to a command, always shown.</summary>
+        public void Tell(string line) { Transmit(line); }
+
+        // ------------------------------------------------------------------ the shift
+
+        /// <summary>Start a shift if none is running - going on duty, or 10-8 after a 10-7.</summary>
+        public void StartShift()
+        {
+            if (_shift.Running) return;
+            _shift.Start(_unit);
+            _records.Dirty = true;
+            Log.Line("shift: started");
+        }
+
+        /// <summary>
+        /// End the shift, read the summary back on the radio, and file it. Said in full whatever the
+        /// chatter level: it is the answer to the player saying they are done.
+        /// </summary>
+        public void EndShift(string why)
+        {
+            var shift = _shift.End();
+            if (shift == null) return;
+
+            _records.AddShift(shift);
+            Log.Line("shift: ended (" + why + ") - " + string.Join(" ", ShiftLog.Describe(shift).ToArray()));
+
+            var lines = ShiftLog.Describe(shift);
+            Transmit(_unit + ", end of shift. " + (lines.Count > 0 ? lines[0] : ""));
+            for (var i = 1; i < lines.Count; i++) Transmit(lines[i]);
+
+            if (_records.FollowUps.Count > 0)
+                Transmit(_records.FollowUps.Count + " case(s) still with the courts - you will hear about them next shift.");
+        }
 
         /// <summary>True while the dispatcher is composing a reply.</summary>
         public bool ModelBusy { get { return _pump.Busy; } }
@@ -77,8 +156,29 @@ namespace TextDispatch.Lspdfr
                 WatchPullover();
                 WatchArrest();
                 AutoDispatch();
+                FollowUps();
             }
             catch (Exception ex) { Log.Error("dispatch tick", ex); }
+        }
+
+        /// <summary>
+        /// What came back from the courts. One at a time, ten seconds apart, and not in the middle of a
+        /// pursuit - it is news, not an emergency, and it can wait for the player to be listening.
+        /// </summary>
+        private void FollowUps()
+        {
+            if (_pursuit || Environment.TickCount - _nextFollowUpAt < 0) return;
+
+            var due = _records.DueFollowUp(DateTime.UtcNow);
+            if (due == null) return;
+
+            _nextFollowUpAt = Environment.TickCount + 10000;
+
+            var about = due.Kind == "citation" ? "your citation" : "your arrest";
+            var outcome = _records.Resolve(due);
+            Log.Line("follow-up: " + outcome);
+            Transmit(_unit + ", follow-up on " + about + " of " + due.Name +
+                     (string.IsNullOrEmpty(due.Call) ? "" : " from " + due.Call) + ": " + outcome);
         }
 
         private void WatchCallout()
@@ -93,6 +193,7 @@ namespace TextDispatch.Lspdfr
                     _callout = null;
                     _calloutState = "";
                     _calloutName = "";
+                    _countedCall = null;
                     _onScene = false;
                     Transmit(_unit + ", that call is closed. You are clear and 10-8.", 1);
                 }
@@ -141,6 +242,10 @@ namespace TextDispatch.Lspdfr
                     case "Running":
                         Transmit("Copy " + _unit + ", you are assigned " + name +
                                  ". Advise 10-97 when you are on scene.");
+
+                        // Counted once per call: the same call is seen again every time its state is read.
+                        if (_countedCall != name) { _countedCall = name; _shift.Call(name); _records.Dirty = true; }
+                        _lastCallName = name;
                         break;
 
                     case "Ended":
@@ -255,6 +360,8 @@ namespace TextDispatch.Lspdfr
             if (running == _pursuit) return;
             _pursuit = running;
 
+            if (running) { _shift.Pursuit(); _records.Dirty = true; }
+
             if (running)
                 Transmit("All units, pursuit in progress. " + _unit +
                          ", advise if you need backup - say it on the radio and I will send it.", 1);
@@ -267,6 +374,8 @@ namespace TextDispatch.Lspdfr
             bool stopping = _api.PlayerPerformingPullover();
             if (stopping == _pullover) return;
             _pullover = stopping;
+
+            if (stopping) { _shift.Stop(); _records.Dirty = true; }
 
             if (stopping)
                 Transmit(_unit + ", I show you on a traffic stop. Run the plate and tell me what you have.", 1);
@@ -421,17 +530,22 @@ namespace TextDispatch.Lspdfr
                 case "10-8":
                     _lastStatus = "10-8";
                     _chat.Radio(_unit + " is 10-8, in service, " + clock + ".");
-                    Transmit("Copy " + _unit + ", you are 10-8 and available for calls.");
+                    var newShift = !_shift.Running;
+                    StartShift();
+                    Transmit("Copy " + _unit + ", you are 10-8 and available for calls." +
+                             (newShift ? " New shift started at " + clock + "." : ""));
                     return;
 
                 case "10-7":
                     _lastStatus = "10-7";
                     _chat.Radio(_unit + " is 10-7, out of service.");
                     Transmit("Copy " + _unit + ", 10-7. Dispatch is clear of you.");
+                    EndShift("10-7");
                     return;
 
                 case "10-97":
                     _lastStatus = "10-97";
+                    if (!_onScene) _onSceneAt = Environment.TickCount;
                     _onScene = true;
                     _chat.Radio(_unit + " is 10-97, on scene.");
                     Transmit("Copy " + _unit + ", 10-97 at " + clock + ". Handle your call.");
@@ -478,6 +592,7 @@ namespace TextDispatch.Lspdfr
             }
 
             _dispatched = spoken;
+            _shift.Backup();
             Report(DispatcherIntent.Backup, "10-13, " + spoken + ".");
         }
 
@@ -486,7 +601,7 @@ namespace TextDispatch.Lspdfr
             switch (intent)
             {
                 case DispatcherIntent.Backup:
-                    if (_api.RequestBackup("Code3", "LocalUnit") != null) _dispatched = "a backup unit, code 3";
+                    if (_api.RequestBackup("Code3", "LocalUnit") != null) { _dispatched = "a backup unit, code 3"; _shift.Backup(); }
                     break;
                 case DispatcherIntent.Ems:
                     if (_api.RequestBackup("Code3", "Ambulance") != null) _dispatched = "an ambulance";

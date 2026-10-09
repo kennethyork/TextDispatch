@@ -58,6 +58,56 @@ namespace TextCallouts.Callouts
                 { "swat",     new[] { "swat" } },
             };
 
+        /// <summary>
+        /// Whether every callout is offered whatever the player is on duty as.
+        ///
+        /// On by default. Filtering by duty took an LSPD patrol from 444 library callouts down to 166,
+        /// and a player who installs a pack of 444 expects to be given 444. Duties=mine in
+        /// TextCallouts.ini puts the filter back; everything below is still the rule it uses then.
+        /// </summary>
+        public static bool AllDuties = true;
+
+        /// <summary>
+        /// Read Duties from TextCallouts.ini beside the plugin, writing the file with the default if it
+        /// is not there, so the setting can be found without reading the source.
+        /// </summary>
+        public static void LoadSetting()
+        {
+            try
+            {
+                var path = System.IO.Path.Combine(Log.PluginFolder(), "TextCallouts.ini");
+                if (!System.IO.File.Exists(path))
+                {
+                    System.IO.File.WriteAllLines(path, new[]
+                    {
+                        "; TextCallouts settings. Delete this file to get the defaults back.",
+                        ";",
+                        "; Duties: all  = every callout is offered on every duty (default)",
+                        ";         mine = only the callouts for what you went on duty as - sheriff work",
+                        ";                to the sheriff, medical calls to EMS, and so on",
+                        "Duties=all"
+                    });
+                }
+
+                foreach (var raw in System.IO.File.ReadAllLines(path))
+                {
+                    var line = raw.Trim();
+                    if (!line.StartsWith("duties", StringComparison.OrdinalIgnoreCase)) continue;
+
+                    var split = line.IndexOf('=');
+                    if (split < 0) continue;
+
+                    var value = line.Substring(split + 1).Trim().ToLowerInvariant();
+                    AllDuties = value != "mine" && value != "duty" && value != "0" && value != "off";
+                }
+
+                Log.Line("duties: " + (AllDuties
+                    ? "all - every callout is offered on every duty (Duties=mine in TextCallouts.ini to filter)"
+                    : "mine - only the callouts for this duty are offered"));
+            }
+            catch (Exception ex) { Log.Error("reading TextCallouts.ini", ex); }
+        }
+
         /// <summary>What the player is working as, or null when LSPDFR will not say.</summary>
         public static string Current()
         {
@@ -78,6 +128,8 @@ namespace TextCallouts.Callouts
 
         public static bool AllowsFor(string wanted, string agency)
         {
+            if (AllDuties) return true;
+
             var kinds = Split(wanted);
             if (kinds.Length == 0) return true;
 

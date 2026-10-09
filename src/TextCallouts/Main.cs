@@ -60,8 +60,10 @@ namespace TextCallouts
                 Game.AddConsoleCommands(new[] { typeof(ConsoleCommands) });
 
                 Log.Line("loaded; " + CalloutTypes.Length + " callouts, none of them needing another plugin");
-                Log.Line("five of them are medical and only offered to an emergency-medical agency; " +
-                         "going on duty as LSFD is how you get them");
+                Agency.LoadSetting();
+                if (!Agency.AllDuties)
+                    Log.Line("five of them are medical and only offered to an emergency-medical agency; " +
+                             "going on duty as LSFD is how you get them");
                 Log.Line("log: " + Log.Path);
             }
             catch (Exception ex) { Log.Error("initialise", ex); }
@@ -104,6 +106,9 @@ namespace TextCallouts
         private static void OnDutyStateChanged(bool onDuty)
         {
             if (!onDuty) return;
+
+            // Read again on every duty, so a change to TextCallouts.ini needs no restart.
+            Agency.LoadSetting();
 
             // Every duty transition, not just the first one.
             //

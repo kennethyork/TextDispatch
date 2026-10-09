@@ -262,8 +262,14 @@ assembly — and `/callout` starts any of them by name.
 `/stop` · `/endstop` · `/tow` · `/record` (or `/plate`) · `/owner`
 
 **The person**
-`/id` (or `/licence`) · `/frisk` (or `/search`) · `/cuff` · `/detain` · `/release` (or `/uncuff`) ·
+`/id` (or `/licence`) · `/frisk` (or `/search`) · `/search car` · `/cuff` · `/detain` · `/release` (or `/uncuff`) ·
 `/transport`
+
+**Voice** — push to talk, off until you turn it on
+`/voice on` · `/voice test` · `/voice key <key>` · `/voice send on|off`. Hold **N**, speak, let go: what you
+said is typed in for you. It needs a microphone and a speech-to-text server on this machine - whisper.cpp's
+`whisper-server -m ggml-base.en.bin --port 8080` is the default, and anything answering OpenAI's
+`/v1/audio/transcriptions` works with `VoiceProvider=openai`. Nothing leaves the machine.
 
 **Services**
 `/ems` (or `/ambulance`, `/medic`) · `/fire` · `/backup [swat|air|state|ems|fire|transport|code2]` ·
@@ -309,14 +315,33 @@ the chat box shows - and keeps it.
 | `/plate [plate]` | registration, insurance, stolen flag, and whether the owner is wanted |
 | `/warrant [name]` | outstanding warrants only |
 | `/bolo` · `/bolo add <plate or name> <reason>` · `/bolo clear <subject>` | file, read and clear BOLOs |
-| `/arrest [name]` | books them; if they are in front of you it also cuffs them |
+| `/arrest [name] [for <charge>]` | books them; if they are in front of you it also cuffs them |
 | `/cite <name> <offence>` | a $250 citation on their record |
+| `/report <what happened>` | a written report on the person you last dealt with, for the call you are on |
+| `/reports [name]` · `/court` | the reports on file; what is still with the courts |
 
 `/person` and `/warrant` with no name describe whoever is in front of you. `/plate` with no plate runs
 the car you have stopped. Name lookups match on part of a name, the way somebody would actually ask -
 `/person Vasquez` finds "Marisol Vasquez".
 
-Records are per session. Nothing is written to disk.
+**Records are kept between sessions**, in `Plugins\LSPDFR\TextDispatch.records.json` (with the previous
+copy as `.bak`). The town is still seeded the same every time; what is saved is what you have done to it -
+the people you met and booked, the cars you searched, BOLOs, reports, cases still with the courts, the
+shift history, and your callsign. Delete the file to start the town over.
+
+**What comes back.** An `/arrest` or a `/cite` is answered on the radio three to eight minutes later -
+charged, pleaded guilty, bailed or dropped; paid, contested, or a warrant for not paying - and the outcome
+goes on the person's record. An arrest with a `/report` behind it is far likelier to be charged, which is
+the reason to write one. A case still open when the game closes is delivered next session.
+
+**Vehicle searches.** `/search car` searches the car you stopped, or the one beside you. What is in it is
+decided once from the plate and kept, so the same car holds the same thing every time; a stolen car, or a
+driver with a warrant or priors, is likelier to be carrying something. The driver knows what was found, so
+what they say next is about it.
+
+**The shift.** `10-8` starts one and `10-7` ends it: dispatch reads back the calls, stops, pursuits,
+arrests, citations, searches and reports, and files it. `/status` is the one-line answer to "where am I",
+`/shift` is the shift so far, `/shifts` the history.
 
 > **`/tow` really takes the vehicle.** LSPDFR has no towing system and there is no tow plugin here to
 > borrow one from, so it does what a tow ends with: the car leaves the world and dispatch says the

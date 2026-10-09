@@ -73,6 +73,17 @@ assembly, so every callout you have is announced in text and can be started by n
 - **The calls keep coming.** A free patrol with nothing for two minutes is given a call for its duty,
   every call is accepted for you, and `/911 man with a gun` starts the callout that fits it. `/auto`
   turns any of that off.
+- **The world remembers.** Records are saved between sessions: the people you booked, the cars you
+  searched, BOLOs, reports and your callsign are still on file tomorrow.
+- **Paperwork that matters.** `/report` writes up a call; a few minutes after an `/arrest` or `/cite`,
+  dispatch radios back what the court did - and an arrest with a report behind it is far likelier to
+  stick. An unpaid citation becomes a warrant.
+- **Vehicle searches.** `/search car` finds what is in the car you stopped - kept on file, likelier in a
+  stolen car or with a wanted driver - and the driver talks about what you found.
+- **Shifts.** `10-8` starts one, `10-7` ends it with a summary read back on the radio; `/status`,
+  `/shift` and `/shifts` say where you are and what you have done.
+- **Push to talk.** `/voice on`, hold **N** and speak: a local Whisper server types it in for you.
+  "Ten ninety-seven" becomes `10-97`.
 - **An optional local model** (Ollama or LM Studio) behind both the dispatcher and the pedestrians.
   No API key, no internet, nothing leaves your machine.
 - **Your civilian jobs are in the box too.** With DriverJobs V installed, `/jobs` lists all 37 of its
@@ -123,7 +134,9 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Stops | `/stop` · `/endstop` · `/tow` · `/id` · `/frisk` · `/cuff` · `/detain` · `/release` · `/record` · `/owner` |
 | Services | `/ems` · `/fire` · `/backup [swat\|air\|state\|ems\|fire\|transport\|code2]` · `/transport` · `/panic` · `/911 <details>` |
 | Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model>` |
-| Records | `/mdt` · `/person [name]` · `/plate [plate]` · `/warrant [name]` · `/bolo` · `/arrest` · `/cite <name> <offence>` |
+| Records | `/mdt` · `/person [name]` · `/plate [plate]` · `/warrant [name]` · `/bolo` · `/arrest [for <charge>]` · `/cite <name> <offence>` · `/report <text>` · `/reports` · `/court` |
+| Shift | `/status` · `/shift` · `/shifts` · `/search car` |
+| Voice | `/voice on\|off\|test` · `/voice key <key>` · `/voice send on\|off` |
 | Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |
 | The box | `/pos <corner>` · `/margin <px>` · `/ui` · `/font` · `/fontsize` · `/lines` · `/clear` |
 | The install | `/plugins` — what LSPDFR actually loaded, what it did not, and what is sitting in a folder LSPDFR never looks in |

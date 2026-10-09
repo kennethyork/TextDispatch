@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Rage;
 using TextDispatch.Bridges;
 using TextDispatch.Chat;
@@ -6,6 +6,7 @@ using TextDispatch.Commands;
 using TextDispatch.Dialogue;
 using TextDispatch.Lspdfr;
 using TextDispatch.Records;
+using TextDispatch.Voice;
 
 namespace TextDispatch
 {
@@ -31,6 +32,11 @@ namespace TextDispatch
         private static FrameworkBridge _bridge;
         private static CommandRouter _router;
         private static PluginInventory _inventory;
+        private static ShiftLog _shift;
+        private static VoiceInput _voice;
+        private static string _recordsPath;
+        private static int _savedAt;
+        private static bool _saveErrorLogged;
         private static bool _rendering;
         private static bool _renderErrorLogged;
         private static bool _controlsFailed;
@@ -57,6 +63,8 @@ namespace TextDispatch
         internal static DispatchService Dispatch { get { return _dispatch; } }
         internal static Settings Settings { get { return _settings; } }
         internal static PluginInventory Inventory { get { return _inventory; } }
+        internal static VoiceInput Voice { get { return _voice; } }
+        internal static RecordsLedger Records { get { return _records; } }
 
         /// <summary>What other plugins can do - K9 units, spike strips, the checks they own.</summary>
         internal static FrameworkBridge Bridge { get { return _bridge; } }
@@ -142,9 +150,24 @@ namespace TextDispatch
                 // from the same records the terminal shows, and the conversation prompt describes the
                 // same person the terminal does.
                 _records = RecordsLedger.Populate(20261004);
-                _dispatch = new DispatchService(_chat, _api, _settings, _records);
+
+                // And then what the player has done to that town, from the last session: who they
+                // booked, what they searched, what is still with the courts, the shift history.
+                _recordsPath = RecordsStore.PathIn(System.IO.Path.GetDirectoryName(Log.Path));
+                string loadProblem;
+                var savedShift = RecordsStore.Load(_recordsPath, _records, out loadProblem);
+                Log.Line(loadProblem != null
+                    ? "records: could not read " + _recordsPath + " - " + loadProblem
+                    : "records: " + _records.Reports.Count + " report(s), " + _records.FollowUps.Count +
+                      " follow-up(s), " + _records.Shifts.Count + " shift(s) on file at " + _recordsPath);
+
+                _shift = new ShiftLog();
+                var unfinished = _shift.Resume(savedShift, _records.Unit);
+                if (unfinished != null) _records.AddShift(unfinished);
+
+                _dispatch = new DispatchService(_chat, _api, _settings, _records, _shift);
                 _dialogue = new DialogueService(_chat, _api, _settings, _records);
-                _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records);
+                _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records, _shift);
 
                 // Started before the box: until this is running, the keystrokes that spell a
                 // sentence are the same keystrokes every other plugin is watching for.
@@ -154,6 +177,10 @@ namespace TextDispatch
                 _keys.Start();
 
                 _input = new TextInput(_chat, _router.Handle, _keys);
+
+                // Push to talk. What is heard is typed in for the player: sent at once, or left in the
+                // box for Enter, as the ini says.
+                _voice = new VoiceInput(_settings, Heard, problem => _chat.Error(problem));
 
                 if (!_input.SetOpenKey(_settings.OpenKey))
                     Log.Line("OpenKey '" + _settings.OpenKey + "' is not a key name; sticking with T");
@@ -198,6 +225,13 @@ namespace TextDispatch
                 _chat.Dispatch("Dispatch online. " + _dispatch.Unit +
                                ", you are 10-8. I will call you when something comes in.");
 
+                if (unfinished != null)
+                    _chat.Dispatch("Your last shift was never closed - it is on file as unfinished. /shifts lists it.");
+                if (_records.FollowUps.Count > 0)
+                    _chat.Dispatch(_records.FollowUps.Count + " case(s) of yours are still with the courts. I will pass on what comes back.");
+                if (_settings.VoiceInput)
+                    _chat.Notice("Voice is on: hold " + _voice.KeyName + " to talk. /voice test checks the speech server.");
+
                 // Pull the model into memory now rather than on the player's first sentence.
                 Ai.LocalModel.WarmUp(_settings);
 
@@ -234,6 +268,8 @@ namespace TextDispatch
             try { if (_keys != null) _keys.Stop(); }
             catch { }
 
+            SaveRecords(true);
+
             try { Game.RawFrameRender -= OnFrameRender; }
             catch { }
 
@@ -269,6 +305,11 @@ namespace TextDispatch
 
                     _dispatch.Update();
                     _dialogue.Update();
+
+                    // Not while the box is open: the key is a letter then.
+                    _voice.Update(here && !_chat.IsOpen);
+
+                    SaveRecords(false);
 
                     Announce();
 
@@ -374,8 +415,64 @@ namespace TextDispatch
         /// </summary>
         public static void SetOnDuty(bool onDuty)
         {
+            var was = _onDuty;
             _onDuty = onDuty;
             Announce();
+
+            // Going off duty ends the shift and reads it back; going on starts the next one. Saved at
+            // once, because Finally is also what LSPDFR calls at shutdown, and there may be no next tick.
+            try
+            {
+                if (_dispatch != null)
+                {
+                    if (!onDuty && was) _dispatch.EndShift("off duty");
+                    if (onDuty) _dispatch.StartShift();
+                }
+                if (!onDuty) SaveRecords(true);
+            }
+            catch (Exception ex) { Log.Error("the shift, on a duty change", ex); }
+        }
+
+        /// <summary>
+        /// Write the records when something has changed - at most every five seconds, so a run of
+        /// changes is one write - and once a minute while a shift runs, so its length survives a crash.
+        /// </summary>
+        private static void SaveRecords(bool now)
+        {
+            if (_records == null || _recordsPath == null) return;
+
+            var since = Environment.TickCount - _savedAt;
+            var due = now || (_records.Dirty && since > 5000) || (_shift != null && _shift.Running && since > 60000);
+            if (!due) return;
+
+            _savedAt = Environment.TickCount;
+            var problem = RecordsStore.Save(_recordsPath, _records, _shift);
+            if (problem == null) return;
+
+            if (!_saveErrorLogged)
+            {
+                _saveErrorLogged = true;
+                Log.Line("records: could not save to " + _recordsPath + " - " + problem);
+                if (_chat != null) _chat.Error("Records could not be saved: " + problem + ". The log has the path.");
+            }
+        }
+
+        /// <summary>Something said into the microphone, typed into the box as if from the keyboard.</summary>
+        private static void Heard(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text) || _router == null) return;
+
+            if (_settings.VoiceSend)
+            {
+                _chat.Remember(text);
+                _router.Handle(text);
+            }
+            else
+            {
+                _chat.IsOpen = true;
+                _chat.Input = text;
+                _chat.Scroll = 0;
+            }
         }
 
         /// <summary>

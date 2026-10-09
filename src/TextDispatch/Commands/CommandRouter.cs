@@ -26,12 +26,16 @@ namespace TextDispatch.Commands
         private readonly DialogueService _dialogue;
         private readonly Settings _settings;
         private readonly RecordsLedger _records;
+        private readonly ShiftLog _shift;
+
+        /// <summary>What a citation costs. One figure, so the fine and its follow-up agree.</summary>
+        private const double CitationFine = 250.0;
 
         /// <summary>The one job marker this plugin has on the map, so asking for another does not leave a trail.</summary>
         private static Blip _jobBlip;
 
         public CommandRouter(ChatBox chat, LspdfrApi api, DispatchService dispatch, DialogueService dialogue,
-                             Settings settings, RecordsLedger records)
+                             Settings settings, RecordsLedger records, ShiftLog shift)
         {
             _chat = chat;
             _api = api;
@@ -39,6 +43,7 @@ namespace TextDispatch.Commands
             _dialogue = dialogue;
             _settings = settings;
             _records = records;
+            _shift = shift;
         }
 
         public void Handle(string raw)
@@ -176,8 +181,14 @@ namespace TextDispatch.Commands
                 case "release":
                 case "uncuff": Release(); return;
                 case "cuff": Cuff(); return;
-                case "frisk":
-                case "search": Frisk(); return;
+                case "frisk": Frisk(); return;
+                case "search":
+                    // /search on its own is still a frisk, as it always was; /search car is the car.
+                    if (IsVehicleWord(argument)) SearchVehicle(); else Frisk();
+                    return;
+                case "searchcar":
+                case "searchveh":
+                case "vsearch": SearchVehicle(); return;
                 case "id":
                 case "licence":
                 case "license": ShowId(); return;
@@ -211,6 +222,14 @@ namespace TextDispatch.Commands
                 case "arrest": Arrest(argument); return;
                 case "cite":
                 case "ticket": Cite(argument); return;
+                case "report": FileReport(argument); return;
+                case "reports": ListReports(argument); return;
+                case "court":
+                case "followups": ListFollowUps(); return;
+                case "status": ShowStatus(); return;
+                case "shift": ShowShift(); return;
+                case "shifts": ListShifts(); return;
+                case "voice": SetVoice(argument); return;
                 case "pursuit": StartPursuit(); return;
                 case "endpursuit": EndPursuit(); return;
                 case "calledin": CalledIn(); return;
@@ -1023,7 +1042,11 @@ namespace TextDispatch.Commands
             if (ped == null) return null;
 
             var handle = unchecked((int)ped.Handle.Value);
-            return _records.EnsurePerson(handle, Identities.NameFor(handle));
+            var person = _records.EnsurePerson(handle, Identities.NameFor(handle));
+
+            // Looked up face to face is dealt with: kept on file, and who a /report is about by default.
+            _records.Touch(person);
+            return person;
         }
 
         private void RecordsSummary()
@@ -1031,8 +1054,9 @@ namespace TextDispatch.Commands
             _chat.Notice("On file: " + _records.People.Count + " people, " + _records.Vehicles.Count +
                          " vehicles, " + _records.Bolos.Count + " BOLOs");
             _chat.Notice("  you: " + _records.CitationCount + " citations, " + _records.ArrestCount +
-                         " arrests, $" + _records.FinesIssued.ToString("0.00") + " in fines");
-            _chat.Notice("  /person [name]   /plate [plate]   /warrant [name]   /bolo   /arrest   /cite");
+                         " arrests, $" + _records.FinesIssued.ToString("0.00") + " in fines, " +
+                         _records.Reports.Count + " reports, " + _records.FollowUps.Count + " with the courts");
+            _chat.Notice("  /person [name]   /plate [plate]   /warrant [name]   /bolo   /arrest   /cite   /reports   /court");
         }
 
         private void PersonLookup(string argument)
@@ -1055,6 +1079,16 @@ namespace TextDispatch.Commands
             for (int i = 0; i < person.Priors.Count; i++) _chat.Notice("    - prior: " + person.Priors[i]);
             if (person.Wanted) _chat.Notice("  WARRANT: " + person.WarrantFor);
             if (person.UnpaidFines > 0) _chat.Notice("  outstanding fines: $" + person.UnpaidFines.ToString("0.00"));
+            if (person.Arrests > 0 || person.Citations > 0)
+                _chat.Notice("  by you: " + person.Arrests + " arrest(s), " + person.Citations + " citation(s)");
+
+            // What came of it - the court, the fines - newest last, and only the last few.
+            for (int i = Math.Max(0, person.Notes.Count - 4); i < person.Notes.Count; i++)
+                _chat.Notice("    - " + person.Notes[i]);
+
+            var reports = _records.ReportsAbout(person);
+            if (reports.Count > 0)
+                _chat.Notice("  " + reports.Count + " report(s) on file - /reports " + person.Name.Split(' ')[0]);
 
             foreach (var vehicle in _records.Vehicles)
             {
@@ -1151,6 +1185,9 @@ namespace TextDispatch.Commands
 
         private void Arrest(string argument)
         {
+            // "/arrest for assault" is whoever is in front of you; "/arrest Reyes for assault" is Reyes.
+            // Without a charge it is the warrant, or a booking.
+            var charge = Charge(ref argument);
             var inFront = string.IsNullOrWhiteSpace(argument);
             var person = inFront ? PersonInFront() : _records.FindPerson(argument);
 
@@ -1160,8 +1197,16 @@ namespace TextDispatch.Commands
                 return;
             }
 
-            var offence = person.Wanted && !string.IsNullOrEmpty(person.WarrantFor) ? person.WarrantFor : "booking";
+            var offence = charge ??
+                          (person.Wanted && !string.IsNullOrEmpty(person.WarrantFor) ? person.WarrantFor : "booking");
             _chat.Notice(_records.RecordArrest(person, offence));
+            _shift.Arrest();
+
+            // The court's answer comes back on the radio in a few minutes, and a report written in the
+            // meantime is what it decides on.
+            _records.ScheduleFollowUp(person, "arrest", offence, 0, _dispatch.ReportCallName);
+            if (_records.ReportsAbout(person).Count == 0)
+                _chat.Notice("  The DA will want a report - '/report <what happened>' files one on " + person.Name + ".");
 
             // If it is the person standing in front of you, put the cuffs on as well.
             if (inFront)
@@ -1188,8 +1233,400 @@ namespace TextDispatch.Commands
             var person = _records.FindPerson(name);
             if (person == null) { _chat.Error("No record for '" + name + "'."); return; }
 
-            _chat.Notice(_records.IssueCitation(person, offence, 250.0));
+            _chat.Notice(_records.IssueCitation(person, offence, CitationFine));
+            _shift.Citation(CitationFine);
+            _records.ScheduleFollowUp(person, "citation", offence, CitationFine, _dispatch.ReportCallName);
             _dispatch.Report(DispatcherIntent.Report, "citation written for " + offence);
+        }
+
+        /// <summary>
+        /// Take " for &lt;charge&gt;" off the end of an argument and return the charge, or null if there is
+        /// none. "/arrest Reyes for assault" leaves "Reyes" behind and returns "assault".
+        /// </summary>
+        private static string Charge(ref string argument)
+        {
+            var text = (argument ?? "").Trim();
+            string charge = null;
+
+            if (text.StartsWith("for ", StringComparison.OrdinalIgnoreCase))
+            {
+                charge = text.Substring(4).Trim();
+                text = "";
+            }
+            else
+            {
+                var at = text.IndexOf(" for ", StringComparison.OrdinalIgnoreCase);
+                if (at > 0)
+                {
+                    charge = text.Substring(at + 5).Trim();
+                    text = text.Substring(0, at).Trim();
+                }
+            }
+
+            argument = text;
+            return string.IsNullOrEmpty(charge) ? null : charge;
+        }
+
+        // ------------------------------------------------------------------ vehicle search
+
+        private static bool IsVehicleWord(string argument)
+        {
+            switch ((argument ?? "").Trim().ToLowerInvariant())
+            {
+                case "car": case "vehicle": case "veh": case "trunk": case "boot": case "truck": case "van": case "bike":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Search the car you stopped, or the one beside you.
+        ///
+        /// What is in it is decided once from the plate and kept on file - the same car holds the same
+        /// thing every time it is searched, next session included - and its odds follow the records: a
+        /// stolen car, or a driver with a warrant or a history, is likelier to be carrying something.
+        /// The driver knows what you found, so what they say next is about it.
+        /// </summary>
+        private void SearchVehicle()
+        {
+            var player = Game.LocalPlayer.Character;
+            if (player == null) { _chat.Error("No player ped."); return; }
+
+            try
+            {
+                if (player.IsInAnyVehicle(false)) { _chat.Error("Get out of your car first."); return; }
+            }
+            catch { }
+
+            var vehicle = _api.PulloverVehicle() ?? _api.NearestOtherVehicle(8f);
+            if (vehicle == null) { _chat.Error("No vehicle close enough to search - stand beside it."); return; }
+
+            try
+            {
+                if (vehicle.Position.DistanceTo(player.Position) > 8f)
+                {
+                    _chat.Error("Walk up to the vehicle to search it.");
+                    return;
+                }
+            }
+            catch { }
+
+            string plate = null, model = null;
+            try { plate = vehicle.LicensePlate; } catch { }
+            try { model = vehicle.Model.Name; } catch { }
+            if (string.IsNullOrWhiteSpace(plate)) { _chat.Error("That vehicle has no plate to put a search on file against."); return; }
+
+            // The person it is about: the driver you stopped, whoever is at the wheel, or nobody.
+            PersonRecord driver = null;
+            Ped driverPed = _api.PulloverSuspect();
+            try { if (driverPed == null) driverPed = vehicle.Driver; } catch { }
+            try
+            {
+                if (driverPed != null && driverPed.Exists() && !ReferenceEquals(driverPed, player))
+                {
+                    var handle = unchecked((int)driverPed.Handle.Value);
+                    driver = _records.EnsurePerson(handle, Identities.NameFor(handle));
+                }
+            }
+            catch { }
+
+            var before = _records.FindVehicle(plate);
+            var already = before != null && before.SearchFind != null;
+
+            var record = _records.SearchVehicle(plate, model, driver);
+            if (record == null) { _chat.Error("Could not search that vehicle."); return; }
+
+            string detail;
+            VehicleActions.OpenDoor(vehicle, 5, out detail);
+
+            _chat.Me("You", already
+                ? "go back through the vehicle."
+                : "search the vehicle - the seats, the glovebox, the door pockets and the trunk.");
+            _chat.Do("You find " + record.SearchFind + ".");
+            Log.Line("vehicle search: " + record.Plate + " (" + (model ?? "?") + ") -> " +
+                     (record.SearchIllegal ? "ILLEGAL: " : "") + record.SearchFind);
+
+            if (already) return;
+
+            _shift.Search(record.SearchIllegal);
+
+            if (record.SearchIllegal)
+            {
+                var offence = OffenceFor(record.SearchFind);
+                _chat.Notice("  That is an arrest: '/arrest for " + offence + "'" +
+                             (driver != null ? " books " + driver.Name : "") + ", and '/report' writes it up.");
+                _dispatch.Report(DispatcherIntent.Report, "vehicle search on " + record.Plate + " turned up " + record.SearchFind);
+            }
+            else
+            {
+                _chat.Notice("  Nothing illegal in " + record.Plate + ".");
+            }
+        }
+
+        /// <summary>What a find is an arrest for, so the suggested charge reads like one.</summary>
+        private static string OffenceFor(string find)
+        {
+            var f = (find ?? "").ToLowerInvariant();
+            if (f.Contains("pistol") || f.Contains("shotgun")) return "unlicensed firearm";
+            if (f.Contains("cocaine") || f.Contains("pills") || f.Contains("cannabis")) return "drug possession";
+            if (f.Contains("vodka") || f.Contains("bottle")) return "open container";
+            if (f.Contains("credit cards")) return "fraud";
+            if (f.Contains("cash")) return "possession of proceeds of crime";
+            return "possession of burglary tools";
+        }
+
+        // ------------------------------------------------------------------ reports
+
+        /// <summary>
+        /// /report &lt;what happened&gt; - on the person you last dealt with, for the call you are on.
+        /// /report Reyes: &lt;text&gt; names them; /report general: &lt;text&gt; is about nobody in particular.
+        /// </summary>
+        private void FileReport(string argument)
+        {
+            var text = (argument ?? "").Trim();
+            if (text.Length == 0)
+            {
+                var last = _records.LastSubject;
+                _chat.Notice("Usage: /report <what happened>   -   /report <name>: <text>   -   /report general: <text>");
+                _chat.Notice("  Right now a report would be on " + (last != null ? last.Name : "nobody in particular") +
+                             (_dispatch.ReportCallName != null ? ", for the " + _dispatch.ReportCallName + " call" : "") + ".");
+                return;
+            }
+
+            var subject = _records.LastSubject;
+            var colon = text.IndexOf(':');
+            if (colon > 0 && colon <= 32)
+            {
+                var who = text.Substring(0, colon).Trim();
+                var rest = text.Substring(colon + 1).Trim();
+
+                if (who.Equals("general", StringComparison.OrdinalIgnoreCase) || who.Equals("none", StringComparison.OrdinalIgnoreCase))
+                {
+                    subject = null;
+                    text = rest;
+                }
+                else
+                {
+                    var named = _records.FindPerson(who);
+                    if (named != null) { subject = named; text = rest; }
+                }
+            }
+
+            if (text.Length < 3) { _chat.Error("Say what happened: /report <text>."); return; }
+
+            var waiting = false;
+            if (subject != null)
+                foreach (var followUp in _records.FollowUps)
+                    if (followUp.PersonId == subject.Id && !followUp.ReportFiled) waiting = true;
+
+            var call = _dispatch.ReportCallName;
+            var report = _records.FileReport(_dispatch.Unit, call, subject, text);
+            _shift.Report();
+
+            _chat.Me("You", "write up the report.");
+            Log.Line("report #" + report.Number + ": " + (report.Subject ?? "general") + " / " + (report.Call ?? "no call") + " - " + report.Text);
+            _dispatch.Tell("Copy " + _dispatch.Unit + ", report #" + report.Number + " is on file" +
+                           (subject != null ? " for " + subject.Name : "") +
+                           (call != null ? ", on the " + call + " call" : "") + "." +
+                           (waiting ? " The DA has it for the case against " + subject.Name + "." : ""));
+        }
+
+        private void ListReports(string argument)
+        {
+            var filter = (argument ?? "").Trim();
+            var found = new List<ReportRecord>();
+
+            for (var i = _records.Reports.Count - 1; i >= 0 && found.Count < 6; i--)
+            {
+                var report = _records.Reports[i];
+                if (filter.Length == 0 ||
+                    (report.Subject ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (report.Call ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    report.Number.ToString(CultureInfo.InvariantCulture) == filter.TrimStart('#'))
+                    found.Add(report);
+            }
+
+            if (found.Count == 0)
+            {
+                _chat.Notice(filter.Length == 0 ? "No reports on file yet - '/report <what happened>' writes one." : "No report matches '" + filter + "'.");
+                return;
+            }
+
+            _chat.Notice("Reports" + (filter.Length == 0 ? "" : " matching '" + filter + "'") + ", newest first (" + _records.Reports.Count + " on file):");
+            foreach (var report in found)
+            {
+                var body = report.Text.Length > 110 ? report.Text.Substring(0, 107) + "..." : report.Text;
+                _chat.Notice("  #" + report.Number + "  " + report.When + "  " + (report.Call ?? "no call") +
+                             "  -  " + (report.Subject ?? "general") + ": " + body);
+            }
+        }
+
+        private void ListFollowUps()
+        {
+            if (_records.FollowUps.Count == 0)
+            {
+                _chat.Notice("Nothing is waiting on the courts. An /arrest or a /cite puts a case here.");
+                return;
+            }
+
+            _chat.Notice("Waiting on the courts:");
+            foreach (var followUp in _records.FollowUps)
+            {
+                var minutes = (int)Math.Ceiling((new DateTime(followUp.DueTicks, DateTimeKind.Utc) - DateTime.UtcNow).TotalMinutes);
+                _chat.Notice("  " + followUp.Name + " - " + followUp.Offence + " (" + followUp.Kind + ")  -  " +
+                             (minutes <= 0 ? "due now" : "about " + minutes + " min") +
+                             (followUp.Kind == "arrest" ? (followUp.ReportFiled ? ", report on file" : ", NO report on file yet") : ""));
+            }
+        }
+
+        // ------------------------------------------------------------------ status and the shift
+
+        private void ShowStatus()
+        {
+            var available = false;
+            try { available = _api.PlayerAvailable(); } catch { }
+
+            var status = string.IsNullOrEmpty(_dispatch.LastStatus) ? "10-8" : _dispatch.LastStatus.ToUpperInvariant();
+            _chat.Notice(_dispatch.Unit + "  -  " + status + ", " + (available ? "available for calls" : "not taking calls") +
+                         (Plugin.OnDuty ? "" : ", off duty"));
+
+            var call = _dispatch.CurrentCallName;
+            if (call != null)
+            {
+                var scene = _dispatch.OnSceneSeconds;
+                _chat.Notice("  Call: " + call + " (" + (_dispatch.CurrentCallState ?? "?").ToLowerInvariant() + ")" +
+                             (scene >= 0 ? ", on scene " + (scene / 60) + "m " + (scene % 60).ToString("00") + "s" : ", not on scene yet"));
+            }
+            else
+            {
+                var next = _dispatch.NextAutoCallSeconds;
+                _chat.Notice("  No call." + (next >= 0 ? " Dispatch raises one in about " + next + "s." : ""));
+            }
+
+            if (_dispatch.InPursuit) _chat.Notice("  In pursuit.");
+            if (_dispatch.OnTrafficStop) _chat.Notice("  On a traffic stop.");
+
+            _chat.Notice("  Auto calls " + (_settings.AutoCallouts ? "on (" + _settings.AutoCalloutSeconds + "s)" : "off") +
+                         ", auto accept " + (_settings.AutoAccept ? "on" : "off") +
+                         ", voice " + (_settings.VoiceInput ? "on (" + _settings.VoiceKey + ")" : "off") + ".");
+
+            if (_shift.Running)
+            {
+                var shift = _shift.Current;
+                _chat.Notice("  Shift: " + ShiftLog.Duration((int)_shift.Elapsed.TotalMinutes) + ", " +
+                             shift.Calls.Count + " call(s), " + shift.Arrests + " arrest(s), " + shift.Citations + " citation(s)." +
+                             (_records.FollowUps.Count > 0 ? " " + _records.FollowUps.Count + " case(s) with the courts." : ""));
+            }
+            else
+            {
+                _chat.Notice("  No shift running - 10-8 starts one.");
+            }
+        }
+
+        private void ShowShift()
+        {
+            if (!_shift.Running) { _chat.Notice("No shift running - 10-8 starts one, 10-7 ends it. /shifts lists past ones."); return; }
+
+            _shift.Stamp();
+            _chat.Notice("This shift (" + _dispatch.Unit + "):");
+            foreach (var line in ShiftLog.Describe(_shift.Current)) _chat.Notice("  " + line);
+            _chat.Notice("  10-7 ends it and files it.");
+        }
+
+        private void ListShifts()
+        {
+            if (_records.Shifts.Count == 0) { _chat.Notice("No shifts on file yet. 10-7 ends one and files it."); return; }
+
+            _chat.Notice("Past shifts, newest first (" + _records.Shifts.Count + " on file):");
+            for (int i = _records.Shifts.Count - 1, shown = 0; i >= 0 && shown < 6; i--, shown++)
+            {
+                var shift = _records.Shifts[i];
+                _chat.Notice("  " + shift.Started + "  " + ShiftLog.Duration(shift.Minutes) + "  -  " +
+                             shift.Calls.Count + " call(s), " + shift.Arrests + " arrest(s), " + shift.Citations + " citation(s), " +
+                             shift.Reports + " report(s)" + (shift.Unfinished ? "  (unfinished)" : ""));
+            }
+
+            var totalCalls = 0;
+            foreach (var shift in _records.Shifts) totalCalls += shift.Calls.Count;
+            _chat.Notice("  Career: " + _records.Shifts.Count + " shift(s), " + totalCalls + " call(s), " +
+                         _records.ArrestCount + " arrest(s), " + _records.CitationCount + " citation(s), " +
+                         _records.Reports.Count + " report(s).");
+        }
+
+        // ------------------------------------------------------------------ voice
+
+        /// <summary>/voice, /voice on|off, /voice test, /voice key &lt;key&gt;, /voice send on|off.</summary>
+        private void SetVoice(string argument)
+        {
+            var voice = Plugin.Voice;
+            if (voice == null) { _chat.Error("Voice input is not running."); return; }
+
+            var parts = (argument ?? "").Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var what = parts.Length > 0 ? parts[0].ToLowerInvariant() : "";
+
+            switch (what)
+            {
+                case "":
+                    _chat.Notice(voice.Describe());
+                    if (!string.IsNullOrEmpty(voice.LastHeard)) _chat.Notice("  Last heard: \"" + voice.LastHeard + "\"");
+                    if (!string.IsNullOrEmpty(voice.LastError)) _chat.Notice("  Last problem: " + voice.LastError);
+                    _chat.Notice("Usage: /voice on|off  ·  /voice test  ·  /voice key <key>  ·  /voice send on|off");
+                    return;
+
+                case "on":
+                case "off":
+                    _settings.VoiceInput = what == "on";
+                    _settings.Save();
+                    _chat.Notice(_settings.VoiceInput
+                        ? "Voice is on: hold " + voice.KeyName + " and speak. Checking the speech server..."
+                        : "Voice is off. Saved to the ini.");
+                    if (_settings.VoiceInput) TestVoice();
+                    return;
+
+                case "test":
+                    _chat.Notice("Checking the speech server at " + voice.Endpoint + "...");
+                    TestVoice();
+                    return;
+
+                case "key":
+                    if (parts.Length < 2 || !voice.SetKey(parts[1]))
+                    {
+                        _chat.Error("Usage: /voice key <key>   e.g. /voice key N, /voice key CapsLock");
+                        return;
+                    }
+                    _settings.VoiceKey = voice.KeyName;
+                    _settings.Save();
+                    _chat.Notice("Push to talk is now " + voice.KeyName + ", saved to the ini.");
+                    return;
+
+                case "send":
+                    if (parts.Length < 2 || (parts[1] != "on" && parts[1] != "off"))
+                    {
+                        _chat.Error("Usage: /voice send on|off  -  on sends what is heard at once, off leaves it in the box.");
+                        return;
+                    }
+                    _settings.VoiceSend = parts[1] == "on";
+                    _settings.Save();
+                    _chat.Notice(_settings.VoiceSend ? "What you say is sent at once." : "What you say waits in the box for Enter.");
+                    return;
+            }
+
+            _chat.Error("Usage: /voice on|off  ·  /voice test  ·  /voice key <key>  ·  /voice send on|off");
+        }
+
+        /// <summary>Ask the speech server for something, off the game fiber, and say how it went.</summary>
+        private void TestVoice()
+        {
+            var settings = _settings;
+            var chat = _chat;
+            System.Threading.ThreadPool.QueueUserWorkItem(_ =>
+            {
+                var problem = Voice.VoiceInput.Probe(settings);
+                chat.Notice(problem == null
+                    ? "Speech server answered at " + Voice.VoiceInput.EndpointFor(settings) + ". Hold " + settings.VoiceKey + " to talk."
+                    : "Voice: " + problem + ". Start whisper.cpp's server (whisper-server -m ggml-base.en.bin --port 8080), or set VoiceEndpoint in the ini.");
+            });
         }
 
         private void StartPursuit()
@@ -1609,11 +2046,15 @@ namespace TextDispatch.Commands
             _chat.Notice("  Civilian: /jobs [filter]  /job <name>  -  DriverJobs V's work, what it pays, where it starts");
             _chat.Notice("  Quick:    /yes accept  /no decline  (or just type 'accept')   /talk  whoever is nearest");
             _chat.Notice("  Stops:    /stop  /endstop  /tow   (or pull over with LSPDFR and it is picked up)");
-            _chat.Notice("            /id  /frisk  /cuff  /detain  /release  /record  /owner  /transport");
+            _chat.Notice("            /id  /frisk  /search car  /cuff  /detain  /release  /record  /owner  /transport");
             _chat.Notice("            (all of those act on the driver you stopped)");
+            _chat.Notice("  Paperwork: /report <what happened>  /reports [name]  /court  - what the courts still owe you");
+            _chat.Notice("  Shift:    /status  /shift  /shifts   (10-8 starts a shift, 10-7 ends it and reads it back)");
+            _chat.Notice("  Voice:    /voice on|off|test|key <key>  - hold the key and speak instead of typing");
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
             _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model>");
-            _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest  /cite <name> <offence>");
+            _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest [name] [for <charge>]  /cite <name> <offence>");
+            _chat.Notice("            (kept between sessions - the people you book are still on file tomorrow)");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");
             _chat.Notice("  Box:      /pos <corner>  /margin <px>  /ui  /font  /fontsize  /lines  /key  /clear");
             _chat.Notice("  Typing:   /typing  whether the other plugins can see what you type, and what it found");

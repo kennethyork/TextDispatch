@@ -10,8 +10,8 @@ namespace TextCallouts.Custom
     /// assembly, whose members have no implementation - so the CLR refuses to load anything that
     /// touches it.
     ///
-    /// This is the entire surface the loader uses of it: one Bind call when a type has been built, and
-    /// one typeof as the base class to build it against. In game it is the real class; the loader is
+    /// This is the entire surface the loader uses of it: one Bind call when a type has been built, one
+    /// typeof as the base class to build it against, and DutyOf to read a bound recipe's 'for'. In game it is the real class; the loader is
     /// the same file either way, and the loader is what this check is for.
     /// </summary>
     public class RecipeCallout
@@ -24,6 +24,12 @@ namespace TextCallouts.Custom
         {
             if (string.IsNullOrEmpty(typeName) || recipe == null) return;
             Bound[typeName] = recipe;
+        }
+
+        internal static string DutyOf(string typeName)
+        {
+            CalloutRecipe recipe;
+            return Bound.TryGetValue(typeName, out recipe) ? recipe.For : null;
         }
     }
 }

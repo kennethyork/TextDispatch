@@ -60,6 +60,11 @@ namespace TextDispatch.Dialogue
         public bool CalloutRunning;
         public bool PlayerOnDuty;
 
+        /// <summary>Their car has been searched, and what was in it - from the records, not the model.</summary>
+        public bool CarSearched;
+        public bool CarIllegal;
+        public string CarFind;
+
         public string CalloutName;
         public string Zone;
         public string Persona;
@@ -76,6 +81,10 @@ namespace TextDispatch.Dialogue
             else parts.Add("you are going about your day");
 
             if (Frisked) parts.Add(Contraband ? "you were searched and they found something illegal" : "you were searched and they found nothing");
+            if (CarSearched)
+                parts.Add(CarIllegal
+                    ? "they searched your car and found " + CarFind + ", and you know it is yours"
+                    : "they searched your car and found nothing illegal - " + CarFind);
             if (Surrendered) parts.Add("you have given up");
             if (!string.IsNullOrEmpty(Zone)) parts.Add("you are in " + Zone);
             if (CalloutRunning && !string.IsNullOrEmpty(CalloutName)) parts.Add("an incident is in progress: " + CalloutName);
@@ -86,7 +95,8 @@ namespace TextDispatch.Dialogue
         public string Key()
         {
             return (Arrested ? "a" : "-") + (Stopped ? "s" : "-") + (InPursuit ? "p" : "-") +
-                   (Frisked ? "f" : "-") + (Contraband ? "c" : "-") + (Surrendered ? "u" : "-");
+                   (Frisked ? "f" : "-") + (Contraband ? "c" : "-") + (Surrendered ? "u" : "-") +
+                   (CarSearched ? (CarIllegal ? "V" : "v") : "-");
         }
     }
 
@@ -177,7 +187,7 @@ namespace TextDispatch.Dialogue
             if (state.Arrested)
                 return mood == Temperament.Compliant ? Temperament.Defensive : mood;
 
-            if (state.Contraband && mood == Temperament.Compliant)
+            if ((state.Contraband || state.CarIllegal) && mood == Temperament.Compliant)
                 return Temperament.Nervous;
 
             if (state.InPursuit)

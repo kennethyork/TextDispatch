@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.18, taken out of the router rather than remembered —
-**125 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.31, taken out of the router rather than remembered —
+**140 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -112,6 +112,7 @@ or from the mod's own menu (`Shift+J`).
 | `/endstop` | end it |
 | `/id` `/licence` `/license` | the driver's details |
 | `/frisk` `/search` | search them |
+| `/search car` `/searchcar` `/searchveh` `/vsearch` | search the vehicle you stopped, or the one beside you - what is in it is kept on file, and the driver knows what you found |
 | `/cuff` | cuff them |
 | `/detain` | hold them where they are |
 | `/release` `/uncuff` | let them go |
@@ -135,7 +136,49 @@ and on the nearest person when you are not on a stop.
 
 ## Records terminal
 
-`/mdt` (`/terminal`) · `/person [name]` (`/name`) · `/plate [plate]` · `/warrant [name]` (`/wants`) · `/bolo` · `/arrest` · `/cite <name> <offence>` (`/ticket`)
+`/mdt` (`/terminal`) · `/person [name]` (`/name`) · `/plate [plate]` · `/warrant [name]` (`/wants`) · `/bolo` · `/arrest [name] [for <charge>]` · `/cite <name> <offence>` (`/ticket`)
+
+Kept between sessions, in `Plugins\LSPDFR\TextDispatch.records.json`.
+
+| | |
+|---|---|
+| `/report <what happened>` | a report on the person you last dealt with, for the call you are on |
+| `/report <name>: <text>` · `/report general: <text>` | on somebody named, or on nobody in particular |
+| `/reports [name, call or #number]` | the reports on file, newest first |
+| `/court` `/followups` | what is still with the courts - arrests and citations, and whether a report is behind each |
+
+An arrest or a citation comes back on the radio three to eight minutes later: charged, pleaded, bailed or
+dropped; paid, contested, or a warrant for not paying. An arrest with a report behind it is far likelier to
+be charged.
+
+---
+
+## Status and the shift
+
+| | |
+|---|---|
+| `/status` | your unit, status, call, time on scene, the next automatic call, and the shift so far |
+| `/shift` | this shift in full |
+| `/shifts` | past shifts, and the career totals |
+
+`10-8` starts a shift and `10-7` ends it - dispatch reads the summary back and files it. Going off duty does
+the same.
+
+---
+
+## Voice
+
+| | |
+|---|---|
+| `/voice` | how voice is set up, what it last heard, and what last went wrong |
+| `/voice on\|off` | push to talk on or off (off by default) |
+| `/voice test` | ask the speech server for an answer |
+| `/voice key <key>` | the push-to-talk key (N by default) |
+| `/voice send on\|off` | send what is heard at once, or leave it in the box for Enter |
+
+Hold the key, speak, let go. It needs a microphone and a speech-to-text server on this machine - whisper.cpp's
+(`whisper-server -m ggml-base.en.bin --port 8080`), or anything answering `/v1/audio/transcriptions`.
+"Ten ninety-seven" becomes `10-97`, and a sentence that starts "Dispatch, ..." goes on the radio.
 
 ---
 

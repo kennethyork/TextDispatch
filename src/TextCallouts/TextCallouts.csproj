@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
@@ -8,9 +8,9 @@
     <Nullable>disable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
-    <Version>1.13.2</Version>
-    <AssemblyVersion>1.13.2.0</AssemblyVersion>
-    <FileVersion>1.13.2.0</FileVersion>
+    <Version>1.13.3</Version>
+    <AssemblyVersion>1.13.3.0</AssemblyVersion>
+    <FileVersion>1.13.3.0</FileVersion>
     <Product>TextCallouts</Product>
     <Description>LSPDFR callouts that need nothing but LSPDFR and RAGE Plugin Hook.</Description>
 
