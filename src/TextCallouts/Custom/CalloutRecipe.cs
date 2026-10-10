@@ -84,6 +84,21 @@ namespace TextCallouts.Custom
     }
 
     /// <summary>
+    /// One piece of scenery: an object, or a parked vehicle, placed relative to the middle of the scene
+    /// in metres (X right, Y forward along the scene's heading), and set on the ground when it is built.
+    /// </summary>
+    internal sealed class PropRecipe
+    {
+        public string Model;
+        public float X;
+        public float Y;
+        public float Z;
+        public float Heading;
+        public bool Vehicle;      // a parked vehicle rather than an object
+        public bool Damaged;      // dented and with its hazards on - the scenery of a collision
+    }
+
+    /// <summary>
     /// A callout written in a file instead of in C#.
     ///
     /// Everything the pack's own eight callouts do, this can do: choose a place, put people and
@@ -150,6 +165,30 @@ namespace TextCallouts.Custom
         public string ApproachLine;
         public string ResolvedLine;
         public string SignOff;
+
+        /// <summary>
+        /// Where the scene is and what is in it besides people. Place names a kind of location - the
+        /// prison, a beach, a bank - and the callout goes to the nearest real one instead of a random
+        /// street; Props names a set of scenery that suits it, and Prop elements add single objects.
+        /// None of it is required: a recipe without a Scene is a street near the player, as it always was.
+        /// </summary>
+        public string Place;
+        public string PropSet;
+        public readonly List<PropRecipe> Props = new List<PropRecipe>();
+
+        /// <summary>Every Place a recipe may name. Kept here, beside the parser, so a check can read it without the game.</summary>
+        public static readonly string[] Places =
+        {
+            "prison", "beach", "pier", "marina", "farm", "bank", "store", "bar", "hospital", "airport",
+            "golf", "construction", "docks", "sandy", "paleto", "park", "forest"
+        };
+
+        /// <summary>Every Props set a recipe may name.</summary>
+        public static readonly string[] PropSets =
+        {
+            "visits", "yard", "camp", "beach", "farm", "crash", "drugs", "party", "dumping", "construction",
+            "perimeter", "cones", "boxes", "market", "picnic", "workshop", "money", "tools"
+        };
 
         /// <summary>What the log calls this, and what /callout accepts.</summary>
         public string Display { get { return Name + "  (" + Id + ")"; } }
@@ -248,6 +287,29 @@ namespace TextCallouts.Custom
                         }
                         break;
 
+                    case "scene":
+                        recipe.Place = Known(AttributeText(element, "Place", null), Places, "Place");
+                        recipe.PropSet = Known(AttributeText(element, "Props", null), PropSets, "Props");
+                        foreach (var child in element.Elements())
+                        {
+                            if (child.Name.LocalName.ToLowerInvariant() != "prop")
+                                throw new InvalidDataException("<Scene> has no <" + child.Name.LocalName + "> - only <Prop>");
+
+                            var prop = new PropRecipe
+                            {
+                                Model = AttributeText(child, "Model", null),
+                                X = Attribute(child, "X", 0f),
+                                Y = Attribute(child, "Y", 0f),
+                                Z = Attribute(child, "Z", 0f),
+                                Heading = Attribute(child, "Heading", 0f),
+                                Vehicle = Flag(child, "Vehicle", false),
+                                Damaged = Flag(child, "Damaged", false)
+                            };
+                            if (string.IsNullOrEmpty(prop.Model)) throw new InvalidDataException("a <Prop> needs a Model");
+                            recipe.Props.Add(prop);
+                        }
+                        break;
+
                     case "notes":
                     case "comment":
                         break;
@@ -268,6 +330,15 @@ namespace TextCallouts.Custom
             if (recipe.TimeoutMinutes < 1) recipe.TimeoutMinutes = 1;
 
             return recipe;
+        }
+
+        /// <summary>A name from a fixed list, lower-cased, or null if none was given. Refuses one it does not know.</summary>
+        private static string Known(string value, string[] allowed, string what)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            var v = value.Trim().ToLowerInvariant();
+            foreach (var name in allowed) if (name == v) return v;
+            throw new InvalidDataException("<Scene " + what + "=\"" + value + "\"> is not one of: " + string.Join(", ", allowed));
         }
 
         private static ActorRecipe Actor(XElement element)

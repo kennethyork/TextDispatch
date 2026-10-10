@@ -202,6 +202,30 @@ they can flee on foot or in the car (driven by LSPDFR's pursuit AI), give up, or
 text dispatch says is yours, line by line. `<Resolution>` decides what counts as finished -
 `ArrestOrDeath`, `AnyArrest`, or `Manual` for the callouts with nothing to catch.
 
+**Where it happens, and what is there.** Without a `<Scene>` a callout is a street near the player. With
+one it can be somewhere, and have something in it:
+
+```xml
+<Scene Place="pier" Props="crash">
+  <Prop Model="prop_roadcone02a" X="0" Y="-5" />
+  <Prop Model="asea" X="3" Y="1" Heading="90" Vehicle="true" Damaged="true" />
+</Scene>
+```
+
+`Place` sends the call to the nearest real one of its kind - `prison`, `beach`, `pier`, `marina`, `farm`,
+`bank`, `store`, `bar`, `hospital`, `airport`, `golf`, `construction`, `docks`, `sandy`, `paleto`, `park`,
+`forest`. `Props` is a ready-made set of scenery - `visits`, `yard`, `camp`, `beach`, `farm`, `crash`,
+`drugs`, `party`, `dumping`, `construction`, `perimeter`, `cones`, `boxes`, `market`, `picnic`, `workshop`,
+`money`, `tools` - and each `<Prop>` adds one object (or, with `Vehicle="true"`, a parked vehicle) X metres
+right and Y metres forward of the middle of the scene. A model the game does not have is left out and
+named in the log. The library's 444 recipes have their scenes read out of their own text: the prison
+calls are at Bolingbroke with guards standing by, a camp has its tents and its fire, a collision has two
+dented cars and cones, and "two visitors" is two people.
+
+**The scene is built as you arrive**, inside 180 metres, rather than when you accept. Spawned any further
+out, in a part of the map the game has not loaded, people have no ground under them and fall through the
+world - which is why, before 1.13.4, you arrived at empty streets.
+
 **A wrong file is refused with a reason, never ignored.** A misspelled element, a word where a number
 belongs, a flag that is neither true nor false, a `<Ped>` list that is missing entirely - each is named
 in `Plugins\LSPDFR\textcallouts.log` along with the file it came from. A typo that silently did nothing

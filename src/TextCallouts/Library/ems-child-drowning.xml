@@ -9,8 +9,10 @@
     <Message>Child pulled from a pool, not breathing.</Message>
     <Advisory>Parent doing compressions, water coming out.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
+    <Scene Place="beach" Props="beach" />
     <Actors>
         <Ped Model="a_m_y_business_01" Models="a_m_y_beach_01,a_m_y_beach_02,a_m_y_beach_03,a_m_y_sunbathe_01,a_m_y_musclbeac_01,a_m_y_musclbeac_02,a_m_y_jetski_01,a_m_y_runner_01,a_f_y_beach_01,a_f_m_beach_01,a_f_y_fitness_01,a_f_y_fitness_02,a_f_y_tourist_01,a_f_y_hipster_02" Count="1" Role="Bystander" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_downtown_01,a_m_y_genstreet_01,a_m_m_bevhills_02,a_f_y_hipster_01,a_f_m_business_02,a_f_y_tourist_01,a_f_y_eastsa_01" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>She was under for a while. I do not know how long.</Line>

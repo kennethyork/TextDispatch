@@ -181,6 +181,134 @@ function People-For($entry) {
     return (($men + $women) -join ',')
 }
 
+# ============================================================ Where it happens, and what is there
+#
+# A recipe used to be one person on a random street, whatever its text said: a prison visits hall was a
+# man in a suit on Strawberry Avenue. The scene is read out of the callout's own words instead, the same
+# way the people are:
+#
+#   * place - the kind of location it happens at. The pack sends the call to the nearest real one: the
+#     prison gate, a bank, a beach, a farm. Nothing named, and it is a street near the player, as before.
+#   * props - a set of scenery that suits it: tents and a fire at a camp, tables at visits, two dented
+#     cars and cones at a collision, a bag and packages at a deal.
+#   * count - how many suspects the text says there are. "Two visitors" is two, not one.
+#   * extras - who else the text says is there: staff, guards, a victim, the caller. They stand around
+#     the scene rather than in it, and they are not suspects.
+#
+# An entry can name its own with place= and props= and that wins; place='none' keeps it on a street.
+
+function Words($entry) {
+    return (" " + $entry['id'] + ' ' + $entry['name'] + ' ' + $entry['msg'] + ' ' + $entry['adv'] + ' ' + $entry['line'] + ' ' + $entry['brief'] + " ").ToLowerInvariant()
+}
+
+function Place-For($entry) {
+    if ($entry['place']) { if ($entry['place'] -eq 'none') { return $null }; return $entry['place'] }
+
+    $t = Words $entry
+    $id = [string]$entry['id']
+
+    if ($id -like 'saspa-*' -or $t -match '\bprison|\binmates?\b|bolingbroke|penitentiary') { return 'prison' }
+    if ($t -match '\bdrown|\blifeguard|\bsunbath|\bsurfers?\b|\bswimmers?\b|\bbeach\b|on the sand') { return 'beach' }
+    if ($t -match '\bpier\b') { return 'pier' }
+    if ($t -match '\bmarina|\bboats?\b|\byachts?\b|\bjetski|jet ski|\bharbou?r') { return 'marina' }
+    if ($t -match '\branch|\bfarm|\bcattle|livestock|\bbarn\b|\btractor|\brustl|\borchard|\bsheep\b|\bhorses?\b|\bstables?\b') { return 'farm' }
+    if ($t -match '\bbank\b' -and $t -notmatch 'river ?bank|bank of the|embankment|banking') { return 'bank' }
+    if ($t -match '\bpharmacy|off licence|off-licence|corner shop|convenience store|\bshop\b|\bstore\b|supermarket|petrol station|gas station|service station|forecourt|\bshoplift|\btill\b') { return 'store' }
+    if ($t -match '\bbar\b|\bpub\b|nightclub|\bclub\b|bouncer|tavern|saloon') { return 'bar' }
+    if ($t -match 'at the hospital|outside the hospital|hospital car park|hospital entrance|in a&e|emergency department|at the clinic') { return 'hospital' }
+    if ($t -match '\bairport|\blsia\b|\brunway|\bairfield|\bhangar') { return 'airport' }
+    if ($t -match '\bgolf') { return 'golf' }
+    if ($t -match '\bconstruction|building site|\bscaffold|\bcrane\b|\btrench') { return 'construction' }
+    if ($t -match '\bdocks?\b|\bport\b|shipping container|\bcontainers?\b|cargo|freight yard') { return 'docks' }
+    if ($t -match 'sandy shores') { return 'sandy' }
+    if ($t -match '\bpaleto') { return 'paleto' }
+    if ($t -match '\bforest|\blogging|\bwoods\b|\bsawmill|\blumber|\bloggers?\b') { return 'forest' }
+    if ($t -match '\bpark\b' -and $t -notmatch 'car park|parked|parking|park and ride') { return 'park' }
+    if ($entry['for'] -eq 'ranger') { return 'forest' }
+
+    return $null
+}
+
+function Props-For($entry, $place) {
+    if ($entry['props']) { if ($entry['props'] -eq 'none') { return $null }; return $entry['props'] }
+
+    $t = Words $entry
+
+    if ($place -eq 'prison') {
+        if ($t -match 'visit') { return 'visits' }
+        if ($t -match '\byard\b') { return 'yard' }
+        if ($t -match 'kitchen|workshop') { return 'workshop' }
+        return 'perimeter'
+    }
+    if ($t -match '\bcamp|\btents?\b|rough sleep') { return 'camp' }
+    if ($place -eq 'beach') { return 'beach' }
+    if ($place -eq 'farm') { return 'farm' }
+    if ($place -eq 'construction') { return 'construction' }
+    if ($place -eq 'docks') { return 'boxes' }
+    if ($t -match 'collision|\bcrash|\brta\b|hit and run|hit-and-run|overturned|wreck|pile-up|shunt') { return 'crash' }
+    if ($t -match 'raid|siege|standoff|stand-off|hostage|barricade|refusing to comply') { return 'perimeter' }
+    if ($t -match '\bdrug|dealing|\bdeal\b|stash|narcotic|\bmeth|cocaine|cannabis|\bweed\b') { return 'drugs' }
+    if ($t -match 'party|barbecue|\bbbq\b|loud music|noise complaint|\brave\b') { return 'party' }
+    if ($t -match 'dumping|fly-tip|fly tip|rubbish|litter') { return 'dumping' }
+    if ($t -match 'market|\bstalls?\b') { return 'market' }
+    if ($t -match 'picnic') { return 'picnic' }
+    if ($t -match 'cash box|cash-in-transit|cash in transit|armoured|\batm\b|cash machine') { return 'money' }
+    if ($t -match 'workshop|mechanic|\bgarage\b') { return 'workshop' }
+    if ($t -match 'roadworks|road works|broken down|breakdown|debris|insecure load|shed its load') { return 'cones' }
+
+    return $null
+}
+
+# How many suspects the text describes, or 0 if it does not say. Only nouns that are the people the
+# player is sent to count: "two officers on scene" and "two vehicles" are not two suspects.
+$numbers = @{ 'two' = 2; 'three' = 3; 'four' = 4; 'five' = 4; 'six' = 4; 'several' = 3; 'half a dozen' = 4; 'a group of' = 3; 'a pair of' = 2 }
+
+function Count-For($entry) {
+    $t = Words $entry
+    $people = 'of them|suspects?|men|youths|people|visitors|inmates|males|teenagers|teens|riders|occupants|individuals|persons|lads|guests|dealers|hunters|walkers|campers|protesters|climbers|squatters|thieves|attackers|families|groups'
+    $most = 0
+    foreach ($m in [regex]::Matches($t, "\b(two|three|four|five|six|several|half a dozen|a group of|a pair of)\s+(?:[a-z]+\s+)?($people)\b")) {
+        $n = $numbers[$m.Groups[1].Value]
+        if ($m.Groups[2].Value -match 'groups|families') { $n = [Math]::Max($n, 3) }
+        if ($n -gt $most) { $most = $n }
+    }
+    return [Math]::Min(4, $most)
+}
+
+# Who else is in the scene: not suspects, and not more than three of them.
+function Extras-For($entry, $place) {
+    $t = Words $entry
+    $extras = @()
+
+    $staffModels = switch ($place) {
+        'prison'       { 's_m_m_prisguard_01' }
+        'bank'         { 'a_f_y_business_01,a_m_y_business_02,a_f_m_business_02,a_m_m_business_01' }
+        'store'        { 'mp_m_shopkeep_01,a_m_y_business_01,a_f_y_business_02' }
+        'bar'          { 's_m_m_bouncer_01' }
+        'hospital'     { 's_m_m_doctor_01,s_f_y_scrubs_01' }
+        'construction' { 's_m_y_construct_01,s_m_y_construct_02' }
+        'docks'        { 's_m_m_dockwork_01,s_m_y_dockwork_01' }
+        'farm'         { 'a_m_m_farmer_01' }
+        'beach'        { 's_m_y_baywatch_01,s_f_y_baywatch_01' }
+        default        { 's_m_m_security_01,a_m_y_business_01,a_f_y_business_02' }
+    }
+
+    if ($place -eq 'prison') { $extras += @{ models = $staffModels; count = 2; cower = $false } }
+    elseif ($t -match '\bstaff\b|employee|cashier|\bclerk|shopkeeper|manager|\bteller|attendant|security guard|bouncer|doorman|lifeguard|foreman|site manager|landlord|\bowner\b|farmer') {
+        $extras += @{ models = $staffModels; count = $(if ($t -match '\bstaff\b' -and $place -eq 'bank') { 2 } else { 1 }); cower = ($t -match 'robber|armed|gun|knife|weapon|hold-?up') }
+    }
+
+    $city = 'a_m_y_business_01,a_m_y_downtown_01,a_m_y_genstreet_01,a_m_m_bevhills_02,a_f_y_hipster_01,a_f_m_business_02,a_f_y_tourist_01,a_f_y_eastsa_01'
+    if ($t -match '\bvictim|injured|bleeding|bitten|wounded|on the ground|\bshaken\b|robbed|\bunhurt\b|was assaulted|attacked') {
+        $extras += @{ models = $city; count = 1; cower = ($t -match 'armed|gun|knife|weapon|attack|assault') }
+    }
+    if ($extras.Count -lt 3 -and $t -match '\bcaller\b|neighbou?r|witness|\bresident|homeowner|passer|member of the public|\bparent|teacher|\bfamily\b') {
+        $extras += @{ models = $city; count = 1; cower = $false }
+    }
+
+    return @($extras | Select-Object -First 3)
+}
+
 # ============================================================ Los Santos Police
 Add @{ id='lspd-armed-robbery-off-licence'; for='lspd'; name='Armed Robbery - Off Licence'; msg='Armed robbery in progress at an off licence.'; adv='One suspect with a handgun, staff inside, no shots fired yet.'; line='One suspect, handgun, in the off licence now. Get there before they leave.'; brief='Armed robbery in progress. They are still inside and the staff are still in there with them.'; app='Hostile'; armed=$true }
 Add @{ id='lspd-armed-robbery-pharmacy'; for='lspd'; name='Armed Robbery - Pharmacy'; msg='Armed robbery reported at a pharmacy.'; adv='Suspect left on foot towards the estate, dark hooded top.'; line='Suspect, dark hooded top, gone on foot towards the estate.'; app='Flee'; armed=$true; res='AnyArrest' }
@@ -876,9 +1004,21 @@ foreach ($r in $library) {
     if ($r['adv']) { $lines.Add("    <Advisory>$(Xml $r['adv'])</Advisory>") }
     $lines.Add('    <Distance Min="150" Max="320" Radius="40" />')
 
+    $place = Place-For $r
+    $props = Props-For $r $place
+    if ($place -or $props) {
+        $scene = '    <Scene'
+        if ($place) { $scene += " Place=`"$place`"" }
+        if ($props) { $scene += " Props=`"$props`"" }
+        $lines.Add($scene + ' />')
+    }
+
     $actors = $r['actors']
     if (-not $actors) {
         $count = if ($r['count']) { $r['count'] } else { 1 }
+        # The text's own number, when it says more than the entry does - and not for a patient, whose
+        # person is the family at the door, or a vehicle, which only has so many seats.
+        if (-not $r['patient'] -and -not $r['vehicle']) { $count = [Math]::Max([int]$count, (Count-For $r)) }
         # A recipe with a patient has nobody to arrest, so the person standing there is the caller or
         # the family rather than a suspect. That is also what decides who speaks when the player talks:
         # the first suspect if there is one, otherwise the patient - see Custom\RecipeCallout.cs.
@@ -898,6 +1038,19 @@ foreach ($r in $library) {
             vehicles = Vehicles-For $r
             count   = $count
         })
+
+        # Who else is there. Only for the recipes whose people are inferred: one that lists its own
+        # actors has already said who is in it.
+        foreach ($extra in (Extras-For $r $place)) {
+            $pool = @($extra['models'] -split ',')
+            $actors += @{
+                model  = $pool[0]
+                models = $(if ($pool.Count -gt 1) { $extra['models'] } else { $null })
+                role   = 'Bystander'
+                cower  = $extra['cower']
+                count  = $extra['count']
+            }
+        }
     }
 
     $lines.Add('    <Actors>')

@@ -9,8 +9,10 @@
     <Message>Visitor refusing a search at the gate.</Message>
     <Advisory>One visitor, staff holding the queue.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
+    <Scene Place="prison" Props="visits" />
     <Actors>
         <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+        <Ped Model="s_m_m_prisguard_01" Count="2" Role="Bystander" />
     </Actors>
     <Script>
         <Line>I have been searched every visit for four years.</Line>

@@ -136,19 +136,46 @@ internal static class Program
 
         // ------------------------------------------------------------- who the scene's people are
         var actors = recipes.Cast<CalloutRecipe>().SelectMany(r => r.Actors).ToArray();
-        var pooled = actors.Count(a => a.Models.Length > 1);
+
+        // The people the player is sent to are drawn from pools of men and women. The others in a scene -
+        // a prison guard, a bouncer, a lifeguard - are dressed for the job, and a uniform is one model.
+        var suspects = actors.Where(a => a.IsSuspect).ToArray();
+        var others = actors.Where(a => !a.IsSuspect).ToArray();
+        var pooled = suspects.Count(a => a.Models.Length > 1);
         var models = actors.SelectMany(a => a.Models.Length > 0 ? a.Models : new[] { a.Model })
                            .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
         Check("the people in a scene are drawn from a pool, and the pool survived parsing and loading",
-              pooled >= actors.Length - 1);
+              pooled >= suspects.Length - 1);
         Check("every pool names more than one person and none of them twice",
               actors.All(a => a.Models.Distinct(StringComparer.OrdinalIgnoreCase).Count() == a.Models.Length));
+        Check("everybody else in a scene has a model to be", others.All(a => !string.IsNullOrWhiteSpace(a.Model)));
 
         var women = models.Count(m => m.StartsWith("a_f_", StringComparison.OrdinalIgnoreCase));
-        var bothSexes = actors.Count(a => a.Models.Any(m => m.StartsWith("a_f_", StringComparison.OrdinalIgnoreCase))
-                                       && a.Models.Any(m => m.StartsWith("a_m_", StringComparison.OrdinalIgnoreCase)));
-        Check("the people in a scene can be either sex, and the pool says so", bothSexes >= actors.Length - 5);
+        var bothSexes = suspects.Count(a => a.Models.Any(m => m.StartsWith("a_f_", StringComparison.OrdinalIgnoreCase))
+                                         && a.Models.Any(m => m.StartsWith("a_m_", StringComparison.OrdinalIgnoreCase)));
+        Check("the people in a scene can be either sex, and the pool says so", bothSexes >= suspects.Length - 5);
         Check("the pack can send women", women >= 20);
+
+        // ------------------------------------------------------------- where it happens, and what is there
+        var all = recipes.Cast<CalloutRecipe>().ToArray();
+        var placed = all.Where(r => r.Place != null).ToArray();
+        var dressed = all.Where(r => r.PropSet != null || r.Props.Count > 0).ToArray();
+        Check("every place a recipe names has somewhere real to be",
+              placed.All(r => SceneSets.Places.ContainsKey(r.Place) && SceneSets.Places[r.Place].Length > 0));
+        Check("every place the parser accepts is in the table, and the other way round",
+              CalloutRecipe.Places.All(SceneSets.Places.ContainsKey) && SceneSets.Places.Keys.All(k => CalloutRecipe.Places.Contains(k)));
+        Check("every set of scenery a recipe names exists and has something in it",
+              dressed.Where(r => r.PropSet != null).All(r => SceneSets.Sets.ContainsKey(r.PropSet) && SceneSets.Sets[r.PropSet].Length > 0));
+        Check("every set the parser accepts is defined, and the other way round",
+              CalloutRecipe.PropSets.All(SceneSets.Sets.ContainsKey) && SceneSets.Sets.Keys.All(k => CalloutRecipe.PropSets.Contains(k)));
+        Check("every piece of scenery is a model name",
+              SceneSets.Sets.Values.SelectMany(s => s).All(p => System.Text.RegularExpressions.Regex.IsMatch(p.Model ?? "", "^[a-z0-9_]+$")));
+        Check("a good share of the scenes are somewhere, or have something in them", placed.Length + dressed.Length >= 150);
+        Check("the prison calls are at the prison", all.Count(r => r.Id.StartsWith("saspa_")) >= 20 && all.Where(r => r.Id.StartsWith("saspa_")).All(r => r.Place == "prison"));
+        var visits = all.FirstOrDefault(r => r.Id == "saspa_visitor_argument");
+        Check("Argument at Visits has two visitors, guards, and the visits tables",
+              visits != null && visits.Actors.Where(a => a.IsSuspect).Sum(a => a.Count) == 2 &&
+              visits.Actors.Any(a => !a.IsSuspect && a.Model.Contains("prisguard")) && visits.PropSet == "visits");
 
         // Vehicles, the same terms as the people: scenery is pooled, the vehicle that *is* the callout is
         // named, and either way there is something to spawn.
@@ -166,6 +193,9 @@ internal static class Program
         Console.WriteLine("   actors the scenes spawn:       " + actors.Length + "  (" + pooled + " draw from a pool)");
         Console.WriteLine("   distinct ped models:           " + models.Length + "  (" + women + " of them women)");
         Console.WriteLine("   actors arriving by vehicle:    " + vehicleActors.Length + "  (" + pooledVehicles + " pooled, " + drawnVehicles.Length + " models)");
+        Console.WriteLine("   scenes at a real place:        " + placed.Length + "  (" + string.Join(", ", placed.GroupBy(r => r.Place).OrderByDescending(g => g.Count()).Select(g => g.Key + " " + g.Count()).ToArray()) + ")");
+        Console.WriteLine("   scenes with scenery:           " + dressed.Length);
+        Console.WriteLine("   scenes with others in them:    " + all.Count(r => r.Actors.Any(a => !a.IsSuspect)) + "  (staff, guards, victims, callers)");
 
         var sample = recipes.Cast<CalloutRecipe>().FirstOrDefault(r => r.Id == "lspd-armed-robbery-off-licence");
         if (sample != null)

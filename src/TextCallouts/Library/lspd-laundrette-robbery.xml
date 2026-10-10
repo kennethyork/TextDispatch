@@ -9,8 +9,11 @@
     <Message>Robbery at a laundrette, staff shaken.</Message>
     <Advisory>Suspect gone on foot, till taken.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
+    <Scene Place="store" />
     <Actors>
         <Ped Model="a_m_y_business_01" Models="a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_methhead_01,a_m_y_eastsa_01,a_m_y_eastsa_02,a_m_m_eastsa_01,a_m_y_soucent_01,a_m_y_soucent_02,a_m_m_soucent_01,a_m_y_stlat_01,a_m_y_stwhi_01,a_m_m_genfat_01,a_m_m_genfat_02,a_f_y_eastsa_01,a_f_y_eastsa_02,a_f_m_eastsa_01,a_f_y_soucent_01,a_f_y_soucent_02,a_f_m_soucent_01,a_f_y_hipster_02" Count="1" Role="Suspect" />
+        <Ped Model="mp_m_shopkeep_01" Models="mp_m_shopkeep_01,a_m_y_business_01,a_f_y_business_02" Count="1" Role="Bystander" Cower="true" />
+        <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_downtown_01,a_m_y_genstreet_01,a_m_m_bevhills_02,a_f_y_hipster_01,a_f_m_business_02,a_f_y_tourist_01,a_f_y_eastsa_01" Count="1" Role="Bystander" />
     </Actors>
     <OnApproach At="25" Flee="true" />
     <Script>

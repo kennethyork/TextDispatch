@@ -9,8 +9,10 @@
     <Message>Shop reporting a customer passing counterfeit notes.</Message>
     <Advisory>Customer still in the shop, staff holding the note.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
+    <Scene Place="store" />
     <Actors>
         <Ped Model="a_m_y_business_01" Models="a_m_y_business_01,a_m_y_business_02,a_m_m_business_01,a_m_y_downtown_01,a_m_y_downtown_02,a_m_y_genstreet_01,a_m_y_genstreet_02,a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_vinewood_01,a_m_y_bevhills_01,a_m_m_mlcrisis_01,a_f_y_business_01,a_f_y_business_02,a_f_m_business_02,a_f_y_hipster_01,a_f_y_vinewood_01,a_f_y_bevhills_01,a_f_m_bevhills_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+        <Ped Model="mp_m_shopkeep_01" Models="mp_m_shopkeep_01,a_m_y_business_01,a_f_y_business_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>That is the note they gave me in the change. I am not the one making them.</Line>

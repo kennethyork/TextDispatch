@@ -128,35 +128,112 @@ namespace TextCallouts.Custom
             }
 
             var player = Game.LocalPlayer.Character;
+
+            // A recipe that names a place goes to a real one - the prison, the nearest bank - and only
+            // the ones that do not name anything go to a street near the player.
+            var place = recipe.Place == null ? (Vector3?)null : PlaceNear(recipe.Place, player.Position);
+            if (recipe.Place != null && place == null)
+                Log.Line("recipe " + recipe.Id + " names the place '" + recipe.Place + "' and none is known - a street is used instead");
+
             Offer(recipe.Name, recipe.Message, recipe.Advisory,
-                  StreetNear(player.Position, recipe.DistanceMin, recipe.DistanceMax),
+                  place ?? StreetNear(player.Position, recipe.DistanceMin, recipe.DistanceMax),
                   recipe.BlipRadius);
             return base.OnBeforeCalloutDisplayed();
         }
 
+        /// <summary>
+        /// The nearest place of a kind that is far enough away to be a call - LSPDFR will not offer one
+        /// closer than 150m - or simply the nearest when every one of them is that close.
+        /// </summary>
+        private static Vector3? PlaceNear(string kind, Vector3 from)
+        {
+            float[][] points;
+            if (!SceneSets.Places.TryGetValue(kind, out points) || points.Length == 0) return null;
+
+            Vector3? best = null, closest = null;
+            float bestDistance = float.MaxValue, closestDistance = float.MaxValue;
+            foreach (var p in points)
+            {
+                var point = new Vector3(p[0], p[1], p[2]);
+                var distance = point.DistanceTo(from);
+                if (distance < closestDistance) { closestDistance = distance; closest = point; }
+                if (distance >= 200f && distance < bestDistance) { bestDistance = distance; best = point; }
+            }
+
+            return best ?? closest;
+        }
+
+        /// <summary>The middle of the scene as built - on the ground - or where it was offered, before then.</summary>
+        private Vector3 Scene { get { return _centreSet ? _centre : CalloutPosition; } }
+
+        private Vector3 _centre;
+        private bool _centreSet;
+        private float _heading;
+
         protected override void Build()
         {
             var recipe = Recipe;
-            var position = CalloutPosition;
-            var heading = Rng.Next(360);
 
+            // The middle of the scene, on the ground that is there now the area has loaded.
+            _centre = Ground(CalloutPosition);
+            _centreSet = true;
+            _heading = Rng.Next(360);
+            var position = _centre;
+            var heading = _heading;
+
+            // The scenery first, so the people stand among it rather than inside it.
+            var props = 0;
+            var scenery = new List<PropRecipe>();
+            PropRecipe[] set;
+            if (recipe.PropSet != null && SceneSets.Sets.TryGetValue(recipe.PropSet, out set)) scenery.AddRange(set);
+            scenery.AddRange(recipe.Props);
+            foreach (var prop in scenery)
+            {
+                var at = Ground(Offset(position, heading, prop.X, prop.Y));
+                if (prop.Z != 0f) at = new Vector3(at.X, at.Y, at.Z + prop.Z);
+                var placed = prop.Vehicle
+                    ? (Entity)SpawnSceneVehicle(prop.Model, at, heading + prop.Heading, prop.Damaged)
+                    : SpawnProp(prop.Model, at, heading + prop.Heading);
+                if (placed != null) props++;
+            }
+
+            var suspectIndex = 0;
+            var otherIndex = 0;
             foreach (var actor in recipe.Actors)
             {
                 Vehicle vehicle = null;
                 var arrivingIn = PickVehicle(actor);
                 if (arrivingIn != null)
                 {
-                    vehicle = SpawnVehicle(arrivingIn, position, heading);
+                    // A car belongs on a road, even when the scene is on the sand.
+                    var road = position;
+                    try { road = World.GetNextPositionOnStreet(position); } catch { }
+                    if (road.DistanceTo(position) > 60f) road = position;
+                    vehicle = SpawnVehicle(arrivingIn, road, heading);
                     if (actor.Vehicles.Length > 1) _vehicles.Add(arrivingIn);
                 }
 
                 for (var i = 0; i < actor.Count; i++)
                 {
-                    // Spread a group out a little, so three suspects are not one suspect standing in
-                    // a puddle of its own geometry.
-                    var offset = i == 0 ? new Vector3(0f, 0f, 0f) : new Vector3(1.6f * i, 1.1f, 0f);
+                    // Suspects close in, everybody else around them: a ring each, so a group is a group
+                    // and the staff stand off to one side rather than in the middle of it.
+                    Vector3 at;
+                    if (actor.IsSuspect)
+                    {
+                        var angle = suspectIndex * 1.9;
+                        var radius = suspectIndex == 0 ? 0.5f : 1.8f + 0.4f * suspectIndex;
+                        at = Ground(Offset(position, heading, (float)Math.Cos(angle) * radius, (float)Math.Sin(angle) * radius));
+                        suspectIndex++;
+                    }
+                    else
+                    {
+                        var angle = 2.4 + otherIndex * 1.3;
+                        at = Ground(Offset(position, heading, (float)Math.Cos(angle) * 5f, (float)Math.Sin(angle) * 5f));
+                        otherIndex++;
+                    }
+
                     var model = PickModel(actor);
-                    var ped = SpawnPed(model, position + offset, heading);
+                    var ped = SpawnPed(model, at, heading);
                     if (actor.Models.Length > 1) _people.Add(model.Name);
 
                     if (vehicle != null) PutInVehicle(ped, vehicle, i == 0 ? -1 : i);
@@ -174,8 +251,11 @@ namespace TextCallouts.Custom
                     }
 
                     if (actor.Cower) Try(ped, p => p.Tasks.Cower(-1), "Cower");
+                    else if (vehicle == null && !actor.Hostile) Idle(ped, actor, position);
                 }
             }
+
+            if (props > 0) Log.Line("scenery for " + recipe.Id + ": " + props + " of " + scenery.Count + " placed (" + (recipe.PropSet ?? "own props") + ")");
 
             // The patient, for the medical recipes: on the ground and alive, with nothing to arrest.
             //
@@ -185,7 +265,7 @@ namespace TextCallouts.Custom
             // the call except the timeout. A model that is wrong for an install costs a face, not a call.
             if (recipe.Patient != null)
             {
-                _patient = SpawnPed(SafeModel(recipe.Patient.Model, "a_m_m_business_01"), position, heading);
+                _patient = SpawnPed(SafeModel(recipe.Patient.Model, "a_m_m_business_01"), Ground(Offset(position, heading, 0f, 1.5f)), heading);
                 Hurt(_patient, 70);
                 try { _patient.BlockPermanentEvents = true; } catch { }
                 try { Rage.Native.NativeFunction.Natives.SetPedToRagdoll(_patient, -1, -1, 0, false, false, false); }
@@ -221,7 +301,7 @@ namespace TextCallouts.Custom
             if (recipe == null) { Close("the recipe went missing"); return false; }
 
             if (!_approached &&
-                Game.LocalPlayer.Character.Position.DistanceTo(CalloutPosition) < recipe.ApproachDistance)
+                Game.LocalPlayer.Character.Position.DistanceTo(Scene) < recipe.ApproachDistance)
             {
                 _approached = true;
                 LogArrival();
@@ -231,12 +311,12 @@ namespace TextCallouts.Custom
                 if (!_supportCalled)
                 {
                     _supportCalled = true;
-                    if (recipe.RequestAmbulance) RequestAmbulance(CalloutPosition);
+                    if (recipe.RequestAmbulance) RequestAmbulance(Scene);
                     if (recipe.RequestBackup)
                     {
                         try
                         {
-                            Functions.RequestBackup(CalloutPosition, EBackupResponseType.Code3, EBackupUnitType.LocalUnit);
+                            Functions.RequestBackup(Scene, EBackupResponseType.Code3, EBackupUnitType.LocalUnit);
                             Log.Line("backup requested for " + FriendlyName);
                         }
                         catch (Exception ex) { Log.Error("requesting backup", ex); }
@@ -256,7 +336,7 @@ namespace TextCallouts.Custom
                 if (recipe.ApproachCower)
                     foreach (var ped in _bystanders) Try(ped, p => p.Tasks.Cower(-1), "Cower");
 
-                if (recipe.ApproachFire) LightFire(CalloutPosition);
+                if (recipe.ApproachFire) LightFire(Scene);
             }
 
             // What happens after the player has been there a while: the stages. This is what turns a scene
@@ -293,6 +373,38 @@ namespace TextCallouts.Custom
         }
 
         /// <summary>
+        /// Something to be doing while they wait, so a scene is people in it rather than mannequins:
+        /// guards stand guard, staff wait with their arms folded, everybody else is on their phone or
+        /// facing what is going on. A scenario is replaced by whatever the scene does next - fleeing,
+        /// hands up, a fight - so it never gets in the way.
+        /// </summary>
+        private static void Idle(Ped ped, ActorRecipe actor, Vector3 centre)
+        {
+            if (ped == null || !ped.Exists()) return;
+
+            var model = (actor.Model ?? "").ToLowerInvariant();
+            try { if (ped.Model.Name != null) model = ped.Model.Name.ToLowerInvariant(); } catch { }
+
+            string scenario;
+            if (model.Contains("prisguard") || model.Contains("security") || model.Contains("bouncer") || model.Contains("cop"))
+                scenario = "WORLD_HUMAN_GUARD_STAND";
+            else if (!actor.IsSuspect)
+                scenario = model.Contains("shop") || model.Contains("business") ? "WORLD_HUMAN_STAND_IMPATIENT" : "WORLD_HUMAN_STAND_MOBILE";
+            else
+                scenario = "WORLD_HUMAN_STAND_IMPATIENT";
+
+            try
+            {
+                var toCentre = centre - ped.Position;
+                if (toCentre.Length() > 0.5f) ped.Heading = (float)(Math.Atan2(-toCentre.X, toCentre.Y) * 180.0 / Math.PI);
+            }
+            catch { }
+
+            try { Rage.Native.NativeFunction.Natives.TASK_START_SCENARIO_IN_PLACE(ped, scenario, 0, true); }
+            catch (Exception ex) { Log.Error("starting the scenario " + scenario, ex); }
+        }
+
+        /// <summary>
         /// Who is actually there when the player arrives. A scene built and then lost - fallen through
         /// the map, wandered off - looks from inside the game like a callout with no scene at all, and
         /// this line is what tells the two apart.
@@ -310,8 +422,8 @@ namespace TextCallouts.Custom
                 foreach (var ped in people)
                 {
                     if (ped == null || !ped.Exists()) { details.Add("gone"); continue; }
-                    var metres = ped.Position.DistanceTo(CalloutPosition);
-                    var dropped = ped.Position.Z < CalloutPosition.Z - 5f;
+                    var metres = ped.Position.DistanceTo(Scene);
+                    var dropped = ped.Position.Z < Scene.Z - 5f;
                     if (ped.IsAlive && metres < 60f && !dropped) present++;
                     details.Add((ped.IsAlive ? "" : "dead ") + (int)metres + "m" + (dropped ? " (below the ground)" : ""));
                 }
@@ -422,7 +534,7 @@ namespace TextCallouts.Custom
             var player = Game.LocalPlayer.Character;
             if (player == null) return true;
 
-            var distance = player.Position.DistanceTo(CalloutPosition);
+            var distance = player.Position.DistanceTo(Scene);
 
             if (!_beenThere)
             {
@@ -523,18 +635,18 @@ namespace TextCallouts.Custom
                 case "backup":
                     try
                     {
-                        Functions.RequestBackup(CalloutPosition, EBackupResponseType.Code3, EBackupUnitType.LocalUnit);
+                        Functions.RequestBackup(Scene, EBackupResponseType.Code3, EBackupUnitType.LocalUnit);
                         Log.Line("backup requested by a stage in " + recipe.Id);
                     }
                     catch (Exception ex) { Log.Error("a stage requesting backup", ex); }
                     break;
 
                 case "ambulance":
-                    RequestAmbulance(CalloutPosition);
+                    RequestAmbulance(Scene);
                     break;
 
                 case "fire":
-                    LightFire(CalloutPosition);
+                    LightFire(Scene);
                     break;
 
                 case "end":
@@ -616,7 +728,7 @@ namespace TextCallouts.Custom
 
                     try
                     {
-                        Functions.RequestBackup(CalloutPosition, EBackupResponseType.Code3, EBackupUnitType.Ambulance);
+                        Functions.RequestBackup(Scene, EBackupResponseType.Code3, EBackupUnitType.Ambulance);
                         Log.Line("ambulance requested for " + FriendlyName);
                     }
                     catch (Exception ex) { Log.Error("requesting an ambulance", ex); }

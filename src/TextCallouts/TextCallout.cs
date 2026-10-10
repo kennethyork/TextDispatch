@@ -202,6 +202,95 @@ namespace TextCallouts
             return vehicle;
         }
 
+        // ------------------------------------------------------------------ the ground, and what stands on it
+
+        /// <summary>
+        /// The nearest place a person can stand to a point: on the pavement rather than in a hedge, on the
+        /// sand rather than in the sea, at the height the ground really is. Only meaningful once the area
+        /// has loaded, which is why scenes are built as the player arrives. Falls back to the point.
+        /// </summary>
+        protected static Vector3 Ground(Vector3 point)
+        {
+            var result = point;
+
+            try
+            {
+                Vector3 safe;
+                if (Rage.Native.NativeFunction.Natives.GET_SAFE_COORD_FOR_PED<bool>(point.X, point.Y, point.Z + 1f, true, out safe, 16) &&
+                    safe.DistanceTo(point) < 30f)
+                    result = safe;
+            }
+            catch (Exception ex) { LogOnce("GET_SAFE_COORD_FOR_PED", ex); }
+
+            try
+            {
+                var z = World.GetGroundZ(new Vector3(result.X, result.Y, result.Z + 15f), false, true);
+                if (z.HasValue && Math.Abs(z.Value - result.Z) < 25f) result = new Vector3(result.X, result.Y, z.Value);
+            }
+            catch (Exception ex) { LogOnce("World.GetGroundZ", ex); }
+
+            return result;
+        }
+
+        /// <summary>A point offset from the middle of a scene by X right and Y forward, turned to the scene's heading.</summary>
+        protected static Vector3 Offset(Vector3 centre, float heading, float x, float y)
+        {
+            var radians = heading * Math.PI / 180.0;
+            var cos = (float)Math.Cos(radians);
+            var sin = (float)Math.Sin(radians);
+            return new Vector3(centre.X + x * cos - y * sin, centre.Y + x * sin + y * cos, centre.Z);
+        }
+
+        /// <summary>A piece of scenery. Null, and one line in the log, if the game has no such model.</summary>
+        protected Rage.Object SpawnProp(string model, Vector3 position, float heading)
+        {
+            try
+            {
+                var wanted = new Model(model);
+                if (!wanted.IsValid) { Log.Line("the prop " + model + " is not in this game - left out of the scene"); return null; }
+
+                var prop = new Rage.Object(wanted, position, heading);
+                if (!prop.Exists()) return null;
+                prop.IsPersistent = true;
+                _spawned.Add(prop);
+                try { Rage.Native.NativeFunction.Natives.PLACE_OBJECT_ON_GROUND_PROPERLY(prop); } catch { }
+                return prop;
+            }
+            catch (Exception ex) { Log.Error("placing the prop " + model, ex); return null; }
+        }
+
+        /// <summary>A parked vehicle that is part of the scene - dented, hazards on, if it was in a collision.</summary>
+        protected Vehicle SpawnSceneVehicle(string model, Vector3 position, float heading, bool damaged)
+        {
+            try
+            {
+                var wanted = new Model(model);
+                if (!wanted.IsValid) { Log.Line("the vehicle " + model + " is not in this game - left out of the scene"); return null; }
+
+                var vehicle = new Vehicle(wanted, position, heading);
+                if (!vehicle.Exists()) return null;
+                vehicle.IsPersistent = true;
+                _spawned.Add(vehicle);
+                try { Rage.Native.NativeFunction.Natives.SET_VEHICLE_ON_GROUND_PROPERLY(vehicle, 5f); } catch { }
+
+                if (damaged)
+                {
+                    try { vehicle.Deform(new Vector3(0f, 2f, 0.2f), 1.6f, 140f); } catch { }
+                    try { vehicle.EngineHealth = 250f; } catch { }
+                    try { vehicle.IndicatorLightsStatus = VehicleIndicatorLightsStatus.Both; } catch { }
+                }
+                return vehicle;
+            }
+            catch (Exception ex) { Log.Error("placing the vehicle " + model, ex); return null; }
+        }
+
+        private static readonly HashSet<string> Logged = new HashSet<string>();
+
+        private static void LogOnce(string what, Exception ex)
+        {
+            if (Logged.Add(what)) Log.Error(what + " (said once; the scene falls back to the plain point)", ex);
+        }
+
         protected static void PutInVehicle(Ped ped, Vehicle vehicle, int seat)
         {
             if (ped == null || vehicle == null || !ped.Exists() || !vehicle.Exists()) return;

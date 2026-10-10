@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\TextCallouts\Custom\CustomCallouts.cs" />
     <Compile Include="..\..\src\TextCallouts\Custom\CalloutRecipe.cs" />
+    <Compile Include="..\..\src\TextCallouts\Custom\SceneSets.cs" />
   </ItemGroup>
 
 </Project>

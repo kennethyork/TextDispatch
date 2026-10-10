@@ -9,8 +9,10 @@
     <Message>Camp on the river bank on private land.</Message>
     <Advisory>Three tents, fire lit, landowner reporting.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
+    <Scene Props="camp" />
     <Actors>
         <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
+        <Ped Model="s_m_m_security_01" Models="s_m_m_security_01,a_m_y_business_01,a_f_y_business_02" Count="1" Role="Bystander" />
     </Actors>
     <Script>
         <Line>We have been here three weeks and nobody has said anything.</Line>

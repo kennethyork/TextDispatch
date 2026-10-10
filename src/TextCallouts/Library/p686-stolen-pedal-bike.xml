@@ -9,6 +9,7 @@
     <Message>Bicycle stolen from outside a shop minutes ago.</Message>
     <Advisory>Suspect rode off towards the park, description given.</Advisory>
     <Distance Min="150" Max="320" Radius="40" />
+    <Scene Place="store" />
     <Actors>
         <Ped Model="a_m_y_business_01" Models="a_m_y_hipster_01,a_m_y_hipster_02,a_m_y_beach_01,a_m_y_beach_02,a_m_y_runner_01,a_m_y_runner_02,a_m_m_farmer_01,a_m_y_sunbathe_01,a_f_y_hipster_01,a_f_y_hipster_02,a_f_y_beach_01,a_f_y_fitness_01,a_f_m_beach_01,a_f_y_tourist_01" Count="1" Role="Suspect" />
     </Actors>
