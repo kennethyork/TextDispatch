@@ -1030,49 +1030,57 @@ namespace TextDispatch.Commands
         }
 
         /// <summary>
-        /// Bring a car, in a department's livery: "/veh police3 sahp". With no department named it
-        /// wears the livery of the agency you are on duty as, when the car has one.
+        /// Bring a car, in a department's livery: "/veh police3 sahp". A car holds only so many liveries,
+        /// so the pack's livery builder makes copies of each car - lvinterceptor1, lvinterceptor2 ... - and
+        /// this brings whichever one carries the livery asked for. With no department named it is the
+        /// livery of the agency you are on duty as; "/veh police3 plain" is the car as it came.
         /// </summary>
         private void SpawnVehicle(string argument)
         {
             if (string.IsNullOrWhiteSpace(argument))
             {
-                _chat.Error("Usage: /veh <model> [department]   e.g. /veh police2, /veh police3 sahp, /veh riot");
+                _chat.Error("Usage: /veh <model> [department|plain]   e.g. /veh police2, /veh police3 sahp, /veh riot");
                 return;
             }
 
             var parts = argument.Trim().Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
             var model = parts[0];
             var wanted = parts.Length > 1 ? parts[1].Trim() : null;
+            var plain = wanted != null && (wanted.Equals("plain", StringComparison.OrdinalIgnoreCase) ||
+                                           wanted.Equals("pack", StringComparison.OrdinalIgnoreCase));
+
+            var map = LiveryMap.Current();
+            string department = null, carrier = model;
+            List<string> candidates = null;
+            bool asked = !string.IsNullOrEmpty(wanted) && !plain;
+            if (asked)
+            {
+                department = map.ResolveAcross(model, wanted, out carrier, out candidates);
+                if (department == null) carrier = model;
+            }
+            else if (!plain && map.IsCar(model))
+            {
+                // On duty as LSSD, a car you bring is an LSSD car, from whichever copy of it carries that.
+                var own = map.ForAgency(_api.CurrentAgency());
+                var car = own == null ? null : map.Carrier(model, own);
+                if (car != null) { department = own; carrier = car; }
+            }
 
             Vehicle spawned;
             string detail;
-            if (!VehicleActions.Spawn(model, out spawned, out detail))
+            if (!VehicleActions.Spawn(carrier, out spawned, out detail))
             {
                 _chat.Error(detail ?? "Could not bring that vehicle.");
                 return;
             }
 
-            var map = LiveryMap.Current();
-            string department = null;
-            if (!string.IsNullOrEmpty(wanted))
-            {
-                List<string> candidates;
-                department = map.Resolve(model, wanted, out candidates);
-                if (department == null) NoSuchLivery(map, model, wanted, candidates);
-            }
-            else
-            {
-                // On duty as LSSD, a car you bring is an LSSD car - if it has that livery at all. Nobody
-                // asked for it, so a livery not imported into the car yet is passed over without a word.
-                var own = map.ForAgency(_api.CurrentAgency());
-                var number = map.NumberFor(model, own);
-                if (number > 0 && number <= VehicleActions.LiveryCount(spawned)) department = own;
-            }
+            if (asked && department == null) NoSuchLivery(map, model, wanted, candidates);
 
-            var painted = department != null && Paint(spawned, map, model, department);
-            _chat.Notice("Brought you a " + model + (painted ? ", in " + map.NameOf(department) + " livery." : "."));
-            Log.Line("vehicle: " + detail);
+            // Nobody named the duty livery, so a texture missing from the car is passed over without a word.
+            var painted = department != null && Paint(spawned, map, carrier, department, !asked);
+            var which = carrier.Equals(model, StringComparison.OrdinalIgnoreCase) ? "" : " (" + carrier + ")";
+            _chat.Notice("Brought you a " + model + (painted ? " in " + map.NameOf(department) + " livery" + which : which) + ".");
+            Log.Line("vehicle: " + detail + (carrier == model ? "" : " for " + model));
         }
 
         /// <summary>
@@ -1115,8 +1123,21 @@ namespace TextDispatch.Commands
             {
                 List<string> candidates;
                 var department = map.Resolve(model, text, out candidates);
-                if (department == null) { NoSuchLivery(map, model, text, candidates); return; }
-                if (Paint(vehicle, map, model, department))
+                if (department == null)
+                {
+                    // A livery another copy of this car carries cannot be painted on - it is a different
+                    // car to the game - but it can be brought.
+                    string carrier = null;
+                    List<string> across;
+                    var elsewhere = candidates.Count > 1 ? null : map.ResolveAcross(model, text, out carrier, out across);
+                    if (elsewhere != null && carrier != null && !carrier.Equals(model, StringComparison.OrdinalIgnoreCase))
+                        _chat.Error(map.NameOf(elsewhere) + " is on another copy of this car, the " + carrier + ": /veh " +
+                                    map.BaseOf(model) + " " + elsewhere + " brings one.");
+                    else
+                        NoSuchLivery(map, model, text, candidates);
+                    return;
+                }
+                if (Paint(vehicle, map, model, department, false))
                     _chat.Notice("The " + model + " is in " + map.NameOf(department) + " livery now (" +
                                  map.NumberFor(model, department) + " of " + count + ").");
                 return;
@@ -1133,16 +1154,19 @@ namespace TextDispatch.Commands
 
         /// <summary>
         /// Paint a car in a department's livery, after making sure the game actually has that texture - a
-        /// livery the ini knows about but nobody has put in the car's .ytd yet is said so, not silently skipped.
+        /// livery the ini knows about but the car's .ytd does not have is said so, not silently skipped,
+        /// unless `quiet`: then nobody asked for it by name.
         /// </summary>
-        private bool Paint(Vehicle vehicle, LiveryMap map, string model, string department)
+        private bool Paint(Vehicle vehicle, LiveryMap map, string model, string department, bool quiet)
         {
             int number = map.NumberFor(model, department);
             int count = VehicleActions.LiveryCount(vehicle);
             if (number > count)
             {
-                _chat.Error(map.NameOf(department) + " is livery " + number + " on the " + model + ", but the game has only " +
-                            count + " on it: that texture is not in " + model + ".ytd yet (the pack's LIVERY SLOTS folder).");
+                if (!quiet)
+                    _chat.Error(map.NameOf(department) + " is livery " + number + " on the " + model + ", but the game sees only " +
+                                count + " on it: its texture file is not the one the livery builder made. Rebuild and reinstall the pack.");
+                Log.Line("livery: " + model + " " + department + " is " + number + ", the car has " + count);
                 return false;
             }
 
@@ -1182,7 +1206,13 @@ namespace TextDispatch.Commands
             if (line.Length > 0) _chat.Notice("  " + line);
 
             if (missing > 0)
-                _chat.Notice("  " + missing + " more on file are not in " + model + ".ytd yet - import them from the pack's LIVERY SLOTS folder.");
+                _chat.Notice("  " + missing + " more on file that the game does not see on this car - rebuild and reinstall the pack.");
+
+            int elsewhere = 0;
+            foreach (var key in map.DepartmentsAcross(model))
+                if (map.NumberFor(model, key) == 0) elsewhere++;
+            if (elsewhere > 0)
+                _chat.Notice("  " + elsewhere + " more on other copies of this car: /veh " + map.BaseOf(model) + " <department> brings one.");
             _chat.Notice("  /livery <department or number>   /livery next   - Tab completes the names.");
         }
 
@@ -1606,7 +1636,12 @@ namespace TextDispatch.Commands
 
             // /veh's car, then that car's departments; /livery's departments, whichever car it ends up on.
             if (kind == "vehicles") return LiveryMap.Current().Models;
-            if (kind.StartsWith("liveries:", StringComparison.Ordinal)) return LiveryMap.Current().DepartmentsFor(kind.Substring(9));
+            if (kind.StartsWith("liveries:", StringComparison.Ordinal))
+            {
+                var words = new List<string>(LiveryMap.Current().DepartmentsAcross(kind.Substring(9)));
+                words.Add("plain");
+                return words;
+            }
             if (kind == "liveries")
             {
                 var words = new List<string>(LiveryMap.Current().Departments);
@@ -2414,7 +2449,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");
             _chat.Notice("  Tab completes commands, callout names and people on file; Shift+Tab goes back.");
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
-            _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model> [department]");
+            _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model> [department|plain]");
             _chat.Notice("            /livery [department|number|next]  - your car, or the one beside you");
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest [name] [for <charge>]  /cite <name> <offence>");
             _chat.Notice("            (kept between sessions - the people you book are still on file tomorrow)");

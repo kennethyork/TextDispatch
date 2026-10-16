@@ -271,7 +271,7 @@ assembly — and `/callout` starts any of them by name.
 
 **The car**
 `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` (or `/fix`) ·
-`/veh <model> [department]` · `/livery [department|number|next|back]` (or `/paint`)
+`/veh <model> [department|plain]` · `/livery [department|number|next|back]` (or `/paint`)
 
 ### Liveries by department
 
@@ -282,6 +282,7 @@ number, so they can be asked for by name:
 ```
 /veh police3 sahp     an Interceptor in San Andreas Highway Patrol livery
 /veh police3          the livery of the agency you are on duty as (LSSD on duty, an LSSD car)
+/veh police3 plain    the car as it came, in its own livery
 /livery               what this car has, and which one it is wearing
 /livery bcso          repaint it
 /livery 3             by number - the liveries the car came with have numbers too
@@ -291,6 +292,14 @@ number, so they can be asked for by name:
 `/livery` works on the car you are in, or, on foot, the nearest car within 10m - one parked beside you, or
 one you just brought. A name can be the key (`sahp`), the full name, or any part of it that only one
 department has (`highway`). Tab completes the car after `/veh`, then that car's departments.
+
+A car can carry only so many liveries - about thirty - and there are far more departments than that, so
+the ELS pack's `LIVERY GENERATORuild_livery_copies.py` makes **copies** of each car: `lvinterceptor1`,
+`lvinterceptor2` ... the same model under a new name, each with up to thirty liveries in a texture file of its
+own, in an add-on pack of their own. The ini's `[bodies]` section says which cars are the same car to look at,
+and `/veh police3 lspd-atlanta` brings whichever Interceptor copy carries that livery - so every design is in
+the game at once, and only the copies you actually spawn are loaded. `/livery` on a copy lists what that copy
+carries, and says when the livery you asked for is on another copy and how to bring it.
 
 The ini is not written by hand. The ELS pack's `LIVERY GENERATOR\build_livery_slots.py` turns the livery
 sheets into the numbered textures, ready to import into each car's `.ytd` with OpenIV, and writes the ini

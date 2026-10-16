@@ -134,7 +134,8 @@ and on the nearest person when you are not on a stop.
 
 | | |
 |---|---|
-| `/veh police3 sahp` | bring a car in a department's livery; with no department, your duty agency's |
+| `/veh police3 sahp` | bring a car in a department's livery - from whichever copy of the car carries it; with no department, your duty agency's |
+| `/veh police3 plain` | the car as it came, in its own livery |
 | `/livery` (`/paint`) | the liveries this car has, and which one it is wearing |
 | `/livery <department>` | repaint it - `sahp`, `San Andreas Highway Patrol`, or `highway` |
 | `/livery <number>` · `/livery next` · `/livery back` | by number, or step through them |

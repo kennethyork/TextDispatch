@@ -87,7 +87,9 @@ assembly, so every callout you have is announced in text and can be started by n
   service call, and a traffic stop is run for you - stolen, BOLO or warrant, dispatch says so.
 - **Cars in your department's livery.** `/veh police3 sahp` brings an Interceptor in Highway Patrol
   colours, and `/livery bcso` repaints the car you are in or the one beside you - by department name,
-  from an ini the ELS pack's livery generator writes alongside the textures.
+  from an ini the ELS pack's livery generator writes alongside the textures. A car holds about thirty
+  liveries, so the generator makes copies of each car to carry the rest, and `/veh` brings whichever
+  copy has the one you asked for.
 - **A city on the radio.** Other units are heard going on scene and clearing; `/units` says where your
   backup is. **Tab** completes commands, callouts and names.
 - **Shifts.** `10-8` starts one, `10-7` ends it with a summary read back on the radio; `/status`,

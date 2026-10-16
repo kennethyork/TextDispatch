@@ -31,6 +31,10 @@ namespace TextDispatch.Lspdfr
         private readonly List<string> _models = new List<string>();
         private readonly Dictionary<uint, string> _modelByHash = new Dictionary<uint, string>();
 
+        // body -> the cars that look the same, the base car first; and each of those cars -> its body.
+        private readonly Dictionary<string, List<string>> _bodies = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, string> _bodyOf = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>Where the file is looked for, whether or not it is there.</summary>
         public string Location { get; private set; }
 
@@ -87,6 +91,19 @@ namespace TextDispatch.Lspdfr
                     {
                         map._agencies[key] = value;
                     }
+                    else if (section.Equals("bodies", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var cars = new List<string>();
+                        foreach (var part in value.Split(','))
+                        {
+                            var car = part.Trim();
+                            if (car.Length == 0 || cars.Contains(car)) continue;
+                            cars.Add(car);
+                            map._bodyOf[car] = key;
+                            map._modelByHash[Joaat(car)] = car;
+                        }
+                        if (cars.Count > 0) map._bodies[key] = cars;
+                    }
                     else
                     {
                         int number;
@@ -107,14 +124,26 @@ namespace TextDispatch.Lspdfr
 
                 map.Found = true;
                 Log.Line("liveries: " + map._models.Count + " car(s), " + map._departments.Count +
-                         " department(s) from " + location);
+                         " department(s), " + map._bodies.Count + " bodies from " + location);
             }
             catch (Exception ex) { Log.Error("liveries", ex); }
             return map;
         }
 
-        /// <summary>The cars the file has liveries for.</summary>
-        public IList<string> Models { get { return _models; } }
+        /// <summary>The cars the file knows: the base cars and the cars that share their bodies first, then the copies.</summary>
+        public IList<string> Models
+        {
+            get
+            {
+                var list = new List<string>();
+                foreach (var body in _bodies.Values)
+                    foreach (var car in body)
+                        if (!_cars.ContainsKey(car) && !list.Contains(car)) list.Add(car);
+                foreach (var car in _models)
+                    if (!list.Contains(car)) list.Add(car);
+                return list;
+            }
+        }
 
         /// <summary>Every department the file names, in its own order.</summary>
         public IList<string> Departments { get { return _departments; } }
@@ -146,9 +175,12 @@ namespace TextDispatch.Lspdfr
             foreach (var pair in LiveriesOf(model)) yield return pair.Key;
         }
 
+        /// <summary>Whether any car with this body has liveries on file.</summary>
         public bool HasCar(string model)
         {
-            return model != null && _cars.ContainsKey(model);
+            foreach (var car in ModelsFor(model))
+                if (_cars.ContainsKey(car)) return true;
+            return false;
         }
 
         /// <summary>The livery number a department has on a car, or 0 when it has none there.</summary>
@@ -198,11 +230,81 @@ namespace TextDispatch.Lspdfr
         /// </summary>
         public string Resolve(string model, string typed, out List<string> candidates)
         {
+            return Pick(new List<string>(DepartmentsFor(model)), typed, out candidates);
+        }
+
+        /// <summary>
+        /// The same, across every car with this body - the base car and its copies - and which of them
+        /// carries it: the car named, when it does, or else the first copy that does.
+        /// </summary>
+        public string ResolveAcross(string model, string typed, out string carrier, out List<string> candidates)
+        {
+            carrier = null;
+            var department = Pick(new List<string>(DepartmentsAcross(model)), typed, out candidates);
+            if (department != null) carrier = Carrier(model, department);
+            return department;
+        }
+
+        /// <summary>The cars that look like this one, itself first: a body's base car and its copies.</summary>
+        public List<string> ModelsFor(string model)
+        {
+            var list = new List<string>();
+            if (string.IsNullOrEmpty(model)) return list;
+
+            List<string> body;
+            string name;
+            if (_bodies.TryGetValue(model, out body) ||
+                (_bodyOf.TryGetValue(model, out name) && _bodies.TryGetValue(name, out body)))
+            {
+                if (!_bodies.ContainsKey(model) || body.Contains(model)) list.Add(model);
+                foreach (var car in body)
+                    if (!list.Contains(car)) list.Add(car);
+            }
+            else list.Add(model);
+            return list;
+        }
+
+        /// <summary>Every department any car with this body carries.</summary>
+        public IEnumerable<string> DepartmentsAcross(string model)
+        {
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var car in ModelsFor(model))
+                foreach (var key in DepartmentsFor(car))
+                    if (seen.Add(key)) yield return key;
+        }
+
+        /// <summary>The car with this body that carries a department: the one named first, then its copies in order.</summary>
+        public string Carrier(string model, string department)
+        {
+            foreach (var car in ModelsFor(model))
+                if (NumberFor(car, department) > 0) return car;
+            return null;
+        }
+
+        /// <summary>
+        /// Whether this is one of the file's cars, as opposed to a body's name - "stanier" and "bison" are
+        /// also the civilian cars, which must stay civilian unless a department is asked for.
+        /// </summary>
+        public bool IsCar(string model)
+        {
+            return model != null && (_cars.ContainsKey(model) || _bodyOf.ContainsKey(model));
+        }
+
+        /// <summary>The base car of a copy - police3 for lvinterceptor2 - or the car itself.</summary>
+        public string BaseOf(string model)
+        {
+            string body;
+            List<string> cars;
+            if (model != null && _bodyOf.TryGetValue(model, out body) && _bodies.TryGetValue(body, out cars)) return cars[0];
+            return model;
+        }
+
+        private string Pick(List<string> mine, string typed, out List<string> candidates)
+        {
             candidates = new List<string>();
             var text = (typed ?? "").Trim();
             if (text.Length == 0) return null;
 
-            var mine = new List<string>(DepartmentsFor(model));
             foreach (var key in mine)
                 if (key.Equals(text, StringComparison.OrdinalIgnoreCase) ||
                     NameOf(key).Equals(text, StringComparison.OrdinalIgnoreCase))
