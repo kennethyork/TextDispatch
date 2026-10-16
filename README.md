@@ -143,7 +143,7 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Calls | `/accept` · `/decline` · `/calls [filter]` · `/callout <name>` · `/endcall` |
 | Stops | `/stop` · `/endstop` · `/tow` · `/id` · `/frisk` · `/cuff` · `/detain` · `/release` · `/record` · `/owner` |
 | Services | `/ems` · `/fire` · `/backup [swat\|air\|state\|ems\|fire\|transport\|code2]` · `/transport` · `/panic` · `/911 <details>` |
-| Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model> [department]` · `/livery [department\|number\|next]` |
+| Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model> [department]` · `/livery [department\|number\|next]` · `/liveries <car> [text]` |
 | Records | `/mdt` · `/person [name]` · `/plate [plate]` · `/warrant [name]` · `/bolo` · `/arrest [for <charge>]` · `/cite <name> <offence>` · `/report <text>` · `/reports` · `/court` |
 | Shift | `/status` · `/shift` · `/shifts` · `/search car` · `/units` · `/warrants [serve <name>]` |
 | The case | `/evidence [item]` · `/miranda` · `/interview` · `/report draft` · `/fines` · `/court` || Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |

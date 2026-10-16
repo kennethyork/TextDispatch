@@ -290,6 +290,29 @@ namespace TextDispatch.Lspdfr
             return model != null && (_cars.ContainsKey(model) || _bodyOf.ContainsKey(model));
         }
 
+        /// <summary>The name of the body a car has - "interceptor" for police3 and its copies - or null.</summary>
+        public string BodyOf(string model)
+        {
+            string body;
+            if (model == null) return null;
+            if (_bodies.ContainsKey(model)) return model;
+            return _bodyOf.TryGetValue(model, out body) ? body : null;
+        }
+
+        /// <summary>
+        /// Every livery any car with this body carries, once each: (department, the car that carries it,
+        /// its number there) - the copies in order, then each copy's liveries by number.
+        /// </summary>
+        public List<Tuple<string, string, int>> AllLiveries(string model)
+        {
+            var list = new List<Tuple<string, string, int>>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var car in ModelsFor(model))
+                foreach (var pair in LiveriesOf(car))
+                    if (seen.Add(pair.Key)) list.Add(Tuple.Create(pair.Key, car, pair.Value));
+            return list;
+        }
+
         /// <summary>The base car of a copy - police3 for lvinterceptor2 - or the car itself.</summary>
         public string BaseOf(string model)
         {

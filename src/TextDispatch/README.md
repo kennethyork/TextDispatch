@@ -271,7 +271,8 @@ assembly — and `/callout` starts any of them by name.
 
 **The car**
 `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` (or `/fix`) ·
-`/veh <model> [department|plain]` · `/livery [department|number|next|back]` (or `/paint`)
+`/veh <model> [department|plain]` · `/livery [department|number|next|back]` (or `/paint`) ·
+`/liveries <car> [text] [page]`
 
 ### Liveries by department
 
@@ -287,6 +288,8 @@ number, so they can be asked for by name:
 /livery bcso          repaint it
 /livery 3             by number - the liveries the car came with have numbers too
 /livery next          and back
+/liveries police3     every livery the car comes in, which copy carries it, and under which number
+/liveries police3 county    only the ones with "county" in the name;  /liveries police3 2  the next page
 ```
 
 `/livery` works on the car you are in, or, on foot, the nearest car within 10m - one parked beside you, or

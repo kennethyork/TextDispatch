@@ -22,7 +22,7 @@ namespace TextDispatch.Commands
             "ambulance", "medic", "fire", "firedept", "lsfd", "stop", "pullover", "endstop", "tow", "impound",
             "transport", "detain", "release", "uncuff", "cuff", "frisk", "search", "searchcar", "searchveh",
             "vsearch", "id", "licence", "license", "record", "owner", "zone", "lock", "unlock", "engine", "trunk",
-            "hood", "doors", "shut", "repair", "fix", "fixveh", "veh", "spawn", "livery", "paint", "mdt", "terminal", "person",
+            "hood", "doors", "shut", "repair", "fix", "fixveh", "veh", "spawn", "livery", "paint", "liveries", "mdt", "terminal", "person",
             "name", "plate", "warrant", "wants", "bolo", "arrest", "cite", "ticket", "report", "reports",
             "court", "followups", "status", "shift", "shifts", "evidence", "miranda", "rights", "interview",
             "question", "fines", "units", "warrants", "pursuit", "endpursuit", "calledin", "panic", "911", "k9",
@@ -47,6 +47,7 @@ namespace TextDispatch.Commands
                     return "people";
                 case "veh": case "spawn": return "vehicles";
                 case "livery": case "paint": return "liveries";
+                case "liveries": return "livery-cars";
                 case "pos": case "corner": return "top-right|top-left|bottom-right|bottom-left";
                 case "chatter": case "spam": return "quiet|brief|full";
                 case "auto": return "on|off|accept on|accept off";
@@ -145,15 +146,17 @@ namespace TextDispatch.Commands
             word = input.Substring(space + 1);
 
             // A car and then, after a space, one of its liveries: "/veh police3 sa" finds sahp and sasp.
-            if (kind == "vehicles")
+            // /liveries takes the same car, then a department to narrow by - without /veh's "plain".
+            if (kind == "vehicles" || kind == "livery-cars")
             {
                 var gap = word.IndexOf(' ');
                 if (gap >= 0)
                 {
                     stem += word.Substring(0, gap + 1);
-                    kind = "liveries:" + word.Substring(0, gap);
+                    kind = (kind == "vehicles" ? "liveries:" : "departments:") + word.Substring(0, gap);
                     word = word.Substring(gap + 1);
                 }
+                else kind = "vehicles";
             }
 
             IEnumerable<string> pool;
@@ -184,7 +187,7 @@ namespace TextDispatch.Commands
         private static bool Sourced(string kind)
         {
             return kind == "callouts" || kind == "people" || kind == "vehicles" || kind == "liveries" ||
-                   kind.StartsWith("liveries:", StringComparison.Ordinal);
+                   kind.StartsWith("liveries:", StringComparison.Ordinal) || kind.StartsWith("departments:", StringComparison.Ordinal);
         }
     }
 }

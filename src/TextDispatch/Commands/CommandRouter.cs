@@ -208,6 +208,7 @@ namespace TextDispatch.Commands
                 case "spawn": SpawnVehicle(argument); return;
                 case "livery":
                 case "paint": Livery(argument); return;
+                case "liveries": ListAllLiveries(argument); return;
 
                 // ---------------------------------------------------- records terminal
                 case "mdt":
@@ -1216,6 +1217,88 @@ namespace TextDispatch.Commands
             _chat.Notice("  /livery <department or number>   /livery next   - Tab completes the names.");
         }
 
+        /// <summary>
+        /// Every livery a car can come in - across all of its copies, not just the one you are in - with
+        /// the full name and which copy carries it under which number:
+        ///
+        ///   /liveries police3            the first page of all of them
+        ///   /liveries police3 county     the ones with "county" in the key or the name
+        ///   /liveries police3 2          the second page
+        ///   /liveries county             the car you are in, or the one beside you
+        ///
+        /// A page at a time, like /calls: a pack of copies runs to a couple of hundred, and all of them at
+        /// once would scroll the box away. The whole list goes to the log as well.
+        /// </summary>
+        private void ListAllLiveries(string argument)
+        {
+            const int page = 20;
+            var map = LiveryMap.Current();
+            var words = new List<string>((argument ?? "").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+
+            string model = null;
+            if (words.Count > 0 && map.HasCar(words[0]))
+            {
+                model = words[0];
+                words.RemoveAt(0);
+            }
+            else
+            {
+                var vehicle = MyVehicle() ?? _api.NearestVehicle(10f);
+                if (vehicle != null) model = map.ModelOf(vehicle);
+            }
+            if (model == null)
+            {
+                _chat.Error(words.Count > 0
+                    ? "No liveries on file for '" + words[0] + "'. Try /liveries police3, or get in a car first."
+                    : "Usage: /liveries <car> [text] [page]   e.g. /liveries police3, /liveries police3 county");
+                return;
+            }
+
+            int number = 1;
+            if (words.Count > 0 && int.TryParse(words[words.Count - 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out number))
+                words.RemoveAt(words.Count - 1);
+            else number = 1;
+            var filter = string.Join(" ", words.ToArray()).Trim();
+
+            var all = map.AllLiveries(model);
+            var shown = new List<Tuple<string, string, int>>();
+            foreach (var livery in all)
+                if (filter.Length == 0 || livery.Item1.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    map.NameOf(livery.Item1).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    shown.Add(livery);
+
+            // The car as you named it - "sheriff" stays sheriff - unless that is a copy, which goes by its base car.
+            var name = map.LiveriesOf(model).Count > 0 ? map.BaseOf(model) : model;
+            if (shown.Count == 0)
+            {
+                _chat.Error(all.Count == 0 ? "No department liveries on file for the " + name + "."
+                                           : "None of the " + name + "'s " + all.Count + " liveries match '" + filter + "'.");
+                return;
+            }
+
+            int pages = (shown.Count + page - 1) / page;
+            number = Math.Max(1, Math.Min(number, pages));
+            var copies = new HashSet<string>();
+            foreach (var livery in all) copies.Add(livery.Item2);
+            var body = map.BodyOf(model);
+            _chat.Notice((filter.Length == 0 ? "The " + name + " comes in " + all.Count + " liveries"
+                                             : shown.Count + " of the " + name + "'s " + all.Count + " liveries match '" + filter + "'") +
+                         (copies.Count > 1 ? ", on " + copies.Count + " copies" + (body == null ? "" : " of the " + body) : "") +
+                         (pages > 1 ? " - page " + number + " of " + pages : "") + ":");
+            for (int i = (number - 1) * page; i < shown.Count && i < number * page; i++)
+            {
+                var livery = shown[i];
+                _chat.Notice("  " + livery.Item1 + "  -  " + map.NameOf(livery.Item1) + "   [" + livery.Item2 + " #" + livery.Item3 + "]");
+            }
+
+            var stem = "/liveries " + name + (filter.Length == 0 ? "" : " " + filter);
+            if (number < pages) _chat.Notice("  " + stem + " " + (number + 1) + " for the next page, or add a word to narrow it.");
+            _chat.Notice("  /veh " + name + " <department> brings one. The full list is in the log.");
+
+            foreach (var livery in shown)
+                Log.Line("livery: " + livery.Item1 + " | " + map.NameOf(livery.Item1) + " | " + livery.Item2 + " #" + livery.Item3);
+        }
+
         private void NoSuchLivery(LiveryMap map, string model, string typed, List<string> candidates)
         {
             if (candidates != null && candidates.Count > 1)
@@ -1636,6 +1719,7 @@ namespace TextDispatch.Commands
 
             // /veh's car, then that car's departments; /livery's departments, whichever car it ends up on.
             if (kind == "vehicles") return LiveryMap.Current().Models;
+            if (kind.StartsWith("departments:", StringComparison.Ordinal)) return LiveryMap.Current().DepartmentsAcross(kind.Substring(12));
             if (kind.StartsWith("liveries:", StringComparison.Ordinal))
             {
                 var words = new List<string>(LiveryMap.Current().DepartmentsAcross(kind.Substring(9)));
@@ -2451,6 +2535,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
             _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model> [department|plain]");
             _chat.Notice("            /livery [department|number|next]  - your car, or the one beside you");
+            _chat.Notice("            /liveries <car> [text] [page]  - every livery the car comes in, and which copy has it");
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest [name] [for <charge>]  /cite <name> <offence>");
             _chat.Notice("            (kept between sessions - the people you book are still on file tomorrow)");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");

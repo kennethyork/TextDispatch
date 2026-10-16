@@ -139,6 +139,7 @@ and on the nearest person when you are not on a stop.
 | `/livery` (`/paint`) | the liveries this car has, and which one it is wearing |
 | `/livery <department>` | repaint it - `sahp`, `San Andreas Highway Patrol`, or `highway` |
 | `/livery <number>` · `/livery next` · `/livery back` | by number, or step through them |
+| `/liveries <car> [text] [page]` | every livery the car comes in, across all its copies: the department, its full name, and which copy carries it under which number. Twenty a page; a word narrows it; the whole list goes to the log |
 
 `/livery` acts on the car you are in, or the nearest one within 10m when you are on foot. Departments come
 from `Plugins\LSPDFR\TextDispatch.liveries.ini`, written by the ELS pack's `build_livery_slots.py`.
