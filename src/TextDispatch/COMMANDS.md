@@ -130,7 +130,17 @@ and on the nearest person when you are not on a stop.
 
 ## The car you are in
 
-`/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` (`/shut`) · `/repair` (`/fix`, `/fixveh`) · `/veh <model>` (`/spawn`)
+`/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` (`/shut`) · `/repair` (`/fix`, `/fixveh`) · `/veh <model> [department]` (`/spawn`)
+
+| | |
+|---|---|
+| `/veh police3 sahp` | bring a car in a department's livery; with no department, your duty agency's |
+| `/livery` (`/paint`) | the liveries this car has, and which one it is wearing |
+| `/livery <department>` | repaint it - `sahp`, `San Andreas Highway Patrol`, or `highway` |
+| `/livery <number>` · `/livery next` · `/livery back` | by number, or step through them |
+
+`/livery` acts on the car you are in, or the nearest one within 10m when you are on foot. Departments come
+from `Plugins\LSPDFR\TextDispatch.liveries.ini`, written by the ELS pack's `build_livery_slots.py`.
 
 ---
 

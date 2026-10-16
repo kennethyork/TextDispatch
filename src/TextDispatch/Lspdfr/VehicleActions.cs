@@ -73,6 +73,36 @@ namespace TextDispatch.Lspdfr
         }
 
         /// <summary>
+        /// How many liveries the game found for this car - its numbered sign textures. 0 when it has
+        /// none, which the native reports as -1.
+        /// </summary>
+        public static int LiveryCount(Vehicle vehicle)
+        {
+            if (vehicle == null || !vehicle.Exists()) return 0;
+            try { return Math.Max(0, (int)NativeFunction.Natives.GetVehicleLiveryCount<int>(vehicle)); }
+            catch (Exception ex) { Log.Error("livery count", ex); return 0; }
+        }
+
+        /// <summary>The livery the car is wearing, counted from 1 like the textures; 0 when none is set.</summary>
+        public static int Livery(Vehicle vehicle)
+        {
+            if (vehicle == null || !vehicle.Exists()) return 0;
+            try { return Math.Max(0, (int)NativeFunction.Natives.GetVehicleLivery<int>(vehicle) + 1); }
+            catch (Exception ex) { Log.Error("livery", ex); return 0; }
+        }
+
+        /// <summary>Paint a car with livery `number`, counted from 1: livery 1 is the texture ending _sign_1.</summary>
+        public static bool SetLivery(Vehicle vehicle, int number, out string detail)
+        {
+            detail = null;
+            if (vehicle == null || !vehicle.Exists()) { detail = "no vehicle"; return false; }
+
+            NativeFunction.Natives.SetVehicleLivery(vehicle, number - 1);
+            detail = "livery " + number;
+            return true;
+        }
+
+        /// <summary>
         /// Bring a vehicle. The model is whatever the game calls it - "police2", "riot", or a name an
         /// installed vehicle mod registers - and a model the game does not know fails cleanly.
         /// </summary>

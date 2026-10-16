@@ -206,6 +206,8 @@ namespace TextDispatch.Commands
                 case "fixveh": RepairVehicle(); return;
                 case "veh":
                 case "spawn": SpawnVehicle(argument); return;
+                case "livery":
+                case "paint": Livery(argument); return;
 
                 // ---------------------------------------------------- records terminal
                 case "mdt":
@@ -1027,24 +1029,175 @@ namespace TextDispatch.Commands
             Log.Line("vehicle: " + detail);
         }
 
+        /// <summary>
+        /// Bring a car, in a department's livery: "/veh police3 sahp". With no department named it
+        /// wears the livery of the agency you are on duty as, when the car has one.
+        /// </summary>
         private void SpawnVehicle(string argument)
         {
             if (string.IsNullOrWhiteSpace(argument))
             {
-                _chat.Error("Usage: /veh <model>   e.g. /veh police2, /veh riot, /veh ambulance");
+                _chat.Error("Usage: /veh <model> [department]   e.g. /veh police2, /veh police3 sahp, /veh riot");
                 return;
             }
 
+            var parts = argument.Trim().Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            var model = parts[0];
+            var wanted = parts.Length > 1 ? parts[1].Trim() : null;
+
             Vehicle spawned;
             string detail;
-            if (!VehicleActions.Spawn(argument, out spawned, out detail))
+            if (!VehicleActions.Spawn(model, out spawned, out detail))
             {
                 _chat.Error(detail ?? "Could not bring that vehicle.");
                 return;
             }
 
-            _chat.Notice("Brought you a " + argument + ".");
+            var map = LiveryMap.Current();
+            string department = null;
+            if (!string.IsNullOrEmpty(wanted))
+            {
+                List<string> candidates;
+                department = map.Resolve(model, wanted, out candidates);
+                if (department == null) NoSuchLivery(map, model, wanted, candidates);
+            }
+            else
+            {
+                // On duty as LSSD, a car you bring is an LSSD car - if it has that livery at all. Nobody
+                // asked for it, so a livery not imported into the car yet is passed over without a word.
+                var own = map.ForAgency(_api.CurrentAgency());
+                var number = map.NumberFor(model, own);
+                if (number > 0 && number <= VehicleActions.LiveryCount(spawned)) department = own;
+            }
+
+            var painted = department != null && Paint(spawned, map, model, department);
+            _chat.Notice("Brought you a " + model + (painted ? ", in " + map.NameOf(department) + " livery." : "."));
             Log.Line("vehicle: " + detail);
+        }
+
+        /// <summary>
+        /// Change the livery on a car: the one you are in, or else the nearest one - a car parked beside
+        /// you, or one you just brought - so it is not only your own.
+        ///
+        ///   /livery              what this car has, and what it is wearing
+        ///   /livery sahp         a department's livery (Tab completes the names)
+        ///   /livery 7            a livery by number, including the ones the pack came with
+        ///   /livery next|back    the next or previous one
+        /// </summary>
+        private void Livery(string argument)
+        {
+            var vehicle = MyVehicle() ?? _api.NearestVehicle(10f);
+            if (vehicle == null) { _chat.Error("No car within 10m. Get in one, or stand next to it."); return; }
+
+            var map = LiveryMap.Current();
+            var model = map.ModelOf(vehicle);
+            if (model == null)
+            {
+                try { model = vehicle.Model.Name; } catch { }
+                if (string.IsNullOrEmpty(model)) model = "car";
+            }
+
+            int count = VehicleActions.LiveryCount(vehicle);
+            if (count == 0) { _chat.Error("The " + model + " has no liveries to change."); return; }
+
+            int current = VehicleActions.Livery(vehicle);
+            var text = (argument ?? "").Trim().ToLowerInvariant();
+            if (text.Length == 0 || text == "list") { ListLiveries(map, model, count, current); return; }
+
+            int number;
+            if (text == "next" || text == "+") number = current < 1 ? 1 : current % count + 1;
+            else if (text == "back" || text == "prev" || text == "-") number = current <= 1 ? count : current - 1;
+            else if (int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out number))
+            {
+                if (number < 1 || number > count) { _chat.Error("The " + model + " has liveries 1 to " + count + "."); return; }
+            }
+            else
+            {
+                List<string> candidates;
+                var department = map.Resolve(model, text, out candidates);
+                if (department == null) { NoSuchLivery(map, model, text, candidates); return; }
+                if (Paint(vehicle, map, model, department))
+                    _chat.Notice("The " + model + " is in " + map.NameOf(department) + " livery now (" +
+                                 map.NumberFor(model, department) + " of " + count + ").");
+                return;
+            }
+
+            string detail;
+            if (!VehicleActions.SetLivery(vehicle, number, out detail)) { _chat.Error("Could not change the livery."); return; }
+
+            var name = map.DepartmentAt(model, number);
+            _chat.Notice("The " + model + " is in " + (name == null ? "livery " + number : map.NameOf(name) + " livery") +
+                         " now (" + number + " of " + count + ").");
+            Log.Line("livery: " + model + " " + detail);
+        }
+
+        /// <summary>
+        /// Paint a car in a department's livery, after making sure the game actually has that texture - a
+        /// livery the ini knows about but nobody has put in the car's .ytd yet is said so, not silently skipped.
+        /// </summary>
+        private bool Paint(Vehicle vehicle, LiveryMap map, string model, string department)
+        {
+            int number = map.NumberFor(model, department);
+            int count = VehicleActions.LiveryCount(vehicle);
+            if (number > count)
+            {
+                _chat.Error(map.NameOf(department) + " is livery " + number + " on the " + model + ", but the game has only " +
+                            count + " on it: that texture is not in " + model + ".ytd yet (the pack's LIVERY SLOTS folder).");
+                return false;
+            }
+
+            string detail;
+            if (!VehicleActions.SetLivery(vehicle, number, out detail)) { _chat.Error("Could not change the livery."); return false; }
+
+            Log.Line("livery: " + model + " " + department + " = " + detail);
+            return true;
+        }
+
+        private void ListLiveries(LiveryMap map, string model, int count, int current)
+        {
+            var wearing = map.DepartmentAt(model, current);
+            _chat.Notice("The " + model + " has " + count + " liveries, and is wearing " +
+                         (current < 1 ? "none" : current + (wearing == null ? "" : " (" + map.NameOf(wearing) + ")")) + ".");
+
+            var liveries = map.LiveriesOf(model);
+            if (liveries.Count == 0)
+            {
+                _chat.Notice("  No departments on file for it" + (map.Found ? "" : " - " + LiveryMap.FileName + " is not in Plugins\\LSPDFR") +
+                             ". /livery <number> or /livery next still change it.");
+                return;
+            }
+
+            int ours = liveries[0].Value;
+            if (ours > 1) _chat.Notice("  " + (ours == 2 ? "1" : "1-" + (ours - 1)) + ": the livery the car came with" + (ours == 2 ? "" : "s"));
+
+            var line = new System.Text.StringBuilder();
+            int missing = 0;
+            foreach (var pair in liveries)
+            {
+                if (pair.Value > count) { missing++; continue; }
+                var entry = pair.Value + " " + pair.Key;
+                if (line.Length > 0 && line.Length + entry.Length > 70) { _chat.Notice("  " + line); line.Length = 0; }
+                line.Append(line.Length > 0 ? "   " : "").Append(entry);
+            }
+            if (line.Length > 0) _chat.Notice("  " + line);
+
+            if (missing > 0)
+                _chat.Notice("  " + missing + " more on file are not in " + model + ".ytd yet - import them from the pack's LIVERY SLOTS folder.");
+            _chat.Notice("  /livery <department or number>   /livery next   - Tab completes the names.");
+        }
+
+        private void NoSuchLivery(LiveryMap map, string model, string typed, List<string> candidates)
+        {
+            if (candidates != null && candidates.Count > 1)
+            {
+                var shown = candidates.Count > 8 ? candidates.GetRange(0, 8) : candidates;
+                _chat.Error("'" + typed + "' could be " + string.Join(", ", shown.ToArray()) + (candidates.Count > 8 ? " ..." : "") + ".");
+            }
+            else if (!map.HasCar(model))
+                _chat.Error("No department liveries on file for the " + model +
+                            (map.Found ? "." : " - " + LiveryMap.FileName + " is not in Plugins\\LSPDFR."));
+            else
+                _chat.Error("The " + model + " has no '" + typed + "' livery. /livery lists what it has.");
         }
 
         // ------------------------------------------------------------------ records terminal
@@ -1450,6 +1603,16 @@ namespace TextDispatch.Commands
         internal IEnumerable<string> CompletionSource(string kind)
         {
             if (kind == "callouts") return _api.CalloutLabels();
+
+            // /veh's car, then that car's departments; /livery's departments, whichever car it ends up on.
+            if (kind == "vehicles") return LiveryMap.Current().Models;
+            if (kind.StartsWith("liveries:", StringComparison.Ordinal)) return LiveryMap.Current().DepartmentsFor(kind.Substring(9));
+            if (kind == "liveries")
+            {
+                var words = new List<string>(LiveryMap.Current().Departments);
+                words.AddRange(new[] { "next", "back", "list" });
+                return words;
+            }
 
             if (kind == "people")
             {
@@ -2251,7 +2414,8 @@ namespace TextDispatch.Commands
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");
             _chat.Notice("  Tab completes commands, callout names and people on file; Shift+Tab goes back.");
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
-            _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model>");
+            _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model> [department]");
+            _chat.Notice("            /livery [department|number|next]  - your car, or the one beside you");
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest [name] [for <charge>]  /cite <name> <offence>");
             _chat.Notice("            (kept between sessions - the people you book are still on file tomorrow)");
             _chat.Notice("  Pursuit:  /pursuit  /calledin  /endpursuit  /panic  /911 <details>");

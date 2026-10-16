@@ -22,7 +22,7 @@ namespace TextDispatch.Commands
             "ambulance", "medic", "fire", "firedept", "lsfd", "stop", "pullover", "endstop", "tow", "impound",
             "transport", "detain", "release", "uncuff", "cuff", "frisk", "search", "searchcar", "searchveh",
             "vsearch", "id", "licence", "license", "record", "owner", "zone", "lock", "unlock", "engine", "trunk",
-            "hood", "doors", "shut", "repair", "fix", "fixveh", "veh", "spawn", "mdt", "terminal", "person",
+            "hood", "doors", "shut", "repair", "fix", "fixveh", "veh", "spawn", "livery", "paint", "mdt", "terminal", "person",
             "name", "plate", "warrant", "wants", "bolo", "arrest", "cite", "ticket", "report", "reports",
             "court", "followups", "status", "shift", "shifts", "evidence", "miranda", "rights", "interview",
             "question", "fines", "units", "warrants", "pursuit", "endpursuit", "calledin", "panic", "911", "k9",
@@ -33,7 +33,10 @@ namespace TextDispatch.Commands
             "margin", "ui", "font", "fontsize", "lines", "clear", "cls"
         };
 
-        /// <summary>What a command's argument can be completed from: "callouts", "people", or a fixed list.</summary>
+        /// <summary>
+        /// What a command's argument can be completed from: "callouts", "people", "vehicles" (a car, then
+        /// its departments), "liveries", or a fixed list.
+        /// </summary>
         public static string ArgumentKind(string command)
         {
             switch ((command ?? "").ToLowerInvariant())
@@ -42,6 +45,8 @@ namespace TextDispatch.Commands
                 case "person": case "name": case "warrant": case "wants": case "arrest": case "cite": case "ticket":
                 case "reports": case "talk":
                     return "people";
+                case "veh": case "spawn": return "vehicles";
+                case "livery": case "paint": return "liveries";
                 case "pos": case "corner": return "top-right|top-left|bottom-right|bottom-left";
                 case "chatter": case "spam": return "quiet|brief|full";
                 case "auto": return "on|off|accept on|accept off";
@@ -64,7 +69,7 @@ namespace TextDispatch.Commands
         private int _index;
         private string _shown;
 
-        /// <param name="source">Candidates for an argument kind: "callouts" or "people".</param>
+        /// <param name="source">Candidates for an argument kind: "callouts", "people", "vehicles", "liveries" or "liveries:&lt;model&gt;".</param>
         public Completion(Func<string, IEnumerable<string>> source)
         {
             _source = source;
@@ -139,8 +144,20 @@ namespace TextDispatch.Commands
             stem = input.Substring(0, space + 1);
             word = input.Substring(space + 1);
 
+            // A car and then, after a space, one of its liveries: "/veh police3 sa" finds sahp and sasp.
+            if (kind == "vehicles")
+            {
+                var gap = word.IndexOf(' ');
+                if (gap >= 0)
+                {
+                    stem += word.Substring(0, gap + 1);
+                    kind = "liveries:" + word.Substring(0, gap);
+                    word = word.Substring(gap + 1);
+                }
+            }
+
             IEnumerable<string> pool;
-            if (kind == "callouts" || kind == "people") pool = _source == null ? null : _source(kind);
+            if (Sourced(kind)) pool = _source == null ? null : _source(kind);
             else pool = kind.Split('|');
             if (pool == null) return results;
 
@@ -161,6 +178,13 @@ namespace TextDispatch.Commands
 
             if (results.Count > 60) results.RemoveRange(60, results.Count - 60);
             return results;
+        }
+
+        /// <summary>Kinds whose candidates come from the game or a file, rather than a fixed list.</summary>
+        private static bool Sourced(string kind)
+        {
+            return kind == "callouts" || kind == "people" || kind == "vehicles" || kind == "liveries" ||
+                   kind.StartsWith("liveries:", StringComparison.Ordinal);
         }
     }
 }

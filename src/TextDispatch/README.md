@@ -271,7 +271,31 @@ assembly — and `/callout` starts any of them by name.
 
 **The car**
 `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` (or `/fix`) ·
-`/veh <model>`
+`/veh <model> [department]` · `/livery [department|number|next|back]` (or `/paint`)
+
+### Liveries by department
+
+A car's liveries are numbered textures in its `.ytd` - `stanier_sign_1`, `stanier_sign_2` ... - and the
+game only knows them by number. `Plugins\LSPDFR\TextDispatch.liveries.ini` puts a department on each
+number, so they can be asked for by name:
+
+```
+/veh police3 sahp     an Interceptor in San Andreas Highway Patrol livery
+/veh police3          the livery of the agency you are on duty as (LSSD on duty, an LSSD car)
+/livery               what this car has, and which one it is wearing
+/livery bcso          repaint it
+/livery 3             by number - the liveries the car came with have numbers too
+/livery next          and back
+```
+
+`/livery` works on the car you are in, or, on foot, the nearest car within 10m - one parked beside you, or
+one you just brought. A name can be the key (`sahp`), the full name, or any part of it that only one
+department has (`highway`). Tab completes the car after `/veh`, then that car's departments.
+
+The ini is not written by hand. The ELS pack's `LIVERY GENERATOR\build_livery_slots.py` turns the livery
+sheets into the numbered textures, ready to import into each car's `.ytd` with OpenIV, and writes the ini
+with the same numbers. It is read again whenever it changes, so a rebuild needs no restart. A livery the
+ini knows about but the car's `.ytd` does not have yet is said so, not skipped in silence.
 
 ### Civilian jobs — DriverJobs V
 

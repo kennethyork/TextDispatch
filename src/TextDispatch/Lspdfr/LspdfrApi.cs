@@ -198,6 +198,9 @@ namespace TextDispatch.Lspdfr
 
         public bool PlayerAvailable() { return AsBool(Call("IsPlayerAvailableForCalls")); }
 
+        /// <summary>The agency you went on duty as - agency.xml's ScriptName, "lspd", "lssd_swat" - or null.</summary>
+        public string CurrentAgency() { return AsString(Call("GetCurrentAgencyScriptName")); }
+
         public void SetPlayerAvailable(bool value) { Call("SetPlayerAvailableForCalls", value); }
 
         // ------------------------------------------------------------------ pursuits and stops

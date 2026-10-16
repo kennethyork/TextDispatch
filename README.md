@@ -85,6 +85,9 @@ assembly, so every callout you have is announced in text and can be started by n
   `/report draft` writes the report from what you did. Fines come from a schedule (`/fines`).
 - **Your records send you out.** Somebody you dealt with who is wanted now comes back as a warrant
   service call, and a traffic stop is run for you - stolen, BOLO or warrant, dispatch says so.
+- **Cars in your department's livery.** `/veh police3 sahp` brings an Interceptor in Highway Patrol
+  colours, and `/livery bcso` repaints the car you are in or the one beside you - by department name,
+  from an ini the ELS pack's livery generator writes alongside the textures.
 - **A city on the radio.** Other units are heard going on scene and clearing; `/units` says where your
   backup is. **Tab** completes commands, callouts and names.
 - **Shifts.** `10-8` starts one, `10-7` ends it with a summary read back on the radio; `/status`,
@@ -138,7 +141,7 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Calls | `/accept` · `/decline` · `/calls [filter]` · `/callout <name>` · `/endcall` |
 | Stops | `/stop` · `/endstop` · `/tow` · `/id` · `/frisk` · `/cuff` · `/detain` · `/release` · `/record` · `/owner` |
 | Services | `/ems` · `/fire` · `/backup [swat\|air\|state\|ems\|fire\|transport\|code2]` · `/transport` · `/panic` · `/911 <details>` |
-| Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model>` |
+| Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model> [department]` · `/livery [department\|number\|next]` |
 | Records | `/mdt` · `/person [name]` · `/plate [plate]` · `/warrant [name]` · `/bolo` · `/arrest [for <charge>]` · `/cite <name> <offence>` · `/report <text>` · `/reports` · `/court` |
 | Shift | `/status` · `/shift` · `/shifts` · `/search car` · `/units` · `/warrants [serve <name>]` |
 | The case | `/evidence [item]` · `/miranda` · `/interview` · `/report draft` · `/fines` · `/court` || Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |
