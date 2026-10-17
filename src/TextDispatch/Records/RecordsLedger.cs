@@ -36,6 +36,12 @@ namespace TextDispatch.Records
         public string Statement;
         public bool StatementMirandized;
 
+        /// <summary>Their driving licence as LSPDFR has it - valid, expired, suspended, unlicensed - or null.</summary>
+        public string Licence;
+
+        /// <summary>How many times LSPDFR says they have been stopped.</summary>
+        public int TimesStopped;
+
         /// <summary>The charge sheet being written up for them: penal code sections, booked by the next /arrest.</summary>
         public List<string> PendingCharges = new List<string>();
 
@@ -119,6 +125,9 @@ namespace TextDispatch.Records
         /// <summary>The investigation it belongs to, or 0.</summary>
         public int Case;
 
+        /// <summary>The incident number of the call it was written on, or null.</summary>
+        public string Incident;
+
         /// <summary>The sergeant's review: null while it waits, "approved", or "returned" with what to fix.</summary>
         public string Review;
         public string ReviewNotes;
@@ -149,6 +158,10 @@ namespace TextDispatch.Records
 
         /// <summary>The penal code sections booked, when the arrest was on a charge sheet.</summary>
         public List<string> Charges = new List<string>();
+
+        /// <summary>Whether they have been booked at a station, and under what number.</summary>
+        public bool Booked;
+        public string BookingNumber;
     }
 
     /// <summary>What an interview got: the kind of statement, the words, and whether it will stand up.</summary>
@@ -485,6 +498,27 @@ namespace TextDispatch.Records
             return vehicle;
         }
 
+        /// <summary>
+        /// What a search of this car would find, without searching it: the same answer DecideSearch will give,
+        /// worked out the same way - so the driver knows what is in their car before the officer does.
+        /// </summary>
+        public string WouldFind(string plate, string model, PersonRecord driver, out bool illegal)
+        {
+            var vehicle = EnsureVehicle(plate, model);
+            illegal = false;
+            if (vehicle == null) return null;
+            if (vehicle.SearchFind != null) { illegal = vehicle.SearchIllegal; return vehicle.SearchFind; }
+
+            var rng = new Random(unchecked(PlateKey(plate).GetHashCode() * 17 + 3));
+            var chance = 18;
+            if (vehicle.ReportedStolen) chance += 35;
+            var owner = driver ?? FindPerson(vehicle.OwnerName);
+            if (owner != null && owner.Wanted) chance += 30;
+            if (owner != null && owner.Priors.Count > 0) chance += 20;
+            illegal = rng.Next(100) < chance;
+            return illegal ? IllegalFinds[rng.Next(IllegalFinds.Length)] : LegalFinds[rng.Next(LegalFinds.Length)];
+        }
+
         private VehicleRecord DecideSearch(VehicleRecord vehicle, string plate, PersonRecord driver)
         {
 
@@ -691,6 +725,7 @@ namespace TextDispatch.Records
                 Subject = subject == null ? null : subject.Name,
                 Text = (text ?? "").Trim(),
                 Case = ActiveCase,
+                Incident = CurrentIncident != null ? CurrentIncident.Number : LastIncidentFor(call),
                 ReviewDueTicks = DateTime.UtcNow.AddSeconds(60 + new Random(Environment.TickCount).Next(120)).Ticks
             };
 
@@ -715,6 +750,15 @@ namespace TextDispatch.Records
 
             Dirty = true;
             return report;
+        }
+
+        /// <summary>The number of the last incident on this call, for a report written after it closed.</summary>
+        private string LastIncidentFor(string call)
+        {
+            if (string.IsNullOrEmpty(call)) return null;
+            for (var i = Incidents.Count - 1; i >= 0; i--)
+                if (string.Equals(Incidents[i].Call, call, StringComparison.OrdinalIgnoreCase)) return Incidents[i].Number;
+            return null;
         }
 
         public List<ReportRecord> ReportsAbout(PersonRecord person)

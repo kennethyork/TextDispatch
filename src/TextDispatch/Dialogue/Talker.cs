@@ -30,6 +30,10 @@ namespace TextDispatch.Dialogue
     public enum DialogueIntent
     {
         Greeting,
+        SearchConsent,   // "mind if I search the car?"
+        WhoseCar,        // "is this your car?"
+        Drinking,        // "have you been drinking tonight?"
+        Destination,     // "where are you headed?"
         Identify,
         WhyStopped,
         WhatHappened,
@@ -71,6 +75,16 @@ namespace TextDispatch.Dialogue
         public string Zone;
         public string Persona;
 
+        // What a driver at a stop knows about themselves, so their answers can be true or a lie on purpose.
+        public double Bac;            // from Sobriety
+        public string Licence;        // LSPDFR's: valid, expired, suspended, unlicensed
+        public bool HasCar;           // they are in, or were stopped in, a car on file
+        public string CarOwner;       // the registered owner
+        public bool OwnsCar;
+        public bool CarStolen;
+        public bool CarHidesSomething;   // what a search would find is illegal - they know, the officer does not yet
+        public string CarHides;
+
         public string Describe()
         {
             var parts = new List<string>();
@@ -88,6 +102,15 @@ namespace TextDispatch.Dialogue
                     ? "they searched your car and found " + CarFind + ", and you know it is yours"
                     : "they searched your car and found nothing illegal - " + CarFind);
             if (Surrendered) parts.Add("you have given up");
+            if (Bac >= Sobriety.Limit) parts.Add("you have had several drinks and are over the limit, though you will not admit how many");
+            else if (Bac > 0) parts.Add("you had one drink a while ago");
+            if (Licence == "suspended") parts.Add("your driving licence is suspended and you know it");
+            else if (Licence == "unlicensed") parts.Add("you have no driving licence");
+            if (HasCar)
+                parts.Add(OwnsCar ? "the car is yours"
+                          : CarStolen ? "the car is stolen and you will claim a friend lent it to you"
+                          : "the car belongs to " + (CarOwner ?? "somebody else") + ", who lent it to you");
+            if (HasCar && CarHidesSomething && !CarSearched) parts.Add("hidden in the car is " + CarHides + ", which you do not want found");
             if (!string.IsNullOrEmpty(Zone)) parts.Add("you are in " + Zone);
             if (CalloutRunning && !string.IsNullOrEmpty(CalloutName)) parts.Add("an incident is in progress: " + CalloutName);
 
@@ -186,6 +209,12 @@ namespace TextDispatch.Dialogue
 
         private static readonly HashSet<int> Asked = new HashSet<int>();
 
+        /// <summary>
+        /// The name LSPDFR's own ID card gives this ped, or null - so the box and LSPDFR call somebody the
+        /// same thing. Set by the plugin, which can ask LSPDFR.
+        /// </summary>
+        public static Func<int, string> PersonaName;
+
         public static string NameFor(int handle)
         {
             string named;
@@ -197,6 +226,14 @@ namespace TextDispatch.Dialogue
                 try { back = Returning(handle); }
                 catch (Exception ex) { Log.Error("a returning person", ex); }
                 if (!string.IsNullOrEmpty(back)) { Named[handle] = back; return back; }
+            }
+
+            if (PersonaName != null)
+            {
+                string persona = null;
+                try { persona = PersonaName(handle); }
+                catch { }
+                if (!string.IsNullOrEmpty(persona)) { Named[handle] = persona; return persona; }
             }
 
             var rng = new Random(handle);

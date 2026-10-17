@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.44, taken out of the router rather than remembered —
-**197 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.47, taken out of the router rather than remembered —
+**215 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -187,6 +187,43 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## LSPDFR in text — new in 1.0.47
+
+Built on what LSPDFR itself does: its pullovers, its people, its callouts, its stations.
+
+### The stop, in your own words
+
+Ask the driver anything in plain words and they answer from what is true about them - and lie on purpose
+when they have a reason to:
+
+| Ask | What decides the answer |
+|---|---|
+| *where are you headed?* | their mood |
+| *have you been drinking?* | how much they have actually had - the same number `/fst`, `/pbt` and `/examine` use |
+| *whose car is this?* | the registration: their own, a named friend's, or a stolen car they claim was lent to them |
+| *anything in the car?* | what a search would find - they know before you do, and it shows |
+| *mind if I search the car?* | consent or a refusal, put on the record for your report |
+| *licence and registration* | LSPDFR's licence status - a suspended or missing licence is admitted, or not |
+
+**People are who LSPDFR says they are.** Names in the box are the names on LSPDFR's own ID card, and
+`/person`, `/id`, the stop run and the records take LSPDFR's age, licence status (valid, expired,
+suspended, unlicensed), warrants and times stopped. A suspended licence is read out when the stop starts.
+
+### Commands
+
+| | |
+|---|---|
+| `/checks` `/runall` | the plate, the driver's licence and warrants, BOLOs and flags, and the insurance and registration checks of whichever plugin owns them - in one go |
+| `/passengers` · `/id passenger` | who else is in the car · ask them for ID |
+| `/fst [hgn\|walk\|stand]` | the field sobriety tests - all three, or one - with the clues written out |
+| `/pbt` `/breathtest` | a preliminary breath test. The reading goes into evidence; over 0.08 is a DUI (`/charge dui`) |
+| `/book [name]` | at any station: booking number, charges, prints and photographs, property bagged, a cell. The desk reminds you when you arrive with somebody to book |
+| `/cad` · `/cad <number>` | the dispatch screen: every call now has an incident number and a priority (P1-P3) and a log - received, assigned, on scene, closed. Reports carry the number |
+| `/board` | the units on the street within 2.5 km: callsign, code 3 / 10-8 / 10-6, distance and area. Units sent to you are marked |
+| `/collision` `/crash` | at a crash: the damaged vehicles, each driver's statement, who was at fault and why - drafted into the report box |
 
 ---
 

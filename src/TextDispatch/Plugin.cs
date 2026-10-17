@@ -196,6 +196,19 @@ namespace TextDispatch
                     return back == null ? null : back.Name;
                 };
 
+                // Everybody else is called what LSPDFR's own ID card calls them, so the box and LSPDFR agree.
+                Identities.PersonaName = handle =>
+                {
+                    try
+                    {
+                        var ped = World.GetEntityByHandle<Ped>(new PoolHandle(unchecked((uint)handle)));
+                        if (ped == null || !ped.Exists() || !ped.IsHuman) return null;
+                        var info = PersonaInfo.For(api, ped);
+                        return info == null ? null : info.Name;
+                    }
+                    catch { return null; }
+                };
+
                 // A fresh watch gets its briefing; a shift picked up after a quick restart does not.
                 if (_shift.Running && _shift.Elapsed.TotalMinutes < 2) _dispatch.ScheduleRollCall();
 

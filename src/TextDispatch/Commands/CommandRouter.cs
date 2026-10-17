@@ -209,7 +209,27 @@ namespace TextDispatch.Commands
                 case "vsearch": SearchVehicle(); return;
                 case "id":
                 case "licence":
-                case "license": ShowId(); return;
+                case "license":
+                    if (argument.StartsWith("pass", StringComparison.OrdinalIgnoreCase)) Passengers(true); else ShowId();
+                    return;
+                case "passengers":
+                case "occupants": Passengers(false); return;
+                case "fst":
+                case "sobriety": FieldSobriety(argument); return;
+                case "pbt":
+                case "breathtest": BreathTest(); return;
+                case "book":
+                case "booking": Book(argument); return;
+                case "cad":
+                case "incident":
+                case "incidents": Cad(argument); return;
+                case "board":
+                case "unitboard": Board(); return;
+                case "collision":
+                case "crash":
+                case "accident": Collision(); return;
+                case "checks":
+                case "runall": Checks(); return;
                 case "record": ShowRecord(); return;
                 case "owner": ShowOwner(); return;
                 case "zone": ShowZone(); return;
@@ -972,8 +992,13 @@ namespace TextDispatch.Commands
             if (ped == null) { _chat.Error("Nobody close enough to identify."); return; }
 
             _api.DisplayPedId(ped);
-            var persona = _api.PersonaForPed(ped);
-            _chat.Do("You check their identification." + (string.IsNullOrEmpty(persona) ? "" : " (" + persona + ")"));
+            var person = PersonInFront();
+            var info = PersonaInfo.For(_api, ped);
+            _chat.Me("You", "check their identification.");
+            if (person != null)
+                _chat.Do(person.Name + (person.Age > 0 ? ", " + person.Age : "") +
+                         (info != null && info.Birthday != null ? ", born " + info.Birthday.Value.ToString("d MMM yyyy") : "") +
+                         (person.Licence != null ? " - licence " + person.Licence : "") + ".");
         }
 
         private void ShowRecord()
@@ -1628,6 +1653,7 @@ namespace TextDispatch.Commands
 
             // Looked up face to face is dealt with: kept on file, and who a /report is about by default.
             _records.Touch(person);
+            PersonaInfo.Sync(_api, ped, _records, person);
 
             // Somebody you have dealt with before, back again - said once, the first time you are face to face.
             var recognised = _records.Recognise(person);
@@ -1660,7 +1686,9 @@ namespace TextDispatch.Commands
             }
 
             _chat.Notice(person.Name + " - " + person.Age + " - " + person.Occupation + " - " + person.HomeZone);
-            _chat.Notice("  " + person.Summary());
+            _chat.Notice("  " + person.Summary() +
+                         (person.Licence != null ? "   licence: " + person.Licence.ToUpperInvariant() : "") +
+                         (person.TimesStopped > 0 ? "   stopped " + person.TimesStopped + " time(s) before" : ""));
 
             for (int i = 0; i < person.Priors.Count; i++) _chat.Notice("    - prior: " + person.Priors[i]);
             if (person.Wanted) _chat.Notice("  WARRANT: " + person.WarrantFor);
@@ -2884,6 +2912,10 @@ namespace TextDispatch.Commands
             _chat.Notice("  Records:  /flag <name or plate>: <warning>  /note ...  /notes [name]  /case [open|use|add|note|close|export]");
             _chat.Notice("  Career:   /rollcall  /rank  /certs     Phone: /phone  /text <who> <msg>  /call <who> <msg>  /inbox");
             _chat.Notice("  Radar:    /radar  read both antennas   /radar lock   /radar on|off   /radar alert <mph>");
+            _chat.Notice("  Stops:    ask in plain words - 'where are you headed', 'been drinking', 'whose car', 'mind if I search'");
+            _chat.Notice("            /checks  plate, driver, licence, insurance at once   /passengers  /id passenger   /fst  /pbt");
+            _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
+            _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
             _chat.Notice("  The case: /evidence [item]  /miranda  /interview  - evidence and a statement after Miranda help a charge stick");
             _chat.Notice("  Shift:    /status  /shift  /shifts  /units  /warrants [serve <name>]   (10-8 starts a shift, 10-7 ends it)");
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");

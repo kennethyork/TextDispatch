@@ -52,6 +52,12 @@ namespace TextDispatch.Records
             public int ReportsReturned;
             public int CasesClosed;
             public string LastRank;
+
+            // 1.0.47: call numbers and bookings.
+            public List<IncidentRecord> Incidents = new List<IncidentRecord>();
+            public List<BookingRecord> Bookings = new List<BookingRecord>();
+            public int NextIncident;
+            public int NextBooking;
         }
 
         public static string PathIn(string folder)
@@ -97,7 +103,11 @@ namespace TextDispatch.Records
                     ReportsApproved = ledger.ReportsApproved,
                     ReportsReturned = ledger.ReportsReturned,
                     CasesClosed = ledger.CasesClosed,
-                    LastRank = ledger.LastRank
+                    LastRank = ledger.LastRank,
+                    Incidents = new List<IncidentRecord>(ledger.Incidents),
+                    Bookings = new List<BookingRecord>(ledger.Bookings),
+                    NextIncident = ledger.NextIncident,
+                    NextBooking = ledger.NextBooking
                 };
 
                 // Everyone the player has touched, and anyone whose record has changed from what the
@@ -197,6 +207,22 @@ namespace TextDispatch.Records
             ledger.ReportsReturned = file.ReportsReturned;
             ledger.CasesClosed = file.CasesClosed;
             ledger.LastRank = file.LastRank;
+            if (file.Incidents != null)
+                foreach (var incident in file.Incidents)
+                    if (incident != null) { if (incident.Log == null) incident.Log = new List<string>(); ledger.Incidents.Add(incident); }
+            if (file.Bookings != null)
+                foreach (var booking in file.Bookings)
+                    if (booking != null)
+                    {
+                        if (booking.Charges == null) booking.Charges = new List<string>();
+                        if (booking.Property == null) booking.Property = new List<string>();
+                        ledger.Bookings.Add(booking);
+                    }
+            if (file.NextIncident > ledger.NextIncident) ledger.NextIncident = file.NextIncident;
+            if (file.NextBooking > ledger.NextBooking) ledger.NextBooking = file.NextBooking;
+            // An incident left open when the game closed is closed now - the call went with the session.
+            var stale = ledger.CurrentIncident;
+            if (stale != null) ledger.CloseIncident("the session ended");
 
             ledger.Dirty = false;
 

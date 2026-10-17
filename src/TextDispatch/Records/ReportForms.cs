@@ -37,7 +37,7 @@ namespace TextDispatch.Records
             bb.AppendLine("[*][b]Reporting officer:[/b] " + Or(officer, report.Unit));
             bb.AppendLine("[*][b]Unit:[/b] " + Or(report.Unit, "-"));
             bb.AppendLine("[*][b]Date and time:[/b] " + Or(report.When, "-"));
-            bb.AppendLine("[*][b]Call:[/b] " + Or(report.Call, "officer initiated"));
+            bb.AppendLine("[*][b]Call:[/b] " + Or(report.Call, "officer initiated") + (report.Incident != null ? " - incident #" + report.Incident : ""));
             if (report.Case != 0)
             {
                 var file = ledger.FindCase(report.Case);

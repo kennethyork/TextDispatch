@@ -90,6 +90,15 @@ namespace TextDispatch.Dialogue
 
             var intent = ScriptedReplies.Classify(text);
             var scripted = ScriptedReplies.Answer(text, intent, partner, state);
+
+            // Asking to search is something done, not only said: it goes on the record for the report.
+            if (intent == DialogueIntent.SearchConsent && _records != null)
+            {
+                var person = _records.EnsurePerson(partner.Handle, partner.Name);
+                var yes = ScriptedReplies.Consents(partner, state);
+                _records.Act(person, null, "asked for consent to search the vehicle; they " + (yes ? "agreed" : "refused"));
+                _chat.Notice(yes ? "  They consented - '/search car' searches it." : "  They refused. Without consent you need probable cause - an odour, something in plain view, a K9.");
+            }
             var speaker = partner;
 
             // The callout's own words come first. If this person is one a callout wrote lines for, they
@@ -279,11 +288,49 @@ namespace TextDispatch.Dialogue
                 state.Zone = _api.ZoneAt(ped.Position);
 
                 CarSearch(ped, state);
+                StopFacts(talker, state);
             }
             catch (Exception ex) { Log.Error("dialogue state", ex); }
 
             talker.Mood = Identities.Adjust(talker.Mood, state);
             return state;
+        }
+
+        /// <summary>
+        /// What a driver knows about themselves at a stop: how much they have had, their licence as LSPDFR
+        /// has it, whose car it is and what is hidden in it. Their answers are true or a lie from this.
+        /// </summary>
+        private void StopFacts(Talker talker, PedState state)
+        {
+            state.Bac = Sobriety.Bac(talker.Handle);
+            if (_records == null) return;
+
+            var person = _records.EnsurePerson(talker.Handle, talker.Name);
+            var persona = PersonaInfo.Sync(_api, talker.Ped, _records, person);
+            state.Licence = person.Licence ?? (persona == null ? null : persona.Licence);
+
+            Vehicle vehicle = null;
+            try
+            {
+                var suspect = _api.PulloverSuspect();
+                if (suspect != null && ReferenceEquals(suspect, talker.Ped)) vehicle = _api.PulloverVehicle();
+                if (vehicle == null) vehicle = talker.Ped.CurrentVehicle ?? talker.Ped.LastVehicle;
+                if (vehicle == null || !vehicle.Exists() || talker.Ped.Position.DistanceTo(vehicle.Position) > 25f) return;
+
+                string plate = vehicle.LicensePlate, model = null;
+                try { model = vehicle.Model.Name; } catch { }
+                var record = _records.EnsureVehicle(plate, model);
+                if (record == null) return;
+
+                state.HasCar = true;
+                state.CarOwner = record.OwnerName;
+                state.OwnsCar = string.Equals(record.OwnerName, talker.Name, StringComparison.OrdinalIgnoreCase);
+                state.CarStolen = record.ReportedStolen;
+                bool illegal;
+                state.CarHides = _records.WouldFind(plate, model, person, out illegal);
+                state.CarHidesSomething = illegal;
+            }
+            catch { }
         }
 
         /// <summary>

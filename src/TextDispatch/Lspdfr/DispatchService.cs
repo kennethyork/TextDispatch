@@ -211,6 +211,7 @@ namespace TextDispatch.Lspdfr
                     var handle = unchecked((int)driver.Handle.Value);
                     person = _records.EnsurePerson(handle, Dialogue.Identities.NameFor(handle));
                     _records.Touch(person);
+                    PersonaInfo.Sync(_api, driver, _records, person);
                 }
 
                 VehicleRecord plate = null;
@@ -241,6 +242,9 @@ namespace TextDispatch.Lspdfr
                     foreach (var flag in _records.FlagsOn(person.Name))
                         if (flag.Kind == "flag") flags.Add(person.Name + " is flagged: " + flag.Text);
                     if (person.Arrests > 0) flags.Add(person.Name + " has been arrested by you before");
+                    if (person.Licence == "suspended") flags.Add(person.Name + "'s licence is SUSPENDED");
+                    else if (person.Licence == "expired") flags.Add(person.Name + "'s licence is expired");
+                    else if (person.Licence == "unlicensed") flags.Add(person.Name + " has NO licence on file");
                 }
 
                 if (flags.Count > 0)
@@ -401,6 +405,56 @@ namespace TextDispatch.Lspdfr
             Promotion();
         }
 
+        private string SafeZone()
+        {
+            try { return _api.ZoneAt(Game.LocalPlayer.Character.Position); }
+            catch { return null; }
+        }
+
+        // The stations an arrest can be booked at, and how close counts as being there.
+        internal static readonly KeyValuePair<string, Vector3>[] Stations =
+        {
+            new KeyValuePair<string, Vector3>("Mission Row", new Vector3(441f, -982f, 30f)),
+            new KeyValuePair<string, Vector3>("Vespucci", new Vector3(-1096f, -830f, 14f)),
+            new KeyValuePair<string, Vector3>("Davis", new Vector3(360f, -1584f, 29f)),
+            new KeyValuePair<string, Vector3>("La Mesa", new Vector3(826f, -1290f, 28f)),
+            new KeyValuePair<string, Vector3>("Vinewood", new Vector3(638f, 1f, 82f)),
+            new KeyValuePair<string, Vector3>("Rockford Hills", new Vector3(-561f, -131f, 38f)),
+            new KeyValuePair<string, Vector3>("Del Perro", new Vector3(-1632f, -1015f, 13f)),
+            new KeyValuePair<string, Vector3>("Sandy Shores", new Vector3(1853f, 3686f, 34f)),
+            new KeyValuePair<string, Vector3>("Paleto Bay", new Vector3(-448f, 6008f, 31f)),
+            new KeyValuePair<string, Vector3>("Bolingbroke", new Vector3(1846f, 2585f, 46f)),
+        };
+
+        /// <summary>The station the player is at, or null - within 60m of one.</summary>
+        public static string StationHere()
+        {
+            try
+            {
+                var at = Game.LocalPlayer.Character.Position;
+                foreach (var station in Stations)
+                    if (at.DistanceTo(station.Value) < 60f) return station.Key;
+            }
+            catch { }
+            return null;
+        }
+
+        private string _bookingPrompted;
+
+        /// <summary>At a station with somebody arrested and not booked: say so, once per visit.</summary>
+        private void BookingPrompt()
+        {
+            var station = StationHere();
+            if (station == null) { _bookingPrompted = null; return; }
+            if (_bookingPrompted == station) return;
+            var waiting = _records.UnbookedArrests();
+            if (waiting.Count == 0) return;
+            _bookingPrompted = station;
+            _chat.Write(ChatChannel.Dispatch, "[" + station.ToUpperInvariant() + " DESK]",
+                        waiting.Count + " of yours to book: " + waiting[0].Name + (waiting.Count > 1 ? " and " + (waiting.Count - 1) + " more" : "") +
+                        ". '/book' processes them - prints, photographs, property, a cell.");
+        }
+
         /// <summary>True while the dispatcher is composing a reply.</summary>
         public bool ModelBusy { get { return _pump.Busy; } }
 
@@ -418,6 +472,7 @@ namespace TextDispatch.Lspdfr
                 // The sergeant's two jobs: the briefing, and the paperwork. Neither needs LSPDFR.
                 if (_rollCallAt != 0 && Environment.TickCount - _rollCallAt >= 0 && !_pursuit) RollCall();
                 Reviews();
+                BookingPrompt();
 
                 if (!_api.Available) return;
                 WatchCallout();
@@ -466,7 +521,8 @@ namespace TextDispatch.Lspdfr
                     _calloutName = "";
                     _countedCall = null;
                     _onScene = false;
-                    Transmit(_unit + ", that call is closed. You are clear and 10-8.", 1);
+                    var closed = _records.CloseIncident("cleared by " + _unit);
+                    Transmit(_unit + ", that call is closed" + (closed != null ? " - incident " + closed.Number : "") + ". You are clear and 10-8.", 1);
                 }
                 return;
             }
@@ -503,15 +559,18 @@ namespace TextDispatch.Lspdfr
                 _calloutState = state;
                 _calloutName = name;
 
+                // Every call gets a number and a priority, the way a dispatch screen has it.
+                var incident = _records.OpenIncident(name, SafeZone());
                 switch (state)
                 {
                     case "Pending":
-                        Transmit("All units, we have " + name + ". " + _unit +
+                        Transmit("All units, " + incident.Priority + ", incident " + incident.Number + ": " + name + ". " + _unit +
                                  ", do you copy? Reply 'accept' or 'decline'.");
                         break;
 
                     case "Running":
-                        Transmit("Copy " + _unit + ", you are assigned " + name +
+                        _records.IncidentNote("assigned to " + _unit);
+                        Transmit("Copy " + _unit + ", you are assigned incident " + incident.Number + ", " + name +
                                  ". Advise 10-97 when you are on scene.");
 
                         // Counted once per call: the same call is seen again every time its state is read.
@@ -829,6 +888,7 @@ namespace TextDispatch.Lspdfr
                     _lastStatus = "10-97";
                     if (!_onScene) _onSceneAt = Environment.TickCount;
                     _onScene = true;
+                    _records.IncidentOnScene();
                     _chat.Radio(_unit + " is 10-97, on scene.");
                     Transmit("Copy " + _unit + ", 10-97 at " + clock + ". Handle your call.");
                     return;

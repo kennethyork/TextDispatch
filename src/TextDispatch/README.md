@@ -460,6 +460,17 @@ that remembers, a career, a phone. The full tables are in [COMMANDS.md](COMMANDS
 
 All of it is saved in `TextDispatch.records.json` with the rest of the records.
 
+### LSPDFR in text (1.0.47)
+
+- **The stop in your own words.** Ask "where are you headed", "have you been drinking", "whose car is this",
+  "mind if I search" - the driver answers from what is true (their drink, the registration, what is hidden in
+  the car) and lies on purpose when they have a reason. Consent or refusal goes on the record.
+- **LSPDFR's people.** Names match LSPDFR's ID card; licence status, age, warrants and times stopped come
+  from LSPDFR's persona. A suspended licence is read out when the stop starts.
+- `/checks` runs everything at once; `/passengers` and `/id passenger`; `/fst` and `/pbt` for a DUI;
+  `/book` at any station; `/cad` with an incident number and priority on every call; `/board` for the units
+  on the street; `/collision` for a crash report.
+
 **Pursuit**
 `/pursuit` · `/calledin` · `/endpursuit` · `/panic` · `/911 <details>`
 

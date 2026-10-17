@@ -29,6 +29,16 @@ namespace TextDispatch.Dialogue
                 words = words.Replace("  ", " ");
 
             if (Has(t, "hello", "hey ", "hi ", "good morning", "good afternoon", "howdy", "evening")) return DialogueIntent.Greeting;
+            // The questions of a traffic stop, before the general ones they would otherwise fall into.
+            if (Has(t, "mind if i", "search your", "search the car", "search the vehicle", "can i search", "consent", "take a look in", "have a look in", "look inside"))
+                return DialogueIntent.SearchConsent;
+            if (Has(t, "whose car", "whose vehicle", "your car", "your vehicle", "own this", "own the car", "registered to", "who owns", "this car yours", "car belong"))
+                return DialogueIntent.WhoseCar;
+            if (Has(t, "drinking", "been drinking", "had anything to drink", "had a drink", "any drinks", "alcohol", "beers", "how much have you had", "under the influence", "intoxicated", "been using"))
+                return DialogueIntent.Drinking;
+            if (Has(t, "where are you going", "where are you headed", "where you headed", "where you going", "where are you coming from", "where you coming from",
+                    "where have you been", "where you been", "on your way to", "heading to", "headed to"))
+                return DialogueIntent.Destination;
             if (HasWord(words, "license", "licence", "id", "identification", "papers", "registration") ||
                 Has(t, "your name", "who are you")) return DialogueIntent.Identify;
             if (Has(t, "why did you", "why'd you", "why am i", "what's this about", "whats this about", "what is this about", "why are you stopping")) return DialogueIntent.WhyStopped;
@@ -48,6 +58,23 @@ namespace TextDispatch.Dialogue
             if (Has(t, "do you", "can you", "are you", "is there", "did you", "have you", "will you")) return DialogueIntent.Question;
 
             return DialogueIntent.Unknown;
+        }
+
+        /// <summary>
+        /// Whether they let the car be searched. Somebody with nothing to hide usually does; somebody with
+        /// something does not, unless they are the kind who cannot say no to a uniform. Decided once.
+        /// </summary>
+        public static bool Consents(Talker talker, PedState state)
+        {
+            var roll = new Random(unchecked(talker.Handle * 503 + 11)).Next(100);
+            var hiding = state != null && state.CarHidesSomething;
+            switch (talker.Mood)
+            {
+                case Temperament.Compliant: return hiding ? roll < 35 : roll < 95;
+                case Temperament.Nervous: return hiding ? roll < 20 : roll < 80;
+                case Temperament.Defensive: return hiding ? roll < 5 : roll < 45;
+                default: return !hiding && roll < 20;
+            }
         }
 
         private static bool Has(string haystack, params string[] needles)
@@ -95,6 +122,79 @@ namespace TextDispatch.Dialogue
 
             switch (intent)
             {
+                case DialogueIntent.SearchConsent:
+                    return Consents(talker, state)
+                        ? Pick(rng, mood, state,
+                            new[] { "Go ahead. Nothing in there.", "Sure, knock yourself out.", "Yeah, that's fine." },
+                            new[] { "I - I guess? There's nothing in there.", "Okay. Yeah. Sure.", "If you have to." },
+                            new[] { "What for? ...Fine. Whatever.", "Fine. Make it quick.", "Go on then, you won't find anything." },
+                            new[] { "Go ahead, waste your time.", "Do what you want.", "Whatever." })
+                        : Pick(rng, mood, state,
+                            new[] { "I'd rather you didn't, if that's okay.", "Do you need to? I'm in a hurry.", "No, I don't think so." },
+                            new[] { "Why? There's nothing - do you have to?", "I - no. No, I don't want you to.", "Can I say no? I'm saying no." },
+                            new[] { "No. I don't consent to any searches.", "Not without a warrant.", "No. Am I free to go?" },
+                            new[] { "Get a warrant.", "Hell no.", "Touch my car and see what happens." });
+
+                case DialogueIntent.WhoseCar:
+                {
+                    if (state == null || !state.HasCar)
+                        return Pick(rng, mood, state,
+                            new[] { "I don't have a car here.", "I walked.", "What car?" },
+                            new[] { "C-car? I'm on foot.", "I don't have one.", "No car, I swear." },
+                            new[] { "I don't have a car. Why?", "Do you see me in a car?", "I walked here." },
+                            new[] { "What car?", "Mind your business.", "Not mine." });
+                    var first = string.IsNullOrEmpty(state.CarOwner) ? "a friend" : state.CarOwner.Split(' ')[0];
+                    if (state.OwnsCar)
+                        return Pick(rng, mood, state,
+                            new[] { "It's mine. Registered to me.", "Mine, yeah.", "My car - paperwork's in the glovebox." },
+                            new[] { "It's mine! It's my car.", "Y-yes, it's mine.", "Mine. I've had it two years." },
+                            new[] { "Yes, it's mine. Why?", "It's mine. Run the plate if you want.", "Whose do you think?" },
+                            new[] { "Mine.", "Who else's?", "Run it." });
+                    if (state.CarStolen)
+                        return Pick(rng, mood, state,
+                            new[] { "My friend's. He lent it to me.", "It's... a friend's car.", "Borrowed it this morning." },
+                            new[] { "My cousin's! He said I could take it.", "It's - it's my friend's, I've got his number somewhere.", "I'm just driving it for someone." },
+                            new[] { "A friend's. Is that a crime?", "I borrowed it. So?", "Not mine. Ask the owner." },
+                            new[] { "Found it.", "Not your business.", "A friend's. Which friend? Wouldn't you like to know." });
+                    return Pick(rng, mood, state,
+                        new[] { "It's " + first + "'s - my cousin's. I'm borrowing it.", first + " lent it to me.", "It belongs to " + first + ", a friend." },
+                        new[] { "It's - it's " + first + "'s car. My cousin.", "Borrowed it from " + first + ".", first + " said I could take it." },
+                        new[] { "It's " + first + "'s. Call them.", "Belongs to " + first + ". Problem?", "Not mine. " + first + "'s." },
+                        new[] { first + "'s.", "Somebody's.", "Not mine, not yours." });
+                }
+
+                case DialogueIntent.Drinking:
+                {
+                    var bac = state == null ? 0.0 : state.Bac;
+                    if (bac <= 0.0)
+                        return Pick(rng, mood, state,
+                            new[] { "No, nothing. I don't really drink.", "Not a drop.", "No, officer. Stone cold sober." },
+                            new[] { "No! No, nothing.", "I haven't had anything, I swear.", "N-no. Nothing." },
+                            new[] { "No. Why?", "Do I look drunk?", "No. Give me a breath test if you want." },
+                            new[] { "No.", "None of your business. But no.", "Breathalyse me then." });
+                    if (bac < Sobriety.Limit)
+                        return Pick(rng, mood, state,
+                            new[] { "Just one beer with dinner, a couple of hours ago.", "I had a glass of wine. One.", "One beer. That's it." },
+                            new[] { "Just - just one. Hours ago.", "One drink. I'm fine, I promise.", "A beer, with food. I'm fine." },
+                            new[] { "One. I'm under the limit.", "A beer. That's legal.", "One drink. So?" },
+                            new[] { "One. Big deal.", "I had a beer. Arrest me.", "Mind your business." });
+                    return Pick(rng, mood, state,
+                        new[] { "I had a few... but I'm fine to drive. Really.", "A couple of drinks. Three maybe.", "I've had some, I'll be honest." },
+                        new[] { "No! I mean... maybe one or two.", "Just - just a couple, I'm fine.", "Only a few, I swear I'm okay." },
+                        new[] { "I don't have to answer that.", "I'm not drunk, if that's what you're asking.", "Two. Maybe. I'm fine." },
+                        new[] { "Not your business.", "So what if I have?", "I'm not answering that." });
+                }
+
+                case DialogueIntent.Destination:
+                {
+                    var where = state != null && !string.IsNullOrEmpty(state.Zone) ? state.Zone : "the city";
+                    return Pick(rng, mood, state,
+                        new[] { "Heading home from work.", "Picking my kid up from practice.", "Just going to the store.", "Home - I live up in " + where + "." },
+                        new[] { "Home. Just home. I'm - just going home.", "To my girlfriend's. Is that okay?", "Work. I'm going to be late." },
+                        new[] { "Home. Why?", "Does it matter?", "Out. Is that a problem?" },
+                        new[] { "None of your business.", "Away from you.", "Wherever I want." });
+                }
+
                 case DialogueIntent.Greeting:
                     return Pick(rng, mood, state,
                         new[] { "Morning.", "Hey.", "Yeah. Hi.", "Afternoon, officer.", "What do you want?" },
@@ -103,6 +203,19 @@ namespace TextDispatch.Dialogue
                         new[] { "What.", "You talking to me?", "Yeah?", "Make it quick." });
 
                 case DialogueIntent.Identify:
+                    // LSPDFR's licence says what they are handing over.
+                    if (state != null && state.Licence == "unlicensed")
+                        return Pick(rng, mood, state,
+                            new[] { "I - don't actually have a licence. I'm sorry.", "I never got one, honestly.", "I don't have a licence." },
+                            new[] { "I... left it at home. I mean - I don't have one.", "I don't have it. I don't have one.", "Please, I'm learning, I was just going round the block." },
+                            new[] { "I don't have one on me.", "I don't need one for this.", "Not on me." },
+                            new[] { "Don't have one.", "Don't need one.", "No." });
+                    if (state != null && state.Licence == "suspended")
+                        return Pick(rng, mood, state,
+                            new[] { "Here. Look - it's suspended. I know. I'm sorry.", "Here you go. It might come back suspended.", "It's here. I should tell you it's suspended." },
+                            new[] { "Here - is it - it's fine, right?", "H-here. Please don't run it.", "Here. It's - there might be a problem with it." },
+                            new[] { "Here. Whatever it says, it's a mistake.", "There. Happy?", "It's valid. Mostly." },
+                            new[] { "Take it.", "Here. Don't bother running it.", "You'll find out anyway." });
                     return Pick(rng, mood, state,
                         new[] { "Yeah, sure - it's in my back pocket.", "Of course. Here you go.", "It's right here, hang on." },
                         new[] { "It's, uh - it's in the glovebox I think.", "Y-yeah. Here.", "Hold on, I know it's in here somewhere." },
@@ -124,6 +237,13 @@ namespace TextDispatch.Dialogue
                         new[] { "Nothing happened.", "I don't know anything.", "Ask somebody else." });
 
                 case DialogueIntent.Weapons:
+                    // What is in the car is on their mind, and it shows - not a confession, a tell.
+                    if (state != null && state.CarHidesSomething)
+                        return Pick(rng, mood, state,
+                            new[] { "No... nothing like that.", "Not that I know of.", "Nothing - it's not even my stuff in there." },
+                            new[] { "No! Why - why would there be?", "N-no. No weapons. Nothing.", "There's nothing. Can I go?" },
+                            new[] { "Why do you keep asking?", "Nothing you have a right to look at.", "No. And you're not searching it." },
+                            new[] { "You'll never know.", "Nothing for you.", "Back off my car." });
                     return Pick(rng, mood, state,
                         new[] { "No, nothing. You can look.", "Just my phone and my wallet.", "Nothing on me, officer." },
                         new[] { "No! No, I - nothing.", "I don't have anything, I promise.", "No, sir. Nothing." },

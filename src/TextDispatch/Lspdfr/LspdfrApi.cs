@@ -404,6 +404,9 @@ namespace TextDispatch.Lspdfr
 
         public string PersonaForPed(object ped) { return AsString(Call("GetPersonaForPed", ped)); }
 
+        /// <summary>LSPDFR's Persona object for a ped - name, birthday, licence, wanted - or null. Read with PersonaInfo.</summary>
+        public object PersonaObject(object ped) { return Call("GetPersonaForPed", ped); }
+
         public string ZoneAt(Vector3 position) { return AsString(Call("GetZoneAtPosition", position)); }
 
         public object CreatePursuit() { return Call("CreatePursuit"); }

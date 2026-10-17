@@ -35,7 +35,10 @@ namespace TextDispatch.Commands
             "ame", "attempt", "roll", "dice", "my", "examine", "ex", "look", "d", "dept", "department", "log", "chatlog",
             "low", "quiet", "m", "megaphone", "mp", "charge", "addcharge", "charges", "sheet", "penal", "penalcode", "pc",
             "flag", "note", "flags", "notes", "case", "cases", "investigation", "rollcall", "briefing", "rank", "career",
-            "certs", "certifications", "phone", "contacts", "text", "sms", "call", "inbox", "messages", "radar", "speed"
+            "certs", "certifications", "phone", "contacts", "text", "sms", "call", "inbox", "messages", "radar", "speed",
+            // 1.0.47: LSPDFR in text
+            "passengers", "occupants", "fst", "sobriety", "pbt", "breathtest", "book", "booking", "cad", "incident", "incidents",
+            "board", "unitboard", "collision", "crash", "accident", "checks", "runall"
         };
 
         /// <summary>
@@ -66,6 +69,9 @@ namespace TextDispatch.Commands
                 case "case": case "cases": return "list|open|use|add|note|close|export";
                 case "examine": case "ex": case "look": return "me|car";
                 case "phone": return "add";
+                case "fst": case "sobriety": return "hgn|walk|stand";
+                case "id": case "licence": case "license": return "passenger";
+                case "book": case "booking": return "people";
                 case "penal": case "pc": return "felony|misdemeanor|infraction|theft|weapon|drug|assault";
                 case "evidence": return "list";
                 case "fines": return "speeding|insurance|parking|red light";

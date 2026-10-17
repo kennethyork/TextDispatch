@@ -129,9 +129,10 @@ namespace TextDispatch.Commands
             }
             catch { }
 
-            // A smell of drink is decided once per person, and says what to do about it.
-            if (rng.Next(100) < 10 || (person != null && person.Priors.Contains("DUI") && rng.Next(3) == 0))
-                parts.Add("smells of alcohol, eyes glassy, speech a little slurred");
+            // A smell of drink, from the same number the breath test reads - so the two agree.
+            var bac = Sobriety.Bac(handle);
+            if (bac >= Sobriety.Limit) parts.Add("smells strongly of alcohol, eyes glassy and bloodshot, speech slurred - '/fst' and '/pbt'");
+            else if (bac > 0) parts.Add("a faint smell of alcohol");
 
             switch (Identities.MoodFor(handle))
             {
