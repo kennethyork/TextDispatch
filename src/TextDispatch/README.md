@@ -339,7 +339,14 @@ and `/veh police3 lspd-atlanta` brings whichever Interceptor copy carries that l
 the game at once, and only the copies you actually spawn are loaded. `/livery` on a copy lists what that copy
 carries, and says when the livery you asked for is on another copy and how to bring it.
 
-The ini is not written by hand. The ELS pack's `LIVERY GENERATOR\build_livery_slots.py` turns the livery
+**Any car, any liveries.** None of this needs a livery file. A car with one livery or more - the game's
+own, an add-on car's mod-kit liveries, a pack's - can be changed by number with `/livery 3` and
+`/livery next`, and `/livery name 3 Atlanta PD` gives one a name you can ask for from then on (kept in
+`TextDispatch.liveries.mine.ini`). TextDispatch reads every `TextDispatch.liveries*.ini` beside it
+together, so the livery pack installer's file (`TextDispatch.liveries.packs.ini`), your own names and the
+main file all count at once, and installing them in any order works.
+
+The main ini is not written by hand. The ELS pack's `LIVERY GENERATOR\build_livery_slots.py` turns the livery
 sheets into the numbered textures, ready to import into each car's `.ytd` with OpenIV, and writes the ini
 with the same numbers. It is read again whenever it changes, so a rebuild needs no restart. A livery the
 ini knows about but the car's `.ytd` does not have yet is said so, not skipped in silence.

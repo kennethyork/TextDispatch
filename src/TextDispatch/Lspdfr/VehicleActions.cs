@@ -73,14 +73,57 @@ namespace TextDispatch.Lspdfr
         }
 
         /// <summary>
-        /// How many liveries the game found for this car - its numbered sign textures. 0 when it has
-        /// none, which the native reports as -1.
+        /// How many liveries the game found for this car. Two kinds exist and a car has one or the other:
+        /// numbered sign textures in its .ytd (the pack's cars, and the game's own police cars), or liveries in
+        /// its mod kit (mod slot 48 - how most add-on police cars carry theirs). Sign liveries when there are
+        /// any, the mod kit's otherwise; 0 when it has neither.
         /// </summary>
         public static int LiveryCount(Vehicle vehicle)
         {
             if (vehicle == null || !vehicle.Exists()) return 0;
+            int signs = SignCount(vehicle);
+            return signs > 0 ? signs : ModCount(vehicle);
+        }
+
+        private const int LiveryModType = 48;
+
+        private static int SignCount(Vehicle vehicle)
+        {
             try { return Math.Max(0, (int)NativeFunction.Natives.GetVehicleLiveryCount<int>(vehicle)); }
             catch (Exception ex) { Log.Error("livery count", ex); return 0; }
+        }
+
+        private static int ModCount(Vehicle vehicle)
+        {
+            try
+            {
+                if (NativeFunction.Natives.GetVehicleModKit<int>(vehicle) < 0) NativeFunction.Natives.SetVehicleModKit(vehicle, 0);
+                return Math.Max(0, (int)NativeFunction.Natives.GetNumVehicleMods<int>(vehicle, LiveryModType));
+            }
+            catch { return 0; }
+        }
+
+        /// <summary>Whether this car's liveries are in its mod kit rather than its sign textures.</summary>
+        public static bool UsesModLiveries(Vehicle vehicle)
+        {
+            return vehicle != null && vehicle.Exists() && SignCount(vehicle) == 0 && ModCount(vehicle) > 0;
+        }
+
+        /// <summary>
+        /// The name a mod-kit livery carries in the game's text - "LSPD Slicktop", "Sheriff" - or null. Sign
+        /// liveries have no names; those come from the livery files, or from /livery name.
+        /// </summary>
+        public static string LiveryName(Vehicle vehicle, int number)
+        {
+            if (!UsesModLiveries(vehicle) || number < 1) return null;
+            try
+            {
+                string label = NativeFunction.Natives.GetModTextLabel<string>(vehicle, LiveryModType, number - 1);
+                if (string.IsNullOrEmpty(label)) return null;
+                string text = NativeFunction.Natives.GetFilenameForAudioConversation<string>(label);
+                return string.IsNullOrWhiteSpace(text) || text == "NULL" ? null : text.Trim();
+            }
+            catch { return null; }
         }
 
         /// <summary>
@@ -113,7 +156,11 @@ namespace TextDispatch.Lspdfr
         public static int Livery(Vehicle vehicle)
         {
             if (vehicle == null || !vehicle.Exists()) return 0;
-            try { return Math.Max(0, (int)NativeFunction.Natives.GetVehicleLivery<int>(vehicle) + 1); }
+            try
+            {
+                if (UsesModLiveries(vehicle)) return Math.Max(0, (int)NativeFunction.Natives.GetVehicleMod<int>(vehicle, LiveryModType) + 1);
+                return Math.Max(0, (int)NativeFunction.Natives.GetVehicleLivery<int>(vehicle) + 1);
+            }
             catch (Exception ex) { Log.Error("livery", ex); return 0; }
         }
 
@@ -122,6 +169,13 @@ namespace TextDispatch.Lspdfr
         {
             detail = null;
             if (vehicle == null || !vehicle.Exists()) { detail = "no vehicle"; return false; }
+
+            if (UsesModLiveries(vehicle))
+            {
+                NativeFunction.Natives.SetVehicleMod(vehicle, LiveryModType, number - 1, false);
+                detail = "livery " + number + " (mod kit)";
+                return true;
+            }
 
             NativeFunction.Natives.SetVehicleLivery(vehicle, number - 1);
             detail = "livery " + number;

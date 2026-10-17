@@ -7,7 +7,10 @@ namespace TextDispatch.Lspdfr
 {
     /// <summary>
     /// Which livery on which car belongs to which department: TextDispatch.liveries.ini, written by the
-    /// pack's LIVERY GENERATOR\build_livery_slots.py.
+    /// pack's LIVERY GENERATOR\build_livery_slots.py - and beside it any number of others, all read
+    /// together: TextDispatch.liveries.packs.ini, which the livery pack installer writes for whatever packs
+    /// a player has installed, and TextDispatch.liveries.mine.ini, the names given in game with
+    /// "/livery name". None of them is needed: without one, every livery a car has is still there by number.
     ///
     /// A car's liveries are numbered textures in its .ytd - stanier_sign_1, stanier_sign_2 ... - and the
     /// game knows them only by number. This file is what puts a department on each number, so that
@@ -18,8 +21,11 @@ namespace TextDispatch.Lspdfr
     {
         public const string FileName = "TextDispatch.liveries.ini";
 
+        /// <summary>The file "/livery name" writes - the player's own names, read after the others so they win.</summary>
+        public const string MineName = "TextDispatch.liveries.mine.ini";
+
         private static LiveryMap _current;
-        private static DateTime _stamp;
+        private static string _stamp;
 
         private readonly List<string> _departments = new List<string>();
         private readonly Dictionary<string, string> _names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -39,35 +45,81 @@ namespace TextDispatch.Lspdfr
         // have no liveries to change: bringing one is all it takes. [skins] says car = department.
         private readonly HashSet<string> _skins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        /// <summary>Where the file is looked for, whether or not it is there.</summary>
+        /// <summary>Where the main file is looked for, whether or not it is there.</summary>
         public string Location { get; private set; }
+
+        /// <summary>Every livery file that was read, in the order it was read.</summary>
+        public List<string> Files { get; private set; }
 
         public bool Found { get; private set; }
 
-        /// <summary>The map as the file says now - read again only when the file has changed.</summary>
+        /// <summary>The livery files in the plugin folder: the main one first, then the others by name, the player's own last.</summary>
+        private static List<string> FilesIn(string folder)
+        {
+            var files = new List<string>();
+            try
+            {
+                var main = Path.Combine(folder, FileName);
+                if (File.Exists(main)) files.Add(main);
+                var others = new List<string>(Directory.GetFiles(folder, "TextDispatch.liveries.*.ini"));
+                others.Sort(StringComparer.OrdinalIgnoreCase);
+                var mine = Path.Combine(folder, MineName);
+                foreach (var file in others)
+                    if (!file.Equals(mine, StringComparison.OrdinalIgnoreCase)) files.Add(file);
+                if (File.Exists(mine)) files.Add(mine);
+            }
+            catch { }
+            return files;
+        }
+
+        /// <summary>The map as the files say now - read again only when one of them has changed, come or gone.</summary>
         public static LiveryMap Current()
         {
-            var location = Path.Combine(Settings.PluginFolder(), FileName);
-            var stamp = DateTime.MinValue;
-            try { if (File.Exists(location)) stamp = File.GetLastWriteTimeUtc(location); }
-            catch { }
-
-            if (_current == null || stamp != _stamp ||
-                !string.Equals(_current.Location, location, StringComparison.OrdinalIgnoreCase))
+            var folder = Settings.PluginFolder();
+            var files = FilesIn(folder);
+            var stamp = new System.Text.StringBuilder(folder);
+            foreach (var file in files)
             {
-                _current = Load(location);
-                _stamp = stamp;
+                stamp.Append('|').Append(file);
+                try { stamp.Append('@').Append(File.GetLastWriteTimeUtc(file).Ticks); } catch { }
+            }
+
+            if (_current == null || stamp.ToString() != _stamp)
+            {
+                _current = Load(Path.Combine(folder, FileName), files);
+                _stamp = stamp.ToString();
             }
             return _current;
         }
 
-        private static LiveryMap Load(string location)
+        private static LiveryMap Load(string location, List<string> files)
         {
-            var map = new LiveryMap { Location = location };
+            var map = new LiveryMap { Location = location, Files = files };
+            foreach (var file in files) LoadFile(map, file);
+            if (map.Found)
+                Log.Line("liveries: " + map._models.Count + " car(s), " + map._departments.Count +
+                         " department(s), " + map._bodies.Count + " bodies, " + map._skins.Count + " skin(s) from " +
+                         string.Join(", ", files.ConvertAll(Path.GetFileName).ToArray()));
+            return map;
+        }
+
+        /// <summary>
+        /// A car section is a model name, or its hash as 0x1234ABCD - "/livery name" writes the hash for an
+        /// add-on car the game has no name for.
+        /// </summary>
+        private static uint HashOf(string model)
+        {
+            uint hash;
+            if (model.StartsWith("0x", StringComparison.OrdinalIgnoreCase) &&
+                uint.TryParse(model.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out hash))
+                return hash;
+            return Joaat(model);
+        }
+
+        private static void LoadFile(LiveryMap map, string location)
+        {
             try
             {
-                if (!File.Exists(location)) return map;
-
                 string section = null;
                 foreach (var raw in File.ReadAllLines(location))
                 {
@@ -97,14 +149,16 @@ namespace TextDispatch.Lspdfr
                     }
                     else if (section.Equals("bodies", StringComparison.OrdinalIgnoreCase))
                     {
-                        var cars = new List<string>();
+                        // Two files can name the same body: the cars are added to it, not put in its place.
+                        List<string> cars;
+                        if (!map._bodies.TryGetValue(key, out cars)) cars = new List<string>();
                         foreach (var part in value.Split(','))
                         {
                             var car = part.Trim();
                             if (car.Length == 0 || cars.Contains(car)) continue;
                             cars.Add(car);
                             map._bodyOf[car] = key;
-                            map._modelByHash[Joaat(car)] = car;
+                            map._modelByHash[HashOf(car)] = car;
                         }
                         if (cars.Count > 0) map._bodies[key] = cars;
                     }
@@ -118,7 +172,7 @@ namespace TextDispatch.Lspdfr
                             car = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                             map._cars[key] = car;
                             map._models.Add(key);
-                            map._modelByHash[Joaat(key)] = key;
+                            map._modelByHash[HashOf(key)] = key;
                         }
                         car[value] = 1;
                         map._skins.Add(key);
@@ -135,7 +189,7 @@ namespace TextDispatch.Lspdfr
                             car = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                             map._cars[section] = car;
                             map._models.Add(section);
-                            map._modelByHash[Joaat(section)] = section;
+                            map._modelByHash[HashOf(section)] = section;
                         }
                         car[key] = number;
                         if (!map._names.ContainsKey(key)) { map._departments.Add(key); map._names[key] = key; }
@@ -143,11 +197,139 @@ namespace TextDispatch.Lspdfr
                 }
 
                 map.Found = true;
-                Log.Line("liveries: " + map._models.Count + " car(s), " + map._departments.Count +
-                         " department(s), " + map._bodies.Count + " bodies, " + map._skins.Count + " skin(s) from " + location);
             }
-            catch (Exception ex) { Log.Error("liveries", ex); }
-            return map;
+            catch (Exception ex) { Log.Error("liveries (" + Path.GetFileName(location) + ")", ex); }
+        }
+
+        /// <summary>
+        /// Give a livery on a car a name, in the player's own file: "/livery name 3 Atlanta PD". The name
+        /// becomes a department /livery and /veh know. Returns the key it was filed under, or null.
+        /// </summary>
+        public static string Name(string model, int number, string name, out string problem)
+        {
+            problem = null;
+            var key = Slug(name);
+            if (key.Length == 0) { problem = "that name has no letters or numbers in it"; return null; }
+
+            var path = Path.Combine(Settings.PluginFolder(), MineName);
+            try
+            {
+                var lines = File.Exists(path) ? new List<string>(File.ReadAllLines(path)) : new List<string>
+                {
+                    "; Livery names given in game with /livery name. Read after every other TextDispatch.liveries file,",
+                    "; so a name here wins. '/livery unname <number>' takes one out; so does deleting the line."
+                };
+
+                Put(lines, "departments", key, name.Trim());
+                Remove(lines, model, number);
+                Put(lines, model, key, number.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                File.WriteAllLines(path, lines.ToArray());
+                return key;
+            }
+            catch (Exception ex) { problem = ex.Message; return null; }
+        }
+
+        /// <summary>Take the player's own name off a livery. False when there was none.</summary>
+        public static bool Unname(string model, int number)
+        {
+            var path = Path.Combine(Settings.PluginFolder(), MineName);
+            try
+            {
+                if (!File.Exists(path)) return false;
+                var lines = new List<string>(File.ReadAllLines(path));
+                if (!Remove(lines, model, number)) return false;
+                File.WriteAllLines(path, lines.ToArray());
+                return true;
+            }
+            catch { return false; }
+        }
+
+        /// <summary>
+        /// What a car is filed under: its section in a livery file when there is one, else the model name when
+        /// the game's name hashes back to the car, else its hash as 0x1234ABCD - an add-on car RPH has no name for.
+        /// </summary>
+        public string KeyFor(Vehicle vehicle)
+        {
+            var known = ModelOf(vehicle);
+            if (known != null) return known;
+            try
+            {
+                var hash = vehicle.Model.Hash;
+                var name = vehicle.Model.Name;
+                if (!string.IsNullOrEmpty(name) && Joaat(name) == hash) return name.ToLowerInvariant();
+                return "0x" + hash.ToString("X8");
+            }
+            catch { return null; }
+        }
+
+        /// <summary>"Atlanta PD (old)" -> "atlanta-pd-old": what a department key looks like.</summary>
+        public static string Slug(string text)
+        {
+            var slug = new System.Text.StringBuilder();
+            foreach (var c in (text ?? "").ToLowerInvariant())
+            {
+                if (char.IsLetterOrDigit(c)) slug.Append(c);
+                else if (slug.Length > 0 && slug[slug.Length - 1] != '-') slug.Append('-');
+            }
+            return slug.ToString().Trim('-');
+        }
+
+        /// <summary>Set key = value in a section, making the section when it is not there.</summary>
+        private static void Put(List<string> lines, string section, string key, string value)
+        {
+            var at = SectionAt(lines, section);
+            if (at < 0)
+            {
+                if (lines.Count > 0 && lines[lines.Count - 1].Trim().Length > 0) lines.Add("");
+                lines.Add("[" + section + "]");
+                lines.Add(key + " = " + value);
+                return;
+            }
+            var end = at + 1;
+            while (end < lines.Count && !lines[end].TrimStart().StartsWith("[")) end++;
+            for (var i = at + 1; i < end; i++)
+            {
+                var split = lines[i].IndexOf('=');
+                if (split > 0 && lines[i].Substring(0, split).Trim().Equals(key, StringComparison.OrdinalIgnoreCase))
+                {
+                    lines[i] = key + " = " + value;
+                    return;
+                }
+            }
+            var insert = end;
+            while (insert > at + 1 && lines[insert - 1].Trim().Length == 0) insert--;
+            lines.Insert(insert, key + " = " + value);
+        }
+
+        /// <summary>Take out whatever name a car's section gives livery `number`. True when one went.</summary>
+        private static bool Remove(List<string> lines, string section, int number)
+        {
+            var at = SectionAt(lines, section);
+            if (at < 0) return false;
+            var gone = false;
+            for (var i = at + 1; i < lines.Count && !lines[i].TrimStart().StartsWith("["); i++)
+            {
+                var split = lines[i].IndexOf('=');
+                int n;
+                if (split > 0 && int.TryParse(lines[i].Substring(split + 1).Trim(), out n) && n == number)
+                {
+                    lines.RemoveAt(i--);
+                    gone = true;
+                }
+            }
+            return gone;
+        }
+
+        private static int SectionAt(List<string> lines, string section)
+        {
+            for (var i = 0; i < lines.Count; i++)
+            {
+                var line = lines[i].Trim();
+                if (line.StartsWith("[") && line.EndsWith("]") &&
+                    line.Substring(1, line.Length - 2).Trim().Equals(section, StringComparison.OrdinalIgnoreCase))
+                    return i;
+            }
+            return -1;
         }
 
         /// <summary>The cars the file knows: the base cars and the cars that share their bodies first, then the copies.</summary>

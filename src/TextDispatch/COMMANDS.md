@@ -142,11 +142,17 @@ and on the nearest person when you are not on a stop.
 | `/veh help [text] [page]` | every department `/veh` takes on its own, as you would type it, by group - city police, county police, sheriffs, state, fire; a `*` has an old design too. Twenty lines a page; a word narrows it (`/veh help fire`); the whole list goes to the log |
 | `/livery` (`/paint`) | the liveries this car has, and which one it is wearing |
 | `/livery <department>` | repaint it - `sahp`, `San Andreas Highway Patrol`, or `highway` |
-| `/livery <number>` · `/livery next` · `/livery back` | by number, or step through them |
+| `/livery <number>` · `/livery next` · `/livery back` | by number, or step through them - on **any** car with one livery or more, named or not |
+| `/livery name <number> <name>` | give a livery a name, on any car: `/livery name 3 Atlanta PD`. From then on `/livery atlanta-pd` and `/veh <car> atlanta-pd` find it |
+| `/livery unname <number>` | take your name off it again |
 | `/liveries <car> [text] [page]` | every livery the car comes in, across all its copies: the department, its full name, and which copy carries it under which number. Twenty a page; a word narrows it; the whole list goes to the log |
 
-`/livery` acts on the car you are in, or the nearest one within 10m when you are on foot. Departments come
-from `Plugins\LSPDFR\TextDispatch.liveries.ini`, written by the ELS pack's `build_livery_slots.py`.
+`/livery` acts on the car you are in, or the nearest one within 10m when you are on foot. It works with
+any livery: the numbered sign textures in a car's `.ytd`, or a mod kit's liveries (how most add-on police
+cars carry them - those show the game's own names). Names come from every `TextDispatch.liveries*.ini` in
+`Plugins\LSPDFR`, read together: the main one your livery tools write, `TextDispatch.liveries.packs.ini`
+from the Patreon livery pack installer, and `TextDispatch.liveries.mine.ini` from `/livery name`. None is
+required.
 
 ---
 

@@ -1315,6 +1315,11 @@ namespace TextDispatch.Commands
         ///   /livery sahp         a department's livery (Tab completes the names)
         ///   /livery 7            a livery by number, including the ones the pack came with
         ///   /livery next|back    the next or previous one
+        ///   /livery name 3 Atlanta PD   give livery 3 a name, on any car - it is a department from then on
+        ///   /livery unname 3     take it off again
+        ///
+        /// Any car with one livery or more works, whatever made it: sign textures or a mod kit, the pack's
+        /// files, a Patreon pack, or none at all - a livery nobody named is still there by number.
         /// </summary>
         private void Livery(string argument)
         {
@@ -1322,12 +1327,7 @@ namespace TextDispatch.Commands
             if (vehicle == null) { _chat.Error("No car within 10m. Get in one, or stand next to it."); return; }
 
             var map = LiveryMap.Current();
-            var model = map.ModelOf(vehicle);
-            if (model == null)
-            {
-                try { model = vehicle.Model.Name; } catch { }
-                if (string.IsNullOrEmpty(model)) model = "car";
-            }
+            var model = map.KeyFor(vehicle) ?? "car";
 
             int count = VehicleActions.LiveryCount(vehicle);
             if (count == 0 && map.IsSkin(model))
@@ -1340,8 +1340,11 @@ namespace TextDispatch.Commands
             if (count == 0) { _chat.Error("The " + model + " has no liveries to change."); return; }
 
             int current = VehicleActions.Livery(vehicle);
-            var text = (argument ?? "").Trim().ToLowerInvariant();
-            if (text.Length == 0 || text == "list") { ListLiveries(map, model, count, current); return; }
+            var typed = (argument ?? "").Trim();
+            var text = typed.ToLowerInvariant();
+            if (text.Length == 0 || text == "list") { ListLiveries(map, model, count, current, vehicle); return; }
+
+            if (text.StartsWith("name ") || text == "name" || text.StartsWith("unname")) { NameLivery(vehicle, model, count, current, typed); return; }
 
             int number;
             if (text == "next" || text == "+") number = current < 1 ? 1 : current % count + 1;
@@ -1383,8 +1386,9 @@ namespace TextDispatch.Commands
             if (Plugin.Fleet != null) Plugin.Fleet.Settle(vehicle);
 
             var name = map.DepartmentAt(model, number);
-            _chat.Notice("The " + model + " is in " + (name == null ? "livery " + number : map.NameOf(name) + " livery") +
-                         " now (" + number + " of " + count + ").");
+            var label = name != null ? map.NameOf(name) + " livery" : VehicleActions.LiveryName(vehicle, number) ?? "livery " + number;
+            _chat.Notice("The " + model + " is in " + label + " now (" + number + " of " + count + ")." +
+                         (name == null ? " '/livery name " + number + " <name>' gives it a name." : ""));
             Log.Line("livery: " + model + " " + detail);
         }
 
@@ -1421,17 +1425,25 @@ namespace TextDispatch.Commands
             return true;
         }
 
-        private void ListLiveries(LiveryMap map, string model, int count, int current)
+        private void ListLiveries(LiveryMap map, string model, int count, int current, Vehicle vehicle)
         {
             var wearing = map.DepartmentAt(model, current);
-            _chat.Notice("The " + model + " has " + count + " liveries, and is wearing " +
+            _chat.Notice("The " + model + " has " + count + " liver" + (count == 1 ? "y" : "ies") + ", and is wearing " +
                          (current < 1 ? "none" : current + (wearing == null ? "" : " (" + map.NameOf(wearing) + ")")) + ".");
 
             var liveries = map.LiveriesOf(model);
             if (liveries.Count == 0)
             {
-                _chat.Notice("  No departments on file for it" + (map.Found ? "" : " - " + LiveryMap.FileName + " is not in Plugins\\LSPDFR") +
-                             ". /livery <number> or /livery next still change it.");
+                // Nobody has named them: they are still there by number, and a mod kit's carry the game's own names.
+                var line0 = new System.Text.StringBuilder();
+                for (var n = 1; n <= count && n <= 40; n++)
+                {
+                    var entry = n + " " + (VehicleActions.LiveryName(vehicle, n) ?? "");
+                    if (line0.Length > 0 && line0.Length + entry.Length > 70) { _chat.Notice("  " + line0); line0.Length = 0; }
+                    line0.Append(line0.Length > 0 ? "   " : "").Append(entry.Trim());
+                }
+                if (line0.Length > 0) _chat.Notice("  " + line0);
+                _chat.Notice("  /livery <number>  /livery next  - and '/livery name <number> <name>' names one, so /livery <name> and /veh " + model + " <name> find it.");
                 return;
             }
 
@@ -1457,7 +1469,49 @@ namespace TextDispatch.Commands
                 if (map.NumberFor(model, key) == 0) elsewhere++;
             if (elsewhere > 0)
                 _chat.Notice("  " + elsewhere + " more on other copies of this car: /veh " + map.BaseOf(model) + " <department> brings one.");
-            _chat.Notice("  /livery <department or number>   /livery next   - Tab completes the names.");
+            _chat.Notice("  /livery <department or number>   /livery next   /livery name <number> <name>   - Tab completes the names.");
+        }
+
+        /// <summary>"/livery name 3 Atlanta PD" and "/livery unname 3": the player's own names, on any car.</summary>
+        private void NameLivery(Vehicle vehicle, string model, int count, int current, string typed)
+        {
+            var words = typed.Split(new[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
+            var unname = words[0].Equals("unname", StringComparison.OrdinalIgnoreCase);
+
+            // The number can be left out: then it is the livery the car is wearing.
+            int number;
+            string name;
+            if (words.Length >= 2 && int.TryParse(words[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out number))
+                name = words.Length > 2 ? words[2].Trim() : "";
+            else
+            {
+                number = current;
+                name = typed.Substring(words[0].Length).Trim();
+            }
+
+            if (number < 1 || number > count)
+            {
+                _chat.Error("Usage: /livery name <1-" + count + "> <name>   e.g. /livery name 3 Atlanta PD   (or /livery unname 3)");
+                return;
+            }
+
+            if (unname)
+            {
+                _chat.Notice(LiveryMap.Unname(model, number)
+                    ? "Livery " + number + " on the " + model + " has no name of yours now."
+                    : "You had not named livery " + number + " on the " + model + ".");
+                return;
+            }
+
+            if (name.Length == 0) { _chat.Error("Name it: /livery name " + number + " <name>   e.g. /livery name " + number + " Atlanta PD"); return; }
+
+            string problem;
+            var key = LiveryMap.Name(model, number, name, out problem);
+            if (key == null) { _chat.Error("Could not save the name: " + problem); return; }
+
+            _chat.Notice("Livery " + number + " on the " + model + " is '" + name + "' now. /livery " + key + " paints it, /veh " + model + " " + key + " brings one.");
+            _chat.Notice("  Saved in " + LiveryMap.MineName + ", which TextDispatch reads beside any livery pack's file.");
+            Log.Line("livery: named " + model + " #" + number + " " + key + " = " + name);
         }
 
         /// <summary>
@@ -2013,7 +2067,7 @@ namespace TextDispatch.Commands
             if (kind == "liveries")
             {
                 var words = new List<string>(LiveryMap.Current().Departments);
-                words.AddRange(new[] { "next", "back", "list" });
+                words.AddRange(new[] { "next", "back", "list", "name", "unname" });
                 return words;
             }
 
