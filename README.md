@@ -90,8 +90,9 @@ assembly, so every callout you have is announced in text and can be started by n
   from an ini the ELS pack's livery generator writes alongside the textures. A car holds about thirty
   liveries, so the generator makes copies of each car to carry the rest, and `/veh` brings whichever
   copy has the one you asked for. `/veh atlanta` on its own brings a department in the car that suits
-  it, and `/veh atlanta-old` its old design; `/veh help` lists them all. The department you name is
-  the whole fleet's: every police car around you, and every one that turns up later, goes Atlanta too
+  it, and `/veh atlanta-old` its old design; `/veh help` lists them all. The police cars start each
+  session in the pack's San Andreas designs, never a real city's, and the department you name is the
+  whole fleet's: every police car around you, and every one that turns up later, goes Atlanta too
   until `/veh off`.
 - **A city on the radio.** Other units are heard going on scene and clearing; `/units` says where your
   backup is. **Tab** completes commands, callouts and names.

@@ -286,7 +286,7 @@ number, so they can be asked for by name:
 /veh police3 plain    the car as it came, in its own livery
 /veh atlanta          a department on its own, in the car that suits it - here an Interceptor
 /veh atlanta-old      the old design, on the Stanier;  /veh fulton county, /veh texas, /veh atlanta fire
-/veh off              every police car stops following the department /veh last named
+/veh off              every police car back in a San Andreas design, no real city's
 /veh help             every department, as you would type it - /veh help fire, /veh help 2
 /livery               what this car has, and which one it is wearing
 /livery bcso          repaint it
@@ -308,8 +308,14 @@ department on the fire truck - whichever copy carries it. A place is enough (`at
 a word no department has (`/veh adder`); the few civilian cars that share a city's name - buffalo, phoenix,
 tampa, washington - are `/veh phoenix plain`.
 
-**The whole fleet.** A department named with `/veh` - `/veh atlanta`, `/veh police3 sahp` - is every police
-car's from then on, not only the one you brought: the cars parked around you, the ones on patrol, backup on
+**The whole fleet.** The game and LSPDFR pick a police car's livery at random from everything on its
+texture, which since the livery builder is mostly real cities' designs - so TextDispatch starts every
+session with every police car in a San Andreas design instead: one the car came with, or one of the pack's
+own departments from `LIVERIES` (lspd, bcso, sahp ...), never one from `LIVERIES - REAL`. A car already in
+one is left so; one in a real city's is repainted in one of them at random.
+
+A department named with `/veh` - `/veh atlanta`, `/veh police3 sahp` - is every police car's from then on,
+not only the one you brought: the cars parked around you, the ones on patrol, backup on
 its way, the one you are sitting in, and every one that turns up later. A car whose own texture has the
 design is repainted. One that does not - a `police3` for Atlanta, which only `lvinterceptor2` carries - is
 swapped for the copy that does, in the same place at the same speed, with the same crew in the same seats,
@@ -321,8 +327,9 @@ A swap is a new car, so whatever held the old one - LSPDFR's backup, a callout -
 gone. Only cars crewed by nobody but cops, medics, firefighters and you are swapped; never the car you have
 stopped, one on a tow truck, or one a suspect is in; and a car whose crew has stepped out of it at a scene
 waits until they are back in it. A copy made from backup is let go when LSPDFR lets its officers go. The
-department is kept in `TextDispatch.ini` (`Fleet=`), so the force is still that department next session;
-`/veh off` clears it, and every swap is a line in the log.
+department lasts the session - the next one starts in the San Andreas designs again - and `/veh off` goes
+back to them now, swapping a copy that carries only real cities for its base car. Every swap is a line in
+the log.
 
 A car can carry only so many liveries - about thirty - and there are far more departments than that, so
 the ELS pack's `LIVERY GENERATOR\build_livery_copies.py` makes **copies** of each car: `lvinterceptor1`,

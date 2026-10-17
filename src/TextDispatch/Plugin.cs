@@ -64,7 +64,7 @@ namespace TextDispatch
         internal static PluginInventory Inventory { get { return _inventory; } }
         internal static RecordsLedger Records { get { return _records; } }
 
-        /// <summary>The department every police car is put in, and what puts them there. Null before startup.</summary>
+        /// <summary>What livery every police car wears, and what puts it on them. Null before startup.</summary>
         internal static Fleet Fleet { get { return _fleet; } }
 
         /// <summary>What other plugins can do - K9 units, spike strips, the checks they own.</summary>
@@ -168,7 +168,7 @@ namespace TextDispatch
 
                 _dispatch = new DispatchService(_chat, _api, _settings, _records, _shift);
                 _dialogue = new DialogueService(_chat, _api, _settings, _records);
-                _fleet = new Fleet(_settings, _api);
+                _fleet = new Fleet(_api);
                 _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records, _shift);
 
                 // Started before the box: until this is running, the keystrokes that spell a

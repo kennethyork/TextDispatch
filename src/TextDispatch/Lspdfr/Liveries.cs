@@ -180,6 +180,46 @@ namespace TextDispatch.Lspdfr
             return department != null && _names.ContainsKey(department);
         }
 
+        /// <summary>
+        /// Whether a department is a real city's design - LIVERIES - REAL, "LSPD - Atlanta style" - rather
+        /// than one of the pack's own San Andreas departments, lspd, bcso, sahp.
+        /// </summary>
+        public bool IsReal(string department)
+        {
+            return department != null && NameOf(department).EndsWith("style", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// The liveries on this car that are no real city's: the ones it came with - numbered below the
+        /// first department - and the San Andreas departments. Empty for a car the file does not number,
+        /// and for a copy that carries only real cities.
+        /// </summary>
+        public List<int> PlainLiveries(string model)
+        {
+            var list = new List<int>();
+            var liveries = LiveriesOf(model);
+            if (liveries.Count == 0) return list;
+
+            if (IsSkin(model))
+            {
+                if (!IsReal(liveries[0].Key)) list.Add(1);
+                return list;
+            }
+
+            for (int number = 1; number < liveries[0].Value; number++) list.Add(number);
+            foreach (var pair in liveries)
+                if (!IsReal(pair.Key)) list.Add(pair.Value);
+            return list;
+        }
+
+        /// <summary>The car with this body that has a livery no real city's: the one named first, then the others in order.</summary>
+        public string PlainCarrier(string model)
+        {
+            foreach (var car in ModelsFor(model))
+                if (PlainLiveries(car).Count > 0) return car;
+            return null;
+        }
+
         /// <summary>The model a car in the world is, by its hash - RPH has no name for an add-on model.</summary>
         public string ModelOf(Vehicle vehicle)
         {
