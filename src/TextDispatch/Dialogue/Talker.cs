@@ -9,7 +9,9 @@ namespace TextDispatch.Dialogue
     {
         Say,
         Whisper,
-        Shout
+        Shout,
+        Low,         // /low: said quietly, for the people right beside you
+        Megaphone    // /m: through the car's PA, carries twice as far as a shout
     }
 
     /// <summary>
@@ -176,10 +178,26 @@ namespace TextDispatch.Dialogue
             else Named[handle] = name;
         }
 
+        /// <summary>
+        /// Somebody from the officer's own records turning up again as this ped, or null - asked once per
+        /// ped, the first time anything needs their name. Set by the plugin, which can see the records.
+        /// </summary>
+        public static Func<int, string> Returning;
+
+        private static readonly HashSet<int> Asked = new HashSet<int>();
+
         public static string NameFor(int handle)
         {
             string named;
             if (Named.TryGetValue(handle, out named)) return named;
+
+            if (Returning != null && Asked.Add(handle))
+            {
+                string back = null;
+                try { back = Returning(handle); }
+                catch (Exception ex) { Log.Error("a returning person", ex); }
+                if (!string.IsNullOrEmpty(back)) { Named[handle] = back; return back; }
+            }
 
             var rng = new Random(handle);
             return FirstNames[rng.Next(FirstNames.Length)] + " " + LastNames[rng.Next(LastNames.Length)];

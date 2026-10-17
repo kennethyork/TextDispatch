@@ -38,6 +38,20 @@ namespace TextDispatch.Records
             public List<ShiftSummary> Shifts = new List<ShiftSummary>();
             public List<CaseAction> Actions = new List<CaseAction>();
             public ShiftSummary CurrentShift;
+
+            // 1.0.44: the world that remembers, and the career.
+            public List<FlagRecord> Flags = new List<FlagRecord>();
+            public List<CaseFile> Cases = new List<CaseFile>();
+            public List<PhoneMessage> Messages = new List<PhoneMessage>();
+            public List<string> Contacts = new List<string>();
+            public int NextCase;
+            public int ActiveCase;
+            public string PlayerDescription;
+            public int ChargedCount;
+            public int ReportsApproved;
+            public int ReportsReturned;
+            public int CasesClosed;
+            public string LastRank;
         }
 
         public static string PathIn(string folder)
@@ -71,13 +85,25 @@ namespace TextDispatch.Records
                     FollowUps = new List<FollowUp>(ledger.FollowUps),
                     Shifts = new List<ShiftSummary>(ledger.Shifts),
                     Actions = new List<CaseAction>(ledger.Actions),
-                    CurrentShift = shift == null ? null : shift.Current
+                    CurrentShift = shift == null ? null : shift.Current,
+                    Flags = new List<FlagRecord>(ledger.Flags),
+                    Cases = new List<CaseFile>(ledger.Cases),
+                    Messages = new List<PhoneMessage>(ledger.Messages),
+                    Contacts = new List<string>(ledger.Contacts),
+                    NextCase = ledger.NextCase,
+                    ActiveCase = ledger.ActiveCase,
+                    PlayerDescription = ledger.PlayerDescription,
+                    ChargedCount = ledger.ChargedCount,
+                    ReportsApproved = ledger.ReportsApproved,
+                    ReportsReturned = ledger.ReportsReturned,
+                    CasesClosed = ledger.CasesClosed,
+                    LastRank = ledger.LastRank
                 };
 
                 // Everyone the player has touched, and anyone whose record has changed from what the
                 // seed gave them. The seeded town comes back by itself; there is no need to store it.
                 foreach (var person in ledger.People)
-                    if (person.Met || person.Arrests > 0 || person.Citations > 0 || person.Notes.Count > 0)
+                    if (person.Met || person.Arrests > 0 || person.Citations > 0 || person.Notes.Count > 0 || person.PendingCharges.Count > 0)
                         file.People.Add(person);
 
                 foreach (var vehicle in ledger.Vehicles) file.Vehicles.Add(vehicle);
@@ -131,14 +157,46 @@ namespace TextDispatch.Records
 
             ledger.Bolos.Clear();
             if (file.Bolos != null) ledger.Bolos.AddRange(file.Bolos);
-            if (file.Reports != null) ledger.Reports.AddRange(file.Reports);
+            if (file.Reports != null)
+                foreach (var report in file.Reports)
+                {
+                    if (report == null) continue;
+                    if (report.Charges == null) report.Charges = new List<string>();
+                    ledger.Reports.Add(report);
+                }
             if (file.FollowUps != null)
                 foreach (var followUp in file.FollowUps)
-                    if (followUp != null) { if (followUp.Evidence == null) followUp.Evidence = new List<string>(); ledger.FollowUps.Add(followUp); }
+                    if (followUp != null)
+                    {
+                        if (followUp.Evidence == null) followUp.Evidence = new List<string>();
+                        if (followUp.Charges == null) followUp.Charges = new List<string>();
+                        ledger.FollowUps.Add(followUp);
+                    }
             if (file.Actions != null) ledger.Actions.AddRange(file.Actions);
             if (file.Shifts != null)
                 foreach (var shift in file.Shifts)
                     if (shift != null) { if (shift.Calls == null) shift.Calls = new List<string>(); ledger.Shifts.Add(shift); }
+
+            if (file.Flags != null) foreach (var flag in file.Flags) if (flag != null) ledger.Flags.Add(flag);
+            if (file.Cases != null)
+                foreach (var investigation in file.Cases)
+                {
+                    if (investigation == null) continue;
+                    if (investigation.People == null) investigation.People = new List<string>();
+                    if (investigation.Reports == null) investigation.Reports = new List<int>();
+                    if (investigation.Notes == null) investigation.Notes = new List<string>();
+                    ledger.Cases.Add(investigation);
+                }
+            if (file.Messages != null) foreach (var message in file.Messages) if (message != null) ledger.Messages.Add(message);
+            if (file.Contacts != null) foreach (var contact in file.Contacts) if (!string.IsNullOrEmpty(contact) && !ledger.Contacts.Contains(contact)) ledger.Contacts.Add(contact);
+            if (file.NextCase > ledger.NextCase) ledger.NextCase = file.NextCase;
+            ledger.ActiveCase = file.ActiveCase;
+            ledger.PlayerDescription = file.PlayerDescription;
+            ledger.ChargedCount = file.ChargedCount;
+            ledger.ReportsApproved = file.ReportsApproved;
+            ledger.ReportsReturned = file.ReportsReturned;
+            ledger.CasesClosed = file.CasesClosed;
+            ledger.LastRank = file.LastRank;
 
             ledger.Dirty = false;
 

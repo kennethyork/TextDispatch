@@ -345,12 +345,39 @@ namespace TextDispatch.Lspdfr
                     if (seen.Add(key)) yield return key;
         }
 
-        /// <summary>The car with this body that carries a department: the one named first, then its copies in order.</summary>
+        // How many liveries the game really has on a car the file promised more on - the pack's policeold2,
+        // whose texture is not the one the set was written into. Kept across reloads of the file: the
+        // textures change only when the game is started again.
+        private static readonly Dictionary<string, int> _short = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>The game sees only `count` liveries on this car; a department numbered above that is passed over on it.</summary>
+        public static void Short(string model, int count)
+        {
+            if (model != null) _short[model] = count;
+        }
+
+        /// <summary>Whether the game has been seen to have fewer liveries on this car than `number`.</summary>
+        public static bool Lacks(string model, int number)
+        {
+            int count;
+            return model != null && _short.TryGetValue(model, out count) && number > count;
+        }
+
+        /// <summary>
+        /// The car with this body that carries a department: the one named first, then its copies in order -
+        /// passing over a car the game has shown not to have that livery, unless no car has it.
+        /// </summary>
         public string Carrier(string model, string department)
         {
+            string fallback = null;
             foreach (var car in ModelsFor(model))
-                if (NumberFor(car, department) > 0) return car;
-            return null;
+            {
+                var number = NumberFor(car, department);
+                if (number < 1) continue;
+                if (!Lacks(car, number)) return car;
+                if (fallback == null) fallback = car;
+            }
+            return fallback;
         }
 
         /// <summary>

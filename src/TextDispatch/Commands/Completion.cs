@@ -30,7 +30,12 @@ namespace TextDispatch.Commands
             "coroner", "animal", "animalcontrol", "group", "dismiss", "standdown", "platecheck", "runplate",
             "pedcheck", "runped", "insurance", "reg", "registration", "breath", "breathalyzer", "dui", "drugs",
             "bridges", "frameworks", "chars", "characters", "rename", "plugins", "plugin", "pos", "corner",
-            "margin", "ui", "font", "fontsize", "lines", "clear", "cls"
+            "margin", "ui", "font", "fontsize", "lines", "clear", "cls",
+            // 1.0.44: roleplay, the penal code, the records that remember, the career, the phone, the radar
+            "ame", "attempt", "roll", "dice", "my", "examine", "ex", "look", "d", "dept", "department", "log", "chatlog",
+            "low", "quiet", "m", "megaphone", "mp", "charge", "addcharge", "charges", "sheet", "penal", "penalcode", "pc",
+            "flag", "note", "flags", "notes", "case", "cases", "investigation", "rollcall", "briefing", "rank", "career",
+            "certs", "certifications", "phone", "contacts", "text", "sms", "call", "inbox", "messages", "radar", "speed"
         };
 
         /// <summary>
@@ -43,7 +48,7 @@ namespace TextDispatch.Commands
             {
                 case "callout": case "start": case "calls": return "callouts";
                 case "person": case "name": case "warrant": case "wants": case "arrest": case "cite": case "ticket":
-                case "reports": case "talk":
+                case "reports": case "talk": case "charges": case "sheet": case "flags": case "notes":
                     return "people";
                 case "veh": case "spawn": return "vehicles";
                 case "livery": case "paint": return "liveries";
@@ -55,7 +60,13 @@ namespace TextDispatch.Commands
                 case "backup": return "swat|air|state|ems|fire|transport|code2|k9|spikes|roadblock";
                 case "search": return "car";
                 case "bolo": return "list|add|clear";
-                case "report": return "draft|general:";
+                case "report": return "draft|general:|export|fix";
+                case "log": case "chatlog": return "export|export all|export new";
+                case "radar": case "speed": return "on|off|lock|alert|clear";
+                case "case": case "cases": return "list|open|use|add|note|close|export";
+                case "examine": case "ex": case "look": return "me|car";
+                case "phone": return "add";
+                case "penal": case "pc": return "felony|misdemeanor|infraction|theft|weapon|drug|assault";
                 case "evidence": return "list";
                 case "fines": return "speeding|insurance|parking|red light";
                 default: return null;

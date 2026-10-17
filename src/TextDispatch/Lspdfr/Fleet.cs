@@ -360,9 +360,11 @@ namespace TextDispatch.Lspdfr
             int number = map.NumberFor(model, department);
             if (number < 1) return;
 
-            int count = VehicleActions.LiveryCount(vehicle);
+            int count = VehicleActions.LiveryCount(vehicle, number, fresh ? 1000 : 0);
             if (number > count)
             {
+                // Next scan, a copy of the car that does have it is brought in its place.
+                LiveryMap.Short(model, count);
                 Once("short " + model, "fleet: " + department + " is livery " + number + " on the " + model + ", but the game sees only " +
                                        count + " on it - rebuild and reinstall the pack");
                 return;

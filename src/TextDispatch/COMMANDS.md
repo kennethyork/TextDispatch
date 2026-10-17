@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.33, taken out of the router rather than remembered —
-**147 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.44, taken out of the router rather than remembered —
+**197 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -181,6 +181,106 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## GTA World on LSPDFR — new in 1.0.44
+
+The roleplay commands, paperwork that becomes forum posts, a world that remembers you, a career, a phone
+and a radar. Everything here is text — no voice, no extra UI.
+
+### Roleplay
+
+| | |
+|---|---|
+| `/low <text>` `/quiet` | say it quietly — about 5 m |
+| `/m <text>` `/megaphone` `/mp` | through the car's PA — twice a shout's range |
+| `/ame <action>` | an action shown **over your head** for a few seconds, and in the box as `> You …` |
+| `/attempt <action>` | GTA World's 50/50: *You attempt to force the door open and fail.* The result is binding |
+| `/roll [sides]` `/dice` | a die, out loud — d6 unless told otherwise |
+| `/examine` `/ex` `/look` | what you see: build, clothes, marks, manner, a smell of drink — or `/examine car` for its condition |
+| `/examine me` | your own description |
+| `/my <how you look>` | set it. The people you talk to see it and can remark on it. `/my clear` removes it |
+| `/d <text>` `/dept` | the inter-department channel — LSSD, SAHP, LSFD answer |
+
+### Paperwork as forum posts
+
+| | |
+|---|---|
+| `/log` | how many lines this session has, and the options |
+| `/log export` | the roleplay (speech, `/me`, `/do`, radio) as a chat log **and** as forum BBCode in the box's colours |
+| `/log export all` · `/log export new` | everything, notices included · only what is new since the last export |
+| `/report export [n]` | a report as a GTA World arrest/incident report form in BBCode — officer, subject, charges by section, evidence, statement, narrative — with a plain copy under it |
+| `/report fix <n> <more>` | add to a report the sergeant sent back, and send it again |
+
+Files go to `Plugins\LSPDFR\TextDispatch Logs\` and `Plugins\LSPDFR\TextDispatch Reports\`.
+`/report draft` now writes in the first person, and puts the charge sheet in.
+
+### The penal code
+
+| | |
+|---|---|
+| `/penal [word]` `/pc` | the San Andreas penal code: section, title, class, fine, days. `/penal felony`, `/penal theft`, `/penal 4-` |
+| `/charge <charge or section>` | put it on the charge sheet of whoever is in front of you — `/charge robbery`, `/charge 4-03` |
+| `/charge <name>: <charge>` | on somebody by name |
+| `/charges [name]` `/sheet` | the sheet and its totals · `/charges clear` starts again |
+| `/arrest` | now books **everything on the sheet**. `/arrest for <charge>` adds that charge first; a warrant arrest is PC 4-08 |
+
+A guilty plea is sentenced from the sheet (a third off what the code says), and the exported report lists
+the charges by section.
+
+### The world that remembers
+
+| | |
+|---|---|
+| `/flag <name or plate>: <warning>` | a warning on file — *known to carry a knife*. Dispatch reads it out when they or the plate are stopped |
+| `/note <name or plate>: <text>` | a note for the record. Both work on whoever is in front of you without the name |
+| `/notes [name or plate]` `/flags` | what is on file · `/flag clear <subject>` |
+| `/case open <title>` | open an investigation. Reports you file go under it |
+| `/case` · `/case <n>` | the list · one case: people, reports, notes |
+| `/case use <n>` · `/case add <n> [name]` · `/case note <n> <text>` | work it · name somebody in it · note on it |
+| `/case close <n> <outcome>` · `/case export <n>` | close it · write the whole case as a forum post |
+
+**People come back.** Now and then somebody you have arrested, ticketed or written up turns up again as a
+new face in the street — rarely, at most once in eight minutes, never the same person twice a session.
+When you are face to face: *(( You recognise Marcus Reyes - you have arrested them before, last for assault. ))*
+They remember you too, and a stop on them says so.
+
+### Department life
+
+| | |
+|---|---|
+| `/rollcall` `/briefing` | the watch sergeant's briefing — assignment, BOLOs, who is wanted, open cases, the DA, reports sent back. Read by itself a few seconds into each shift |
+| `/rank` `/career` | your rank, points and what they came from |
+| `/certs` | Traffic, K9, Air support, Detective, FTO — and what each still needs |
+
+**The sergeant reviews every report** a minute or two after it is filed: first person, long enough, the
+charge said, the evidence listed, the rights mentioned when there is a statement. Approved, approved with
+a note, or **sent back** — and a report sent back does not count for the DA until `/report fix` puts it right.
+Promotions are announced at the end of a shift. `RequireCertifications=1` in the ini makes `/k9` and air
+support wait for their certification.
+
+### Phone
+
+| | |
+|---|---|
+| `/phone` `/contacts` | your contacts: Sgt. Kowalski, Det. Ramirez, the DA's Office, the Tow Yard, Lucky the informant, and people you saved |
+| `/text <contact> <message>` `/sms` | a text. The department answers from your records; people you met answer as themselves (with the model if it is running) |
+| `/call <contact> <what you say>` | the same, as a call |
+| `/inbox [contact]` `/messages` | the last ten messages |
+| `/phone add <name>` | save somebody you have met |
+
+On a shift some of them text first: the DA chasing a missing report, the sergeant with one sent back,
+the detective on your case, Lucky with a name — or a plate, which becomes a BOLO. `PhoneTips=0` stops it.
+
+### Radar
+
+| | |
+|---|---|
+| `/radar` `/speed` | read both antennas once: patrol speed, and the strongest target front and rear — speed, model, plate, distance, closing or going away |
+| `/radar lock` | hold the reading. `/cite speeding` puts the locked speed on the ticket and into evidence |
+| `/radar on` · `/radar off` | the front antenna watches, beeps and fast-locks anything over the alert speed |
+| `/radar alert <mph>` · `/radar clear` | set the alert speed (75 by default) · drop the lock |
 
 ---
 

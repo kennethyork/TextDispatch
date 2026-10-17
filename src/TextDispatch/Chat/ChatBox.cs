@@ -18,7 +18,8 @@ namespace TextDispatch.Chat
         Me,
         Do,
         Notice,
-        Error
+        Error,
+        Phone
     }
 
     public sealed class ChatLine
@@ -169,6 +170,9 @@ namespace TextDispatch.Chat
             // not in question when somebody reports that the box is spamming.
             Log.Line("box " + channel + ": " + (string.IsNullOrEmpty(tag) ? "" : tag + " ") + text);
 
+            // And kept for /log, which writes the session out as a chat log a forum post can carry.
+            ChatLog.Add(channel, tag, text);
+
             lock (_gate)
             {
                 _lines.Add(new ChatLine { Channel = channel, Tag = tag, Text = text });
@@ -184,6 +188,7 @@ namespace TextDispatch.Chat
         public void Local(string tag, string text) { Write(ChatChannel.Local, tag, text); }
         public void Me(string who, string text) { Write(ChatChannel.Me, "", "* " + who + " " + text); }
         public void Do(string text) { Write(ChatChannel.Do, "", "(( " + text + " ))"); }
+        public void Phone(string tag, string text) { Write(ChatChannel.Phone, tag, text); }
 
         /// <summary>
         /// A line with GTA's ~tokens~ taken out of it.
@@ -273,6 +278,7 @@ namespace TextDispatch.Chat
                 case ChatChannel.Do: return Color.FromArgb(255, 176, 176, 176);
                 case ChatChannel.Notice: return Color.FromArgb(255, 255, 214, 122);
                 case ChatChannel.Error: return Color.FromArgb(255, 255, 122, 122);
+                case ChatChannel.Phone: return Color.FromArgb(255, 245, 215, 110);
                 default: return Color.FromArgb(255, 236, 236, 236);
             }
         }

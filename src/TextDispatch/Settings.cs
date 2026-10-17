@@ -170,6 +170,15 @@ namespace TextDispatch
         /// <summary>Whether dispatch sometimes sends the player after somebody from their own records who has a warrant.</summary>
         public bool WarrantCalls = true;
 
+        /// <summary>
+        /// Whether the K9 and air support need their certification first (/certs). Off by default:
+        /// a career is something to show, and it should not take away what an install could already do.
+        /// </summary>
+        public bool RequireCertifications;
+
+        /// <summary>Whether contacts text the player now and then on a shift - tips, a detective, the DA.</summary>
+        public bool PhoneTips = true;
+
         // ---------------------------------------------------------------- load
 
         /// <summary>
@@ -192,7 +201,8 @@ namespace TextDispatch
             "aitemperature", "aihistorylines", "openkey", "chatter", "blockothermodskeys",
             "hidehardwarekeys", "chatposition", "chatmargin",
             "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange",
-            "autocallouts", "autocalloutseconds", "autoaccept", "radiotraffic", "warrantcalls"
+            "autocallouts", "autocalloutseconds", "autoaccept", "radiotraffic", "warrantcalls",
+            "requirecertifications", "phonetips"
         };
 
         public static Settings Load()
@@ -263,7 +273,9 @@ namespace TextDispatch
                         case "autocalloutseconds": settings.AutoCalloutSeconds = AsInt(value, settings.AutoCalloutSeconds); break;
                         case "autoaccept": settings.AutoAccept = AsBool(value, settings.AutoAccept); break;
                         case "radiotraffic": settings.RadioTraffic = AsBool(value, settings.RadioTraffic); break;
-                        case "warrantcalls": settings.WarrantCalls = AsBool(value, settings.WarrantCalls); break;                    }
+                        case "warrantcalls": settings.WarrantCalls = AsBool(value, settings.WarrantCalls); break;
+                        case "requirecertifications": settings.RequireCertifications = AsBool(value, settings.RequireCertifications); break;
+                        case "phonetips": settings.PhoneTips = AsBool(value, settings.PhoneTips); break;                    }
                 }
 
                 // A file written by an older version is missing whatever was added since, and answers
@@ -378,7 +390,12 @@ namespace TextDispatch
                     "RadioTraffic=" + (settings.RadioTraffic ? "1" : "0"),
                     "; WarrantCalls=1: dispatch sometimes sends you after somebody from your own records who",
                     "; has a warrant now. /warrants lists them; /warrants serve sends you after one.",
-                    "WarrantCalls=" + (settings.WarrantCalls ? "1" : "0")
+                    "WarrantCalls=" + (settings.WarrantCalls ? "1" : "0"),
+                    "; RequireCertifications=1: /k9 and air support wait until you hold the certification",
+                    "; (/certs). 0 lets anybody use them, which is the default.",
+                    "RequireCertifications=" + (settings.RequireCertifications ? "1" : "0"),
+                    "; PhoneTips=1: contacts text you now and then on a shift - an informant, a detective, the DA.",
+                    "PhoneTips=" + (settings.PhoneTips ? "1" : "0")
                 });
             }
             catch (Exception ex) { Log.Error("write settings", ex); }

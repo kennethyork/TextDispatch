@@ -7,7 +7,7 @@ namespace TextDispatch.Records
     /// <summary>
     /// A report written from what actually happened: the call, who it was about, and what the officer
     /// did to them, in order - the searches, the evidence, the rights, what they said, the arrest. It is
-    /// a draft: it goes into the box for the player to finish in their own words, never straight onto
+    /// a draft, in the first person the way a sergeant wants it: it goes into the box for the player to finish in their own words, never straight onto
     /// file, because a report is the officer's account and not the plugin's.
     /// </summary>
     public static class ReportDraft
@@ -19,7 +19,7 @@ namespace TextDispatch.Records
         {
             var text = new StringBuilder();
 
-            if (!string.IsNullOrEmpty(call)) text.Append("Responded to ").Append(call).Append(". ");
+            if (!string.IsNullOrEmpty(call)) text.Append("I responded to ").Append(call).Append(". ");
 
             var actions = new List<CaseAction>();
             foreach (var action in ledger.Actions)
@@ -36,7 +36,7 @@ namespace TextDispatch.Records
 
             if (subject != null)
             {
-                text.Append("Made contact with ").Append(subject.Name);
+                text.Append("I made contact with ").Append(subject.Name);
                 if (subject.Age > 0) text.Append(", ").Append(subject.Age);
                 text.Append(". ");
                 if (subject.Wanted && !string.IsNullOrEmpty(subject.WarrantFor))
@@ -44,13 +44,21 @@ namespace TextDispatch.Records
             }
 
             foreach (var action in actions)
-                text.Append(Sentence(action.Text)).Append(' ');
+                text.Append(Sentence("I " + action.Text)).Append(' ');
 
             if (subject != null)
             {
                 var evidence = ledger.EvidenceOn(subject);
                 if (evidence.Count > 0)
-                    text.Append("Evidence: ").Append(string.Join("; ", evidence.ToArray())).Append(". ");
+                    text.Append("Evidence recovered: ").Append(string.Join("; ", evidence.ToArray())).Append(". ");
+
+                // The charge sheet, by section - what the sergeant looks for first.
+                var charges = new List<string>(subject.PendingCharges);
+                var open = ledger.OpenCase(subject);
+                if (open != null && open.Charges != null) foreach (var code in open.Charges) if (!charges.Contains(code)) charges.Add(code);
+                if (charges.Count > 0)
+                    text.Append(open != null ? "They were booked on " : "They are to be charged with ")
+                        .Append(PenalCode.Describe(charges)).Append(". ");
             }
 
             if (subject == null && actions.Count == 0 && string.IsNullOrEmpty(call))

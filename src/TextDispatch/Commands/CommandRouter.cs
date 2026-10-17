@@ -18,7 +18,7 @@ namespace TextDispatch.Commands
     /// leading slash is a command. Status codes are accepted bare - typing "10-97" is radio traffic,
     /// not a command - because that is how an officer actually talks.
     /// </summary>
-    internal sealed class CommandRouter
+    internal sealed partial class CommandRouter
     {
         private readonly ChatBox _chat;
         private readonly LspdfrApi _api;
@@ -27,6 +27,9 @@ namespace TextDispatch.Commands
         private readonly Settings _settings;
         private readonly RecordsLedger _records;
         private readonly ShiftLog _shift;
+
+        /// <summary>The officer's phone. Set by the plugin after it is built.</summary>
+        internal PhoneService Phone;
 
         /// <summary>The one job marker this plugin has on the map, so asking for another does not leave a trail.</summary>
         private static Blip _jobBlip;
@@ -123,6 +126,19 @@ namespace TextDispatch.Commands
                 case "ooc": _chat.Write(ChatChannel.Do, "", "(( OOC: " + argument + " ))"); return;
                 case "r":
                 case "radio": _dispatch.Say(argument); return;
+                case "ame": Ame(argument); return;
+                case "attempt": Attempt(argument); return;
+                case "roll":
+                case "dice": Roll(argument); return;
+                case "my": My(argument); return;
+                case "examine":
+                case "ex":
+                case "look": Examine(argument); return;
+                case "d":
+                case "dept":
+                case "department": DepartmentRadio(argument); return;
+                case "log":
+                case "chatlog": ChatLogCommand(argument); return;
 
                 // ---------------------------------------------------- talking to people
                 case "s":
@@ -132,6 +148,11 @@ namespace TextDispatch.Commands
                 case "shout":
                 case "y":
                 case "yell": _dialogue.Say(argument, SpeechMode.Shout); return;
+                case "low":
+                case "quiet": _dialogue.Say(argument, SpeechMode.Low); return;
+                case "m":
+                case "megaphone":
+                case "mp": _dialogue.Say(argument, SpeechMode.Megaphone); return;
                 case "who": _dialogue.WhoIsAround(); return;
                 case "talk": TalkTo(argument); return;
                 case "endtalk": _dialogue.StopTalking(); return;
@@ -235,6 +256,35 @@ namespace TextDispatch.Commands
                 case "interview":
                 case "question": InterviewSubject(); return;
                 case "fines": ListFines(argument); return;
+                case "charge":
+                case "addcharge": AddCharge(argument); return;
+                case "charges":
+                case "sheet": ListCharges(argument); return;
+                case "penal":
+                case "penalcode":
+                case "pc": ListPenalCode(argument); return;
+                case "flag": FlagCommand(argument, "flag"); return;
+                case "note": FlagCommand(argument, "note"); return;
+                case "flags":
+                case "notes": ListFlags(argument); return;
+                case "case":
+                case "cases":
+                case "investigation": CaseCommand(argument); return;
+                case "rollcall":
+                case "briefing": _dispatch.RollCall(); return;
+                case "rank":
+                case "career": ShowRank(); return;
+                case "certs":
+                case "certifications": ShowCertifications(); return;
+                case "phone":
+                case "contacts": PhoneCommand(argument); return;
+                case "text":
+                case "sms": TextCommand(argument, false); return;
+                case "call": TextCommand(argument, true); return;
+                case "inbox":
+                case "messages": Inbox(argument); return;
+                case "radar":
+                case "speed": RadarCommand(argument); return;
                 case "units": ListUnits(); return;
                 case "warrants": Warrants(argument); return;
                 case "pursuit": StartPursuit(); return;
@@ -245,7 +295,7 @@ namespace TextDispatch.Commands
 
                 // ---------------------------------------------------- features other plugins own
                 case "k9":
-                case "dog": BridgeAction("k9"); return;
+                case "dog": if (Certified("k9", "K9 handler")) BridgeAction("k9"); return;
                 case "spikes":
                 case "spikestrips":
                 case "stingers": BridgeAction("spikes"); return;
@@ -702,6 +752,7 @@ namespace TextDispatch.Commands
                 case "swat": case "noose":
                     response = "Code3"; unit = "SwatTeam"; spoken = "SWAT"; break;
                 case "air": case "helicopter":
+                    if (!Certified("air", "Air support observer")) return;
                     response = "Code3"; unit = "AirUnit"; spoken = "air support"; break;
                 case "state":
                     response = "Code3"; unit = "StateUnit"; spoken = "a state unit"; break;
@@ -1113,6 +1164,29 @@ namespace TextDispatch.Commands
                 return;
             }
 
+            // The file can promise a livery the car's texture does not have - the pack's policeold2 has none.
+            // Then the car is marked short and the next copy that carries the department is brought instead.
+            while (department != null && !map.IsSkin(carrier))
+            {
+                int number = map.NumberFor(carrier, department);
+                int count = VehicleActions.LiveryCount(spawned, number, 1000);
+                if (number <= count) break;
+
+                LiveryMap.Short(carrier, count);
+                var other = named != null ? map.CarFor(department) : map.Carrier(carrier, department);
+                if (other == null || other.Equals(carrier, StringComparison.OrdinalIgnoreCase) || LiveryMap.Lacks(other, map.NumberFor(other, department)))
+                    break;
+
+                Log.Line("livery: " + carrier + " has only " + count + " liveries, bringing the " + other + " for " + department);
+                Vehicle replacement;
+                string again;
+                if (!VehicleActions.Spawn(other, out replacement, out again)) break;
+                spawned.Delete();
+                spawned = replacement;
+                carrier = other;
+                detail = again;
+            }
+
             // A department asked for is the whole fleet's now. Set in the same frame the car was made in,
             // and before it is settled, so the fleet never sees it under the department it had before.
             var joined = asked && department != null && fleet != null &&
@@ -1329,9 +1403,10 @@ namespace TextDispatch.Commands
             }
 
             int number = map.NumberFor(model, department);
-            int count = VehicleActions.LiveryCount(vehicle);
+            int count = VehicleActions.LiveryCount(vehicle, number, 1000);
             if (number > count)
             {
+                LiveryMap.Short(model, count);
                 if (!quiet)
                     _chat.Error(map.NameOf(department) + " is livery " + number + " on the " + model + ", but the game sees only " +
                                 count + " on it: its texture file is not the one the livery builder made. Rebuild and reinstall the pack.");
@@ -1499,6 +1574,10 @@ namespace TextDispatch.Commands
 
             // Looked up face to face is dealt with: kept on file, and who a /report is about by default.
             _records.Touch(person);
+
+            // Somebody you have dealt with before, back again - said once, the first time you are face to face.
+            var recognised = _records.Recognise(person);
+            if (recognised != null) _chat.Do(recognised);
             return person;
         }
 
@@ -1547,6 +1626,13 @@ namespace TextDispatch.Commands
             if (reports.Count > 0)
                 _chat.Notice("  " + reports.Count + " report(s) on file - /reports " + person.Name.Split(' ')[0]);
 
+            ShowFlags(person.Name);
+            if (person.PendingCharges.Count > 0)
+                _chat.Notice("  charge sheet being written: " + PenalCode.Describe(person.PendingCharges) + " - /arrest books it");
+            foreach (var file in _records.Cases)
+                if (file.Closed == null && file.People.Contains(person.Name))
+                    _chat.Notice("  named in open case #" + file.Number + " - " + file.Title);
+
             foreach (var vehicle in _records.Vehicles)
             {
                 if (!string.Equals(vehicle.OwnerName, person.Name, StringComparison.OrdinalIgnoreCase)) continue;
@@ -1581,6 +1667,7 @@ namespace TextDispatch.Commands
             var owner = _records.FindPerson(record.OwnerName);
             if (owner != null && owner.Wanted)
                 _chat.Notice("  FLAG: registered owner has an outstanding warrant");
+            ShowFlags(record.Plate);
         }
 
         private void WarrantLookup(string argument)
@@ -1654,8 +1741,18 @@ namespace TextDispatch.Commands
                 return;
             }
 
-            var offence = charge ??
-                          (person.Wanted && !string.IsNullOrEmpty(person.WarrantFor) ? person.WarrantFor : "booking");
+            // A charge named here goes on the sheet when the penal code knows it; then the sheet is the offence.
+            if (charge != null)
+            {
+                var known = PenalCode.Find(charge);
+                if (known != null && !person.PendingCharges.Contains(known.Code)) person.PendingCharges.Add(known.Code);
+            }
+            if (person.PendingCharges.Count == 0 && charge == null && person.Wanted)
+            {
+                var warrant = PenalCode.ByCode("4-08");
+                if (warrant != null) person.PendingCharges.Add(warrant.Code);
+            }
+            var offence = person.PendingCharges.Count > 0 ? PenalCode.Describe(person.PendingCharges) : charge ?? "booking";
             _chat.Notice(_records.RecordArrest(person, offence, _dispatch.ReportCallName));
             _shift.Arrest();
 
@@ -1703,6 +1800,18 @@ namespace TextDispatch.Commands
             var entry = FineSchedule.Find(offence);
             var fine = named ?? (entry != null ? entry.Fine : FineSchedule.Default);
             var written = entry != null && named == null ? entry.Offence : offence;
+
+            // A speeding ticket rests on the radar: the locked speed goes on the citation and the report.
+            if (written.IndexOf("speed", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                var locked = LockFor(_api.PulloverVehicle());
+                if (locked != null)
+                {
+                    written += " (radar: " + locked.Mph + " mph, " + (locked.Front ? "front" : "rear") + " antenna, locked " + locked.At.ToString("HH:mm") + ")";
+                    _records.AddEvidence(person, "radar lock: " + locked.Model + " " + locked.Plate + " at " + locked.Mph + " mph", _dispatch.ReportCallName, false);
+                }
+                else _chat.Notice("  No radar lock on this car - '/radar lock' before the stop puts the speed on the ticket.");
+            }
 
             _chat.Notice(_records.IssueCitation(person, written, fine, _dispatch.ReportCallName));
             if (entry == null && named == null)
@@ -2070,6 +2179,14 @@ namespace TextDispatch.Commands
         private void FileReport(string argument)
         {
             var text = (argument ?? "").Trim();
+
+            if (text.StartsWith("export", StringComparison.OrdinalIgnoreCase)) { ExportReport(text.Substring(6).Trim()); return; }
+            if (text.StartsWith("fix ", StringComparison.OrdinalIgnoreCase) || text.Equals("fix", StringComparison.OrdinalIgnoreCase))
+            {
+                FixReport(text.Substring(3).Trim());
+                return;
+            }
+
             // A draft from what was actually done, put in the box for the officer to finish and send.
             if (text.Equals("draft", StringComparison.OrdinalIgnoreCase) || text.StartsWith("draft ", StringComparison.OrdinalIgnoreCase))
             {
@@ -2132,6 +2249,8 @@ namespace TextDispatch.Commands
 
             _chat.Me("You", "write up the report.");
             Log.Line("report #" + report.Number + ": " + (report.Subject ?? "general") + " / " + (report.Call ?? "no call") + " - " + report.Text);
+            _chat.Notice("  " + (report.Case != 0 ? "Filed under case #" + report.Case + ". " : "") +
+                         "The sergeant reviews it in a minute or two. '/report export " + report.Number + "' writes it as a forum post.");
             _dispatch.Tell("Copy " + _dispatch.Unit + ", report #" + report.Number + " is on file" +
                            (subject != null ? " for " + subject.Name : "") +
                            (call != null ? ", on the " + call + " call" : "") + "." +
@@ -2164,7 +2283,9 @@ namespace TextDispatch.Commands
             {
                 var body = report.Text.Length > 110 ? report.Text.Substring(0, 107) + "..." : report.Text;
                 _chat.Notice("  #" + report.Number + "  " + report.When + "  " + (report.Call ?? "no call") +
-                             "  -  " + (report.Subject ?? "general") + ": " + body);
+                             "  -  " + (report.Subject ?? "general") + ": " + body +
+                             (report.Review == "returned" ? "  [SENT BACK: " + report.ReviewNotes + "]"
+                              : report.Review == null && report.ReviewDueTicks > 0 ? "  [with the sergeant]" : ""));
             }
         }
 
@@ -2692,7 +2813,8 @@ namespace TextDispatch.Commands
         {
             _chat.Notice("TextDispatch - LSPDFR through a chat box.");
             _chat.Notice("  Talk:     type anything to speak aloud - people nearby answer in text");
-            _chat.Notice("            /w <text> whisper   /shout <text> yell   /me <action>   /do <text>");
+            _chat.Notice("            /w whisper  /low quietly  /shout yell  /m megaphone  /me <action>  /ame <action> over your head  /do <text>");
+            _chat.Notice("  RP:       /attempt <action>  /roll [sides]  /examine [me|car]  /my <how you look>  /d <text> other departments");
             _chat.Notice("            /who  list who is nearby    /talk <n>  speak to one of them");
             _chat.Notice("  Radio:    /r <text>  or just type a status code below");
             _chat.Notice("  Status:   10-8  10-7  10-97  10-98  10-6  code 3  code 4");
@@ -2703,6 +2825,11 @@ namespace TextDispatch.Commands
             _chat.Notice("            /id  /frisk  /search car  /cuff  /detain  /release  /record  /owner  /transport");
             _chat.Notice("            (all of those act on the driver you stopped)");
             _chat.Notice("  Paperwork: /report <what happened>  /report draft  /reports [name]  /court  - what the courts still owe you");
+            _chat.Notice("            /report export [n]  as a forum post   /report fix <n> <more>  when the sergeant sends it back   /log export  the chat log");
+            _chat.Notice("  Charges:  /charge <charge or section>  /charges [clear]  /penal [word]  - then /arrest books the whole sheet");
+            _chat.Notice("  Records:  /flag <name or plate>: <warning>  /note ...  /notes [name]  /case [open|use|add|note|close|export]");
+            _chat.Notice("  Career:   /rollcall  /rank  /certs     Phone: /phone  /text <who> <msg>  /call <who> <msg>  /inbox");
+            _chat.Notice("  Radar:    /radar  read both antennas   /radar lock   /radar on|off   /radar alert <mph>");
             _chat.Notice("  The case: /evidence [item]  /miranda  /interview  - evidence and a statement after Miranda help a charge stick");
             _chat.Notice("  Shift:    /status  /shift  /shifts  /units  /warrants [serve <name>]   (10-8 starts a shift, 10-7 ends it)");
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");

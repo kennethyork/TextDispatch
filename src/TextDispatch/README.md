@@ -426,6 +426,33 @@ arrests, citations, searches and reports, and files it. `/status` is the one-lin
 > recovery is arranged. A command that only printed text would be a service pretending to happen.
 > `/detain` uses LSPDFR's own stopped state, and `/release` takes the cuffs off and clears their tasks.
 
+### GTA World on LSPDFR (1.0.44)
+
+What a text roleplay server has that a single-player mod can honestly rebuild: the paperwork, a world
+that remembers, a career, a phone. The full tables are in [COMMANDS.md](COMMANDS.md).
+
+- **Roleplay commands.** `/low`, `/m` (megaphone), `/ame` (an action shown over your head), `/attempt`
+  (the 50/50 for what the game cannot decide), `/roll`, `/examine` (people and cars described in text),
+  `/my` (your own description, which the people you talk to see), `/d` (the inter-department channel).
+- **Paperwork that leaves the game.** `/log export` writes the session as a chat log and as forum BBCode in
+  the box's colours. `/report export` writes a report as a GTA World arrest report form - officer, subject,
+  charges by section, evidence, statement, narrative.
+- **The penal code.** `/penal`, `/charge`, `/charges`: numbered San Andreas charges with a class, a fine and
+  days. `/arrest` books the whole sheet, and a plea is sentenced from it.
+- **The sergeant reads your reports.** Each one is reviewed a minute or two after it is filed and approved,
+  approved with a note, or sent back - and one sent back does not count for the DA until `/report fix`.
+- **Roll call, rank and certifications.** A briefing at the start of each watch from what is on file;
+  a rank from what you have done (`/rank`), promotions at the end of a shift, and certifications (`/certs`)
+  that can gate K9 and air support with `RequireCertifications=1`.
+- **The world remembers.** `/flag` and `/note` on people and plates (dispatch reads flags out on a stop),
+  investigations with `/case`, and people you have booked turning up again in the street - and recognising you.
+- **Phone.** `/text`, `/call`, `/inbox` with your sergeant, a detective, the DA, the tow yard, an informant
+  and people you have met. On a shift some of them text first; an informant's plate becomes a BOLO.
+- **Radar.** `/radar` reads the front and rear antennas, `/radar lock` holds a speed for `/cite speeding`,
+  and `/radar on` calls out anything over the alert speed.
+
+All of it is saved in `TextDispatch.records.json` with the rest of the records.
+
 **Pursuit**
 `/pursuit` · `/calledin` · `/endpursuit` · `/panic` · `/911 <details>`
 

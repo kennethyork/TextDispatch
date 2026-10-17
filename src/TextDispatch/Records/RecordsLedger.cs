@@ -36,6 +36,9 @@ namespace TextDispatch.Records
         public string Statement;
         public bool StatementMirandized;
 
+        /// <summary>The charge sheet being written up for them: penal code sections, booked by the next /arrest.</summary>
+        public List<string> PendingCharges = new List<string>();
+
         /// <summary>When they were read their rights, as DateTime.Now ticks; 0 if never.</summary>
         public long MirandizedTicks;
 
@@ -68,6 +71,10 @@ namespace TextDispatch.Records
 
             if (Wanted) line += ". You know the police are looking for you over " + WarrantFor;
             else if (Priors.Count > 0) line += ". You have been in trouble before and do not want more of it";
+
+            // Somebody this officer has already booked remembers them, and it colours everything they say.
+            if (Arrests > 0) line += ". This same officer has arrested you before" + (Arrests > 1 ? ", " + Arrests + " times" : "");
+            else if (Citations > 0) line += ". This same officer has given you a ticket before";
 
             return line + ".";
         }
@@ -105,6 +112,17 @@ namespace TextDispatch.Records
         public string Call;      // the call it was written on, or null
         public string Subject;   // the person it is about, or null for a general report
         public string Text;
+
+        /// <summary>The penal code sections on the sheet when it was written, for the exported form.</summary>
+        public List<string> Charges = new List<string>();
+
+        /// <summary>The investigation it belongs to, or 0.</summary>
+        public int Case;
+
+        /// <summary>The sergeant's review: null while it waits, "approved", or "returned" with what to fix.</summary>
+        public string Review;
+        public string ReviewNotes;
+        public long ReviewDueTicks;   // DateTime.UtcNow.Ticks the sergeant gets to it; 0 once reviewed
     }
 
     /// <summary>
@@ -128,6 +146,9 @@ namespace TextDispatch.Records
         public List<string> Evidence = new List<string>();
         public string Statement;     // confession | admission | lawyer | denial, or null
         public bool Mirandized;      // whether the statement was taken after the rights were read
+
+        /// <summary>The penal code sections booked, when the arrest was on a charge sheet.</summary>
+        public List<string> Charges = new List<string>();
     }
 
     /// <summary>What an interview got: the kind of statement, the words, and whether it will stand up.</summary>
@@ -181,7 +202,7 @@ namespace TextDispatch.Records
     /// worth running and who is not - and it has no reference to the game at all, which keeps it
     /// testable outside it.
     /// </summary>
-    public sealed class RecordsLedger
+    public sealed partial class RecordsLedger
     {
         private readonly Dictionary<string, PersonRecord> _people = new Dictionary<string, PersonRecord>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, VehicleRecord> _vehicles = new Dictionary<string, VehicleRecord>(StringComparer.OrdinalIgnoreCase);
@@ -248,6 +269,7 @@ namespace TextDispatch.Records
             if (person.Priors == null) person.Priors = new List<string>();
             if (person.Notes == null) person.Notes = new List<string>();
             if (person.Evidence == null) person.Evidence = new List<string>();
+            if (person.PendingCharges == null) person.PendingCharges = new List<string>();
             _people[person.Id] = person;
         }
 
@@ -667,8 +689,19 @@ namespace TextDispatch.Records
                 Unit = unit,
                 Call = string.IsNullOrEmpty(call) ? null : call,
                 Subject = subject == null ? null : subject.Name,
-                Text = (text ?? "").Trim()
+                Text = (text ?? "").Trim(),
+                Case = ActiveCase,
+                ReviewDueTicks = DateTime.UtcNow.AddSeconds(60 + new Random(Environment.TickCount).Next(120)).Ticks
             };
+
+            // What they are charged with goes on the form: the open arrest's sheet, or the one being written.
+            if (subject != null)
+            {
+                var open = OpenCase(subject);
+                if (open != null && open.Charges != null) report.Charges.AddRange(open.Charges);
+                foreach (var code in subject.PendingCharges) if (!report.Charges.Contains(code)) report.Charges.Add(code);
+            }
+            if (report.Case != 0) AttachReport(report);
 
             _reports.Add(report);
             if (_reports.Count > 500) _reports.RemoveAt(0);
@@ -724,6 +757,8 @@ namespace TextDispatch.Records
             // What was gathered before the arrest goes onto it: the evidence, and what they said.
             if (kind == "arrest")
             {
+                followUp.Charges.AddRange(person.PendingCharges);
+                person.PendingCharges.Clear();
                 followUp.Evidence.AddRange(person.Evidence);
                 person.Evidence.Clear();
                 followUp.Statement = person.Statement;
@@ -792,6 +827,7 @@ namespace TextDispatch.Records
                              : "";
                 if (charged)
                 {
+                    ChargedCount++;
                     var sentence = rng.Next(3);
                     if (sentence == 0)
                     {
@@ -800,7 +836,11 @@ namespace TextDispatch.Records
                     }
                     else if (sentence == 1)
                     {
-                        var days = 10 * (1 + rng.Next(9));
+                        // A plea is to the sheet when there is one: what the code says it costs, and a plea
+                        // takes a third off.
+                        double sheetFine; int sheetDays; string worst;
+                        PenalCode.Totals(followUp.Charges ?? new List<string>(), out sheetFine, out sheetDays, out worst);
+                        var days = sheetDays > 0 ? Math.Max(1, sheetDays * 2 / 3) : 10 * (1 + rng.Next(9));
                         outcome = followUp.Name + " pleaded guilty to " + followUp.Offence + " - " + days + " days.";
                         note = "pleaded guilty to " + followUp.Offence + ", " + days + " days";
                     }

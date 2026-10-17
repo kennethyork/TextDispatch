@@ -33,6 +33,8 @@ namespace TextDispatch
         private static PluginInventory _inventory;
         private static ShiftLog _shift;
         private static Fleet _fleet;
+        private static PhoneService _phone;
+        private static Radar _radar;
         private static string _recordsPath;
         private static int _savedAt;
         private static bool _saveErrorLogged;
@@ -170,6 +172,32 @@ namespace TextDispatch
                 _dialogue = new DialogueService(_chat, _api, _settings, _records);
                 _fleet = new Fleet(_api);
                 _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records, _shift);
+                _phone = new PhoneService(_chat, _settings, _records);
+                _router.Phone = _phone;
+                _radar = new Radar(_chat);
+                _router.Radar = _radar;
+
+                // People the officer has booked come back now and then, as somebody new in the street.
+                // Never a cop, never somebody in the player's car.
+                var records = _records;
+                var api = _api;
+                Identities.Returning = handle =>
+                {
+                    try
+                    {
+                        var ped = World.GetEntityByHandle<Ped>(new PoolHandle(unchecked((uint)handle)));
+                        if (ped == null || !ped.Exists() || !ped.IsHuman || api.PedIsCop(ped)) return null;
+                        var player = Game.LocalPlayer.Character;
+                        if (player != null && player.IsInAnyVehicle(false) && ped.IsInAnyVehicle(false) &&
+                            ReferenceEquals(ped.CurrentVehicle, player.CurrentVehicle)) return null;
+                    }
+                    catch { return null; }
+                    var back = records.ReturningFor(handle);
+                    return back == null ? null : back.Name;
+                };
+
+                // A fresh watch gets its briefing; a shift picked up after a quick restart does not.
+                if (_shift.Running && _shift.Elapsed.TotalMinutes < 2) _dispatch.ScheduleRollCall();
 
                 // Started before the box: until this is running, the keystrokes that spell a
                 // sentence are the same keystrokes every other plugin is watching for.
@@ -309,6 +337,9 @@ namespace TextDispatch
 
                     _dispatch.Update();
                     _dialogue.Update();
+                    _phone.Update(here && _shift.Running);
+                    if (here) _radar.Update();
+                    Overhead.Update();
 
                     SaveRecords(false);
 
@@ -522,6 +553,7 @@ namespace TextDispatch
             try
             {
                 _chat.Render(e.Graphics);
+                Overhead.Render(e.Graphics, _chat.FontName, _chat.FontSize * (_chat.UiScale <= 0f ? 1f : _chat.UiScale));
             }
             catch (Exception ex)
             {

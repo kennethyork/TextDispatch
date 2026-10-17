@@ -64,6 +64,8 @@ namespace TextDispatch.Dialogue
             {
                 case SpeechMode.Whisper: _chat.Local("You whisper:", text); break;
                 case SpeechMode.Shout: _chat.Local("You shout:", text); break;
+                case SpeechMode.Low: _chat.Local("You say quietly:", text); break;
+                case SpeechMode.Megaphone: _chat.Local("[MEGAPHONE] You:", text.ToUpperInvariant()); break;
                 default: _chat.Local("You say:", text); break;
             }
 
@@ -75,6 +77,7 @@ namespace TextDispatch.Dialogue
             }
 
             if (mode == SpeechMode.Shout) _chat.Do("Your voice carries down the street.");
+            if (mode == SpeechMode.Megaphone) _chat.Do("The PA crackles and your voice booms across the street.");
 
             var state = BuildState(partner);
 
@@ -158,7 +161,13 @@ namespace TextDispatch.Dialogue
             if (talker == null || _records == null) return null;
 
             var person = _records.EnsurePerson(talker.Handle, talker.Name);
-            return person == null ? null : person.CharacterLine();
+            if (person == null) return null;
+
+            // What the officer looks like, from /my - so somebody can remark on the scar or the limp.
+            var line = person.CharacterLine();
+            if (!string.IsNullOrEmpty(_records.PlayerDescription))
+                line += " The officer in front of you: " + _records.PlayerDescription + ".";
+            return line;
         }
 
         /// <summary>
@@ -197,6 +206,8 @@ namespace TextDispatch.Dialogue
             {
                 case SpeechMode.Whisper: return _settings.WhisperRange;
                 case SpeechMode.Shout: return _settings.ShoutRange;
+                case SpeechMode.Low: return Math.Max(_settings.WhisperRange, _settings.SayRange / 3f);
+                case SpeechMode.Megaphone: return _settings.ShoutRange * 2f;
                 default: return _settings.SayRange;
             }
         }

@@ -83,6 +83,32 @@ namespace TextDispatch.Lspdfr
             catch (Exception ex) { Log.Error("livery count", ex); return 0; }
         }
 
+        /// <summary>
+        /// The liveries on a car that should have at least `wanted`: a car just made can count none until its
+        /// textures have streamed in, so it is asked again for up to `waitMs` before the answer is believed.
+        /// A short answer is logged with what the game says about the car, for telling why.
+        /// </summary>
+        public static int LiveryCount(Vehicle vehicle, int wanted, int waitMs)
+        {
+            int count = LiveryCount(vehicle);
+            int started = Environment.TickCount;
+            while (count < wanted && Environment.TickCount - started < waitMs && vehicle != null && vehicle.Exists())
+            {
+                GameFiber.Yield();
+                count = LiveryCount(vehicle);
+            }
+
+            if (count < wanted && vehicle != null && vehicle.Exists())
+            {
+                int raw = -2, mods = -2;
+                try { raw = NativeFunction.Natives.GetVehicleLiveryCount<int>(vehicle); } catch { }
+                try { NativeFunction.Natives.SetVehicleModKit(vehicle, 0); mods = NativeFunction.Natives.GetNumVehicleMods<int>(vehicle, 48); } catch { }
+                Log.Line("livery count: " + vehicle.Model.Hash.ToString("X8") + " has " + raw + " sign liveries and " + mods +
+                         " livery mods after " + (Environment.TickCount - started) + " ms, wanted " + wanted);
+            }
+            return count;
+        }
+
         /// <summary>The livery the car is wearing, counted from 1 like the textures; 0 when none is set.</summary>
         public static int Livery(Vehicle vehicle)
         {
