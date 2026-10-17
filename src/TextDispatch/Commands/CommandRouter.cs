@@ -1040,13 +1040,23 @@ namespace TextDispatch.Commands
         /// the car that suits it: the old designs on the Stanier, the rest on the Interceptor, fire on the
         /// fire truck. The pack's own cars are always cars ("/veh police"), and so is a word no department
         /// has ("/veh adder"); a civilian car with a city's name is "/veh phoenix plain".
+        ///
+        /// A department named either way is the whole fleet's from then on: every police car around, and
+        /// every one that turns up later, is put in it too (see Fleet). "/veh off" lets them be. A car
+        /// brought with no department named comes in the fleet's, and whatever /veh brings is left as it
+        /// was brought - "/veh police3 plain" stays plain.
         /// </summary>
         private void SpawnVehicle(string argument)
         {
+            var fleet = Plugin.Fleet;
+            var map = LiveryMap.Current();
+
             if (string.IsNullOrWhiteSpace(argument))
             {
                 _chat.Error("Usage: /veh <model> [department|plain] or /veh <department>   e.g. /veh police3 sahp, /veh atlanta, /veh atlanta-old." +
                             " /veh help lists every department.");
+                if (fleet != null && fleet.Department != null)
+                    _chat.Notice("Every police car is in " + map.NameOf(fleet.Department) + " livery. /veh off lets them be.");
                 return;
             }
 
@@ -1054,11 +1064,11 @@ namespace TextDispatch.Commands
             var model = parts[0];
             var wanted = parts.Length > 1 ? parts[1].Trim() : null;
             if (model.Equals("help", StringComparison.OrdinalIgnoreCase) || model == "?") { VehHelp(wanted); return; }
+            if (model.Equals("off", StringComparison.OrdinalIgnoreCase) && wanted == null) { FleetOff(map); return; }
 
             var plain = wanted != null && (wanted.Equals("plain", StringComparison.OrdinalIgnoreCase) ||
                                            wanted.Equals("pack", StringComparison.OrdinalIgnoreCase));
 
-            var map = LiveryMap.Current();
             string department = null, carrier = model;
             List<string> candidates = null;
             bool asked = !string.IsNullOrEmpty(wanted) && !plain;
@@ -1085,10 +1095,13 @@ namespace TextDispatch.Commands
             }
             else if (!plain && map.IsCar(model))
             {
-                // On duty as LSSD, a car you bring is an LSSD car, from whichever copy of it carries that.
-                var own = map.ForAgency(_api.CurrentAgency());
-                var car = own == null ? null : map.Carrier(model, own);
-                if (car != null) { department = own; carrier = car; }
+                // With every police car in one department, a car you bring is that department's too; or else,
+                // on duty as LSSD, an LSSD car - from whichever copy of it carries the livery.
+                foreach (var own in new[] { fleet == null ? null : fleet.Department, map.ForAgency(_api.CurrentAgency()) })
+                {
+                    var car = own == null ? null : map.Carrier(model, own);
+                    if (car != null) { department = own; carrier = car; break; }
+                }
             }
 
             Vehicle spawned;
@@ -1099,13 +1112,39 @@ namespace TextDispatch.Commands
                 return;
             }
 
+            // A department asked for is the whole fleet's now. Set in the same frame the car was made in,
+            // and before it is settled, so the fleet never sees it under the department it had before.
+            var joined = asked && department != null && fleet != null &&
+                         !department.Equals(fleet.Department ?? "", StringComparison.OrdinalIgnoreCase);
+            if (joined) fleet.Set(department);
+
             if (asked && department == null) NoSuchLivery(map, model, wanted, candidates);
 
             // Nobody named the duty livery, so a texture missing from the car is passed over without a word.
             var painted = department != null && Paint(spawned, map, carrier, department, !asked);
+            if (fleet != null) fleet.Settle(spawned);
             var which = carrier.Equals(model, StringComparison.OrdinalIgnoreCase) ? "" : " (" + carrier + ")";
             _chat.Notice("Brought you a " + model + (painted ? " in " + map.NameOf(department) + " livery" + which : which) + ".");
+            if (joined)
+                _chat.Notice("The rest of the fleet is going " + map.NameOf(department) + " too - every car around you with a design" +
+                             " for it, and the ones that turn up later. /veh off lets them be.");
             Log.Line("vehicle: " + detail + (carrier == model ? "" : " for " + model));
+        }
+
+        /// <summary>"/veh off": the fleet is no one department any more. Cars already repainted stay as they are.</summary>
+        private void FleetOff(LiveryMap map)
+        {
+            var fleet = Plugin.Fleet;
+            if (fleet == null || fleet.Department == null)
+            {
+                _chat.Notice("The police cars are in no one department - each comes in the livery the game gives it. /veh <department> puts them all in one.");
+                return;
+            }
+
+            var was = fleet.Department;
+            fleet.Set(null);
+            _chat.Notice("The fleet is no longer " + map.NameOf(was) + ": the cars already in it stay as they are, and the ones" +
+                         " that turn up now come in their own livery.");
         }
 
         /// <summary>
@@ -1256,13 +1295,18 @@ namespace TextDispatch.Commands
                     return;
                 }
                 if (Paint(vehicle, map, model, department, false))
+                {
+                    if (Plugin.Fleet != null) Plugin.Fleet.Settle(vehicle);
                     _chat.Notice("The " + model + " is in " + map.NameOf(department) + " livery now (" +
                                  map.NumberFor(model, department) + " of " + count + ").");
+                }
                 return;
             }
 
             string detail;
             if (!VehicleActions.SetLivery(vehicle, number, out detail)) { _chat.Error("Could not change the livery."); return; }
+            // Painted by hand: the fleet leaves it that way.
+            if (Plugin.Fleet != null) Plugin.Fleet.Settle(vehicle);
 
             var name = map.DepartmentAt(model, number);
             _chat.Notice("The " + model + " is in " + (name == null ? "livery " + number : map.NameOf(name) + " livery") +
@@ -1847,6 +1891,7 @@ namespace TextDispatch.Commands
             {
                 var words = new List<string>(LiveryMap.Current().Models);
                 words.AddRange(LiveryMap.Current().Departments);
+                words.Add("off");
                 return words;
             }
             if (kind.StartsWith("departments:", StringComparison.Ordinal)) return LiveryMap.Current().DepartmentsAcross(kind.Substring(12));
@@ -2664,6 +2709,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Tab completes commands, callout names and people on file; Shift+Tab goes back.");
             _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
             _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model> [department|plain]");
+            _chat.Notice("            /veh <department>  - every police car goes that department too;  /veh off lets them be");
             _chat.Notice("            /livery [department|number|next]  - your car, or the one beside you");
             _chat.Notice("            /liveries <car> [text] [page]  - every livery the car comes in, and which copy has it");
             _chat.Notice("  Records:  /mdt  /person [name]  /plate [plate]  /warrant [name]  /bolo  /arrest [name] [for <charge>]  /cite <name> <offence>");

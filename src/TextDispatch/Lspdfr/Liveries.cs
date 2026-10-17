@@ -174,6 +174,12 @@ namespace TextDispatch.Lspdfr
         /// <summary>Every department the file names, in its own order.</summary>
         public IList<string> Departments { get { return _departments; } }
 
+        /// <summary>Whether the file names this department, by its key.</summary>
+        public bool Knows(string department)
+        {
+            return department != null && _names.ContainsKey(department);
+        }
+
         /// <summary>The model a car in the world is, by its hash - RPH has no name for an add-on model.</summary>
         public string ModelOf(Vehicle vehicle)
         {

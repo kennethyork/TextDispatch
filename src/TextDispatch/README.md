@@ -271,7 +271,7 @@ assembly — and `/callout` starts any of them by name.
 
 **The car**
 `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` (or `/fix`) ·
-`/veh <model> [department|plain]` · `/veh <department>` · `/veh help` · `/livery [department|number|next|back]` (or `/paint`) ·
+`/veh <model> [department|plain]` · `/veh <department>` · `/veh off` · `/veh help` · `/livery [department|number|next|back]` (or `/paint`) ·
 `/liveries <car> [text] [page]`
 
 ### Liveries by department
@@ -282,10 +282,11 @@ number, so they can be asked for by name:
 
 ```
 /veh police3 sahp     an Interceptor in San Andreas Highway Patrol livery
-/veh police3          the livery of the agency you are on duty as (LSSD on duty, an LSSD car)
+/veh police3          the fleet's department, or else the agency you are on duty as (LSSD on duty, an LSSD car)
 /veh police3 plain    the car as it came, in its own livery
 /veh atlanta          a department on its own, in the car that suits it - here an Interceptor
 /veh atlanta-old      the old design, on the Stanier;  /veh fulton county, /veh texas, /veh atlanta fire
+/veh off              every police car stops following the department /veh last named
 /veh help             every department, as you would type it - /veh help fire, /veh help 2
 /livery               what this car has, and which one it is wearing
 /livery bcso          repaint it
@@ -306,6 +307,22 @@ department on the fire truck - whichever copy carries it. A place is enough (`at
 `fire`, `sheriff` or `state` picks another. The pack's own cars are always cars (`/veh police`), and so is
 a word no department has (`/veh adder`); the few civilian cars that share a city's name - buffalo, phoenix,
 tampa, washington - are `/veh phoenix plain`.
+
+**The whole fleet.** A department named with `/veh` - `/veh atlanta`, `/veh police3 sahp` - is every police
+car's from then on, not only the one you brought: the cars parked around you, the ones on patrol, backup on
+its way, the one you are sitting in, and every one that turns up later. A car whose own texture has the
+design is repainted. One that does not - a `police3` for Atlanta, which only `lvinterceptor2` carries - is
+swapped for the copy that does, in the same place at the same speed, with the same crew in the same seats,
+the same plate, siren and blips. A car with no design for the department at all (a fire truck, for a police
+department) is left as it is. `/veh police3` with no department brings the fleet's, and whatever `/veh`
+brings is left as it was brought - `/veh police3 plain` stays plain, and so does a car you `/livery`.
+
+A swap is a new car, so whatever held the old one - LSPDFR's backup, a callout - is holding a car that has
+gone. Only cars crewed by nobody but cops, medics, firefighters and you are swapped; never the car you have
+stopped, one on a tow truck, or one a suspect is in; and a car whose crew has stepped out of it at a scene
+waits until they are back in it. A copy made from backup is let go when LSPDFR lets its officers go. The
+department is kept in `TextDispatch.ini` (`Fleet=`), so the force is still that department next session;
+`/veh off` clears it, and every swap is a line in the log.
 
 A car can carry only so many liveries - about thirty - and there are far more departments than that, so
 the ELS pack's `LIVERY GENERATOR\build_livery_copies.py` makes **copies** of each car: `lvinterceptor1`,

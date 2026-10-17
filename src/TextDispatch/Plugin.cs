@@ -32,6 +32,7 @@ namespace TextDispatch
         private static CommandRouter _router;
         private static PluginInventory _inventory;
         private static ShiftLog _shift;
+        private static Fleet _fleet;
         private static string _recordsPath;
         private static int _savedAt;
         private static bool _saveErrorLogged;
@@ -62,6 +63,9 @@ namespace TextDispatch
         internal static Settings Settings { get { return _settings; } }
         internal static PluginInventory Inventory { get { return _inventory; } }
         internal static RecordsLedger Records { get { return _records; } }
+
+        /// <summary>The department every police car is put in, and what puts them there. Null before startup.</summary>
+        internal static Fleet Fleet { get { return _fleet; } }
 
         /// <summary>What other plugins can do - K9 units, spike strips, the checks they own.</summary>
         internal static FrameworkBridge Bridge { get { return _bridge; } }
@@ -164,6 +168,7 @@ namespace TextDispatch
 
                 _dispatch = new DispatchService(_chat, _api, _settings, _records, _shift);
                 _dialogue = new DialogueService(_chat, _api, _settings, _records);
+                _fleet = new Fleet(_settings, _api);
                 _router = new CommandRouter(_chat, _api, _dispatch, _dialogue, _settings, _records, _shift);
 
                 // Started before the box: until this is running, the keystrokes that spell a
@@ -245,6 +250,9 @@ namespace TextDispatch
 
                 _running = true;
                 _fiber = GameFiber.StartNew(Loop, "TextDispatch");
+
+                // A fiber of its own: a swap waits frames for a model to load, and the box should not.
+                _fleet.Start();
             }
             catch (Exception ex) { Log.Error("startup", ex); }
         }
@@ -257,6 +265,9 @@ namespace TextDispatch
         public static void Stop()
         {
             _running = false;
+
+            try { if (_fleet != null) _fleet.Stop(); }
+            catch { }
 
             try { if (_keys != null) _keys.Stop(); }
             catch { }

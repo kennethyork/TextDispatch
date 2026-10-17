@@ -130,11 +130,13 @@ and on the nearest person when you are not on a stop.
 
 ## The car you are in
 
-`/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` (`/shut`) · `/repair` (`/fix`, `/fixveh`) · `/veh <model> [department]` · `/veh <department>` · `/veh help` (`/spawn`)
+`/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` (`/shut`) · `/repair` (`/fix`, `/fixveh`) · `/veh <model> [department]` · `/veh <department>` · `/veh off` · `/veh help` (`/spawn`)
 
 | | |
 |---|---|
-| `/veh police3 sahp` | bring a car in a department's livery - from whichever copy of the car carries it; with no department, your duty agency's |
+| `/veh police3 sahp` | bring a car in a department's livery - from whichever copy of the car carries it; with no department, the fleet's (below), or else your duty agency's |
+| *the fleet* | naming a department with `/veh` puts **every police car** in it too - parked, on patrol, backup, the one you are in, and every one that turns up later. A car whose own texture has the design is repainted; one that does not is swapped for the copy that does, with its crew, speed, siren and plate. Only cars crewed by cops, medics, firefighters or you are swapped, never the car you have stopped, and a car whose crew is out of it at a scene waits until they are back in. Kept between sessions (`Fleet=` in `TextDispatch.ini`) |
+| `/veh off` | the police cars are no one department any more: the ones already repainted stay, new ones come in the game's livery |
 | `/veh police3 plain` | the car as it came, in its own livery |
 | `/veh atlanta` · `/veh atlanta-old` | a department on its own, in the car that suits it: the current design on the Interceptor, the old one on the Stanier, fire on the fire truck. A city, county or state (`fulton`, `dallas county`, `texas`), with `old` for the old style and `fire`, `sheriff` or `state` when a place has more than one. A civilian car with a city's name is `/veh phoenix plain` |
 | `/veh help [text] [page]` | every department `/veh` takes on its own, as you would type it, by group - city police, county police, sheriffs, state, fire; a `*` has an old design too. Twenty lines a page; a word narrows it (`/veh help fire`); the whole list goes to the log |

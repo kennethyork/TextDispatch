@@ -170,6 +170,12 @@ namespace TextDispatch
         /// <summary>Whether dispatch sometimes sends the player after somebody from their own records who has a warrant.</summary>
         public bool WarrantCalls = true;
 
+        /// <summary>
+        /// The department every police car is put in - the last one /veh named, by its key in
+        /// TextDispatch.liveries.ini. Blank leaves the cars as the game makes them; /veh off clears it.
+        /// </summary>
+        public string Fleet = "";
+
         // ---------------------------------------------------------------- load
 
         /// <summary>
@@ -192,7 +198,7 @@ namespace TextDispatch
             "aitemperature", "aihistorylines", "openkey", "chatter", "blockothermodskeys",
             "hidehardwarekeys", "chatposition", "chatmargin",
             "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange",
-            "autocallouts", "autocalloutseconds", "autoaccept", "radiotraffic", "warrantcalls"
+            "autocallouts", "autocalloutseconds", "autoaccept", "radiotraffic", "warrantcalls", "fleet"
         };
 
         public static Settings Load()
@@ -263,7 +269,9 @@ namespace TextDispatch
                         case "autocalloutseconds": settings.AutoCalloutSeconds = AsInt(value, settings.AutoCalloutSeconds); break;
                         case "autoaccept": settings.AutoAccept = AsBool(value, settings.AutoAccept); break;
                         case "radiotraffic": settings.RadioTraffic = AsBool(value, settings.RadioTraffic); break;
-                        case "warrantcalls": settings.WarrantCalls = AsBool(value, settings.WarrantCalls); break;                    }
+                        case "warrantcalls": settings.WarrantCalls = AsBool(value, settings.WarrantCalls); break;
+                        case "fleet": settings.Fleet = value; break;
+                    }
                 }
 
                 // A file written by an older version is missing whatever was added since, and answers
@@ -378,7 +386,13 @@ namespace TextDispatch
                     "RadioTraffic=" + (settings.RadioTraffic ? "1" : "0"),
                     "; WarrantCalls=1: dispatch sometimes sends you after somebody from your own records who",
                     "; has a warrant now. /warrants lists them; /warrants serve sends you after one.",
-                    "WarrantCalls=" + (settings.WarrantCalls ? "1" : "0")
+                    "WarrantCalls=" + (settings.WarrantCalls ? "1" : "0"),
+                    "",
+                    "; Fleet: the department every police car is put in - parked, on patrol, backup, and the",
+                    "; ones that turn up later - by its key in TextDispatch.liveries.ini, e.g. lspd-atlanta.",
+                    "; /veh <department> sets it to that department, /veh off clears it. Blank leaves the cars",
+                    "; in the livery the game gives them.",
+                    "Fleet=" + settings.Fleet
                 });
             }
             catch (Exception ex) { Log.Error("write settings", ex); }
