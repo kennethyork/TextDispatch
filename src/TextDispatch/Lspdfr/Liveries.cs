@@ -35,6 +35,10 @@ namespace TextDispatch.Lspdfr
         private readonly Dictionary<string, List<string>> _bodies = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, string> _bodyOf = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        // Cars whose whole body texture is one department's design - the bus copies, lvpolicet1 ... - so they
+        // have no liveries to change: bringing one is all it takes. [skins] says car = department.
+        private readonly HashSet<string> _skins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>Where the file is looked for, whether or not it is there.</summary>
         public string Location { get; private set; }
 
@@ -104,6 +108,22 @@ namespace TextDispatch.Lspdfr
                         }
                         if (cars.Count > 0) map._bodies[key] = cars;
                     }
+                    else if (section.Equals("skins", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // The car is painted as this department through and through: livery 1 of 1, for the
+                        // lookups, and never repainted.
+                        Dictionary<string, int> car;
+                        if (!map._cars.TryGetValue(key, out car))
+                        {
+                            car = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                            map._cars[key] = car;
+                            map._models.Add(key);
+                            map._modelByHash[Joaat(key)] = key;
+                        }
+                        car[value] = 1;
+                        map._skins.Add(key);
+                        if (!map._names.ContainsKey(value)) { map._departments.Add(value); map._names[value] = value; }
+                    }
                     else
                     {
                         int number;
@@ -124,7 +144,7 @@ namespace TextDispatch.Lspdfr
 
                 map.Found = true;
                 Log.Line("liveries: " + map._models.Count + " car(s), " + map._departments.Count +
-                         " department(s), " + map._bodies.Count + " bodies from " + location);
+                         " department(s), " + map._bodies.Count + " bodies, " + map._skins.Count + " skin(s) from " + location);
             }
             catch (Exception ex) { Log.Error("liveries", ex); }
             return map;
@@ -143,6 +163,12 @@ namespace TextDispatch.Lspdfr
                     if (!list.Contains(car)) list.Add(car);
                 return list;
             }
+        }
+
+        /// <summary>Whether this car is one department's design all over - a [skins] car, with no liveries to change.</summary>
+        public bool IsSkin(string model)
+        {
+            return model != null && _skins.Contains(model);
         }
 
         /// <summary>Every department the file names, in its own order.</summary>

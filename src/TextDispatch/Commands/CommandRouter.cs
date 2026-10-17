@@ -1107,6 +1107,13 @@ namespace TextDispatch.Commands
             }
 
             int count = VehicleActions.LiveryCount(vehicle);
+            if (count == 0 && map.IsSkin(model))
+            {
+                var own = map.DepartmentAt(model, 1);
+                _chat.Notice("The " + model + " is painted " + map.NameOf(own) + " all over, so it has no liveries to change." +
+                             " /veh " + map.BaseOf(model) + " <department> brings one in another design.");
+                return;
+            }
             if (count == 0) { _chat.Error("The " + model + " has no liveries to change."); return; }
 
             int current = VehicleActions.Livery(vehicle);
@@ -1160,6 +1167,13 @@ namespace TextDispatch.Commands
         /// </summary>
         private bool Paint(Vehicle vehicle, LiveryMap map, string model, string department, bool quiet)
         {
+            // A [skins] car already is the department's design - its body texture, not a livery.
+            if (map.IsSkin(model))
+            {
+                Log.Line("livery: " + model + " is " + department + " by its own texture");
+                return true;
+            }
+
             int number = map.NumberFor(model, department);
             int count = VehicleActions.LiveryCount(vehicle);
             if (number > count)
