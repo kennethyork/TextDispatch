@@ -62,7 +62,7 @@ namespace TextDispatch.Commands
                 case "bolo": return "list|add|clear";
                 case "report": return "draft|general:|export|fix";
                 case "log": case "chatlog": return "export|export all|export new";
-                case "radar": case "speed": return "on|off|lock|alert|clear";
+                case "radar": case "speed": return "front|rear|lock|lock front|lock rear|on|on front|on rear|off|off front|off rear|alert|clear";
                 case "case": case "cases": return "list|open|use|add|note|close|export";
                 case "examine": case "ex": case "look": return "me|car";
                 case "phone": return "add";

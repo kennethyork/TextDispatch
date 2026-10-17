@@ -10,8 +10,8 @@ namespace TextDispatch.Lspdfr
     ///
     /// A radar on a dashboard is something to look at; in a chat box it is something that says. /radar
     /// reads both antennas once - the strongest target in each beam, its speed, its plate and whether it is
-    /// coming or going - and /radar on keeps the front antenna watching and speaks when something comes
-    /// through over the alert speed. A lock is what a speeding ticket rests on: /cite speeding takes the
+    /// coming or going - and /radar on keeps the antennas watching (both, or just the front or the rear)
+    /// and speaks when something comes through either beam over the alert speed. A lock is what a speeding ticket rests on: /cite speeding takes the
     /// locked speed onto the citation and the report.
     /// </summary>
     internal sealed class Radar
@@ -41,8 +41,16 @@ namespace TextDispatch.Lspdfr
         private readonly Dictionary<uint, int> _alerted = new Dictionary<uint, int>();
         private int _nextScanAt;
 
-        public bool On;
+        /// <summary>Which antennas are watching. Both off is the radar off.</summary>
+        public bool FrontOn, RearOn;
+        public bool On { get { return FrontOn || RearOn; } }
         public int AlertMph = 75;
+
+        /// <summary>"front and rear", "front", "rear" - for saying what is watching.</summary>
+        public string Watching
+        {
+            get { return FrontOn && RearOn ? "front and rear" : FrontOn ? "front" : RearOn ? "rear" : "off"; }
+        }
 
         /// <summary>The last reading locked, by hand or by an alert.</summary>
         public Reading Locked;
@@ -62,25 +70,33 @@ namespace TextDispatch.Lspdfr
             {
                 Reading front, rear;
                 int patrol;
-                if (!Scan(out front, out rear, out patrol) || front == null || front.Mph < AlertMph) return;
-
-                var key = front.Vehicle.Handle.Value;
-                int last;
-                if (_alerted.TryGetValue(key, out last) && Environment.TickCount - last < 30000) return;
-                _alerted[key] = Environment.TickCount;
-                if (_alerted.Count > 64) _alerted.Clear();
-
-                // Over the alert speed is locked by itself, the way a radar with fast-lock does.
-                Locked = front;
-                _chat.Write(ChatChannel.Radio, "[RADAR]", "*beep* " + front.Describe() + " - LOCKED. /stop pulls it over, /cite speeding uses the lock.");
-                Log.Line("radar: alert " + front.Describe());
+                if (!Scan(out front, out rear, out patrol)) return;
+                if (FrontOn) Alert(front);
+                if (RearOn) Alert(rear);
             }
             catch (Exception ex)
             {
-                On = false;
+                FrontOn = RearOn = false;
                 Log.Error("radar (switched off)", ex);
                 _chat.Error("The radar faulted and switched itself off - the log has why.");
             }
+        }
+
+        /// <summary>Speak, and fast-lock, when a target in a watching beam is over the alert speed - once a car per 30s.</summary>
+        private void Alert(Reading reading)
+        {
+            if (reading == null || reading.Mph < AlertMph) return;
+
+            var key = reading.Vehicle.Handle.Value;
+            int last;
+            if (_alerted.TryGetValue(key, out last) && Environment.TickCount - last < 30000) return;
+            _alerted[key] = Environment.TickCount;
+            if (_alerted.Count > 64) _alerted.Clear();
+
+            // Over the alert speed is locked by itself, the way a radar with fast-lock does.
+            Locked = reading;
+            _chat.Write(ChatChannel.Radio, "[RADAR]", "*beep* " + reading.Describe() + " - LOCKED. /stop pulls it over, /cite speeding uses the lock.");
+            Log.Line("radar: alert " + reading.Describe());
         }
 
         /// <summary>Both antennas, once. False when the player is not in a vehicle.</summary>

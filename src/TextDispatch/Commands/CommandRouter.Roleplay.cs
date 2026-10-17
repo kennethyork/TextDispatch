@@ -668,15 +668,24 @@ namespace TextDispatch.Commands
             var words = (argument ?? "").Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var verb = words.Length > 0 ? words[0] : "";
 
+            // Which antenna a command is about: "front", "rear" (or "back"), or both when neither is said.
+            var which = words.Length > 1 ? words[1] : "";
+            var both = which == "" || which == "both";
+            var front = both || which.StartsWith("f");
+            var rear = both || which.StartsWith("r") || which == "back";
+
             switch (verb)
             {
                 case "on":
-                    Radar.On = true;
-                    _chat.Notice("Radar on - the front antenna watches and calls out anything over " + Radar.AlertMph + " mph. '/radar alert <mph>' changes it.");
+                    if (front) Radar.FrontOn = true;
+                    if (rear) Radar.RearOn = true;
+                    _chat.Notice("Radar on - " + Radar.Watching + " antenna" + (Radar.FrontOn && Radar.RearOn ? "s" : "") +
+                                 " watching, calling out anything over " + Radar.AlertMph + " mph. '/radar alert <mph>' changes it.");
                     return;
                 case "off":
-                    Radar.On = false;
-                    _chat.Notice("Radar off.");
+                    if (front) Radar.FrontOn = false;
+                    if (rear) Radar.RearOn = false;
+                    _chat.Notice(Radar.On ? "Radar: only the " + Radar.Watching + " antenna is watching now." : "Radar off.");
                     return;
                 case "alert":
                 case "limit":
@@ -692,25 +701,34 @@ namespace TextDispatch.Commands
                     return;
             }
 
-            Radar.Reading front, rear;
+            Radar.Reading frontTarget, rearTarget;
             int patrol;
-            if (!Radar.Scan(out front, out rear, out patrol)) { _chat.Error("The radar is in the car - get in one first."); return; }
+            if (!Radar.Scan(out frontTarget, out rearTarget, out patrol)) { _chat.Error("The radar is in the car - get in one first."); return; }
+
+            // "/radar front" or "/radar rear" is that antenna's reading on its own.
+            if (verb == "front" || verb == "rear" || verb == "back")
+            {
+                var reading = verb == "front" ? frontTarget : rearTarget;
+                _chat.Write(ChatChannel.Radio, "[RADAR]", "Patrol " + patrol + " mph  |  " +
+                            (reading != null ? reading.Describe() : (verb == "front" ? "FRONT" : "REAR") + " no target"));
+                return;
+            }
 
             if (verb == "lock")
             {
-                var target = front ?? rear;
-                if (target == null) { _chat.Error("Nothing in either beam to lock."); return; }
+                // "/radar lock rear" locks the rear target; with no antenna named, the front, then the rear.
+                var target = both ? frontTarget ?? rearTarget : front ? frontTarget : rearTarget;
+                if (target == null) { _chat.Error(both ? "Nothing in either beam to lock." : "Nothing in the " + (front ? "front" : "rear") + " beam to lock."); return; }
                 Radar.Locked = target;
                 _chat.Write(ChatChannel.Radio, "[RADAR]", "LOCKED: " + target.Describe() + ". /cite speeding uses it.");
                 return;
             }
 
-            _chat.Write(ChatChannel.Radio, "[RADAR]", "Patrol " + patrol + " mph  |  " + (front != null ? front.Describe() : "FRONT no target") +
-                                                       "  |  " + (rear != null ? rear.Describe() : "REAR no target"));
-            if (Radar.Locked != null)
-                _chat.Notice("  Locked: " + Radar.Locked.Describe() + " at " + Radar.Locked.At.ToString("HH:mm:ss") + ".  /radar lock  /radar on|off  /radar alert <mph>");
-            else
-                _chat.Notice("  /radar lock  holds a reading for the ticket;  /radar on  calls out speeders;  /radar alert <mph>");
+            _chat.Write(ChatChannel.Radio, "[RADAR]", "Patrol " + patrol + " mph  |  " + (frontTarget != null ? frontTarget.Describe() : "FRONT no target") +
+                                                       "  |  " + (rearTarget != null ? rearTarget.Describe() : "REAR no target"));
+            _chat.Notice("  Watching: " + Radar.Watching + ", alert " + Radar.AlertMph + " mph." +
+                         (Radar.Locked != null ? "  Locked: " + Radar.Locked.Describe() + " at " + Radar.Locked.At.ToString("HH:mm:ss") + "." : ""));
+            _chat.Notice("  /radar front|rear   /radar lock [front|rear]   /radar on|off [front|rear]   /radar alert <mph>");
         }
 
         /// <summary>

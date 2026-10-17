@@ -278,8 +278,9 @@ the detective on your case, Lucky with a name — or a plate, which becomes a BO
 | | |
 |---|---|
 | `/radar` `/speed` | read both antennas once: patrol speed, and the strongest target front and rear — speed, model, plate, distance, closing or going away |
-| `/radar lock` | hold the reading. `/cite speeding` puts the locked speed on the ticket and into evidence |
-| `/radar on` · `/radar off` | the front antenna watches, beeps and fast-locks anything over the alert speed |
+| `/radar front` · `/radar rear` | one antenna's reading on its own (`back` works for rear) |
+| `/radar lock [front\|rear]` | hold the reading - the front target, then the rear, unless an antenna is named. `/cite speeding` puts the locked speed on the ticket and into evidence |
+| `/radar on [front\|rear]` · `/radar off [front\|rear]` | both antennas watch (or just the one named), beep and fast-lock anything over the alert speed |
 | `/radar alert <mph>` · `/radar clear` | set the alert speed (75 by default) · drop the lock |
 
 ---
