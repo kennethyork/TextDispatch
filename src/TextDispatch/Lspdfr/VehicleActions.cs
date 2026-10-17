@@ -102,6 +102,18 @@ namespace TextDispatch.Lspdfr
             return true;
         }
 
+        /// <summary>Whether the game has a vehicle by this name - "police3", "stanier" - as opposed to a department's.</summary>
+        public static bool IsVehicleModel(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return false;
+            try
+            {
+                var model = new Model(name.Trim());
+                return model.IsValid && model.IsVehicle;
+            }
+            catch { return false; }
+        }
+
         /// <summary>
         /// Bring a vehicle. The model is whatever the game calls it - "police2", "riot", or a name an
         /// installed vehicle mod registers - and a model the game does not know fails cleanly.

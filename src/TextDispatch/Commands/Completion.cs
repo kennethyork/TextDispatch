@@ -34,8 +34,8 @@ namespace TextDispatch.Commands
         };
 
         /// <summary>
-        /// What a command's argument can be completed from: "callouts", "people", "vehicles" (a car, then
-        /// its departments), "liveries", or a fixed list.
+        /// What a command's argument can be completed from: "callouts", "people", "vehicles" (a car or a
+        /// department, then the car's departments), "liveries", or a fixed list.
         /// </summary>
         public static string ArgumentKind(string command)
         {

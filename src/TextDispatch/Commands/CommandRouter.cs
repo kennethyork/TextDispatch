@@ -1035,18 +1035,26 @@ namespace TextDispatch.Commands
         /// so the pack's livery builder makes copies of each car - lvinterceptor1, lvinterceptor2 ... - and
         /// this brings whichever one carries the livery asked for. With no department named it is the
         /// livery of the agency you are on duty as; "/veh police3 plain" is the car as it came.
+        ///
+        /// A department with no car - "/veh atlanta", "/veh fulton county", "/veh atlanta-old" - comes in
+        /// the car that suits it: the old designs on the Stanier, the rest on the Interceptor, fire on the
+        /// fire truck. The pack's own cars are always cars ("/veh police"), and so is a word no department
+        /// has ("/veh adder"); a civilian car with a city's name is "/veh phoenix plain".
         /// </summary>
         private void SpawnVehicle(string argument)
         {
             if (string.IsNullOrWhiteSpace(argument))
             {
-                _chat.Error("Usage: /veh <model> [department|plain]   e.g. /veh police2, /veh police3 sahp, /veh riot");
+                _chat.Error("Usage: /veh <model> [department|plain] or /veh <department>   e.g. /veh police3 sahp, /veh atlanta, /veh atlanta-old." +
+                            " /veh help lists every department.");
                 return;
             }
 
             var parts = argument.Trim().Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
             var model = parts[0];
             var wanted = parts.Length > 1 ? parts[1].Trim() : null;
+            if (model.Equals("help", StringComparison.OrdinalIgnoreCase) || model == "?") { VehHelp(wanted); return; }
+
             var plain = wanted != null && (wanted.Equals("plain", StringComparison.OrdinalIgnoreCase) ||
                                            wanted.Equals("pack", StringComparison.OrdinalIgnoreCase));
 
@@ -1054,7 +1062,23 @@ namespace TextDispatch.Commands
             string department = null, carrier = model;
             List<string> candidates = null;
             bool asked = !string.IsNullOrEmpty(wanted) && !plain;
-            if (asked)
+
+            var named = plain || map.IsCar(model) ? null : map.ResolveAny(argument.Trim(), out candidates);
+            if (named != null)
+            {
+                carrier = map.CarFor(named);
+                if (carrier == null) { _chat.Error(map.NameOf(named) + " is on none of the cars - the livery set leaves it out."); return; }
+                department = named;
+                model = map.BaseOf(carrier);
+                asked = true;
+            }
+            else if (!plain && !map.HasCar(model) && !VehicleActions.IsVehicleModel(model))
+            {
+                if (candidates != null && candidates.Count > 1) NoSuchLivery(map, model, argument.Trim(), candidates);
+                else _chat.Error("No car or department called '" + argument.Trim() + "'. /veh police3, /veh atlanta, /veh atlanta-old");
+                return;
+            }
+            else if (asked)
             {
                 department = map.ResolveAcross(model, wanted, out carrier, out candidates);
                 if (department == null) carrier = model;
@@ -1082,6 +1106,92 @@ namespace TextDispatch.Commands
             var which = carrier.Equals(model, StringComparison.OrdinalIgnoreCase) ? "" : " (" + carrier + ")";
             _chat.Notice("Brought you a " + model + (painted ? " in " + map.NameOf(department) + " livery" + which : which) + ".");
             Log.Line("vehicle: " + detail + (carrier == model ? "" : " for " + model));
+        }
+
+        /// <summary>
+        /// Every department /veh brings on its own, as you would type it, a group at a time:
+        ///
+        ///   /veh help          the first page - City police: albuquerque*, atlanta*, austin* ...
+        ///   /veh help fire     only the groups and names with "fire" in them
+        ///   /veh help 2        the next page
+        ///
+        /// A * is a department with an old design as well. A page at a time, like /liveries; the whole list
+        /// goes to the log as well.
+        /// </summary>
+        private void VehHelp(string argument)
+        {
+            const int page = 20;
+            var map = LiveryMap.Current();
+            var words = new List<string>((argument ?? "").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+
+            int number = 1;
+            if (words.Count > 0 && int.TryParse(words[words.Count - 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out number))
+                words.RemoveAt(words.Count - 1);
+            else number = 1;
+            var filter = string.Join(" ", words.ToArray()).Trim();
+
+            var all = map.VehNames();
+            if (all.Count == 0)
+            {
+                _chat.Error("No departments on file" + (map.Found ? "." : " - " + LiveryMap.FileName + " is not in Plugins\\LSPDFR."));
+                return;
+            }
+
+            // A group to a line, wrapped: "City police: albuquerque*, atlanta*, ..." and then indented.
+            var lines = new List<string>();
+            var groups = new List<string>();
+            var line = new System.Text.StringBuilder();
+            string group = null;
+            int matched = 0;
+            bool old = false;
+            foreach (var entry in all)
+            {
+                if (filter.Length > 0 && entry.Item1.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 &&
+                    entry.Item2.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 &&
+                    entry.Item3.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 &&
+                    map.NameOf(entry.Item3).IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                matched++;
+                old |= entry.Item4;
+                var shown = entry.Item2 + (entry.Item4 ? "*" : "");
+                if (entry.Item1 != group)
+                {
+                    if (line.Length > 0) { lines.Add(line.ToString()); groups.Add(group); }
+                    line.Length = 0;
+                    line.Append(entry.Item1).Append(": ").Append(shown);
+                    group = entry.Item1;
+                }
+                else if (line.Length + shown.Length + 2 > 70)
+                {
+                    lines.Add(line.Append(",").ToString());
+                    groups.Add(group);
+                    line.Length = 0;
+                    line.Append("    ").Append(shown);
+                }
+                else line.Append(", ").Append(shown);
+            }
+            if (line.Length > 0) { lines.Add(line.ToString()); groups.Add(group); }
+
+            if (matched == 0) { _chat.Error("No department matches '" + filter + "'. /veh help lists them all."); return; }
+
+            int pages = (lines.Count + page - 1) / page;
+            number = Math.Max(1, Math.Min(number, pages));
+            _chat.Notice((filter.Length == 0 ? "/veh <name> brings any of these " + map.Departments.Count + " designs"
+                                             : matched + " department" + (matched == 1 ? "" : "s") + " match '" + filter + "'") +
+                         (pages > 1 ? " - page " + number + " of " + pages : "") + ":");
+            for (int i = (number - 1) * page; i < lines.Count && i < number * page; i++)
+            {
+                // A page that starts partway through a group says which group it is.
+                var text = i == (number - 1) * page && lines[i].StartsWith("    ") ? groups[i] + ": " + lines[i].Substring(4) : lines[i];
+                _chat.Notice("  " + text);
+            }
+
+            var stem = "/veh help" + (filter.Length == 0 ? "" : " " + filter);
+            if (number < pages) _chat.Notice("  " + stem + " " + (number + 1) + " for the next page, or add a word to narrow it.");
+            _chat.Notice("  " + (old ? "* an old design too: /veh atlanta-old.  " : "") + "/veh <car> <name> puts one on the car you choose.");
+
+            foreach (var each in lines) Log.Line("veh help: " + each);
         }
 
         /// <summary>
@@ -1731,8 +1841,14 @@ namespace TextDispatch.Commands
         {
             if (kind == "callouts") return _api.CalloutLabels();
 
-            // /veh's car, then that car's departments; /livery's departments, whichever car it ends up on.
-            if (kind == "vehicles") return LiveryMap.Current().Models;
+            // /veh's car or a department on its own, then that car's departments; /livery's departments,
+            // whichever car it ends up on.
+            if (kind == "vehicles")
+            {
+                var words = new List<string>(LiveryMap.Current().Models);
+                words.AddRange(LiveryMap.Current().Departments);
+                return words;
+            }
             if (kind.StartsWith("departments:", StringComparison.Ordinal)) return LiveryMap.Current().DepartmentsAcross(kind.Substring(12));
             if (kind.StartsWith("liveries:", StringComparison.Ordinal))
             {

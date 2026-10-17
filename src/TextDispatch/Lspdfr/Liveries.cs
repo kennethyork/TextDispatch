@@ -348,6 +348,74 @@ namespace TextDispatch.Lspdfr
             return model;
         }
 
+        /// <summary>The same, across every department on file, whatever car carries it: "/veh atlanta".</summary>
+        public string ResolveAny(string typed, out List<string> candidates)
+        {
+            return Pick(new List<string>(_departments), typed, out candidates);
+        }
+
+        // The cars a department is brought in when no car is named, best first. An old design goes on the
+        // Stanier, the car of that era; anything else on the Interceptor. Bodies the file has that are not
+        // here come after, in the file's order, and then the cars of no body - riot, polmav ...
+        private static readonly string[] Preferred =
+            { "interceptor", "stanier", "granger", "gresley", "fugitive", "landstalker", "contender", "bison", "buffalo", "firetruk", "ambulance", "policet" };
+
+        /// <summary>The car to bring a department in when only the department is named, or null when no car carries it.</summary>
+        public string CarFor(string department)
+        {
+            if (department == null) return null;
+
+            var order = new List<string>();
+            if (department.EndsWith("-old", StringComparison.OrdinalIgnoreCase)) order.Add("stanier");
+            foreach (var body in Preferred) if (_bodies.ContainsKey(body) && !order.Contains(body)) order.Add(body);
+            foreach (var body in _bodies.Keys) if (!order.Contains(body)) order.Add(body);
+
+            foreach (var body in order)
+            {
+                var car = Carrier(body, department);
+                if (car != null) return car;
+            }
+            foreach (var car in _models)
+                if (!_bodyOf.ContainsKey(car) && NumberFor(car, department) > 0) return car;
+            return null;
+        }
+
+        // Words that say which kind of department, not where: "atlanta fire", "fulton sheriff", "texas state".
+        private static readonly Dictionary<string, string> Kinds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "police", "police" }, { "pd", "police" }, { "cops", "police" },
+            { "sheriff", "sheriff" }, { "sheriffs", "sheriff" }, { "so", "sheriff" },
+            { "state", "state" }, { "trooper", "state" }, { "troopers", "state" }, { "highway", "state" },
+            { "fire", "fire" }, { "fd", "fire" }, { "ems", "fire" }, { "rescue", "fire" },
+        };
+
+        private static readonly HashSet<string> Olds = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "old", "older", "classic", "retro" };
+
+        // Said, but saying nothing a department's words would not: "texas highway patrol" is sahp-texas.
+        private static readonly HashSet<string> Fillers = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "patrol", "department", "dept", "office", "of", "the", "style", "livery" };
+
+        // What people call a place, for the words the file spells it with.
+        private static readonly Dictionary<string, string> Aliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "nyc", "new york city" }, { "la", "los angeles" }, { "sf", "san francisco" }, { "philly", "philadelphia" },
+            { "okc", "oklahoma city" }, { "kc", "kansas city" }, { "nola", "new orleans" }, { "slc", "salt lake" },
+            { "vegas", "las vegas" }, { "co", "county" }, { "cnty", "county" }, { "ft", "fort" }, { "saint", "st" },
+            // And the agencies people know by their letters.
+            { "nypd", "new york city" }, { "lapd", "los angeles" }, { "lasd", "los angeles county" }, { "lvmpd", "las vegas" },
+            { "sfpd", "san francisco" }, { "sdpd", "san diego" }, { "mdpd", "miami dade" }, { "chp", "california" },
+            { "fhp", "florida" }, { "nysp", "new york" }, { "njsp", "new jersey" },
+        };
+
+        /// <summary>
+        /// What somebody meant by a department, out of these: the key or the full name exactly, or else
+        /// the one whose words take in every word typed - "atlanta" for lspd-atlanta, "fulton" for
+        /// lssd-fulton-county, "atlanta old" or "atlanta fire" for the others with Atlanta in them.
+        /// When more than one fits, the current design beats the old one unless "old" was typed; whole
+        /// words beat begun ones ("atl"); the one with nothing left over beats a longer one ("dallas" is
+        /// the city, "dallas county" the county); and police beat sheriffs, the state and fire, unless
+        /// one of those was named. `candidates` holds what is still level, so the box can list them.
+        /// </summary>
         private string Pick(List<string> mine, string typed, out List<string> candidates)
         {
             candidates = new List<string>();
@@ -359,16 +427,194 @@ namespace TextDispatch.Lspdfr
                     NameOf(key).Equals(text, StringComparison.OrdinalIgnoreCase))
                     return key;
 
-            foreach (var key in mine)
-                if (key.StartsWith(text, StringComparison.OrdinalIgnoreCase)) candidates.Add(key);
+            bool old = false;
+            string kind = null;
+            var place = new List<string>();
+            var said = new List<string>();
+            foreach (var word in Words(text))
+            {
+                string alias;
+                if (Olds.Contains(word)) old = true;
+                else if (Kinds.ContainsKey(word)) { if (kind == null) kind = Kinds[word]; said.Add(word); }
+                else if (Fillers.Contains(word)) { }
+                else if (Aliases.TryGetValue(word, out alias)) place.AddRange(Words(alias));
+                else place.Add(word);
+            }
+            if (place.Count == 0 && kind == null && !old) return null;
 
-            if (candidates.Count == 0)
-                foreach (var key in mine)
-                    if (key.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        NameOf(key).IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0)
-                        candidates.Add(key);
+            // Only a kind - "highway patrol", "sheriff" - is first the words of a name, sahp's or lssd's,
+            // and then any department of that kind.
+            var fits = Fits(mine, place.Count > 0 ? place : said, old, kind);
+            if (fits.Count == 0 && place.Count == 0 && said.Count > 0) fits = Fits(mine, place, old, kind);
+            if (fits.Count == 0) return null;
 
+            if (!old && fits.Exists(f => !f.Item1.EndsWith("-old", StringComparison.OrdinalIgnoreCase)))
+                fits.RemoveAll(f => f.Item1.EndsWith("-old", StringComparison.OrdinalIgnoreCase));
+            int fewest = int.MaxValue;
+            foreach (var f in fits) fewest = Math.Min(fewest, f.Item2);
+            fits.RemoveAll(f => f.Item2 > fewest);
+            fewest = int.MaxValue;
+            foreach (var f in fits) fewest = Math.Min(fewest, f.Item3);
+            fits.RemoveAll(f => f.Item3 > fewest);
+            if (kind == null)
+            {
+                int best = int.MaxValue;
+                foreach (var f in fits) best = Math.Min(best, Rank(KindOf(f.Item1)));
+                fits.RemoveAll(f => Rank(KindOf(f.Item1)) > best);
+            }
+
+            foreach (var f in fits) candidates.Add(f.Item1);
             return candidates.Count == 1 ? candidates[0] : null;
+        }
+
+        /// <summary>
+        /// Every department that takes in each of the words, as (key, words only begun, place words in the
+        /// key nobody typed) - "atl" is begun; "county" in lssd-dallas-county is left over, for "dallas".
+        /// </summary>
+        private List<Tuple<string, int, int>> Fits(List<string> mine, List<string> place, bool old, string kind)
+        {
+            var fits = new List<Tuple<string, int, int>>();
+            foreach (var key in mine)
+            {
+                bool isOld = key.EndsWith("-old", StringComparison.OrdinalIgnoreCase);
+                if (old && !isOld) continue;
+                if (kind != null && KindOf(key) != kind) continue;
+
+                var words = WordsOf(key);
+                int begun = 0;
+                bool all = true;
+                foreach (var word in place)
+                {
+                    if (words.Contains(word)) continue;
+                    bool starts = false;
+                    foreach (var own in words)
+                        if (Begins(own, word)) { starts = true; break; }
+                    if (!starts) { all = false; break; }
+                    begun++;
+                }
+                if (!all) continue;
+
+                int over = 0;
+                var parts = key.ToLowerInvariant().Split('-');
+                for (int i = 1; i < parts.Length - (isOld ? 1 : 0); i++)
+                {
+                    bool covered = false;
+                    foreach (var word in place)
+                        if (word == parts[i] || Begins(parts[i], word)) { covered = true; break; }
+                    if (!covered) over++;
+                }
+                fits.Add(Tuple.Create(key, begun, over));
+            }
+            return fits;
+        }
+
+        // A department's words, key and full name together - kept, since every /veh looks at all of them.
+        private readonly Dictionary<string, HashSet<string>> _wordsOf = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+
+        private HashSet<string> WordsOf(string key)
+        {
+            HashSet<string> words;
+            if (!_wordsOf.TryGetValue(key, out words))
+            {
+                words = new HashSet<string>(Words(key + " " + NameOf(key)));
+                _wordsOf[key] = words;
+            }
+            return words;
+        }
+
+        // What /veh help shows, worked out once per reading of the file.
+        private List<Tuple<string, string, string, bool>> _vehNames;
+
+        private static readonly string[] Groups = { "San Andreas", "City police", "County police", "Sheriffs", "State", "Fire" };
+
+        /// <summary>
+        /// Every department as you would type it after /veh, for /veh help: (group, what to type, key, whether
+        /// it has an old design too), by group and then alphabetical. What to type is the first of the place
+        /// ("atlanta"), the place and its kind ("atlanta fire") and the key that ResolveAny takes back to that
+        /// department. An old design is folded into its current one, and stands alone only when there is none.
+        /// </summary>
+        public List<Tuple<string, string, string, bool>> VehNames()
+        {
+            if (_vehNames != null) return _vehNames;
+
+            var list = new List<Tuple<string, string, string, bool>>();
+            foreach (var key in _departments)
+            {
+                bool isOld = key.EndsWith("-old", StringComparison.OrdinalIgnoreCase);
+                var current = isOld ? key.Substring(0, key.Length - 4) : key;
+                if (isOld && _names.ContainsKey(current)) continue;
+
+                var group = GroupOf(key);
+                var typed = key;
+                if (group != Groups[0])
+                {
+                    var parts = current.ToLowerInvariant().Split('-');
+                    var place = string.Join(" ", parts, 1, parts.Length - 1);
+                    foreach (var each in new[] { place, place + " " + KindOf(key) })
+                    {
+                        var word = isOld ? each + "-old" : each;
+                        List<string> candidates;
+                        if (key.Equals(ResolveAny(word, out candidates), StringComparison.OrdinalIgnoreCase)) { typed = word; break; }
+                    }
+                }
+                list.Add(Tuple.Create(group, typed, key, !isOld && _names.ContainsKey(key + "-old")));
+            }
+
+            list.Sort((a, b) =>
+            {
+                int byGroup = Array.IndexOf(Groups, a.Item1).CompareTo(Array.IndexOf(Groups, b.Item1));
+                return byGroup != 0 ? byGroup : string.Compare(a.Item2, b.Item2, StringComparison.OrdinalIgnoreCase);
+            });
+            _vehNames = list;
+            return list;
+        }
+
+        // The game's own departments - lspd, sahp, lspd-bw - are a group of their own, and go by their keys;
+        // the real-world styles by what they are.
+        private string GroupOf(string key)
+        {
+            if (key.IndexOf('-') < 0 || !NameOf(key).EndsWith("style", StringComparison.OrdinalIgnoreCase)) return Groups[0];
+            if (key.StartsWith("lscpd-", StringComparison.OrdinalIgnoreCase)) return "County police";
+            switch (KindOf(key))
+            {
+                case "sheriff": return "Sheriffs";
+                case "state": return "State";
+                case "fire": return "Fire";
+                default: return "City police";
+            }
+        }
+
+        // A word begun counts once it is three letters, so "at" is not Atlanta and Athens both.
+        private static bool Begins(string whole, string start)
+        {
+            return start.Length >= 3 && whole.StartsWith(start, StringComparison.Ordinal);
+        }
+
+        /// <summary>A department's kind, by its key's first part: lsfd is fire, lssd and bcso sheriffs, sahp and sasp the state.</summary>
+        private static string KindOf(string key)
+        {
+            var prefix = key.Split('-')[0].ToLowerInvariant();
+            if (prefix.EndsWith("fd")) return "fire";
+            if (prefix.EndsWith("sd") || prefix.EndsWith("so")) return "sheriff";
+            if (prefix.EndsWith("hp") || prefix.EndsWith("sp")) return "state";
+            return "police";
+        }
+
+        private static int Rank(string kind)
+        {
+            switch (kind) { case "police": return 0; case "sheriff": return 1; case "state": return 2; default: return 3; }
+        }
+
+        /// <summary>Lower-case words, apostrophes dropped so "Prince George's" is "prince georges".</summary>
+        private static IEnumerable<string> Words(string text)
+        {
+            var word = new System.Text.StringBuilder();
+            foreach (var c in (text ?? "").ToLowerInvariant() + " ")
+            {
+                if (char.IsLetterOrDigit(c)) word.Append(c);
+                else if (c == '\'' || c == '’') continue;
+                else if (word.Length > 0) { yield return word.ToString(); word.Length = 0; }
+            }
         }
 
         /// <summary>GTA's model hash: Jenkins one-at-a-time over the lower-case name.</summary>

@@ -89,7 +89,8 @@ assembly, so every callout you have is announced in text and can be started by n
   colours, and `/livery bcso` repaints the car you are in or the one beside you - by department name,
   from an ini the ELS pack's livery generator writes alongside the textures. A car holds about thirty
   liveries, so the generator makes copies of each car to carry the rest, and `/veh` brings whichever
-  copy has the one you asked for.
+  copy has the one you asked for. `/veh atlanta` on its own brings a department in the car that suits
+  it, and `/veh atlanta-old` its old design; `/veh help` lists them all.
 - **A city on the radio.** Other units are heard going on scene and clearing; `/units` says where your
   backup is. **Tab** completes commands, callouts and names.
 - **Shifts.** `10-8` starts one, `10-7` ends it with a summary read back on the radio; `/status`,
@@ -143,7 +144,7 @@ Plain text is speech. A leading `/` is a command. A bare status code is radio tr
 | Calls | `/accept` · `/decline` · `/calls [filter]` · `/callout <name>` · `/endcall` |
 | Stops | `/stop` · `/endstop` · `/tow` · `/id` · `/frisk` · `/cuff` · `/detain` · `/release` · `/record` · `/owner` |
 | Services | `/ems` · `/fire` · `/backup [swat\|air\|state\|ems\|fire\|transport\|code2]` · `/transport` · `/panic` · `/911 <details>` |
-| Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model> [department]` · `/livery [department\|number\|next]` · `/liveries <car> [text]` |
+| Car | `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` · `/veh <model> [department]` · `/veh <department>` · `/veh help` · `/livery [department\|number\|next]` · `/liveries <car> [text]` |
 | Records | `/mdt` · `/person [name]` · `/plate [plate]` · `/warrant [name]` · `/bolo` · `/arrest [for <charge>]` · `/cite <name> <offence>` · `/report <text>` · `/reports` · `/court` |
 | Shift | `/status` · `/shift` · `/shifts` · `/search car` · `/units` · `/warrants [serve <name>]` |
 | The case | `/evidence [item]` · `/miranda` · `/interview` · `/report draft` · `/fines` · `/court` || Pursuit | `/pursuit` · `/calledin` · `/endpursuit` |

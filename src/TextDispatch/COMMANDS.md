@@ -130,12 +130,14 @@ and on the nearest person when you are not on a stop.
 
 ## The car you are in
 
-`/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` (`/shut`) · `/repair` (`/fix`, `/fixveh`) · `/veh <model> [department]` (`/spawn`)
+`/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` (`/shut`) · `/repair` (`/fix`, `/fixveh`) · `/veh <model> [department]` · `/veh <department>` · `/veh help` (`/spawn`)
 
 | | |
 |---|---|
 | `/veh police3 sahp` | bring a car in a department's livery - from whichever copy of the car carries it; with no department, your duty agency's |
 | `/veh police3 plain` | the car as it came, in its own livery |
+| `/veh atlanta` · `/veh atlanta-old` | a department on its own, in the car that suits it: the current design on the Interceptor, the old one on the Stanier, fire on the fire truck. A city, county or state (`fulton`, `dallas county`, `texas`), with `old` for the old style and `fire`, `sheriff` or `state` when a place has more than one. A civilian car with a city's name is `/veh phoenix plain` |
+| `/veh help [text] [page]` | every department `/veh` takes on its own, as you would type it, by group - city police, county police, sheriffs, state, fire; a `*` has an old design too. Twenty lines a page; a word narrows it (`/veh help fire`); the whole list goes to the log |
 | `/livery` (`/paint`) | the liveries this car has, and which one it is wearing |
 | `/livery <department>` | repaint it - `sahp`, `San Andreas Highway Patrol`, or `highway` |
 | `/livery <number>` · `/livery next` · `/livery back` | by number, or step through them |

@@ -271,7 +271,7 @@ assembly — and `/callout` starts any of them by name.
 
 **The car**
 `/lock` · `/unlock` · `/engine [off]` · `/trunk` · `/hood` · `/doors` · `/repair` (or `/fix`) ·
-`/veh <model> [department|plain]` · `/livery [department|number|next|back]` (or `/paint`) ·
+`/veh <model> [department|plain]` · `/veh <department>` · `/veh help` · `/livery [department|number|next|back]` (or `/paint`) ·
 `/liveries <car> [text] [page]`
 
 ### Liveries by department
@@ -284,6 +284,9 @@ number, so they can be asked for by name:
 /veh police3 sahp     an Interceptor in San Andreas Highway Patrol livery
 /veh police3          the livery of the agency you are on duty as (LSSD on duty, an LSSD car)
 /veh police3 plain    the car as it came, in its own livery
+/veh atlanta          a department on its own, in the car that suits it - here an Interceptor
+/veh atlanta-old      the old design, on the Stanier;  /veh fulton county, /veh texas, /veh atlanta fire
+/veh help             every department, as you would type it - /veh help fire, /veh help 2
 /livery               what this car has, and which one it is wearing
 /livery bcso          repaint it
 /livery 3             by number - the liveries the car came with have numbers too
@@ -294,10 +297,18 @@ number, so they can be asked for by name:
 
 `/livery` works on the car you are in, or, on foot, the nearest car within 10m - one parked beside you, or
 one you just brought. A name can be the key (`sahp`), the full name, or any part of it that only one
-department has (`highway`). Tab completes the car after `/veh`, then that car's departments.
+department has (`highway`). Tab completes the car or department after `/veh`, then that car's departments.
+
+With no car, `/veh` takes the whole of what follows as a department and brings it in the car that suits
+it: an old design (`-old`, or the word `old`) on the Stanier, anything else on the Interceptor, a fire
+department on the fire truck - whichever copy carries it. A place is enough (`atlanta`, `fulton`,
+`dallas county`, `texas`, `nyc`, `chp`); when it has more than one department the police come first, and
+`fire`, `sheriff` or `state` picks another. The pack's own cars are always cars (`/veh police`), and so is
+a word no department has (`/veh adder`); the few civilian cars that share a city's name - buffalo, phoenix,
+tampa, washington - are `/veh phoenix plain`.
 
 A car can carry only so many liveries - about thirty - and there are far more departments than that, so
-the ELS pack's `LIVERY GENERATORuild_livery_copies.py` makes **copies** of each car: `lvinterceptor1`,
+the ELS pack's `LIVERY GENERATOR\build_livery_copies.py` makes **copies** of each car: `lvinterceptor1`,
 `lvinterceptor2` ... the same model under a new name, each with up to thirty liveries in a texture file of its
 own, in an add-on pack of their own. The ini's `[bodies]` section says which cars are the same car to look at,
 and `/veh police3 lspd-atlanta` brings whichever Interceptor copy carries that livery - so every design is in
