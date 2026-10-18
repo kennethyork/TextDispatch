@@ -127,8 +127,12 @@ namespace TextDispatch.Commands
                     return;
                 case "b":
                 case "ooc": _chat.Write(ChatChannel.Do, "", "(( OOC: " + argument + " ))"); return;
-                case "r":
-                case "radio": _dispatch.Say(argument); return;
+                case "r": _dispatch.Say(argument); return;
+                case "radio":
+                    // On its own, the RADIO tab; with words, a transmission as it always was.
+                    if (string.IsNullOrWhiteSpace(argument)) _chat.Tab = ChatTab.Radio; else _dispatch.Say(argument);
+                    return;
+                case "all": _chat.Tab = ChatTab.All; return;
                 case "ame": Ame(argument); return;
                 case "attempt": Attempt(argument); return;
                 case "roll":
@@ -255,9 +259,7 @@ namespace TextDispatch.Commands
                 case "liveries": ListAllLiveries(argument); return;
 
                 // ---------------------------------------------------- records terminal
-                case "chat":
-                    if (Computer != null) Computer.Open = false;
-                    return;
+                case "chat": _chat.Tab = ChatTab.Chat; return;
                 case "mdt":
                 case "computer":
 
@@ -305,7 +307,10 @@ namespace TextDispatch.Commands
                 case "certs":
                 case "certifications": ShowCertifications(); return;
                 case "phone":
-                case "contacts": PhoneCommand(argument); return;
+                case "contacts":
+                    if (string.IsNullOrWhiteSpace(argument)) _chat.Tab = ChatTab.Phone;
+                    PhoneCommand(argument);
+                    return;
                 case "text":
                 case "sms": TextCommand(argument, false); return;
                 case "call": TextCommand(argument, true); return;
@@ -2924,7 +2929,8 @@ namespace TextDispatch.Commands
             _chat.Notice("            /checks  plate, driver, licence, insurance at once   /passengers  /id passenger   /fst  /pbt");
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
-            _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg;  /chat back");
+            _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
+            _chat.Notice("  Tabs:     Ctrl+Tab cycles CHAT, RADIO, MDT, PHONE, ALL;  /chat  /radio  /mdt  /phone  /all jump to one. Urgent calls show on every tab.");
             _chat.Notice("  The case: /evidence [item]  /miranda  /interview  - evidence and a statement after Miranda help a charge stick");
             _chat.Notice("  Shift:    /status  /shift  /shifts  /units  /warrants [serve <name>]   (10-8 starts a shift, 10-7 ends it)");
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");

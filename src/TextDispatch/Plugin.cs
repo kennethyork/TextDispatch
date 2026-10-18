@@ -180,6 +180,7 @@ namespace TextDispatch
                 _computer = new Computer();
                 _router.Computer = _computer;
                 _chat.Computer = _computer;
+                _computer.Box = _chat;
 
                 // People the officer has booked come back now and then, as somebody new in the street.
                 // Never a cop, never somebody in the player's car.

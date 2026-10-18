@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.49, taken out of the router rather than remembered —
-**217 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.50, taken out of the router rather than remembered —
+**218 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -44,7 +44,7 @@ you can go · you're free · free to go · move along · on your way · beat it 
 
 | | |
 |---|---|
-| `/r <text>` `/radio <text>` | say anything to dispatch; it answers in character |
+| `/r <text>` `/radio <text>` | say anything to dispatch; it answers in character (`/radio` on its own is the RADIO tab) |
 | `/911 <details>` | a 911 call — the details decide the response, so *"man with a gun"* sends units |
 | bare codes | `10-8` `10-7` `10-6` `10-97` `10-98` `10-13` `code 3` `code 4` (or `ten eight`…) |
 | `/panic` | emergency, all units |
@@ -187,6 +187,30 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## The box's tabs — new in 1.0.50
+
+The box has five tabs, so the radio does not bury a conversation and a text does not get lost in it:
+
+| Tab | What is on it |
+|---|---|
+| **CHAT** | the scene: what you say and what people answer, `/me`, `/do`, `/ame`, and what your commands answer |
+| **RADIO** | dispatch, the other units, `/d` and the other departments, 911 calls, the sergeant, roll call, the radar |
+| **MDT** | the computer (below) |
+| **PHONE** | texts, calls, the inbox, tips |
+| **ALL** | everything mixed, as the box was before it had tabs |
+
+- **Ctrl+Tab** goes to the next tab and **Ctrl+Shift+Tab** back (Tab on its own still completes).
+  `/chat`, `/radio`, `/mdt`, `/phone` and `/all` jump straight to one - `/radio <text>` still transmits,
+  and `/phone` shows your contacts as well.
+- **Urgent lines are on every tab**: a P1 call, a call for help or a 10-13, a panic, shots fired, a warrant,
+  a stolen car or a suspended licence on your stop, a radar alert. On the MDT tab the latest one shows over
+  the last row for thirty seconds.
+- **Every other tab counts what is new** on it - `RADIO (3)  PHONE (1)` - on a strip along the top of the
+  box. The strip shows while the box is open, and while it is closed when something is waiting.
+- A command's answer goes to the tab you typed it on.
 
 ---
 

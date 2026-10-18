@@ -23,8 +23,20 @@ namespace TextDispatch.Chat
         private string _title = "";
         private int _page;
 
-        /// <summary>Whether the box is showing the MDT tab rather than the chat.</summary>
-        public bool Open;
+        /// <summary>The box this is a tab of.</summary>
+        public ChatBox Box;
+
+        /// <summary>Whether the box is showing the MDT tab. Closing it goes back to the chat.</summary>
+        public bool Open
+        {
+            get { return Box != null && Box.Tab == ChatTab.Mdt; }
+            set
+            {
+                if (Box == null) return;
+                if (value) Box.Tab = ChatTab.Mdt;
+                else if (Box.Tab == ChatTab.Mdt) Box.Tab = ChatTab.Chat;
+            }
+        }
         public string Unit = "";
 
         public string Tab { get { lock (_gate) return _tab; } }
@@ -48,10 +60,10 @@ namespace TextDispatch.Chat
         }
 
         /// <summary>
-        /// The screen as box lines, `rows` of them: the tab strip, the title, a page of results and, when
-        /// there is more than a page, where you are in it. `unread` is chat that came in meanwhile.
+        /// The screen as box lines, `rows` of them: the computer's own tabs, the title, a page of results and,
+        /// when there is more than a page, where you are in it. The box puts its own tab strip above.
         /// </summary>
-        public List<ChatLine> Screen(int rows, int unread)
+        public List<ChatLine> Screen(int rows)
         {
             string tab, title;
             List<ChatLine> lines;
@@ -68,8 +80,7 @@ namespace TextDispatch.Chat
             foreach (var name in Tabs) strip.Append(name == tab ? "[" + name + "] " : name + " ");
             var screen = new List<ChatLine>
             {
-                new ChatLine { Channel = ChatChannel.Radio, Text = "CHAT" + (unread > 0 ? " (" + unread + " new)" : "") + "  |  MDT " + Unit + "  " + DateTime.Now.ToString("HH:mm") },
-                new ChatLine { Channel = ChatChannel.Dispatch, Text = strip.ToString().TrimEnd() },
+                new ChatLine { Channel = ChatChannel.Dispatch, Text = Unit + " " + DateTime.Now.ToString("HH:mm") + "   " + strip.ToString().TrimEnd() },
                 new ChatLine { Channel = ChatChannel.Notice, Text = "> " + title }
             };
 

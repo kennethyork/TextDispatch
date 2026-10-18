@@ -160,6 +160,9 @@ namespace TextDispatch.Chat
             }
 
             // Anything but Tab ends a completion cycle: what is typed next is the player's, not ours.
+            // Ctrl+Tab goes through the box's tabs - CHAT, RADIO, MDT, PHONE, ALL - and Ctrl+Shift+Tab back.
+            // Tab on its own still completes.
+            if (key == Keys.Tab && control) { _chat.CycleTab(shift); return; }
             if (key == Keys.Tab) { Complete(shift); return; }
             if (_completion != null && key != Keys.ShiftKey && key != Keys.LShiftKey && key != Keys.RShiftKey)
                 _completion.Reset();

@@ -27,6 +27,29 @@ namespace TextDispatch.Chat
         public ChatChannel Channel;
         public string Tag;
         public string Text;
+
+        /// <summary>Which tab it belongs to.</summary>
+        public ChatTab Tab;
+
+        /// <summary>Shown on every tab: a P1 call, a request for help, a warrant or a stolen car on your stop.</summary>
+        public bool Urgent;
+
+        /// <summary>When it was written, Environment.TickCount - so an urgent line can be shown on the MDT tab while it is fresh.</summary>
+        public int At = Environment.TickCount;
+    }
+
+    /// <summary>
+    /// The box's tabs. CHAT is the scene - what is said and done, and what commands answer; RADIO is
+    /// dispatch, the other units, the other departments and the 911 calls; MDT is the computer; PHONE is
+    /// texts and calls. ALL is everything mixed, the way the box was before it had tabs.
+    /// </summary>
+    public enum ChatTab
+    {
+        Chat,
+        Radio,
+        Mdt,
+        Phone,
+        All
     }
 
     /// <summary>
@@ -118,11 +141,71 @@ namespace TextDispatch.Chat
 
         public int LineCount { get { lock (_gate) return _lines.Count; } }
 
-        /// <summary>The computer, the box's second tab. When it is open the box shows it instead of the chat.</summary>
+        /// <summary>The computer - what the MDT tab shows.</summary>
         public Computer Computer;
 
-        // Chat lines that arrived while the MDT tab was showing, for the "CHAT (3 new)" on the tab strip.
-        private int _unread;
+        /// <summary>The tab showing. Switching to one clears its count of what is new.</summary>
+        public ChatTab Tab
+        {
+            get { return _tab; }
+            set
+            {
+                _tab = value;
+                if (value == ChatTab.All) Array.Clear(_unread, 0, _unread.Length);
+                else _unread[(int)value] = 0;
+                Scroll = 0;
+            }
+        }
+
+        private ChatTab _tab = ChatTab.Chat;
+
+        // What has come in on each tab since it was last looked at.
+        private readonly int[] _unread = new int[5];
+
+        private static readonly ChatTab[] Order = { ChatTab.Chat, ChatTab.Radio, ChatTab.Mdt, ChatTab.Phone, ChatTab.All };
+
+        /// <summary>The next tab along, or the one before: Ctrl+Tab and Ctrl+Shift+Tab.</summary>
+        public void CycleTab(bool backwards)
+        {
+            var at = Array.IndexOf(Order, _tab);
+            Tab = Order[(at + (backwards ? Order.Length - 1 : 1)) % Order.Length];
+        }
+
+        public int Unread(ChatTab tab) { return _unread[(int)tab]; }
+
+        /// <summary>
+        /// Which tab a line belongs to. The radio's channels go to RADIO and the phone's to PHONE; what is
+        /// said and done goes to CHAT; and the box's own answers - notices, errors - go to the tab the player
+        /// is on, since that is where they asked.
+        /// </summary>
+        private ChatTab TabOf(ChatChannel channel)
+        {
+            switch (channel)
+            {
+                case ChatChannel.Dispatch:
+                case ChatChannel.Radio: return ChatTab.Radio;
+                case ChatChannel.Phone: return ChatTab.Phone;
+                case ChatChannel.Notice:
+                case ChatChannel.Error:
+                    return _tab == ChatTab.Mdt || _tab == ChatTab.All ? ChatTab.Chat : _tab;
+                default: return ChatTab.Chat;
+            }
+        }
+
+        private static readonly string[] UrgentWords =
+        {
+            "P1,", "P1 ", "needs assistance", "10-13", "panic", "shots fired", "officer down", "send everyone",
+            "WARRANT", "STOLEN", "SUSPENDED", "be advised", "*beep*"
+        };
+
+        /// <summary>A radio line that must be seen wherever the player is looking.</summary>
+        private static bool IsUrgent(ChatChannel channel, string text)
+        {
+            if (channel != ChatChannel.Dispatch && channel != ChatChannel.Radio) return false;
+            foreach (var word in UrgentWords)
+                if (text.IndexOf(word, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            return false;
+        }
 
         // ------------------------------------------------------------------ output
 
@@ -198,11 +281,13 @@ namespace TextDispatch.Chat
             // And kept for /log, which writes the session out as a chat log a forum post can carry.
             ChatLog.Add(channel, tag, text);
 
-            if (Computer != null && Computer.Open) _unread++;
+            var tab = TabOf(channel);
+            var urgent = IsUrgent(channel, (tag ?? "") + " " + text);
+            if (_tab != ChatTab.All && tab != _tab && !(urgent && _tab != ChatTab.Mdt)) _unread[(int)tab]++;
 
             lock (_gate)
             {
-                _lines.Add(new ChatLine { Channel = channel, Tag = tag, Text = text });
+                _lines.Add(new ChatLine { Channel = channel, Tag = tag, Text = text, Tab = tab, Urgent = urgent });
                 if (_lines.Count > 400) _lines.RemoveRange(0, _lines.Count - 400);
             }
             if (Scroll > 0) Scroll++;
@@ -293,6 +378,19 @@ namespace TextDispatch.Chat
 
         // ------------------------------------------------------------------ render
 
+        /// <summary>"CHAT  RADIO (3)  [MDT]  PHONE (1)  ALL   Ctrl+Tab" - the tabs, the one showing in brackets.</summary>
+        private string Strip(ChatTab current)
+        {
+            var text = new StringBuilder();
+            foreach (var tab in Order)
+            {
+                var name = tab.ToString().ToUpperInvariant();
+                var count = tab == current || tab == ChatTab.All ? 0 : _unread[(int)tab];
+                text.Append(tab == current ? "[" + name + "]" : name).Append(count > 0 ? " (" + count + ")" : "").Append("  ");
+            }
+            return text.Append(" Ctrl+Tab").ToString();
+        }
+
         private static Color ColourOf(ChatChannel channel)
         {
             switch (channel)
@@ -320,8 +418,8 @@ namespace TextDispatch.Chat
             bool open;
             int scroll;
             int visible = Math.Max(3, VisibleLines);
-            var computer = Computer != null && Computer.Open;
-            if (!computer) _unread = 0;
+            var tab = _tab;
+            var computer = tab == ChatTab.Mdt && Computer != null;
             lock (_gate)
             {
                 if (_lines.Count == 0 && !IsOpen && !computer) return;
@@ -330,23 +428,49 @@ namespace TextDispatch.Chat
                 scroll = Scroll;
             }
 
-            // The MDT tab: the computer's screen in place of the chat, a few rows taller so a record fits.
+            // The strip of tabs, the current one in brackets and the others with what is new on them. Shown
+            // while the box is open, and while it is closed when something is waiting on another tab.
+            var strip = Strip(tab);
+            var waiting = false;
+            for (var i = 0; i < _unread.Length; i++) if (i != (int)tab && _unread[i] > 0) waiting = true;
+
             if (computer)
             {
+                // The MDT tab: the computer's screen in place of the chat, a few rows taller so a record fits.
                 visible = Math.Max(visible, 16);
-                snapshot = Computer.Screen(visible, _unread).ToArray();
+                var screen = Computer.Screen(visible - 1);
+                screen.Insert(0, new ChatLine { Channel = ChatChannel.Radio, Text = strip });
+
+                // Something urgent in the last half minute is shown over the computer's last row, so a P1 or
+                // a call for help is seen on this tab too.
+                for (var i = snapshot.Length - 1; i >= 0 && i >= snapshot.Length - 40; i--)
+                {
+                    var line = snapshot[i];
+                    if (!line.Urgent || Environment.TickCount - line.At > 30000) continue;
+                    screen[screen.Count - 1] = new ChatLine { Channel = ChatChannel.Error, Tag = line.Tag, Text = "!! " + line.Text };
+                    break;
+                }
+                snapshot = screen.ToArray();
                 scroll = 0;
             }
-            else if (Computer != null && snapshot.Length > 0)
+            else
             {
-                // On the chat tab, a reminder that the other tab is there, once the box is open.
-                if (open)
+                // This tab's lines, and the urgent ones from every tab.
+                var onTab = new List<ChatLine>(snapshot.Length);
+                foreach (var line in snapshot)
+                    if (tab == ChatTab.All || line.Tab == tab || line.Urgent) onTab.Add(line);
+                if (open || waiting)
                 {
-                    var withStrip = new ChatLine[snapshot.Length + 1];
-                    Array.Copy(snapshot, withStrip, snapshot.Length);
-                    withStrip[snapshot.Length] = new ChatLine { Channel = ChatChannel.Do, Text = "[CHAT]  MDT - /mdt opens the computer tab" };
-                    snapshot = withStrip;
+                    // The strip sits on top: it takes one of the rows, from the oldest end.
+                    var first0 = Math.Max(0, onTab.Count - (visible - 1) - scroll);
+                    var take = Math.Min(visible - 1, onTab.Count - first0);
+                    var withStrip = new List<ChatLine> { new ChatLine { Channel = ChatChannel.Do, Text = strip } };
+                    withStrip.AddRange(onTab.GetRange(first0, Math.Max(0, take)));
+                    snapshot = withStrip.ToArray();
+                    scroll = 0;
                 }
+                else snapshot = onTab.ToArray();
+                if (snapshot.Length == 0 && !open) return;
             }
 
             // Never trust the reported resolution for layout: if the game answers 0 (or throws),

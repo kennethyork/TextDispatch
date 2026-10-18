@@ -460,6 +460,12 @@ that remembers, a career, a phone. The full tables are in [COMMANDS.md](COMMANDS
 
 All of it is saved in `TextDispatch.records.json` with the rest of the records.
 
+### The box's tabs (1.0.50)
+
+CHAT, RADIO, MDT, PHONE and ALL. **Ctrl+Tab** cycles them, or `/chat`, `/radio`, `/mdt`, `/phone`, `/all`.
+The radio and the phone have their own tabs so neither buries the scene; anything urgent - a P1, a call
+for help, a warrant on your stop - shows on every tab, and the strip on top counts what is new elsewhere.
+
 ### The computer (1.0.48)
 
 The chat box has a second tab, **MDT**: `/mdt` switches to the mobile data computer and `/chat` back. Its

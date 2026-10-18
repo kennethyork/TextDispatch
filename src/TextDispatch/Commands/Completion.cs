@@ -38,7 +38,7 @@ namespace TextDispatch.Commands
             "certs", "certifications", "phone", "contacts", "text", "sms", "call", "inbox", "messages", "radar", "speed",
             // 1.0.47: LSPDFR in text
             "passengers", "occupants", "fst", "sobriety", "pbt", "breathtest", "book", "booking", "cad", "incident", "incidents",
-            "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat"
+            "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all"
         };
 
         /// <summary>
