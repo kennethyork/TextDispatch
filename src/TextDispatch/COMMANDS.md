@@ -1,6 +1,6 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.58, taken out of the router rather than remembered —
+The complete command surface of TextDispatch 1.0.59, taken out of the router rather than remembered —
 **258 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
@@ -187,6 +187,22 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## Ultimate Backup's work, built in - new in 1.0.59
+
+| | |
+|---|---|
+| `/backup <kind>` | `code2`, `traffic` (a unit for your stop), `felony` (two units), `group` (three), `state`, `swat`, `noose`, `air`, `k9`, `ems`, `fire`, `transport` - from LSPDFR's own units |
+| `/k9` | a K9 unit: a patrol car with a dog in the back |
+| `/k9 sniff` | the dog goes round the car you stopped. It sits at the door when there is something in it - what a search would really find - and that alert is **probable cause** for `/search car` when they refused consent |
+| `/spikes` | a stinger across the road ahead of what you are chasing (150 m in front of the nearest fleeing car, or 100 m ahead of you); any car but yours that crosses it loses its tyres. Picked up after two minutes |
+| `/roadblock` | two police cars across the road ahead, lights on, an officer at each. Stood down after three minutes |
+| `/dismiss` | code 4: every unit sent to you goes back to patrol, and the strips, blocks and the K9 are picked up |
+
+With Ultimate Backup (or Policing Redefined) installed, `/spikes` and `/roadblock` still ask it first; the
+K9 is always TextDispatch's own, for the sniff. Without them, all of this works on its own.
 
 ---
 

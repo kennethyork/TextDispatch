@@ -36,6 +36,7 @@ namespace TextDispatch
         private static PhoneService _phone;
         private static Radar _radar;
         private static Alpr _alpr;
+        private static Tactics _tactics;
         private static Computer _computer;
         private static string _recordsPath;
         private static int _savedAt;
@@ -182,6 +183,8 @@ namespace TextDispatch
                 _chat.RadarScreen = rows => _radar.Screen(rows);
                 _alpr = new Alpr(_chat, _records, _api) { On = _settings.Alpr };
                 _router.Alpr = _alpr;
+                _tactics = new Tactics(_chat, _api);
+                _router.Tactics = _tactics;
                 var alpr = _alpr;
                 _radar.PlateReader = () =>
                 {
@@ -382,6 +385,7 @@ namespace TextDispatch
                     _phone.Update(here && _shift.Running);
                     if (here) _radar.Update();
                     if (here) _alpr.Update();
+                    _tactics.Update();
                     Overhead.Update();
 
                     SaveRecords(false);

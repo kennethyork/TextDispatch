@@ -369,12 +369,12 @@ namespace TextDispatch.Commands
 
                 // ---------------------------------------------------- features other plugins own
                 case "k9":
-                case "dog": if (Certified("k9", "K9 handler")) BridgeAction("k9"); return;
+                case "dog": if (Certified("k9", "K9 handler")) K9(argument); return;
                 case "spikes":
                 case "spikestrips":
-                case "stingers": BridgeAction("spikes"); return;
+                case "stingers": Spikes(); return;
                 case "roadblock":
-                case "block": BridgeAction("roadblock"); return;
+                case "block": RoadBlock(); return;
                 case "pit": BridgeAction("pit"); return;
                 case "felony":
                 case "felonystop": BridgeAction("felony"); return;
@@ -383,7 +383,7 @@ namespace TextDispatch.Commands
                 case "animalcontrol": BridgeAction("animal"); return;
                 case "group": BridgeAction("group"); return;
                 case "dismiss":
-                case "standdown": BridgeAction("dismiss"); return;
+                case "standdown": Dismiss(); return;
                 case "platecheck":
                 case "runplate": BridgeAction("platecheck"); return;
                 case "pedcheck":
@@ -806,7 +806,9 @@ namespace TextDispatch.Commands
             // support - so if one is installed it answers, and LSPDFR stays the fallback rather than
             // the only option. Which one answered is said out loud, because the player asked for a
             // unit rather than for a mod.
-            if (kind.Length > 0 && Plugin.Bridge != null)
+            // The K9, spikes and road blocks are TextDispatch's own handling (spikes and blocks still ask the other
+            // plugins first, inside), so they are not handed to the bridge here.
+            if (kind.Length > 0 && Plugin.Bridge != null && kind != "k9" && kind != "dog" && kind != "spikes" && kind != "roadblock")
             {
                 Plugin.Bridge.Ensure();
 
@@ -823,7 +825,26 @@ namespace TextDispatch.Commands
 
             switch (kind)
             {
-                case "swat": case "noose":
+                // Ultimate Backup's kinds, from LSPDFR's own units.
+                case "noose":
+                {
+                    var noose = _api.RequestBackup("Code3", "NooseTeam");
+                    if (noose != null) { _dispatch.Track("NOOSE", noose); _dispatch.Report(DispatcherIntent.Backup, "10-13, NOOSE responding."); return; }
+                    response = "Code3"; unit = "SwatTeam"; spoken = "SWAT (NOOSE was not available)"; break;
+                }
+                case "traffic": case "stop":
+                    response = "Code2"; unit = "LocalUnit"; spoken = "a unit for your traffic stop, code 2"; break;
+                case "felony":
+                    _dispatch.RequestBackup("Code3", "LocalUnit", "felony stop backup, code 3");
+                    response = "Code3"; unit = "LocalUnit"; spoken = "a second unit for the felony stop"; break;
+                case "group":
+                    _dispatch.RequestBackup("Code3", "LocalUnit", "group backup, unit one");
+                    _dispatch.RequestBackup("Code3", "LocalUnit", "group backup, unit two");
+                    response = "Code3"; unit = "LocalUnit"; spoken = "group backup, unit three"; break;
+                case "k9": case "dog": K9(""); return;
+                case "spikes": Spikes(); return;
+                case "roadblock": RoadBlock(); return;
+                case "swat":
                     response = "Code3"; unit = "SwatTeam"; spoken = "SWAT"; break;
                 case "air": case "helicopter":
                     if (!Certified("air", "Air support observer")) return;
@@ -2990,6 +3011,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Records:  /flag <name or plate>: <warning>  /note ...  /notes [name]  /case [open|use|add|note|close|export]");
             _chat.Notice("  Career:   /rollcall  /rank  /certs     Phone: /phone  /text <who> <msg>  /call <who> <msg>  /inbox");
             _chat.Notice("  Radar:    /radar  read both antennas   /radar lock   /radar on|off   /radar alert <mph>");
+            _chat.Notice("  Backup:   /backup [code2|traffic|felony|group|state|swat|noose|air|k9|ems|fire|transport]  /k9  /k9 sniff  /spikes  /roadblock  /dismiss");
             _chat.Notice("  Plates:   /alpr  the plate reader's hits - it reads the cars around you as you drive   /alpr on|off");
             _chat.Notice("  Stops:    ask in plain words - 'where are you headed', 'been drinking', 'whose car', 'mind if I search'");
             _chat.Notice("            /checks  plate, driver, licence, insurance at once   /passengers  /id passenger   /fst  /pbt");

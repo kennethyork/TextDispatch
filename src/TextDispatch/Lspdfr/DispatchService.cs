@@ -106,6 +106,32 @@ namespace TextDispatch.Lspdfr
         }
 
         /// <summary>The units sent in the last fifteen minutes that are still in the world.</summary>
+        /// <summary>Keep track of a unit sent some other way - the K9 - so /units and /dismiss know about it.</summary>
+        public void Track(string what, Vehicle vehicle)
+        {
+            Sent(what, vehicle);
+            if (vehicle != null) _shift.Backup();
+        }
+
+        /// <summary>Send every unit back: they go back to patrol and the game takes them when it is ready. Returns how many.</summary>
+        public int DismissUnits()
+        {
+            var count = 0;
+            foreach (var unit in _units)
+            {
+                try
+                {
+                    if (unit.Vehicle == null || !unit.Vehicle.Exists()) continue;
+                    foreach (var ped in unit.Vehicle.Occupants) try { if (ped != null && ped.Exists()) ped.Dismiss(); } catch { }
+                    unit.Vehicle.Dismiss();
+                    count++;
+                }
+                catch { }
+            }
+            _units.Clear();
+            return count;
+        }
+
         public List<SentUnit> Units()
         {
             _units.RemoveAll(u =>

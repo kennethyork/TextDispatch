@@ -63,7 +63,8 @@ namespace TextDispatch.Commands
                 case "chatter": case "spam": return "quiet|brief|full";
                 case "auto": return "on|off|accept on|accept off";
                 case "available": case "typing": return "on|off";
-                case "backup": return "swat|air|state|ems|fire|transport|code2|k9|spikes|roadblock";
+                case "backup": return "code2|traffic|felony|group|state|swat|noose|air|k9|ems|fire|transport|spikes|roadblock";
+                case "k9": case "dog": return "sniff";
                 case "search": return "car|passenger";
                 case "frisk": case "patdown": return "passenger";
                 case "bolo": return "list|add|clear";
