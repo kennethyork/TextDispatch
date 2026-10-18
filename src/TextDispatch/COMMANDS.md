@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.47, taken out of the router rather than remembered —
-**215 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.48, taken out of the router rather than remembered —
+**216 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -187,6 +187,25 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## The computer — new in 1.0.48
+
+`/mdt` (or `/computer`) puts the mobile data computer on screen: a panel in the middle of the view with
+tabs along the top. It is still text - every screen is one of the box's own lookups, so the computer and
+the commands always agree - and it is driven from the chat box.
+
+| | |
+|---|---|
+| `/mdt` | open it on the home screen - your rank and status, the active call, what is on file, and what is waiting on you (arrests to book, reports sent back, warrants). `/mdt` again closes it |
+| *a name or a plate* | while it is open, typed on its own in the box: a person or plate search on the screen |
+| `/mdt person [name]` · `/mdt vehicle [plate]` | the person in front of you or by name · the car you stopped or by plate |
+| `/mdt warrants` · `/mdt bolo` · `/mdt cad [number]` · `/mdt units` | warrants · BOLOs · the dispatch screen · the unit board |
+| `/mdt reports [name]` · `/mdt cases` · `/mdt flags [subject]` · `/mdt msg [contact]` | reports · investigations · flags and notes · the phone's messages |
+| `/mdt next` · `/mdt back` · `/mdt close` | page through a long screen · close it |
+
+Warrants, flags, stolen cars and suspended licences show in red, BOLOs in amber.
 
 ---
 

@@ -35,6 +35,7 @@ namespace TextDispatch
         private static Fleet _fleet;
         private static PhoneService _phone;
         private static Radar _radar;
+        private static Computer _computer;
         private static string _recordsPath;
         private static int _savedAt;
         private static bool _saveErrorLogged;
@@ -176,6 +177,8 @@ namespace TextDispatch
                 _router.Phone = _phone;
                 _radar = new Radar(_chat);
                 _router.Radar = _radar;
+                _computer = new Computer();
+                _router.Computer = _computer;
 
                 // People the officer has booked come back now and then, as somebody new in the street.
                 // Never a cop, never somebody in the player's car.
@@ -567,6 +570,7 @@ namespace TextDispatch
             {
                 _chat.Render(e.Graphics);
                 Overhead.Render(e.Graphics, _chat.FontName, _chat.FontSize * (_chat.UiScale <= 0f ? 1f : _chat.UiScale));
+                _computer.Render(e.Graphics, _chat.FontName, _chat.UiScale);
             }
             catch (Exception ex)
             {

@@ -38,7 +38,7 @@ namespace TextDispatch.Commands
             "certs", "certifications", "phone", "contacts", "text", "sms", "call", "inbox", "messages", "radar", "speed",
             // 1.0.47: LSPDFR in text
             "passengers", "occupants", "fst", "sobriety", "pbt", "breathtest", "book", "booking", "cad", "incident", "incidents",
-            "board", "unitboard", "collision", "crash", "accident", "checks", "runall"
+            "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer"
         };
 
         /// <summary>
@@ -69,6 +69,7 @@ namespace TextDispatch.Commands
                 case "case": case "cases": return "list|open|use|add|note|close|export";
                 case "examine": case "ex": case "look": return "me|car";
                 case "phone": return "add";
+                case "mdt": case "computer": case "terminal": return "home|person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg|next|back|close";
                 case "fst": case "sobriety": return "hgn|walk|stand";
                 case "id": case "licence": case "license": return "passenger";
                 case "book": case "booking": return "people";

@@ -460,6 +460,12 @@ that remembers, a career, a phone. The full tables are in [COMMANDS.md](COMMANDS
 
 All of it is saved in `TextDispatch.records.json` with the rest of the records.
 
+### The computer (1.0.48)
+
+`/mdt` opens the mobile data computer on screen - home, person, vehicle, warrants, BOLO, CAD, units,
+reports, cases, flags and messages tabs. While it is open, a name or a plate typed in the box searches it.
+Every screen is one of the box's own lookups, so the two never disagree. See [COMMANDS.md](COMMANDS.md).
+
 ### LSPDFR in text (1.0.47)
 
 - **The stop in your own words.** Ask "where are you headed", "have you been drinking", "whose car is this",

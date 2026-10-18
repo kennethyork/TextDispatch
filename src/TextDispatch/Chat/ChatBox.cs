@@ -128,9 +128,28 @@ namespace TextDispatch.Chat
         /// <summary>Lines dropped because they repeated within three seconds - for the log.</summary>
         public int SuppressedRepeats { get { return _suppressed; } }
 
+        // While a screen of the computer is being filled, the lines go to it instead of the box.
+        private List<ChatLine> _capture;
+
+        /// <summary>Catch every line written until EndCapture, rather than showing it - for the computer.</summary>
+        public void BeginCapture() { _capture = new List<ChatLine>(); }
+
+        public List<ChatLine> EndCapture()
+        {
+            var caught = _capture ?? new List<ChatLine>();
+            _capture = null;
+            return caught;
+        }
+
         public void Write(ChatChannel channel, string tag, string text)
         {
             if (string.IsNullOrEmpty(text)) return;
+
+            if (_capture != null)
+            {
+                _capture.Add(new ChatLine { Channel = channel, Tag = tag, Text = Plain(text) });
+                return;
+            }
 
             // GTA's formatting tokens belong to the notification system, not to a box that draws words.
             // A callout pack that says a thing through both arrives here as

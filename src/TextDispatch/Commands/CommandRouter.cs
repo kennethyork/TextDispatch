@@ -53,6 +53,9 @@ namespace TextDispatch.Commands
 
             if (text[0] == '/') { Command(text.Substring(1)); return; }
 
+            // With the computer up, a name or a plate typed on its own is a search on it, not speech.
+            if (Computer != null && Computer.Open) { MdtSearch(text); return; }
+
             var code = AsStatusCode(text);
             if (code != null) { Status(code); return; }
 
@@ -253,7 +256,9 @@ namespace TextDispatch.Commands
 
                 // ---------------------------------------------------- records terminal
                 case "mdt":
-                case "terminal": RecordsSummary(); return;
+                case "computer":
+
+                case "terminal": Mdt(argument); return;
                 case "person":
                 case "name": PersonLookup(argument); return;
                 case "plate": PlateLookup(argument); return;
@@ -2916,6 +2921,7 @@ namespace TextDispatch.Commands
             _chat.Notice("            /checks  plate, driver, licence, insurance at once   /passengers  /id passenger   /fst  /pbt");
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
+            _chat.Notice("  Computer: /mdt  on screen - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
             _chat.Notice("  The case: /evidence [item]  /miranda  /interview  - evidence and a statement after Miranda help a charge stick");
             _chat.Notice("  Shift:    /status  /shift  /shifts  /units  /warrants [serve <name>]   (10-8 starts a shift, 10-7 ends it)");
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");
