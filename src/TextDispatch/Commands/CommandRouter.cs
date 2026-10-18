@@ -114,7 +114,8 @@ namespace TextDispatch.Commands
 
             switch (name)
             {
-                case "help": Help(); return;
+                case "help":
+                case "?": Help(argument); return;
 
                 // ---------------------------------------------------- roleplay
                 case "me":
@@ -300,6 +301,8 @@ namespace TextDispatch.Commands
                 case "case":
                 case "cases":
                 case "investigation": CaseCommand(argument); return;
+                case "tutorial":
+                case "walkthrough": Tutorial(); return;
                 case "rollcall":
                 case "briefing": _dispatch.RollCall(); return;
                 case "rank":
@@ -1701,6 +1704,7 @@ namespace TextDispatch.Commands
             _chat.Notice(person.Name + " - " + person.Age + " - " + person.Occupation + " - " + person.HomeZone);
             _chat.Notice("  " + person.Summary() +
                          (person.Licence != null ? "   licence: " + person.Licence.ToUpperInvariant() : "") +
+                         (person.Points > 0 ? " (" + person.Points + " point" + (person.Points == 1 ? "" : "s") + (person.SuspendedForPoints ? ", suspended for points" : "") + ")" : "") +
                          (person.TimesStopped > 0 ? "   stopped " + person.TimesStopped + " time(s) before" : ""));
 
             for (int i = 0; i < person.Priors.Count; i++) _chat.Notice("    - prior: " + person.Priors[i]);
@@ -2904,9 +2908,40 @@ namespace TextDispatch.Commands
             Log.Line("bridges: " + bridge.Describe());
         }
 
-        private void Help()
+        /// <summary>
+        /// /help: the five things to try first, not the whole list - two hundred commands on one screen is a
+        /// list nobody reads. /help all is the whole of it.
+        /// </summary>
+        private void Help(string argument)
         {
-            _chat.Notice("TextDispatch - LSPDFR through a chat box.");
+            if ((argument ?? "").Trim().Equals("all", StringComparison.OrdinalIgnoreCase)) { HelpAll(); return; }
+
+            _chat.Notice("TextDispatch - LSPDFR in a chat box. Five things to start with:");
+            _chat.Notice("  1. Type anything to talk to whoever is near you. At a stop, ask in plain words:");
+            _chat.Notice("     'where are you headed', 'have you been drinking', 'whose car is this', 'mind if I search'.");
+            _chat.Notice("  2. 10-8 starts your shift, 10-97 when you arrive, 10-7 ends it. /r <text> talks to dispatch.");
+            _chat.Notice("  3. On a stop: /checks runs the plate, driver and licence. Then /cite, /charge and /arrest, and /report.");
+            _chat.Notice("  4. /mdt is the computer. Ctrl+Tab goes through the tabs: CHAT, RADIO, MDT, PHONE, ALL.");
+            _chat.Notice("  5. In the car: /radar, /radar lock. /veh <car or department> brings one.");
+            _chat.Notice("  /help all - every command.  Tab completes commands and names.  /tutorial - the first-shift walkthrough again.");
+        }
+
+        /// <summary>The first-shift walkthrough: said once on the first launch, and again on /tutorial.</summary>
+        internal void Tutorial()
+        {
+            _chat.Notice("First shift? A walkthrough, once:");
+            _chat.Notice("  - Dispatch sends you calls and takes them for you; '/auto' changes that. Type 10-97 when you arrive.");
+            _chat.Notice("  - Walk up and type to talk. Somebody you stop answers your questions from what is true about them - and lies when they have a reason.");
+            _chat.Notice("  - /checks, /fst, /pbt, /search car, /cite or /charge then /arrest. /book at a station, then /report - the sergeant reads it.");
+            _chat.Notice("  - The radio has its own tab, and so does the phone: Ctrl+Tab, or /chat /radio /mdt /phone. Urgent calls show on every tab.");
+            _chat.Notice("  - /rank, /cad, /board and /mdt keep track of you. /log export writes the shift out. /help for the rest.");
+            _records.Tutored = true;
+            _records.Dirty = true;
+        }
+
+        private void HelpAll()
+        {
+            _chat.Notice("TextDispatch - LSPDFR through a chat box. Every command:");
             _chat.Notice("  Talk:     type anything to speak aloud - people nearby answer in text");
             _chat.Notice("            /w whisper  /low quietly  /shout yell  /m megaphone  /me <action>  /ame <action> over your head  /do <text>");
             _chat.Notice("  RP:       /attempt <action>  /roll [sides]  /examine [me|car]  /my <how you look>  /d <text> other departments");

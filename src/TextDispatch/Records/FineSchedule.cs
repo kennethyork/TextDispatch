@@ -59,6 +59,26 @@ namespace TextDispatch.Records
             E("possession of cannabis", 300, "cannabis|weed|marijuana"),
         };
 
+        /// <summary>Twelve points and the licence is suspended.</summary>
+        public const int SuspendAt = 12;
+
+        /// <summary>
+        /// Points on a licence for a moving violation - what a driving offence costs beyond the fine. Parking,
+        /// jaywalking, tints and the like carry none; nor does anything that is not about driving.
+        /// </summary>
+        public static int Points(string offence)
+        {
+            var o = (offence ?? "").ToLowerInvariant();
+            if (o.Contains("25+")) return 4;
+            if (o.Contains("reckless")) return 6;
+            if (o.Contains("wrong side")) return 4;
+            if (o.Contains("red light") || o.Contains("careless") || o.Contains("phone")) return 3;
+            if (o.Contains("speeding") || o.Contains("stop sign") || o.Contains("yield") || o.Contains("u-turn")) return 2;
+            if (o.Contains("licence") || o.Contains("license") || o.Contains("insurance")) return 2;
+            if (o.Contains("seatbelt") || o.Contains("tail light") || o.Contains("blocking traffic")) return 1;
+            return 0;
+        }
+
         /// <summary>The entry for what was typed, or null if nothing in the schedule fits.</summary>
         public static Entry Find(string offence)
         {

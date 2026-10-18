@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.50, taken out of the router rather than remembered —
-**218 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.51, taken out of the router rather than remembered —
+**221 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -187,6 +187,24 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## New in 1.0.51
+
+| | |
+|---|---|
+| `/help` `/?` | now the five things to try first; `/help all` is every command |
+| `/tutorial` | the first-shift walkthrough - shown once by itself on the first launch |
+
+- **Licence points.** A moving violation on `/cite` puts points on the licence - speeding 2 (4 at 25+ over),
+  a red light 3, reckless driving 6, and so on; parking and the like carry none. Twelve points and the licence
+  is **suspended**: the next stop on them reads it out, `/checks` and `/person` show it, and it stays
+  suspended whatever LSPDFR's own licence says.
+- **On the way to a call** the RADIO tab counts you in - the distance and the area when you are assigned,
+  then at 2 km, 1 km, 500 m and 150 m - and says when you are at the location, for 10-97. Taken from the
+  callout's own position.
+- `/radar on` looks only within its own range instead of at every car in the world.
 
 ---
 

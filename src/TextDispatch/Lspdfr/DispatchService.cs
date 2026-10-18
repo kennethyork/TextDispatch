@@ -54,6 +54,8 @@ namespace TextDispatch.Lspdfr
         /// <summary>When the next follow-up may be said: not in the first moments of a session, and not back to back.</summary>
         private int _nextFollowUpAt = Environment.TickCount + 20000;
         private int _rollCallAt;          // when the watch sergeant reads the briefing; 0 when not due
+        private string _routeCall;        // the call the distance updates are for
+        private int _routeStage;          // how far down the 2 km / 1 km / 500 m / 150 m marks they have got
         private int _nextReviewAt = Environment.TickCount + 30000;
 
         /// <summary>A warrant service in progress - a call raised from the records, not from a callout pack.</summary>
@@ -405,6 +407,54 @@ namespace TextDispatch.Lspdfr
             Promotion();
         }
 
+        private static readonly float[] Marks = { 2000f, 1000f, 500f, 150f };
+
+        /// <summary>
+        /// On the way to a call: the distance and the area, as the unit closes - 2 km, 1 km, 500 m, 150 m - and
+        /// a nudge for 10-97 on arrival. Said on the radio tab, and into the incident's log.
+        /// </summary>
+        private void EnRoute()
+        {
+            if (_callout == null || _calloutState != "Running" || _onScene || _pursuit) { if (_callout == null) _routeCall = null; return; }
+            if (_routeCall != _calloutName) { _routeCall = _calloutName; _routeStage = -1; }
+
+            var target = _api.CalloutPosition(_callout);
+            if (target == null) return;
+            float metres;
+            try { metres = Game.LocalPlayer.Character.Position.DistanceTo(target.Value); }
+            catch { return; }
+
+            string zone = null;
+            try { zone = _api.ZoneAt(target.Value); } catch { }
+
+            if (_routeStage == -1)
+            {
+                _routeStage = 0;
+                while (_routeStage < Marks.Length && metres <= Marks[_routeStage]) _routeStage++;
+                _chat.Write(ChatChannel.Dispatch, "[CAD]", _calloutName + " is " + Distance(metres) + " out" + (zone != null ? ", " + zone : "") + ".");
+                return;
+            }
+
+            if (metres < 60f && _routeStage <= Marks.Length)
+            {
+                _routeStage = Marks.Length + 1;
+                _chat.Write(ChatChannel.Dispatch, "[CAD]", "You're at the location. Type 10-97 when you're on scene.");
+                return;
+            }
+
+            if (_routeStage < Marks.Length && metres <= Marks[_routeStage])
+            {
+                while (_routeStage < Marks.Length && metres <= Marks[_routeStage]) _routeStage++;
+                _chat.Write(ChatChannel.Dispatch, "[CAD]", Distance(metres) + " to " + _calloutName + (zone != null ? ", " + zone : "") + ".");
+                _records.IncidentNote(Distance(metres) + " out");
+            }
+        }
+
+        private static string Distance(float metres)
+        {
+            return metres >= 1000f ? (metres / 1000f).ToString("0.0") + " km" : ((int)(metres / 10f) * 10) + " m";
+        }
+
         private string SafeZone()
         {
             try { return _api.ZoneAt(Game.LocalPlayer.Character.Position); }
@@ -476,6 +526,7 @@ namespace TextDispatch.Lspdfr
 
                 if (!_api.Available) return;
                 WatchCallout();
+                EnRoute();
                 WatchPursuit();
                 WatchPullover();
                 WatchArrest();

@@ -273,6 +273,9 @@ namespace TextDispatch
 
                 if (unfinished != null)
                     _chat.Dispatch("Your last shift was never closed - it is on file as unfinished. /shifts lists it.");
+
+                // Said once, on the first launch with a records file that has never seen it.
+                if (!_records.Tutored) _router.Tutorial();
                 if (_records.FollowUps.Count > 0)
                     _chat.Dispatch(_records.FollowUps.Count + " case(s) of yours are still with the courts. I will pass on what comes back.");
 

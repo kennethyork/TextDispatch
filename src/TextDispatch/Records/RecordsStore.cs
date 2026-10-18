@@ -58,6 +58,9 @@ namespace TextDispatch.Records
             public List<BookingRecord> Bookings = new List<BookingRecord>();
             public int NextIncident;
             public int NextBooking;
+
+            // 1.0.51
+            public bool Tutored;
         }
 
         public static string PathIn(string folder)
@@ -107,7 +110,8 @@ namespace TextDispatch.Records
                     Incidents = new List<IncidentRecord>(ledger.Incidents),
                     Bookings = new List<BookingRecord>(ledger.Bookings),
                     NextIncident = ledger.NextIncident,
-                    NextBooking = ledger.NextBooking
+                    NextBooking = ledger.NextBooking,
+                    Tutored = ledger.Tutored
                 };
 
                 // Everyone the player has touched, and anyone whose record has changed from what the
@@ -220,6 +224,7 @@ namespace TextDispatch.Records
                     }
             if (file.NextIncident > ledger.NextIncident) ledger.NextIncident = file.NextIncident;
             if (file.NextBooking > ledger.NextBooking) ledger.NextBooking = file.NextBooking;
+            ledger.Tutored = file.Tutored;
             // An incident left open when the game closed is closed now - the call went with the session.
             var stale = ledger.CurrentIncident;
             if (stale != null) ledger.CloseIncident("the session ended");

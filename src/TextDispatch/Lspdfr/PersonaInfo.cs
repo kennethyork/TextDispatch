@@ -89,7 +89,9 @@ namespace TextDispatch.Lspdfr
             if (person == null) return;
             var changed = false;
             if (Age > 0 && person.Age != Age) { person.Age = Age; changed = true; }
-            if (Licence != null && person.Licence != Licence) { person.Licence = Licence; changed = true; }
+            // A suspension for points is TextDispatch's own; LSPDFR saying "valid" does not lift it.
+            var licence = person.SuspendedForPoints ? "suspended" : Licence;
+            if (licence != null && person.Licence != licence) { person.Licence = licence; changed = true; }
             if (Wanted && !person.Wanted)
             {
                 person.Wanted = true;

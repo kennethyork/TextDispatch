@@ -42,6 +42,12 @@ namespace TextDispatch.Records
         /// <summary>How many times LSPDFR says they have been stopped.</summary>
         public int TimesStopped;
 
+        /// <summary>Points on their licence from your citations. At FineSchedule.SuspendAt it is suspended.</summary>
+        public int Points;
+
+        /// <summary>Whether the suspension is TextDispatch's, from points - which LSPDFR's "valid" does not undo.</summary>
+        public bool SuspendedForPoints;
+
         /// <summary>The charge sheet being written up for them: penal code sections, booked by the next /arrest.</summary>
         public List<string> PendingCharges = new List<string>();
 
@@ -423,9 +429,26 @@ namespace TextDispatch.Records
             CitationCount++;
             FinesIssued += fine;
             Touch(person);
-            Act(person, call, "cited them for " + offence + " ($" + fine.ToString("0") + ")");
 
-            return "citation issued - " + person.Name + " - " + offence + " - $" + fine.ToString("0.00");
+            // A moving violation puts points on the licence; enough of them and it is suspended - and the next
+            // stop on them turns up a suspended licence.
+            var points = FineSchedule.Points(offence);
+            var suspended = false;
+            if (points > 0)
+            {
+                person.Points += points;
+                if (person.Points >= FineSchedule.SuspendAt && !person.SuspendedForPoints)
+                {
+                    person.SuspendedForPoints = true;
+                    person.Licence = "suspended";
+                    suspended = true;
+                }
+            }
+            Act(person, call, "cited them for " + offence + " ($" + fine.ToString("0") + (points > 0 ? ", " + points + " points" : "") + ")");
+
+            return "citation issued - " + person.Name + " - " + offence + " - $" + fine.ToString("0.00") +
+                   (points > 0 ? " - " + points + " point(s), " + person.Points + " on the licence" : "") +
+                   (suspended ? " - LICENCE SUSPENDED (" + FineSchedule.SuspendAt + " points)" : "");
         }
 
         public string RecordArrest(PersonRecord person, string offence, string call = null)

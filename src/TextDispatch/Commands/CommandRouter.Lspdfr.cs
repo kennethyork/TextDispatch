@@ -361,6 +361,7 @@ namespace TextDispatch.Commands
                 _records.Touch(person);
                 PersonaInfo.Sync(_api, driver, _records, person);
                 _chat.Notice("Driver: " + person.Name + ", " + person.Age + " - licence " + (person.Licence ?? "not on the state system").ToUpperInvariant() +
+                             (person.Points > 0 ? " (" + person.Points + " pts)" : "") +
                              " - " + (person.Wanted ? "WANTED: " + person.WarrantFor : "no warrants") +
                              (person.Priors.Count > 0 ? " - " + person.Priors.Count + " prior(s)" : ""));
                 ShowFlags(person.Name);

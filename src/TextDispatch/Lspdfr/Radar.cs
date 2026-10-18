@@ -115,8 +115,11 @@ namespace TextDispatch.Lspdfr
             var origin = car.Position;
             var forward = car.ForwardVector;
 
-            foreach (var vehicle in World.GetAllVehicles())
+            // Only what is within the antennas' range, not every car in the world: with /radar on this runs
+            // twice a second for as long as the shift lasts.
+            foreach (var entity in World.GetEntities(origin, Range, GetEntitiesFlags.ConsiderAllVehicles | GetEntitiesFlags.ExcludePlayerVehicle))
             {
+                var vehicle = entity as Vehicle;
                 if (vehicle == null || !vehicle.Exists() || vehicle == car) continue;
                 var offset = vehicle.Position - origin;
                 var metres = offset.Length();

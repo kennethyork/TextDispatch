@@ -181,6 +181,25 @@ namespace TextDispatch.Lspdfr
 
         public string CalloutFriendlyName(object handle) { return AsString(Call("GetCalloutFriendlyName", handle)); }
 
+        /// <summary>
+        /// Where a callout is, from the Callout object's own CalloutPosition - every callout sets it, since it is
+        /// what LSPDFR's blip and its "respond" both use. Null when the handle is not a callout or has none.
+        /// </summary>
+        public Vector3? CalloutPosition(object handle)
+        {
+            if (handle == null) return null;
+            try
+            {
+                var property = handle.GetType().GetProperty("CalloutPosition", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (property == null) return null;
+                var value = property.GetValue(handle, null);
+                if (!(value is Vector3)) return null;
+                var position = (Vector3)value;
+                return position == Vector3.Zero ? (Vector3?)null : position;
+            }
+            catch { return null; }
+        }
+
         /// <summary>"Pending", "Running", "Ended" or null.</summary>
         public string AcceptanceState(object handle) { return AsString(Call("GetCalloutAcceptanceState", handle)); }
 

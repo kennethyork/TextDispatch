@@ -69,6 +69,9 @@ namespace TextDispatch.Records
         public int ReportsReturned { get; internal set; }
         public int CasesClosed { get; internal set; }
 
+        /// <summary>Whether the first-shift walkthrough has been shown.</summary>
+        public bool Tutored { get; internal set; }
+
         /// <summary>The rank last said out loud, so a promotion is announced once.</summary>
         public string LastRank { get; internal set; }
 
