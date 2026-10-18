@@ -19,42 +19,58 @@ namespace TextDispatch.Commands
     {
         // ------------------------------------------------------------------ pat-down
 
-        private static readonly string[] Pockets =
+        /// <summary>
+        /// /frisk passenger: the passenger is told out of the car, and searched once they are out - on a stop
+        /// the pat-down is otherwise always the driver's.
+        /// </summary>
+        private void FriskPassenger()
         {
-            "a wallet", "a phone", "house keys", "car keys", "a lighter", "loose change", "a pack of gum", "earbuds",
-            "a receipt", "a bus pass", "a vape pen", "a pack of cigarettes", "a folded letter", "sunglasses"
-        };
+            var vehicle = _api.PulloverVehicle() ?? _api.NearestOtherVehicle(10f);
+            if (vehicle == null) { _chat.Error("No car close enough."); return; }
+            Ped passenger = null;
+            try
+            {
+                var driver = vehicle.Driver;
+                foreach (var ped in vehicle.Occupants)
+                    if (ped != null && ped.Exists() && ped != driver) { passenger = ped; break; }
+            }
+            catch { }
+            if (passenger == null) { _chat.Error("Nobody in the car but the driver."); return; }
 
-        private static readonly string[] PocketContraband =
-        {
-            "a small bag of white powder", "a folding knife with a four-inch blade", "a bag of pills with no label",
-            "a baggie of cannabis", "a set of brass knuckles", "three credit cards in other people's names",
-            "a glass pipe with residue", "a loaded revolver in the waistband"
-        };
+            string detail;
+            PedActions.Perform(_api, passenger, ComplyAction.LeaveVehicle, out detail);
+            _chat.Me("You", "open the passenger door and have them step out.");
+            var target = passenger;
+            GameFiber.StartNew(() =>
+            {
+                var started = Environment.TickCount;
+                while (target.Exists() && target.IsInAnyVehicle(false) && Environment.TickCount - started < 8000) GameFiber.Sleep(200);
+                if (!target.Exists()) return;
+                if (target.IsInAnyVehicle(false)) { _chat.Error("The passenger would not get out."); return; }
+                GameFiber.Sleep(600);
+                PatDown(target);
+            }, "TextDispatch passenger search");
+        }
 
         /// <summary>
         /// /frisk: pat them down and say what is in their pockets. What they carry is decided once, from who
         /// they are: LSPDFR's own contraband flag first, then their record - and what is illegal goes into
         /// evidence with the charge it is.
         /// </summary>
-        private void PatDown()
+        private void PatDown(Ped target = null)
         {
-            var ped = Subject(6f);
+            var ped = target ?? Subject(6f);
             if (ped == null) { _chat.Error("Nobody close enough to pat down."); return; }
 
             var handle = unchecked((int)ped.Handle.Value);
-            var person = PersonInFront();
-            var rng = new Random(unchecked(handle * 2713 + 5));
+            var person = _records.EnsurePerson(handle, Identities.NameFor(handle));
+            _records.Touch(person);
 
+            // The same pockets the person knew about when they were asked whether they mind.
             bool lspdfr = false;
             try { lspdfr = _api.PedCarryingContraband(ped); } catch { }
-            var chance = 8 + (person.Priors.Count > 0 ? 15 : 0) + (person.Wanted ? 20 : 0);
-            var illegal = lspdfr || rng.Next(100) < chance;
-
-            var found = new List<string>();
-            var count = 2 + rng.Next(3);
-            while (found.Count < count) { var item = Pockets[rng.Next(Pockets.Length)]; if (!found.Contains(item)) found.Add(item); }
-            string contraband = illegal ? PocketContraband[rng.Next(PocketContraband.Length)] : null;
+            string contraband;
+            var found = Dialogue.Pockets.Contents(handle, person, lspdfr, out contraband);
 
             // Seen as well as read: they put their hands up, the officer goes over them.
             string ignored;

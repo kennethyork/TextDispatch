@@ -41,7 +41,7 @@ namespace TextDispatch.Commands
             "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all", "?", "tutorial", "walkthrough",
             "settings", "options", "config", "vitals", "treat", "aid", "pcr", "patientreport",
             "officer", "whoami", "anim", "e", "emote", "gear", "belt", "inventory", "armory", "armoury",
-            "follow", "escort", "grab", "drag", "hold", "letgo", "drop", "stay", "wait", "seat", "putincar", "incar", "unseat", "outofcar", "taxi", "sendoff"
+            "follow", "escort", "grab", "drag", "hold", "letgo", "drop", "stay", "wait", "patdown", "seat", "putincar", "incar", "unseat", "outofcar", "taxi", "sendoff"
         };
 
         /// <summary>
@@ -64,7 +64,8 @@ namespace TextDispatch.Commands
                 case "auto": return "on|off|accept on|accept off";
                 case "available": case "typing": return "on|off";
                 case "backup": return "swat|air|state|ems|fire|transport|code2|k9|spikes|roadblock";
-                case "search": return "car";
+                case "search": return "car|passenger";
+                case "frisk": case "patdown": return "passenger";
                 case "bolo": return "list|add|clear";
                 case "report": return "draft|general:|export|fix";
                 case "log": case "chatlog": return "export|export all|export new";

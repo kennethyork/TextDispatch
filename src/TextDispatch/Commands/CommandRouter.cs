@@ -208,10 +208,11 @@ namespace TextDispatch.Commands
                 case "release":
                 case "uncuff": Release(); return;
                 case "cuff": Cuff(); return;
-                case "frisk": Frisk(); return;
+                case "frisk":
+                case "patdown": Frisk(argument); return;
                 case "search":
                     // /search on its own is still a frisk, as it always was; /search car is the car.
-                    if (IsVehicleWord(argument)) SearchVehicle(); else Frisk();
+                    if (IsVehicleWord(argument)) SearchVehicle(); else Frisk(argument);
                     return;
                 case "searchcar":
                 case "searchveh":
@@ -1016,8 +1017,9 @@ namespace TextDispatch.Commands
         }
 
         /// <summary>A pat-down that says what it found - TextDispatch's own, StopThePed or not (see PatDown).</summary>
-        private void Frisk()
+        private void Frisk(string argument = null)
         {
+            if ((argument ?? "").Trim().StartsWith("pass", StringComparison.OrdinalIgnoreCase)) { FriskPassenger(); return; }
             PatDown();
         }
 

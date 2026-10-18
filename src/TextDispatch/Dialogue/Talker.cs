@@ -85,6 +85,10 @@ namespace TextDispatch.Dialogue
         public bool CarHidesSomething;   // what a search would find is illegal - they know, the officer does not yet
         public string CarHides;
 
+        // A request to search: of them, or of the car - and whether their pockets hide something.
+        public bool AskedAboutPerson;
+        public bool PocketsHide;
+
         public string Describe()
         {
             var parts = new List<string>();

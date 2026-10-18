@@ -89,6 +89,17 @@ namespace TextDispatch.Dialogue
             partner.Memory.Add("You: " + text);
 
             var intent = ScriptedReplies.Classify(text);
+
+            // A search of them or of the car: "mind if I search you" is the person, anything naming the car is the car.
+            if (intent == DialogueIntent.SearchConsent && _records != null)
+            {
+                var lower = text.ToLowerInvariant();
+                state.AskedAboutPerson = !(lower.Contains("car") || lower.Contains("vehicle") || lower.Contains("trunk") || lower.Contains("boot") || lower.Contains("truck"));
+                bool lspdfr = false;
+                try { lspdfr = _api.PedCarryingContraband(partner.Ped); } catch { }
+                state.PocketsHide = Pockets.Hiding(partner.Handle, _records.EnsurePerson(partner.Handle, partner.Name), lspdfr);
+            }
+
             var scripted = ScriptedReplies.Answer(text, intent, partner, state);
 
             // Asking to search is something done, not only said: it goes on the record for the report.
@@ -96,8 +107,11 @@ namespace TextDispatch.Dialogue
             {
                 var person = _records.EnsurePerson(partner.Handle, partner.Name);
                 var yes = ScriptedReplies.Consents(partner, state);
-                _records.Act(person, null, "asked for consent to search the vehicle; they " + (yes ? "agreed" : "refused"));
-                _chat.Notice(yes ? "  They consented - '/search car' searches it." : "  They refused. Without consent you need probable cause - an odour, something in plain view, a K9.");
+                var what = state.AskedAboutPerson ? "their person" : "the vehicle";
+                _records.Act(person, null, "asked for consent to search " + what + "; they " + (yes ? "agreed" : "refused"));
+                _chat.Notice(yes ? (state.AskedAboutPerson ? "  They consented - '/frisk' searches them." : "  They consented - '/search car' searches it.")
+                                 : "  They refused. Without consent you need probable cause - an odour, something in plain view" +
+                                   (state.AskedAboutPerson ? ", or an arrest." : ", a K9."));
             }
             var speaker = partner;
 

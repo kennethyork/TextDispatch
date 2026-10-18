@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.56, taken out of the router rather than remembered —
-**255 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.57, taken out of the router rather than remembered —
+**256 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -206,7 +206,9 @@ still answers insurance, registration, breath and drugs, so the two never disagr
 
 | | |
 |---|---|
-| `/frisk` · `/search` | a real pat-down: what is in their pockets, item by item - and anything illegal goes into evidence with the penal code section to charge |
+| `/frisk` · `/search` · `/patdown` | a real pat-down of whoever is in front of you (on a stop, the driver): what is in their pockets, item by item - and anything illegal goes into evidence with the penal code section to charge |
+| `/frisk passenger` | the passenger is told out of the car and searched once they are out |
+| *mind if I search you?* | asked in words: they agree or refuse from what is in their pockets - the same pockets the pat-down finds. *Mind if I search the car?* asks about the car instead. Either goes on the record |
 | `/insurance` · `/reg` | the stopped car's insurance and registration (valid, expired, not registered, stolen) from the records |
 | `/breath` · `/drugs` | the breath test, and a roadside drug swab - positive or negative, kept in evidence |
 | `/follow` · `/escort` | they walk behind you, or alongside you |

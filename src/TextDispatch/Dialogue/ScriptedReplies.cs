@@ -66,8 +66,9 @@ namespace TextDispatch.Dialogue
         /// </summary>
         public static bool Consents(Talker talker, PedState state)
         {
-            var roll = new Random(unchecked(talker.Handle * 503 + 11)).Next(100);
-            var hiding = state != null && state.CarHidesSomething;
+            var roll = new Random(unchecked(talker.Handle * 503 + (state != null && state.AskedAboutPerson ? 29 : 11))).Next(100);
+            // What they are asked about is what they weigh: their pockets, or their car.
+            var hiding = state != null && (state.AskedAboutPerson ? state.PocketsHide : state.CarHidesSomething);
             switch (talker.Mood)
             {
                 case Temperament.Compliant: return hiding ? roll < 35 : roll < 95;
