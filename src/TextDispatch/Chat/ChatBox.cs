@@ -118,6 +118,12 @@ namespace TextDispatch.Chat
 
         public int LineCount { get { lock (_gate) return _lines.Count; } }
 
+        /// <summary>The computer, the box's second tab. When it is open the box shows it instead of the chat.</summary>
+        public Computer Computer;
+
+        // Chat lines that arrived while the MDT tab was showing, for the "CHAT (3 new)" on the tab strip.
+        private int _unread;
+
         // ------------------------------------------------------------------ output
 
         private string _lastText;
@@ -191,6 +197,8 @@ namespace TextDispatch.Chat
 
             // And kept for /log, which writes the session out as a chat log a forum post can carry.
             ChatLog.Add(channel, tag, text);
+
+            if (Computer != null && Computer.Open) _unread++;
 
             lock (_gate)
             {
@@ -311,12 +319,34 @@ namespace TextDispatch.Chat
             ChatLine[] snapshot;
             bool open;
             int scroll;
+            int visible = Math.Max(3, VisibleLines);
+            var computer = Computer != null && Computer.Open;
+            if (!computer) _unread = 0;
             lock (_gate)
             {
-                if (_lines.Count == 0 && !IsOpen) return;
+                if (_lines.Count == 0 && !IsOpen && !computer) return;
                 snapshot = _lines.ToArray();
                 open = IsOpen;
                 scroll = Scroll;
+            }
+
+            // The MDT tab: the computer's screen in place of the chat, a few rows taller so a record fits.
+            if (computer)
+            {
+                visible = Math.Max(visible, 16);
+                snapshot = Computer.Screen(visible, _unread).ToArray();
+                scroll = 0;
+            }
+            else if (Computer != null && snapshot.Length > 0)
+            {
+                // On the chat tab, a reminder that the other tab is there, once the box is open.
+                if (open)
+                {
+                    var withStrip = new ChatLine[snapshot.Length + 1];
+                    Array.Copy(snapshot, withStrip, snapshot.Length);
+                    withStrip[snapshot.Length] = new ChatLine { Channel = ChatChannel.Do, Text = "[CHAT]  MDT - /mdt opens the computer tab" };
+                    snapshot = withStrip;
+                }
             }
 
             // Never trust the reported resolution for layout: if the game answers 0 (or throws),
@@ -337,7 +367,6 @@ namespace TextDispatch.Chat
             float scale = UiScale <= 0f ? 1f : UiScale;
             float fontSize = FontSize * scale;
             float lineHeight = fontSize * 1.55f;
-            int visible = Math.Max(3, VisibleLines);
 
             int first = Math.Max(0, snapshot.Length - visible - scroll);
             int count = Math.Min(visible, snapshot.Length - first);

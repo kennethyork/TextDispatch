@@ -179,6 +179,7 @@ namespace TextDispatch
                 _router.Radar = _radar;
                 _computer = new Computer();
                 _router.Computer = _computer;
+                _chat.Computer = _computer;
 
                 // People the officer has booked come back now and then, as somebody new in the street.
                 // Never a cop, never somebody in the player's car.
@@ -570,7 +571,6 @@ namespace TextDispatch
             {
                 _chat.Render(e.Graphics);
                 Overhead.Render(e.Graphics, _chat.FontName, _chat.FontSize * (_chat.UiScale <= 0f ? 1f : _chat.UiScale));
-                _computer.Render(e.Graphics, _chat.FontName, _chat.UiScale);
             }
             catch (Exception ex)
             {

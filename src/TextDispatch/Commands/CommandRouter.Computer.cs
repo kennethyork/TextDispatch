@@ -6,9 +6,9 @@ using TextDispatch.Records;
 namespace TextDispatch.Commands
 {
     /// <summary>
-    /// /mdt: the mobile data computer. Each tab is one of the box's own lookups, run with its lines caught
-    /// and put on the computer's screen instead - so what the computer shows is exactly what the command
-    /// would have said.
+    /// /mdt: the mobile data computer, the chat box's second tab. Each screen is one of the box's own
+    /// lookups, run with its lines caught and shown on the MDT tab instead - so what the computer shows is
+    /// exactly what the command would have said. /chat goes back to the conversation.
     /// </summary>
     internal sealed partial class CommandRouter
     {
@@ -31,7 +31,7 @@ namespace TextDispatch.Commands
                     _chat.Me("You", "flip open the laptop on the dash.");
                     Screen("HOME", "Home", Home);
                     return;
-                case "close": case "off": case "exit": Computer.Open = false; return;
+                case "chat": case "close": case "off": case "exit": Computer.Open = false; return;
                 case "next": case "more": case "down": Computer.Page(1); return;
                 case "back": case "prev": case "up": Computer.Page(-1); return;
                 case "home": Screen("HOME", "Home", Home); return;

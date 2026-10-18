@@ -255,6 +255,9 @@ namespace TextDispatch.Commands
                 case "liveries": ListAllLiveries(argument); return;
 
                 // ---------------------------------------------------- records terminal
+                case "chat":
+                    if (Computer != null) Computer.Open = false;
+                    return;
                 case "mdt":
                 case "computer":
 
@@ -2921,7 +2924,7 @@ namespace TextDispatch.Commands
             _chat.Notice("            /checks  plate, driver, licence, insurance at once   /passengers  /id passenger   /fst  /pbt");
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
-            _chat.Notice("  Computer: /mdt  on screen - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
+            _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg;  /chat back");
             _chat.Notice("  The case: /evidence [item]  /miranda  /interview  - evidence and a statement after Miranda help a charge stick");
             _chat.Notice("  Shift:    /status  /shift  /shifts  /units  /warrants [serve <name>]   (10-8 starts a shift, 10-7 ends it)");
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");

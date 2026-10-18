@@ -462,8 +462,9 @@ All of it is saved in `TextDispatch.records.json` with the rest of the records.
 
 ### The computer (1.0.48)
 
-`/mdt` opens the mobile data computer on screen - home, person, vehicle, warrants, BOLO, CAD, units,
-reports, cases, flags and messages tabs. While it is open, a name or a plate typed in the box searches it.
+The chat box has a second tab, **MDT**: `/mdt` switches to the mobile data computer and `/chat` back. Its
+screens are home, person, vehicle, warrants, BOLO, CAD, units, reports, cases, flags and messages, all
+text, in the box's own corner. On the MDT tab a name or a plate typed on its own searches it.
 Every screen is one of the box's own lookups, so the two never disagree. See [COMMANDS.md](COMMANDS.md).
 
 ### LSPDFR in text (1.0.47)
