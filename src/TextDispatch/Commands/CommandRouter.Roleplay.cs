@@ -40,7 +40,8 @@ namespace TextDispatch.Commands
             var action = argument.Trim();
             if (action.StartsWith("to ", StringComparison.OrdinalIgnoreCase)) action = action.Substring(3);
             var success = new Random(unchecked(Environment.TickCount * 7919)).Next(2) == 0;
-            _chat.Me("You", "attempt to " + action + " and " + (success ? "succeed." : "fail."));
+            var named = !string.IsNullOrEmpty(_chat.PlayerName);
+            _chat.MeTyped((named ? "attempts to " : "attempt to ") + action + " and " + (success ? (named ? "succeeds." : "succeed.") : (named ? "fails." : "fail.")));
             _dialogue.Note("You attempted to " + action + " and " + (success ? "succeeded" : "failed"));
         }
 
@@ -50,7 +51,7 @@ namespace TextDispatch.Commands
             int sides;
             if (!int.TryParse((argument ?? "").Trim().TrimStart('d', 'D'), out sides) || sides < 2 || sides > 1000) sides = 6;
             var result = 1 + new Random(unchecked(Environment.TickCount * 31)).Next(sides);
-            _chat.Me("You", "roll a d" + sides + " and get " + result + ".");
+            _chat.MeTyped((string.IsNullOrEmpty(_chat.PlayerName) ? "roll a d" + sides + " and get " : "rolls a d" + sides + " and gets ") + result + ".");
         }
 
         /// <summary>/my: how your character looks. What /examine me shows, and what the people you talk to see.</summary>
@@ -563,10 +564,48 @@ namespace TextDispatch.Commands
             _chat.Notice("Report #" + number + " amended and back with the sergeant.");
         }
 
-        /// <summary>Who signs the paperwork: the rank and the callsign.</summary>
+        /// <summary>Who signs the paperwork: the name and badge when given, the rank and the callsign.</summary>
         private string Officer()
         {
-            return Career.RankOf(_records, _shift.Current).Title + ", " + _dispatch.Unit;
+            var rank = Career.RankOf(_records, _shift.Current).Title;
+            if (_records.OfficerName == null) return rank + ", " + _dispatch.Unit;
+            return rank + " " + _records.OfficerName + (_records.Badge != null ? " #" + _records.Badge : "") + ", " + _dispatch.Unit;
+        }
+
+        /// <summary>/officer &lt;name&gt; [#badge]: who you are. Shown in the box, on reports, and to the people you talk to.</summary>
+        private void OfficerCommand(string argument)
+        {
+            var text = (argument ?? "").Trim();
+            if (text.Length == 0)
+            {
+                _chat.Notice(_records.OfficerName == null
+                    ? "No name set. '/officer <first> <last> [#badge]' - e.g. /officer Jane Smith #4417"
+                    : "You are " + Officer() + ". '/officer clear' goes back to 'You'.");
+                return;
+            }
+            if (text.Equals("clear", StringComparison.OrdinalIgnoreCase))
+            {
+                _records.SetOfficer(null, null);
+                _chat.PlayerName = null;
+                _chat.Notice("Name cleared - the box says 'You' again.");
+                return;
+            }
+
+            string badge = null;
+            var hash = text.LastIndexOf('#');
+            if (hash > 0) { badge = text.Substring(hash + 1).Trim(); text = text.Substring(0, hash).Trim(); }
+            else
+            {
+                var words = text.Split(' ');
+                var last = words[words.Length - 1];
+                int n;
+                if (words.Length > 1 && int.TryParse(last, out n)) { badge = last; text = text.Substring(0, text.Length - last.Length).Trim(); }
+            }
+            if (text.StartsWith("Officer ", StringComparison.OrdinalIgnoreCase)) text = text.Substring(8).Trim();
+
+            _records.SetOfficer(text, badge);
+            _chat.PlayerName = _records.OfficerTitle;
+            _chat.Notice("You are " + Officer() + ". The box, your reports and the people you talk to use it now.");
         }
 
         // ------------------------------------------------------------------ the career

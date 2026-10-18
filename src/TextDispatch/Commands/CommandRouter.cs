@@ -119,7 +119,7 @@ namespace TextDispatch.Commands
 
                 // ---------------------------------------------------- roleplay
                 case "me":
-                    _chat.Me("You", argument);
+                    _chat.MeTyped(argument);
                     _dialogue.Note("You " + argument);
                     return;
                 case "do":
@@ -302,6 +302,16 @@ namespace TextDispatch.Commands
                 case "case":
                 case "cases":
                 case "investigation": CaseCommand(argument); return;
+                case "officer":
+                case "whoami": OfficerCommand(argument); return;
+                case "anim":
+                case "e":
+                case "emote": Anim(argument); return;
+                case "gear":
+                case "belt":
+                case "inventory": Gear(); return;
+                case "armory":
+                case "armoury": ArmoryCommand(argument); return;
                 case "settings":
                 case "options":
                 case "config": SettingsCommand(argument); return;
@@ -2975,6 +2985,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
             _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
+            _chat.Notice("  You:      /officer <name> [#badge]  /anim <name> (notepad, radio, lean, kneel, traffic ...)  /gear  /armory out|in <item>");
             _chat.Notice("  EMS job:  /ems  -  vitals, treat <what>, hospital, pcr, call   (also /vitals /treat /pcr)");
             _chat.Notice("  Fire job: /fire  -  sizeup, attack, search, overhaul, report, call");
             _chat.Notice("  Backup:   /ambulance  /firedept  (or /ems call, /fire call)");

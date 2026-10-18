@@ -235,9 +235,82 @@ namespace TextDispatch.Chat
             return caught;
         }
 
+        /// <summary>
+        /// The officer's name, from /officer. When it is set the box says it wherever it would say "You" about
+        /// the player - "* Officer Smith checks the plate", "Officer Smith says:" - the way a roleplay server
+        /// shows a character's name.
+        /// </summary>
+        public string PlayerName;
+
+        private string Named(string text, bool isTag)
+        {
+            if (string.IsNullOrEmpty(PlayerName) || string.IsNullOrEmpty(text)) return text;
+            if (isTag)
+            {
+                // "You say:" is "Officer Smith says:", "You whisper:" "Officer Smith whispers:".
+                if (text == "You:") return PlayerName + ":";
+                if (text.StartsWith("You ")) return PlayerName + " " + ThirdPerson(text.Substring(4));
+                return text.Replace("] You:", "] " + PlayerName + ":");
+            }
+            if (text.StartsWith("> You ")) return "> " + PlayerName + " " + text.Substring(6);
+            return text;
+        }
+
+        /// <summary>
+        /// The first word of a phrase as he or she would say it: "check the plate" is "checks the plate",
+        /// "search the car" "searches the car", "carry" "carries", and the few irregular ones.
+        /// </summary>
+        public static string ThirdPerson(string phrase)
+        {
+            if (string.IsNullOrEmpty(phrase)) return phrase;
+
+            // The verbs later in a compound action too - "kneel, check the airway and take a pulse" - but only
+            // the ones the plugin's own actions use, so a noun after "and" is never turned into a verb.
+            var first = FirstThird(phrase);
+            foreach (var verb in Verbs)
+                foreach (var joint in new[] { ", ", " and ", " then ", ", then " })
+                    first = first.Replace(joint + verb + " ", joint + FirstThird(verb) + " ");
+            return first;
+        }
+
+        private static readonly string[] Verbs =
+        {
+            "check", "take", "put", "hold", "walk", "turn", "have", "count", "call", "stand", "follow", "pack", "apply",
+            "keep", "open", "hit", "sweep", "pull", "go", "start", "roll", "cool", "cover", "note", "fit", "ask", "lay",
+            "search", "look", "write", "bag", "tag", "run", "give", "flip", "stop", "kneel", "listen", "radio", "wait"
+        };
+
+        private static string FirstThird(string phrase)
+        {
+            var space = phrase.IndexOf(' ');
+            var word = space < 0 ? phrase : phrase.Substring(0, space);
+            var rest = space < 0 ? "" : phrase.Substring(space);
+            var tail = "";
+            while (word.Length > 0 && !char.IsLetter(word[word.Length - 1])) { tail = word[word.Length - 1] + tail; word = word.Substring(0, word.Length - 1); }
+            if (word.Length == 0) return phrase;
+
+            string third;
+            switch (word.ToLowerInvariant())
+            {
+                case "have": third = "has"; break;
+                case "are": third = "is"; break;
+                case "do": third = "does"; break;
+                case "go": third = "goes"; break;
+                default:
+                    var w = word.ToLowerInvariant();
+                    if (w.EndsWith("s") || w.EndsWith("sh") || w.EndsWith("ch") || w.EndsWith("x") || w.EndsWith("z")) third = word + "es";
+                    else if (w.Length > 1 && w.EndsWith("y") && "aeiou".IndexOf(w[w.Length - 2]) < 0) third = word.Substring(0, word.Length - 1) + "ies";
+                    else third = word + "s";
+                    break;
+            }
+            return third + tail + rest;
+        }
+
         public void Write(ChatChannel channel, string tag, string text)
         {
             if (string.IsNullOrEmpty(text)) return;
+            tag = Named(tag, true);
+            text = Named(text, false);
 
             if (_capture != null)
             {
@@ -306,7 +379,21 @@ namespace TextDispatch.Chat
         public void Notice(string text) { Write(ChatChannel.Notice, "", text); }
         public void Error(string text) { Write(ChatChannel.Error, "", text); }
         public void Local(string tag, string text) { Write(ChatChannel.Local, tag, text); }
-        public void Me(string who, string text) { Write(ChatChannel.Me, "", "* " + who + " " + text); }
+        /// <summary>
+        /// An action the plugin describes, in the base form: Me("You", "check the plate"). With a name set it
+        /// is "* Officer Smith checks the plate".
+        /// </summary>
+        public void Me(string who, string text)
+        {
+            if (who == "You" && !string.IsNullOrEmpty(PlayerName)) Write(ChatChannel.Me, "", "* " + PlayerName + " " + ThirdPerson(text));
+            else Write(ChatChannel.Me, "", "* " + who + " " + text);
+        }
+
+        /// <summary>An action the player typed with /me, as they wrote it.</summary>
+        public void MeTyped(string text)
+        {
+            Write(ChatChannel.Me, "", "* " + (string.IsNullOrEmpty(PlayerName) ? "You" : PlayerName) + " " + text);
+        }
         public void Do(string text) { Write(ChatChannel.Do, "", "(( " + text + " ))"); }
         public void Phone(string tag, string text) { Write(ChatChannel.Phone, tag, text); }
 

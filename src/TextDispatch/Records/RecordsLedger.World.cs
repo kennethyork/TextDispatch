@@ -69,6 +69,26 @@ namespace TextDispatch.Records
         public int ReportsReturned { get; internal set; }
         public int CasesClosed { get; internal set; }
 
+        /// <summary>The officer's own name and badge number, from /officer - or null until given.</summary>
+        public string OfficerName { get; internal set; }
+        public string Badge { get; internal set; }
+
+        public void SetOfficer(string name, string badge)
+        {
+            OfficerName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            Badge = string.IsNullOrWhiteSpace(badge) ? null : badge.Trim().TrimStart('#');
+            Dirty = true;
+        }
+
+        /// <summary>"Officer Jane Smith" - how people address and refer to you; null when no name is set.</summary>
+        public string OfficerTitle { get { return OfficerName == null ? null : "Officer " + OfficerName; } }
+
+        /// <summary>The signed-out equipment log for this shift and the last: "13:02 out: combat pistol".</summary>
+        public List<string> ArmoryLog = new List<string>();
+
+        /// <summary>What is signed out of the armory now, by its key.</summary>
+        public List<string> SignedOut = new List<string>();
+
         /// <summary>Whether the first-shift walkthrough has been shown.</summary>
         public bool Tutored { get; internal set; }
 

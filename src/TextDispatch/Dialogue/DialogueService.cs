@@ -176,6 +176,9 @@ namespace TextDispatch.Dialogue
             var line = person.CharacterLine();
             if (!string.IsNullOrEmpty(_records.PlayerDescription))
                 line += " The officer in front of you: " + _records.PlayerDescription + ".";
+            if (_records.OfficerTitle != null)
+                line += " The officer's name is " + _records.OfficerTitle + (_records.Badge != null ? ", badge " + _records.Badge : "") +
+                        " - if they have told you, or you can read the name tag, you may use it.";
             return line;
         }
 

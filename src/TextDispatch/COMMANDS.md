@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.53, taken out of the router rather than remembered —
-**229 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.54, taken out of the router rather than remembered —
+**239 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -187,6 +187,17 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## Your officer - new in 1.0.54
+
+| | |
+|---|---|
+| `/officer <name> [#badge]` | who you are: `/officer Jane Smith #4417`. The box says your name where it said "You" - `* Officer Smith checks the plate`, `Officer Smith says:` - your reports and exported forms are signed with it, and the people you talk to can use it. `/officer clear` goes back to "You" |
+| `/anim <name>` `/e` | your character does it: notepad, clipboard, radio, crossarms, lean, kneel, investigate, traffic, guard, crowd, coffee, phone, binoculars, camera, point, wave. `/anim stop`, or moving, ends it; `/anim` lists them. Only radio and phone work seated |
+| `/gear` `/belt` | what you carry: the duty belt, the weapons on you, and what is signed out |
+| `/armory out <item>` · `/armory in <item\|all>` | at a station: sign a pistol, taser, baton, flashlight, shotgun, rifle, flares or an extinguisher out (it is given to you) or back in. Logged; the sergeant asks at the end of a shift about anything still out |
 
 ---
 

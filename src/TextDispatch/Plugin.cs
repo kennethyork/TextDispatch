@@ -182,6 +182,7 @@ namespace TextDispatch
                 _computer = new Computer();
                 _router.Computer = _computer;
                 _chat.Computer = _computer;
+                _chat.PlayerName = _records.OfficerTitle;
                 _computer.Box = _chat;
 
                 // People the officer has booked come back now and then, as somebody new in the street.

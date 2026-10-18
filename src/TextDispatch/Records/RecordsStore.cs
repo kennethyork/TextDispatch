@@ -61,6 +61,12 @@ namespace TextDispatch.Records
 
             // 1.0.51
             public bool Tutored;
+
+            // 1.0.54
+            public string OfficerName;
+            public string Badge;
+            public List<string> ArmoryLog = new List<string>();
+            public List<string> SignedOut = new List<string>();
         }
 
         public static string PathIn(string folder)
@@ -111,7 +117,11 @@ namespace TextDispatch.Records
                     Bookings = new List<BookingRecord>(ledger.Bookings),
                     NextIncident = ledger.NextIncident,
                     NextBooking = ledger.NextBooking,
-                    Tutored = ledger.Tutored
+                    Tutored = ledger.Tutored,
+                    OfficerName = ledger.OfficerName,
+                    Badge = ledger.Badge,
+                    ArmoryLog = new List<string>(ledger.ArmoryLog),
+                    SignedOut = new List<string>(ledger.SignedOut)
                 };
 
                 // Everyone the player has touched, and anyone whose record has changed from what the
@@ -225,6 +235,10 @@ namespace TextDispatch.Records
             if (file.NextIncident > ledger.NextIncident) ledger.NextIncident = file.NextIncident;
             if (file.NextBooking > ledger.NextBooking) ledger.NextBooking = file.NextBooking;
             ledger.Tutored = file.Tutored;
+            ledger.OfficerName = file.OfficerName;
+            ledger.Badge = file.Badge;
+            if (file.ArmoryLog != null) ledger.ArmoryLog.AddRange(file.ArmoryLog);
+            if (file.SignedOut != null) ledger.SignedOut.AddRange(file.SignedOut);
             // An incident left open when the game closed is closed now - the call went with the session.
             var stale = ledger.CurrentIncident;
             if (stale != null) ledger.CloseIncident("the session ended");

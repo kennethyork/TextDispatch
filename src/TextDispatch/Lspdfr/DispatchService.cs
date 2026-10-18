@@ -405,6 +405,11 @@ namespace TextDispatch.Lspdfr
                 Transmit(_records.FollowUps.Count + " case(s) still with the courts - you will hear about them next shift.");
 
             Promotion();
+
+            // Anything still signed out of the armory is the sergeant's business at the end of a watch.
+            if (_records.SignedOut.Count > 0)
+                _chat.Write(ChatChannel.Dispatch, "[SGT] Kowalski:", "You've still got " + _records.SignedOut.Count + " item(s) signed out of the armory (" +
+                            string.Join(", ", _records.SignedOut.ToArray()) + "). Turn them in at a station - '/armory in all'.");
         }
 
         private static readonly float[] Marks = { 2000f, 1000f, 500f, 150f };

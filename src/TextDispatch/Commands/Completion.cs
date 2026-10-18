@@ -39,7 +39,8 @@ namespace TextDispatch.Commands
             // 1.0.47: LSPDFR in text
             "passengers", "occupants", "fst", "sobriety", "pbt", "breathtest", "book", "booking", "cad", "incident", "incidents",
             "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all", "?", "tutorial", "walkthrough",
-            "settings", "options", "config", "vitals", "treat", "aid", "pcr", "patientreport"
+            "settings", "options", "config", "vitals", "treat", "aid", "pcr", "patientreport",
+            "officer", "whoami", "anim", "e", "emote", "gear", "belt", "inventory", "armory", "armoury"
         };
 
         /// <summary>
@@ -71,6 +72,8 @@ namespace TextDispatch.Commands
                 case "examine": case "ex": case "look": return "me|car";
                 case "phone": return "add";
                 case "help": return "all";
+                case "anim": case "e": case "emote": return "notepad|clipboard|radio|crossarms|lean|kneel|investigate|traffic|guard|crowd|coffee|phone|binoculars|camera|point|wave|stop";
+                case "armory": case "armoury": return "out pistol|out taser|out baton|out flashlight|out shotgun|out rifle|out flares|out extinguisher|in all";
                 case "ems": return "vitals|treat|hospital|pcr|call";
                 case "fire": return "sizeup|attack|search|overhaul|report|call";
                 case "settings": case "options": case "config": return "autocalls|callseconds|autoaccept|chatter|traffic|warrants|tips|certs|key|typing";
