@@ -16,7 +16,13 @@ namespace TextDispatch.Dialogue
         LeaveVehicle,
         LookAtMe,
         HoldStill,
-        StandDown
+        StandDown,
+        Kneel,          // "get on your knees"
+        TurnAround,     // "turn around and face the car"
+        EngineOff,      // "turn the engine off"
+        WindowDown,     // "roll the window down"
+        FollowMe,       // "come with me"
+        GetInMyCar      // "get in the back of the car"
     }
 
     /// <summary>
@@ -45,6 +51,21 @@ namespace TextDispatch.Dialogue
                         "out of the car", "exit the vehicle", "get out and", "step out of the vehicle"))
                 return ComplyAction.LeaveVehicle;
 
+            // StopThePed's orders, in words.
+            if (Has(t, "on your knees", "get on your knees", "kneel", "get down on the ground", "down on the ground", "on the ground now"))
+                return ComplyAction.Kneel;
+            if (Has(t, "turn around", "face the car", "face away", "turn and face", "face the wall"))
+                return ComplyAction.TurnAround;
+            if (Has(t, "turn off the engine", "turn the engine off", "engine off", "turn the car off", "turn off the car", "kill the engine",
+                        "shut off the engine", "shut the engine off", "switch off the engine", "switch the engine off"))
+                return ComplyAction.EngineOff;
+            if (Has(t, "roll down", "window down", "lower the window", "open the window", "open your window"))
+                return ComplyAction.WindowDown;
+            if (Has(t, "follow me", "come with me", "walk with me", "come over here", "come here"))
+                return ComplyAction.FollowMe;
+            if (Has(t, "get in the back", "in the back of my car", "in the back of the car", "get in my car", "get in the car", "sit in the back", "get in the cruiser"))
+                return ComplyAction.GetInMyCar;
+
             if (Has(t, "look at me", "face me", "look this way", "eyes on me"))
                 return ComplyAction.LookAtMe;
 
@@ -72,6 +93,12 @@ namespace TextDispatch.Dialogue
                 case ComplyAction.LookAtMe: return "look at me";
                 case ComplyAction.HoldStill: return "hold still";
                 case ComplyAction.StandDown: return "stand down";
+                case ComplyAction.Kneel: return "kneel";
+                case ComplyAction.TurnAround: return "turn around";
+                case ComplyAction.EngineOff: return "turn the engine off";
+                case ComplyAction.WindowDown: return "roll the window down";
+                case ComplyAction.FollowMe: return "follow me";
+                case ComplyAction.GetInMyCar: return "get in the car";
                 default: return "nothing";
             }
         }

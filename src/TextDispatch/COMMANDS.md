@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.55, taken out of the router rather than remembered —
-**252 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.56, taken out of the router rather than remembered —
+**255 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -190,9 +190,18 @@ so when something comes back - stolen, uninsured, a BOLO, a warrant.
 
 ---
 
-## StopThePed's work, built in - new in 1.0.55
+## StopThePed's work, built in - new in 1.0.55, in the game since 1.0.56
 
-TextDispatch no longer needs StopThePed for any of these. When StopThePed *is* installed, its own data
+TextDispatch no longer needs StopThePed for any of these, and they happen in the game, not only in the box:
+the pat-down has them put their hands up while you go over them, `/id` plays the hand-over, `/grab` holds
+them, and the orders below are carried out.
+
+**Orders, in plain words** - no slash, said to whoever is in front of you, and done if their temperament
+lets them: *hands up* · *on your knees* · *turn around* / *face the car* · *step out of the car* ·
+*turn the engine off* · *roll your window down* · *follow me* · *get in the back of the car* ·
+*look at me* · *don't move* · *you're free to go*.
+
+ When StopThePed *is* installed, its own data
 still answers insurance, registration, breath and drugs, so the two never disagree.
 
 | | |
@@ -200,7 +209,8 @@ still answers insurance, registration, breath and drugs, so the two never disagr
 | `/frisk` · `/search` | a real pat-down: what is in their pockets, item by item - and anything illegal goes into evidence with the penal code section to charge |
 | `/insurance` · `/reg` | the stopped car's insurance and registration (valid, expired, not registered, stolen) from the records |
 | `/breath` · `/drugs` | the breath test, and a roadside drug swab - positive or negative, kept in evidence |
-| `/follow` · `/escort` (`/grab`) | they walk behind you, or at your side held by the arm |
+| `/follow` · `/escort` | they walk behind you, or alongside you |
+| `/grab` (`/hold`) · `/letgo` | take hold of their arm: they are held at your side and go where you go, as StopThePed's grab does. `/seat` lets go and puts them in the car |
 | `/stay` | they stop where they are and wait |
 | `/seat` · `/unseat` | put them in a free rear seat of your car, or take them out again |
 | `/taxi` | the stop is over: they are released and a cab takes them |

@@ -303,9 +303,12 @@ namespace TextDispatch.Commands
                 case "cases":
                 case "investigation": CaseCommand(argument); return;
                 case "follow": Follow(false); return;
-                case "escort":
+                case "escort": Follow(true); return;
                 case "grab":
-                case "drag": Follow(true); return;
+                case "drag":
+                case "hold": Grab(); return;
+                case "letgo":
+                case "drop": LetGo(); return;
                 case "stay":
                 case "wait": Stay(); return;
                 case "seat":
@@ -1024,6 +1027,7 @@ namespace TextDispatch.Commands
             if (ped == null) { _chat.Error("Nobody close enough to identify."); return; }
 
             _api.DisplayPedId(ped);
+            PedActions.HandOver(ped, Game.LocalPlayer.Character);
             var person = PersonInFront();
             var info = PersonaInfo.For(_api, ped);
             _chat.Me("You", "check their identification.");
@@ -2987,7 +2991,8 @@ namespace TextDispatch.Commands
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
             _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
-            _chat.Notice("  People:   /frisk (what is in their pockets)  /follow  /escort  /stay  /seat  /unseat  /taxi  /drugs  /coroner  /animal");
+            _chat.Notice("  People:   /frisk (what is in their pockets)  /grab  /letgo  /follow  /escort  /stay  /seat  /unseat  /taxi  /drugs  /coroner  /animal");
+            _chat.Notice("  Orders:   say it - 'hands up', 'on your knees', 'turn around', 'step out', 'engine off', 'roll the window down', 'follow me', 'get in the back', 'you can go'");
             _chat.Notice("  You:      /officer <name> [#badge]  /anim <name> (notepad, radio, lean, kneel, traffic ...)  /gear  /armory out|in <item>");
             _chat.Notice("  EMS job:  /ems  -  vitals, treat <what>, hospital, pcr, call   (also /vitals /treat /pcr)");
             _chat.Notice("  Fire job: /fire  -  sizeup, attack, search, overhaul, report, call");

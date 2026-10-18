@@ -41,7 +41,7 @@ namespace TextDispatch.Commands
             "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all", "?", "tutorial", "walkthrough",
             "settings", "options", "config", "vitals", "treat", "aid", "pcr", "patientreport",
             "officer", "whoami", "anim", "e", "emote", "gear", "belt", "inventory", "armory", "armoury",
-            "follow", "escort", "grab", "drag", "stay", "wait", "seat", "putincar", "incar", "unseat", "outofcar", "taxi", "sendoff"
+            "follow", "escort", "grab", "drag", "hold", "letgo", "drop", "stay", "wait", "seat", "putincar", "incar", "unseat", "outofcar", "taxi", "sendoff"
         };
 
         /// <summary>

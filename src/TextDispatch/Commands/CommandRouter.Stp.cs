@@ -56,6 +56,10 @@ namespace TextDispatch.Commands
             while (found.Count < count) { var item = Pockets[rng.Next(Pockets.Length)]; if (!found.Contains(item)) found.Add(item); }
             string contraband = illegal ? PocketContraband[rng.Next(PocketContraband.Length)] : null;
 
+            // Seen as well as read: they put their hands up, the officer goes over them.
+            string ignored;
+            PedActions.Perform(_api, ped, ComplyAction.HandsUp, out ignored);
+            PedActions.OfficerAction(ped, "CODE_HUMAN_POLICE_INVESTIGATE", 4000);
             _chat.Me("You", "have them turn around, hands on the head, and pat them down - waistband, pockets, ankles.");
             _chat.Do("In their pockets: " + string.Join(", ", found.ToArray()) + (contraband != null ? " - and " + contraband + "." : ". Nothing illegal."));
             _records.Act(person, _dispatch.ReportCallName, "patted them down and found " + string.Join(", ", found.ToArray()) + (contraband != null ? " and " + contraband : ""));
@@ -162,6 +166,31 @@ namespace TextDispatch.Commands
             _records.Act(PersonInFront(), _dispatch.ReportCallName, escort ? "escorted them" : "had them follow");
         }
 
+        private Ped _held;
+
+        /// <summary>/grab: hold them by the arm - attached at your side, they go where you go. /letgo puts them down.</summary>
+        private void Grab()
+        {
+            if (_held != null && _held.Exists()) { LetGo(); return; }
+            var ped = Subject(3f);
+            if (ped == null) { _chat.Error("Nobody close enough to take hold of - get within arm's reach."); return; }
+            string detail;
+            if (!PedActions.Grab(ped, out detail)) { _chat.Error("Can't take hold of them - " + detail + "."); return; }
+            _held = ped;
+            _chat.Me("You", "take a firm hold of their arm.");
+            _chat.Notice("  Walk and they come with you. '/letgo' (or /grab again) lets go; '/seat' puts them in the car.");
+            _records.Act(PersonInFront(), _dispatch.ReportCallName, "took hold of them and escorted them");
+        }
+
+        private void LetGo()
+        {
+            if (_held == null || !_held.Exists()) { _chat.Notice("You are not holding anybody."); _held = null; return; }
+            string detail;
+            PedActions.LetGo(_held, out detail);
+            _chat.Me("You", "let go of their arm.");
+            _held = null;
+        }
+
         /// <summary>/stay: they stop where they are and wait.</summary>
         private void Stay()
         {
@@ -175,7 +204,10 @@ namespace TextDispatch.Commands
         /// <summary>/seat: put them in the back of your car (or the nearest), a free rear seat.</summary>
         private void Seat()
         {
-            var ped = Subject(8f);
+            // Somebody held is let go first, then put in.
+            if (_held != null && _held.Exists()) { string let; PedActions.LetGo(_held, out let); }
+            var ped = _held != null && _held.Exists() ? _held : Subject(8f);
+            _held = null;
             if (ped == null) { _chat.Error("Nobody close enough."); return; }
             var player = Game.LocalPlayer.Character;
             Vehicle car = null;
