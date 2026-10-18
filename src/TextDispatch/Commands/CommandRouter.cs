@@ -302,6 +302,19 @@ namespace TextDispatch.Commands
                 case "case":
                 case "cases":
                 case "investigation": CaseCommand(argument); return;
+                case "follow": Follow(false); return;
+                case "escort":
+                case "grab":
+                case "drag": Follow(true); return;
+                case "stay":
+                case "wait": Stay(); return;
+                case "seat":
+                case "putincar":
+                case "incar": Seat(); return;
+                case "unseat":
+                case "outofcar": Unseat(); return;
+                case "taxi":
+                case "sendoff": Taxi(); return;
                 case "officer":
                 case "whoami": OfficerCommand(argument); return;
                 case "anim":
@@ -999,26 +1012,10 @@ namespace TextDispatch.Commands
             _chat.Dispatch("Copy, one detained. Advise transport when you are ready.");
         }
 
+        /// <summary>A pat-down that says what it found - TextDispatch's own, StopThePed or not (see PatDown).</summary>
         private void Frisk()
         {
-            var ped = Subject(6f);
-            if (ped == null) { _chat.Error("Nobody close enough to search."); return; }
-
-            bool frisked = _api.PedFrisked(ped);
-            bool contraband = _api.PedCarryingContraband(ped);
-
-            _chat.Do(frisked
-                ? "They have already been searched by you."
-                : "They have not been searched yet - use LSPDFR's search on them.");
-
-            if (frisked && contraband)
-            {
-                _chat.Notice("They are carrying contraband - it is logged into evidence against them.");
-                var handle = unchecked((int)ped.Handle.Value);
-                var person = _records.EnsurePerson(handle, Identities.NameFor(handle));
-                _records.AddEvidence(person, "contraband found on their person in a search", _dispatch.ReportCallName);
-            }
-            else if (frisked) _chat.Notice("Nothing illegal on them.");
+            PatDown();
         }
 
         private void ShowId()
@@ -2853,6 +2850,10 @@ namespace TextDispatch.Commands
                 default: who = null; said = what; break;
             }
 
+            // What TextDispatch can do itself when no plugin is there to: the coroner, animal control, the radio checks.
+            if (who == null && (what == "coroner" || what == "animal") && NativeService(what)) return;
+            if (who == null && (what == "platecheck" || what == "pedcheck") && NativeRadioCheck(what)) return;
+
             if (who == null)
             {
                 _chat.Error("Nothing installed can do that. /bridges says what can.");
@@ -2882,7 +2883,8 @@ namespace TextDispatch.Commands
                 if (ped == null) { _chat.Error("Nobody close enough to test."); return; }
 
                 var answer = what == "breath" ? bridge.Alcohol(ped) : bridge.Drugs(ped);
-                if (answer == null) { _chat.Error("StopThePed is not running - that check is its own."); return; }
+                // Without StopThePed, TextDispatch's own breath and drug tests answer.
+                if (answer == null) { NativeCheck(what); return; }
 
                 _chat.Notice((what == "breath" ? "Breath check: " : "Drug check: ") + answer + ".");
                 Log.Line("bridge: " + what + " -> " + answer);
@@ -2894,7 +2896,7 @@ namespace TextDispatch.Commands
             if (vehicle == null) { _chat.Error("No vehicle close enough - pull one over, or stand beside one."); return; }
 
             var status = bridge.VehicleStatus(vehicle, what == "insurance");
-            if (status == null) { _chat.Error("StopThePed is not running - that check is its own."); return; }
+            if (status == null) { NativeCheck(what); return; }
 
             string plate = null;
             try { plate = vehicle.LicensePlate; } catch { }
@@ -2985,6 +2987,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
             _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
+            _chat.Notice("  People:   /frisk (what is in their pockets)  /follow  /escort  /stay  /seat  /unseat  /taxi  /drugs  /coroner  /animal");
             _chat.Notice("  You:      /officer <name> [#badge]  /anim <name> (notepad, radio, lean, kneel, traffic ...)  /gear  /armory out|in <item>");
             _chat.Notice("  EMS job:  /ems  -  vitals, treat <what>, hospital, pcr, call   (also /vitals /treat /pcr)");
             _chat.Notice("  Fire job: /fire  -  sizeup, attack, search, overhaul, report, call");

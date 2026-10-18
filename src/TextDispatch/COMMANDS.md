@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.54, taken out of the router rather than remembered —
-**239 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.55, taken out of the router rather than remembered —
+**252 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -187,6 +187,25 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## StopThePed's work, built in - new in 1.0.55
+
+TextDispatch no longer needs StopThePed for any of these. When StopThePed *is* installed, its own data
+still answers insurance, registration, breath and drugs, so the two never disagree.
+
+| | |
+|---|---|
+| `/frisk` · `/search` | a real pat-down: what is in their pockets, item by item - and anything illegal goes into evidence with the penal code section to charge |
+| `/insurance` · `/reg` | the stopped car's insurance and registration (valid, expired, not registered, stolen) from the records |
+| `/breath` · `/drugs` | the breath test, and a roadside drug swab - positive or negative, kept in evidence |
+| `/follow` · `/escort` (`/grab`) | they walk behind you, or at your side held by the arm |
+| `/stay` | they stop where they are and wait |
+| `/seat` · `/unseat` | put them in a free rear seat of your car, or take them out again |
+| `/taxi` | the stop is over: they are released and a cab takes them |
+| `/coroner` · `/animal` | without StopThePed, the van comes and takes the bodies or animals within 40 m |
+| `/platecheck` · `/pedcheck` | without StopThePed, asked of dispatch on the radio |
 
 ---
 

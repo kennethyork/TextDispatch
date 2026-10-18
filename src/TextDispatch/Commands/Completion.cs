@@ -40,7 +40,8 @@ namespace TextDispatch.Commands
             "passengers", "occupants", "fst", "sobriety", "pbt", "breathtest", "book", "booking", "cad", "incident", "incidents",
             "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all", "?", "tutorial", "walkthrough",
             "settings", "options", "config", "vitals", "treat", "aid", "pcr", "patientreport",
-            "officer", "whoami", "anim", "e", "emote", "gear", "belt", "inventory", "armory", "armoury"
+            "officer", "whoami", "anim", "e", "emote", "gear", "belt", "inventory", "armory", "armoury",
+            "follow", "escort", "grab", "drag", "stay", "wait", "seat", "putincar", "incar", "unseat", "outofcar", "taxi", "sendoff"
         };
 
         /// <summary>
