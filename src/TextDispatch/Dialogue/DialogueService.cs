@@ -115,15 +115,17 @@ namespace TextDispatch.Dialogue
             }
             var speaker = partner;
 
-            // The callout's own words come first. If this person is one a callout wrote lines for, they
-            // answer with those - in character, immediately, and without a model - and only everybody
-            // else falls through to the script or the model below.
+            // The callout's own words come first. If this person is one a callout wrote lines for, their line
+            // is what they say - put in their own words by the model when it is running, as written otherwise.
             var fromCallout = _script.Reply(partner.Ped, text);
             if (fromCallout != null)
             {
                 Log.Line("callout script answered for " + partner.Name);
-                _pump.Schedule(fromCallout, _settings.TypingMs, line => Respond(speaker, line));
-                return;
+                if (!_settings.UseModel)
+                {
+                    _pump.Schedule(fromCallout, _settings.TypingMs, line => Respond(speaker, line));
+                    return;
+                }
             }
 
             if (!_settings.UseModel)
@@ -132,16 +134,41 @@ namespace TextDispatch.Dialogue
                 return;
             }
 
+            // An answer that carries a decision the records made keeps it: the model words it, it does not decide it.
+            var guidance = fromCallout ?? (Decides(intent, state) ? scripted : null);
+            var fallback = fromCallout ?? scripted;
             _pump.Ask(
                 () =>
                 {
                     string error;
-                    var reply = NpcPrompt.Ask(_settings, speaker, state, CharacterFor(speaker), text, out error);
+                    var reply = NpcPrompt.Ask(_settings, speaker, state, CharacterFor(speaker), text, out error, guidance);
                     if (reply == null && error != null) Log.Line("npc model: " + error);
                     return reply;
                 },
-                scripted,
+                fallback,
                 line => Respond(speaker, line));
+        }
+
+        /// <summary>
+        /// The questions whose answer is a fact or a decision TextDispatch has already made - so the model is told
+        /// it rather than left to guess: consent to a search, whose car it is, how much they have had, their
+        /// licence when it is not valid, and what is in the car when they are hiding something.
+        /// </summary>
+        private static bool Decides(DialogueIntent intent, PedState state)
+        {
+            switch (intent)
+            {
+                case DialogueIntent.SearchConsent:
+                case DialogueIntent.WhoseCar:
+                case DialogueIntent.Drinking:
+                    return true;
+                case DialogueIntent.Identify:
+                    return state != null && (state.Licence == "suspended" || state.Licence == "unlicensed");
+                case DialogueIntent.Weapons:
+                    return state != null && state.CarHidesSomething;
+                default:
+                    return false;
+            }
         }
 
         /// <summary>

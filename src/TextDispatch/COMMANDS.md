@@ -1,6 +1,6 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.59, taken out of the router rather than remembered —
+The complete command surface of TextDispatch 1.0.60, taken out of the router rather than remembered —
 **258 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
@@ -187,6 +187,27 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## Everything said through the model - new in 1.0.60
+
+With a model running (`AiMode=llm` or `auto`, `AiModel=llama3.2:1b`), every line spoken to you is the
+model's own words:
+
+- **People** - including callout characters, whose scripted line is now what they *mean*, put in their own
+  words. Where the answer is a decision the records already made - consent to a search, whose car it is,
+  how much they have had, a suspended licence, something hidden in the car - the model is told the
+  decision and words it; it does not decide it.
+- **The department** - the sergeant's report reviews, promotions and reminders, and the phone contacts'
+  replies and the texts they send first.
+- **Dispatch reading records back** - plates and people over `/r`.
+
+The facts are never the model's. Each reworded line is checked against what the records said: every
+number, plate and word in CAPITALS must still be there, nothing numbered may be invented, and a reply that
+fails is thrown away for the exact original. With the model off, or slow, everything falls back to the
+script. Searches, tests, the K9, verdicts and plate reader hits are still decided by the rules, never by
+the model. Roll call and the CAD's own system lines stay as written.
 
 ---
 

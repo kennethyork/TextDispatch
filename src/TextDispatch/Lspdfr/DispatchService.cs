@@ -384,16 +384,28 @@ namespace TextDispatch.Lspdfr
             var approved = _records.ReviewReport(report, out notes);
             Log.Line("review: report #" + report.Number + " " + report.Review + (notes.Count > 0 ? " - " + string.Join(" ", notes.ToArray()) : ""));
 
-            const string sergeant = "[SGT] Kowalski:";
             if (approved && notes.Count == 0)
-                _chat.Write(ChatChannel.Dispatch, sergeant, "Report #" + report.Number + (report.Subject != null ? " on " + report.Subject : "") + " - approved. Good work.");
+                Sergeant("Report #" + report.Number + (report.Subject != null ? " on " + report.Subject : "") + " - approved. Good work.");
             else if (approved)
-                _chat.Write(ChatChannel.Dispatch, sergeant, "Report #" + report.Number + " - approved, but next time: " + notes[0]);
+                Sergeant("Report #" + report.Number + " - approved, but next time: " + notes[0]);
             else
             {
-                _chat.Write(ChatChannel.Dispatch, sergeant, "Report #" + report.Number + " is coming back to you. " + string.Join(" ", notes.ToArray()));
+                Sergeant("Report #" + report.Number + " is coming back to you. " + string.Join(" ", notes.ToArray()));
                 _chat.Notice("  '/report fix " + report.Number + " <what to add>' adds to it and sends it back. Until then the DA does not count it.");
             }
+        }
+
+        /// <summary>
+        /// The watch sergeant, in his own words when the model is running - the report number, the notes and
+        /// the ranks kept exactly (Ai.Phrasing checks them) - and as written when it is not.
+        /// </summary>
+        private void Sergeant(string line)
+        {
+            Action<string> say = text => _chat.Write(ChatChannel.Dispatch, "[SGT] Kowalski:", text);
+            if (!_settings.UseModel) { say(line); return; }
+            _pump.Ask(() => Ai.Phrasing.Reword(_settings, "Sgt. Kowalski, the watch sergeant",
+                                               "You are talking to " + _unit + ", an officer on your watch, over the radio. Gruff, fair, brief.", line),
+                      line, say);
         }
 
         /// <summary>Said at the end of a watch when the record now earns a new rank.</summary>
@@ -406,7 +418,7 @@ namespace TextDispatch.Lspdfr
             var before = _records.LastRank;
             _records.LastRank = rank.Title;
             _records.Dirty = true;
-            _chat.Write(ChatChannel.Dispatch, "[SGT] Kowalski:", "Before you go - the captain signed it. You're " + rank.Title +
+            Sergeant("Before you go - the captain signed it. You're " + rank.Title +
                         " now, up from " + before + ". Congratulations. /rank has where you stand.");
             Log.Line("career: promoted from " + before + " to " + rank.Title + " at " + rank.Points + " points");
         }
@@ -434,7 +446,7 @@ namespace TextDispatch.Lspdfr
 
             // Anything still signed out of the armory is the sergeant's business at the end of a watch.
             if (_records.SignedOut.Count > 0)
-                _chat.Write(ChatChannel.Dispatch, "[SGT] Kowalski:", "You've still got " + _records.SignedOut.Count + " item(s) signed out of the armory (" +
+                Sergeant("You've still got " + _records.SignedOut.Count + " item(s) signed out of the armory (" +
                             string.Join(", ", _records.SignedOut.ToArray()) + "). Turn them in at a station - '/armory in all'.");
         }
 
@@ -1102,32 +1114,42 @@ namespace TextDispatch.Lspdfr
         private bool TryRecordsRequest(string text)
         {
             var plate = PlateIn(text);
+            var lines = new List<string>();
             if (plate != null)
             {
                 var vehicle = _records.EnsureVehicle(plate, null);
                 if (vehicle == null) return false;
 
-                Transmit(plate + " comes back to " + vehicle.OwnerName + " - " + vehicle.Model +
-                         (vehicle.Insured ? ", insured" : ", NOT insured"));
-
-                if (vehicle.ReportedStolen) Transmit(plate + " is flagged as STOLEN.");
-
+                lines.Add(plate + " comes back to " + vehicle.OwnerName + " - " + vehicle.Model +
+                          (vehicle.Insured ? ", insured" : ", NOT insured") + ".");
+                if (vehicle.ReportedStolen) lines.Add(plate + " is flagged as STOLEN.");
                 foreach (var bolo in _records.Bolos)
-                    if (BoloMatches(bolo, plate)) Transmit(plate + " matches a BOLO: " + bolo.Reason);
+                    if (BoloMatches(bolo, plate)) lines.Add(plate + " matches a BOLO: " + bolo.Reason + ".");
+            }
+            else
+            {
+                var person = PersonIn(text);
+                if (person == null) return false;
 
-                return true;
+                lines.Add(person.Name + ", " + person.Age + ", " + person.Occupation + " - " + person.Summary() + ".");
+                if (person.Wanted && !string.IsNullOrEmpty(person.WarrantFor)) lines.Add("WARRANT on file: " + person.WarrantFor + ".");
             }
 
-            var person = PersonIn(text);
-            if (person == null) return false;
-
-            Transmit(person.Name + ", " + person.Age + ", " + person.Occupation + " - " +
-                     person.Summary() + ".");
-
-            if (person.Wanted && !string.IsNullOrEmpty(person.WarrantFor))
-                Transmit("Warrant on file: " + person.WarrantFor);
-
+            ReadBack(lines);
             return true;
+        }
+
+        /// <summary>
+        /// A records answer on the radio: worded by the model as the dispatcher would say it, with every number,
+        /// plate and flag checked - or read out as it stands when the model is off or changed something.
+        /// </summary>
+        private void ReadBack(List<string> lines)
+        {
+            var facts = string.Join(" ", lines.ToArray());
+            if (!_settings.UseModel) { foreach (var line in lines) Transmit(line); return; }
+            _pump.Ask(() => Ai.Phrasing.Reword(_settings, "a Los Santos police dispatcher on the radio",
+                                               "You are reading a records check back to " + _unit + ". Speak like a dispatcher: short, plain, radio style.", facts),
+                      facts, line => Transmit(line));
         }
 
         /// <summary>

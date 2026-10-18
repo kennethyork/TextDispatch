@@ -19,7 +19,7 @@ namespace TextDispatch.Dialogue
     internal static class NpcPrompt
     {
         public static string Ask(Settings settings, Talker talker, PedState state, string character,
-                                 string playerLine, out string error)
+                                 string playerLine, out string error, string guidance = null)
         {
             var system = new StringBuilder();
 
@@ -36,6 +36,11 @@ namespace TextDispatch.Dialogue
             system.Append("- Write only what you say. No narration, no actions, no stage directions, no quotation marks, and do not write your own name as a label.\n");
             system.Append("- Use only what you know from the conversation and the notes above. Do not invent people, events or places.\n");
             system.Append("- Never mention being an AI, a model, or a game.\n");
+
+            // What they have already decided - a callout's own line for them, or whether they let the car be
+            // searched - is theirs to put in their own words, never to change.
+            if (!string.IsNullOrEmpty(guidance))
+                system.Append("\nWhat you say must mean this - put it in your own words, and do not change what it says: ").Append(guidance).Append("\n");
 
             var user = new StringBuilder();
             var transcript = talker.Transcript(settings.AiHistoryLines);

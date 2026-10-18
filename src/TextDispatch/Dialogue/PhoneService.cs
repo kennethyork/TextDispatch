@@ -126,11 +126,22 @@ namespace TextDispatch.Dialogue
                 _chat.Phone(call ? "[CALL]" : "[SMS]", contact + ": " + line);
             };
 
-            // People you have met answer as themselves when a model is running; the department answers from
-            // the records, which a model would only get wrong.
-            if (person == null || !_settings.UseModel)
+            if (!_settings.UseModel)
             {
                 _pump.Schedule(scripted, call ? _settings.TypingMs : _settings.TypingMs * 2, deliver);
+                return;
+            }
+
+            // The department answers from the records - the model only words it, and a version that drops a
+            // number or a name in capitals is thrown away for the records' own.
+            if (person == null)
+            {
+                var role = RoleOf(contact) ?? "somebody the officer works with";
+                var facts = scripted;
+                _pump.Ask(() => Phrasing.Reword(_settings, contact + ", " + role,
+                                                (call ? "You are on the phone" : "You are replying by text message") + " to a police officer you work with. The officer said: " + message,
+                                                facts),
+                          scripted, deliver);
                 return;
             }
 
@@ -180,12 +191,19 @@ namespace TextDispatch.Dialogue
             _records.Dirty = true;
         }
 
-        /// <summary>A text that arrives by itself. Said in the box and kept with the rest.</summary>
+        /// <summary>A text that arrives by itself, in the sender's own words when the model is running. Kept with the rest.</summary>
         private void Incoming(string contact, string text)
         {
-            Store(contact, false, text);
-            _chat.Phone("[SMS]", contact + ": " + text);
-            Log.Line("phone: " + contact + " - " + text);
+            Action<string> deliver = line =>
+            {
+                Store(contact, false, line);
+                _chat.Phone("[SMS]", contact + ": " + line);
+                Log.Line("phone: " + contact + " - " + line);
+            };
+            if (!_settings.UseModel) { deliver(text); return; }
+            var role = RoleOf(contact) ?? "somebody the officer knows";
+            _pump.Ask(() => Phrasing.Reword(_settings, contact + ", " + role, "You are sending a text message to a police officer, unprompted.", text),
+                      text, deliver);
         }
 
         // ------------------------------------------------------------------ what they say
