@@ -191,10 +191,11 @@ namespace TextDispatch.Commands
 
                 // ---------------------------------------------------- on scene
                 case "backup": Backup(argument); return;
-                case "ems":
+                // The EMS and fire jobs. Calling either one as backup is /ems call, /fire call - or these.
+                case "ems": EmsJob(argument); return;
+                case "fire": FireJob(argument); return;
                 case "ambulance":
                 case "medic": Backup("ems"); return;
-                case "fire":
                 case "firedept":
                 case "lsfd": Backup("fire"); return;
                 case "stop":
@@ -301,6 +302,14 @@ namespace TextDispatch.Commands
                 case "case":
                 case "cases":
                 case "investigation": CaseCommand(argument); return;
+                case "settings":
+                case "options":
+                case "config": SettingsCommand(argument); return;
+                case "vitals": Vitals(); return;
+                case "treat":
+                case "aid": Treat(argument); return;
+                case "pcr":
+                case "patientreport": PatientReport(); return;
                 case "tutorial":
                 case "walkthrough": Tutorial(); return;
                 case "rollcall":
@@ -2923,6 +2932,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  3. On a stop: /checks runs the plate, driver and licence. Then /cite, /charge and /arrest, and /report.");
             _chat.Notice("  4. /mdt is the computer. Ctrl+Tab goes through the tabs: CHAT, RADIO, RADAR, MDT, PHONE, ALL.");
             _chat.Notice("  5. In the car: /radar is the radar's tab, /radar lock holds a speed. /veh <car or department> brings one.");
+            _chat.Notice("  /settings - the options on one screen.");
             _chat.Notice("  /help all - every command.  Tab completes commands and names.  /tutorial - the first-shift walkthrough again.");
         }
 
@@ -2965,12 +2975,16 @@ namespace TextDispatch.Commands
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
             _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
+            _chat.Notice("  EMS job:  /ems  -  vitals, treat <what>, hospital, pcr, call   (also /vitals /treat /pcr)");
+            _chat.Notice("  Fire job: /fire  -  sizeup, attack, search, overhaul, report, call");
+            _chat.Notice("  Backup:   /ambulance  /firedept  (or /ems call, /fire call)");
+            _chat.Notice("  Settings: /settings  lists them;  /settings <name> <value> changes one");
             _chat.Notice("  Tabs:     Ctrl+Tab cycles CHAT, RADIO, RADAR, MDT, PHONE, ALL;  /chat  /radio  /radar  /mdt  /phone  /all jump to one. Urgent calls show on every tab.");
             _chat.Notice("  The case: /evidence [item]  /miranda  /interview  - evidence and a statement after Miranda help a charge stick");
             _chat.Notice("  Shift:    /status  /shift  /shifts  /units  /warrants [serve <name>]   (10-8 starts a shift, 10-7 ends it)");
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");
             _chat.Notice("  Tab completes commands, callout names and people on file; Shift+Tab goes back.");
-            _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ems  /fire  /zone");
+            _chat.Notice("  Scene:    /backup [swat|air|state|ems|fire|transport|code2]  /ambulance  /firedept  /zone");
             _chat.Notice("  Car:      /lock  /unlock  /engine [off]  /trunk  /hood  /doors  /repair  /veh <model> [department|plain]");
             _chat.Notice("            /veh <department>  - every police car goes that department too;  /veh off - back to the San Andreas designs");
             _chat.Notice("            /livery [department|number|next]  - your car, or the one beside you");

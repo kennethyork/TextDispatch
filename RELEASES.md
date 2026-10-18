@@ -19,6 +19,17 @@ scan — which is the only thing a releases page is for.
 actually means"). Both were renamed back to `TextDispatch <version>`, as 1.0.11 and earlier already
 were. TextCallouts' first two releases did the same and were renamed too.
 
+## How often
+
+**One tested release a week at most**, not one per change. Each one is played - a full shift: on duty,
+a callout, a traffic stop with typed questions, an arrest, `/book`, `/mdt`, the tabs - before it is
+published, and its notes say what changed in a few lines. A fix for something broken in a release can go
+out the same day; everything else waits for the next one and goes out together.
+
+Nine versions were built on 2026-10-17 (1.0.44 to 1.0.52) and two of them published, none of them played first. That is the thing
+this rule is here to stop: to a player, a releases page that moves six times in a day reads as unstable,
+however good each one is.
+
 ## Why the versions are independent
 
 The bundle names a *set* — "these versions were tested together" — so it has its own version number

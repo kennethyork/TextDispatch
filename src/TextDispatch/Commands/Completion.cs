@@ -38,7 +38,8 @@ namespace TextDispatch.Commands
             "certs", "certifications", "phone", "contacts", "text", "sms", "call", "inbox", "messages", "radar", "speed",
             // 1.0.47: LSPDFR in text
             "passengers", "occupants", "fst", "sobriety", "pbt", "breathtest", "book", "booking", "cad", "incident", "incidents",
-            "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all", "?", "tutorial", "walkthrough"
+            "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all", "?", "tutorial", "walkthrough",
+            "settings", "options", "config", "vitals", "treat", "aid", "pcr", "patientreport"
         };
 
         /// <summary>
@@ -70,6 +71,10 @@ namespace TextDispatch.Commands
                 case "examine": case "ex": case "look": return "me|car";
                 case "phone": return "add";
                 case "help": return "all";
+                case "ems": return "vitals|treat|hospital|pcr|call";
+                case "fire": return "sizeup|attack|search|overhaul|report|call";
+                case "settings": case "options": case "config": return "autocalls|callseconds|autoaccept|chatter|traffic|warrants|tips|certs|key|typing";
+                case "treat": case "aid": return "bleeding|tourniquet|oxygen|splint|cpr|aed|narcan|collar|recovery|burns";
                 case "mdt": case "computer": case "terminal": return "home|person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg|next|back|chat";
                 case "fst": case "sobriety": return "hgn|walk|stand";
                 case "id": case "licence": case "license": return "passenger";

@@ -266,7 +266,7 @@ assembly — and `/callout` starts any of them by name.
 `/transport`
 
 **Services**
-`/ems` (or `/ambulance`, `/medic`) · `/fire` · `/backup [swat|air|state|ems|fire|transport|code2]` ·
+`/ambulance` (or `/medic`, `/ems call`) · `/firedept` (or `/fire call`) · `/backup [swat|air|state|ems|fire|transport|code2]` ·
 `/zone`
 
 **The car**
@@ -629,6 +629,10 @@ Everything can be driven from RPH's **F4** console, which matters if the box eve
 | `tdplugins` | Every DLL in `Plugins\LSPDFR`, which ones loaded, and what is missing |
 
 ## If something is wrong
+
+**To report it:** open an issue at <https://github.com/kennethyork/TextDispatch/issues/new/choose> and
+attach **`Plugins\LSPDFR\textdispatch.log`** from that session. The log is nearly always the answer:
+it says what TextDispatch tried and what LSPDFR answered. Say what you typed and what you expected.
 
 Log: **`Plugins\LSPDFR\textdispatch.log`** - beside the plugin and its ini, not in AppData.
 `tdstatus` prints the exact path it is using.

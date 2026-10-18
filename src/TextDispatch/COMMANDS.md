@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.52, taken out of the router rather than remembered —
-**221 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.53, taken out of the router rather than remembered —
+**229 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -67,7 +67,7 @@ coroner             animal           ems  ambulance  medic
 fire  firetruck     tow              transport
 ```
 
-`/ems` `/ambulance` `/medic` and `/fire` `/firedept` `/lsfd` are shortcuts for two of those.
+`/ambulance` `/medic` and `/firedept` `/lsfd` are shortcuts for two of those, and so are `/ems call` and `/fire call`. `/ems` and `/fire` on their own are the EMS and fire jobs (below).
 
 ---
 
@@ -187,6 +187,26 @@ streets away; how they take the knock depends on who they are. `/endcall` stands
 
 **Traffic stops are run for you.** When a stop starts, dispatch runs the plate and the driver and says
 so when something comes back - stolen, uninsured, a BOLO, a warrant.
+
+---
+
+## New in 1.0.53
+
+| | |
+|---|---|
+| `/settings` `/options` | the main options on one screen; `/settings <name> <value>` changes one and saves it to the ini - autocalls, callseconds, autoaccept, chatter, traffic, warrants, tips, certs, key, typing |
+| `/vitals` | the patient in front of you: pulse, BP, breathing, SpO2, GCS, pupils, skin - from how hurt they are and what they have had |
+| `/treat <what>` | bleeding, tourniquet, oxygen, splint, cpr, aed, narcan, collar, recovery, burns. Stopping a bleed gives them some health back |
+| `/pcr` | a patient care report drafted from the vitals and treatment, into the box to finish |
+
+### The EMS job and the fire job
+
+| | |
+|---|---|
+| `/ems` | the EMS job: `/ems vitals`, `/ems treat <what>`, `/ems hospital` (the nearest hospital, with a route on the map), `/ems pcr`, `/ems call` (an ambulance as backup) |
+| `/fire` | the fire job: `/fire sizeup` (how many fires, how big, vehicles burning, people near), `/fire attack` (puts out the fire within 25 m), `/fire search` (a primary search for anybody inside or near), `/fire overhaul` (hot spots), `/fire report` (a fire incident report drafted from what you did), `/fire call` (the fire department as backup) |
+
+Before 1.0.53, `/ems` and `/fire` called an ambulance and a fire truck - that is `/ems call`, `/fire call`, `/ambulance` and `/firedept` now.
 
 ---
 
