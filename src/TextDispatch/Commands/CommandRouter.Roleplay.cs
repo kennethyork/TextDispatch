@@ -702,6 +702,9 @@ namespace TextDispatch.Commands
                     return;
             }
 
+            // On its own, /radar is the RADAR tab: the head unit, live.
+            if (verb == "") { _chat.Tab = ChatTab.Radar; return; }
+
             Radar.Reading frontTarget, rearTarget;
             int patrol;
             if (!Radar.Scan(out frontTarget, out rearTarget, out patrol)) { _chat.Error("The radar is in the car - get in one first."); return; }

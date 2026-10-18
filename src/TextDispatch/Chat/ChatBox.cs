@@ -49,7 +49,8 @@ namespace TextDispatch.Chat
         Radio,
         Mdt,
         Phone,
-        All
+        All,
+        Radar      // the radar's head unit, live
     }
 
     /// <summary>
@@ -160,9 +161,12 @@ namespace TextDispatch.Chat
         private ChatTab _tab = ChatTab.Chat;
 
         // What has come in on each tab since it was last looked at.
-        private readonly int[] _unread = new int[5];
+        private readonly int[] _unread = new int[6];
 
-        private static readonly ChatTab[] Order = { ChatTab.Chat, ChatTab.Radio, ChatTab.Mdt, ChatTab.Phone, ChatTab.All };
+        private static readonly ChatTab[] Order = { ChatTab.Chat, ChatTab.Radio, ChatTab.Radar, ChatTab.Mdt, ChatTab.Phone, ChatTab.All };
+
+        /// <summary>The RADAR tab's screen, from the radar's last scan. Set by the plugin.</summary>
+        public Func<int, List<ChatLine>> RadarScreen;
 
         /// <summary>The next tab along, or the one before: Ctrl+Tab and Ctrl+Shift+Tab.</summary>
         public void CycleTab(bool backwards)
@@ -184,10 +188,11 @@ namespace TextDispatch.Chat
             {
                 case ChatChannel.Dispatch:
                 case ChatChannel.Radio: return ChatTab.Radio;
-                case ChatChannel.Phone: return ChatTab.Phone;
                 case ChatChannel.Notice:
                 case ChatChannel.Error:
+                    if (_tab == ChatTab.Radar) return ChatTab.Radar;
                     return _tab == ChatTab.Mdt || _tab == ChatTab.All ? ChatTab.Chat : _tab;
+                case ChatChannel.Phone: return ChatTab.Phone;
                 default: return ChatTab.Chat;
             }
         }
@@ -282,6 +287,9 @@ namespace TextDispatch.Chat
             ChatLog.Add(channel, tag, text);
 
             var tab = TabOf(channel);
+            // The radar's own lines go to its tab - unless the player asked for a reading on CHAT or RADIO, where
+            // it is shown where they asked. Alerts are urgent, so they are on every tab anyway.
+            if (tag == "[RADAR]" && _tab != ChatTab.Chat && _tab != ChatTab.Radio) tab = ChatTab.Radar;
             var urgent = IsUrgent(channel, (tag ?? "") + " " + text);
             if (_tab != ChatTab.All && tab != _tab && !(urgent && _tab != ChatTab.Mdt)) _unread[(int)tab]++;
 
@@ -420,9 +428,10 @@ namespace TextDispatch.Chat
             int visible = Math.Max(3, VisibleLines);
             var tab = _tab;
             var computer = tab == ChatTab.Mdt && Computer != null;
+            var radar = tab == ChatTab.Radar && RadarScreen != null;
             lock (_gate)
             {
-                if (_lines.Count == 0 && !IsOpen && !computer) return;
+                if (_lines.Count == 0 && !IsOpen && !computer && !radar) return;
                 snapshot = _lines.ToArray();
                 open = IsOpen;
                 scroll = Scroll;
@@ -434,7 +443,25 @@ namespace TextDispatch.Chat
             var waiting = false;
             for (var i = 0; i < _unread.Length; i++) if (i != (int)tab && _unread[i] > 0) waiting = true;
 
-            if (computer)
+            if (radar)
+            {
+                // The RADAR tab: the head unit, live, and the radar's own lines under it.
+                visible = Math.Max(visible, 12);
+                var screen = RadarScreen(visible - 1);
+                screen.Insert(0, new ChatLine { Channel = ChatChannel.Radio, Text = strip });
+                for (var i = snapshot.Length - 1; i >= 0 && i >= snapshot.Length - 40; i--)
+                {
+                    var line = snapshot[i];
+                    if (!line.Urgent || line.Tab == ChatTab.Radar || Environment.TickCount - line.At > 30000) continue;
+                    screen.Add(new ChatLine { Channel = ChatChannel.Error, Tag = line.Tag, Text = "!! " + line.Text });
+                    break;
+                }
+                // Too long: the oldest alert under the head unit gives way, never the readings themselves.
+                while (screen.Count > visible && screen.Count > 8) screen.RemoveAt(screen.Count - 2);
+                snapshot = screen.ToArray();
+                scroll = 0;
+            }
+            else if (computer)
             {
                 // The MDT tab: the computer's screen in place of the chat, a few rows taller so a record fits.
                 visible = Math.Max(visible, 16);

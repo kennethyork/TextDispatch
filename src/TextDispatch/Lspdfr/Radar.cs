@@ -55,22 +55,89 @@ namespace TextDispatch.Lspdfr
         /// <summary>The last reading locked, by hand or by an alert.</summary>
         public Reading Locked;
 
+        /// <summary>Whether the box's RADAR tab is showing: then it reads both antennas live, on or off.</summary>
+        public Func<bool> Watched;
+
+        // The latest scan, kept for the RADAR tab - drawn in the render callback, which may not scan itself.
+        private readonly object _gate = new object();
+        private Reading _front, _rear;
+        private int _patrol;
+        private bool _inCar;
+        private readonly List<string> _history = new List<string>();
+
+        /// <summary>
+        /// The RADAR tab: the head unit as lines - patrol speed, both antennas, the lock, what is watching and
+        /// the alerts so far. From the last scan, so it is safe to call while drawing.
+        /// </summary>
+        public List<ChatLine> Screen(int rows)
+        {
+            Reading front, rear, locked;
+            int patrol;
+            bool inCar;
+            List<string> history;
+            lock (_gate)
+            {
+                front = _front; rear = _rear; patrol = _patrol; inCar = _inCar;
+                history = new List<string>(_history);
+            }
+            locked = Locked;
+
+            var lines = new List<ChatLine>();
+            if (!inCar)
+            {
+                lines.Add(new ChatLine { Channel = ChatChannel.Error, Text = "No patrol car - the radar is in the dash. Get in a car." });
+            }
+            else
+            {
+                lines.Add(new ChatLine { Channel = ChatChannel.Notice, Text = "PATROL  " + patrol.ToString().PadLeft(3) + " mph" });
+                lines.Add(Antenna("FRONT", front));
+                lines.Add(Antenna("REAR ", rear));
+            }
+            lines.Add(new ChatLine
+            {
+                Channel = locked != null ? ChatChannel.Error : ChatChannel.Do,
+                Text = locked != null ? "LOCK    " + locked.Mph + " mph  " + locked.Model + " " + locked.Plate + "  (" + (locked.Front ? "front" : "rear") + ", " + locked.At.ToString("HH:mm:ss") + ")"
+                                      : "LOCK    none - /radar lock [front|rear]"
+            });
+            lines.Add(new ChatLine { Channel = ChatChannel.Do, Text = "WATCH   " + Watching + ", alert at " + AlertMph + " mph - /radar on|off [front|rear], /radar alert <mph>" });
+            lines.Add(new ChatLine { Channel = ChatChannel.Dispatch, Text = history.Count == 0 ? "No alerts yet this session." : "Alerts:" });
+            var room = Math.Max(0, rows - lines.Count);
+            for (var i = Math.Max(0, history.Count - room); i < history.Count; i++)
+                lines.Add(new ChatLine { Channel = ChatChannel.Radio, Text = "  " + history[i] });
+            return lines;
+        }
+
+        private ChatLine Antenna(string name, Reading reading)
+        {
+            if (reading == null) return new ChatLine { Channel = ChatChannel.Local, Text = name + "   --- no target" };
+            var fast = reading.Mph >= AlertMph;
+            return new ChatLine
+            {
+                Channel = fast ? ChatChannel.Error : ChatChannel.Local,
+                Text = name + "  " + reading.Mph.ToString().PadLeft(3) + " mph  " + reading.Model + " " + reading.Plate + ", " +
+                       reading.Metres.ToString("0") + "m, " + (reading.Closing ? "closing" : "going away") + (fast ? "  OVER" : "")
+            };
+        }
+
         public Radar(ChatBox chat)
         {
             _chat = chat;
         }
 
-        /// <summary>Called on the plugin's fiber. While on, the front antenna watches twice a second.</summary>
+        /// <summary>Called on the plugin's fiber. While on, or while the RADAR tab is showing, it reads twice a second.</summary>
         public void Update()
         {
-            if (!On || Environment.TickCount - _nextScanAt < 0) return;
-            _nextScanAt = Environment.TickCount + 500;
+            var watched = Watched != null && Watched();
+            if ((!On && !watched) || Environment.TickCount - _nextScanAt < 0) return;
+            _nextScanAt = Environment.TickCount + (watched ? 300 : 500);
 
             try
             {
                 Reading front, rear;
                 int patrol;
-                if (!Scan(out front, out rear, out patrol)) return;
+                var inCar = Scan(out front, out rear, out patrol);
+                lock (_gate) { _front = front; _rear = rear; _patrol = patrol; _inCar = inCar; }
+                if (!inCar) return;
                 if (FrontOn) Alert(front);
                 if (RearOn) Alert(rear);
             }
@@ -95,6 +162,11 @@ namespace TextDispatch.Lspdfr
 
             // Over the alert speed is locked by itself, the way a radar with fast-lock does.
             Locked = reading;
+            lock (_gate)
+            {
+                _history.Add(reading.At.ToString("HH:mm:ss") + "  " + reading.Describe());
+                if (_history.Count > 30) _history.RemoveAt(0);
+            }
             _chat.Write(ChatChannel.Radio, "[RADAR]", "*beep* " + reading.Describe() + " - LOCKED. /stop pulls it over, /cite speeding uses the lock.");
             Log.Line("radar: alert " + reading.Describe());
         }

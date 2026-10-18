@@ -2921,8 +2921,8 @@ namespace TextDispatch.Commands
             _chat.Notice("     'where are you headed', 'have you been drinking', 'whose car is this', 'mind if I search'.");
             _chat.Notice("  2. 10-8 starts your shift, 10-97 when you arrive, 10-7 ends it. /r <text> talks to dispatch.");
             _chat.Notice("  3. On a stop: /checks runs the plate, driver and licence. Then /cite, /charge and /arrest, and /report.");
-            _chat.Notice("  4. /mdt is the computer. Ctrl+Tab goes through the tabs: CHAT, RADIO, MDT, PHONE, ALL.");
-            _chat.Notice("  5. In the car: /radar, /radar lock. /veh <car or department> brings one.");
+            _chat.Notice("  4. /mdt is the computer. Ctrl+Tab goes through the tabs: CHAT, RADIO, RADAR, MDT, PHONE, ALL.");
+            _chat.Notice("  5. In the car: /radar is the radar's tab, /radar lock holds a speed. /veh <car or department> brings one.");
             _chat.Notice("  /help all - every command.  Tab completes commands and names.  /tutorial - the first-shift walkthrough again.");
         }
 
@@ -2965,7 +2965,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");
             _chat.Notice("  Crashes:  /collision  vehicles, statements, fault - drafted as a report");
             _chat.Notice("  Computer: /mdt  the box's MDT tab - type a name or plate to search;  /mdt person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg");
-            _chat.Notice("  Tabs:     Ctrl+Tab cycles CHAT, RADIO, MDT, PHONE, ALL;  /chat  /radio  /mdt  /phone  /all jump to one. Urgent calls show on every tab.");
+            _chat.Notice("  Tabs:     Ctrl+Tab cycles CHAT, RADIO, RADAR, MDT, PHONE, ALL;  /chat  /radio  /radar  /mdt  /phone  /all jump to one. Urgent calls show on every tab.");
             _chat.Notice("  The case: /evidence [item]  /miranda  /interview  - evidence and a statement after Miranda help a charge stick");
             _chat.Notice("  Shift:    /status  /shift  /shifts  /units  /warrants [serve <name>]   (10-8 starts a shift, 10-7 ends it)");
             _chat.Notice("  Fines:    /fines [filter]  - what /cite charges for each offence");

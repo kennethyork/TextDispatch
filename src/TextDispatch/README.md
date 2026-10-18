@@ -462,7 +462,8 @@ All of it is saved in `TextDispatch.records.json` with the rest of the records.
 
 ### The box's tabs (1.0.50)
 
-CHAT, RADIO, MDT, PHONE and ALL. **Ctrl+Tab** cycles them, or `/chat`, `/radio`, `/mdt`, `/phone`, `/all`.
+CHAT, RADIO, RADAR, MDT, PHONE and ALL. **Ctrl+Tab** cycles them, or `/chat`, `/radio`, `/radar`, `/mdt`,
+`/phone`, `/all`. The RADAR tab is the radar's head unit, live.
 The radio and the phone have their own tabs so neither buries the scene; anything urgent - a P1, a call
 for help, a warrant on your stop - shows on every tab, and the strip on top counts what is new elsewhere.
 

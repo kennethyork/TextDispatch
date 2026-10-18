@@ -177,6 +177,8 @@ namespace TextDispatch
                 _router.Phone = _phone;
                 _radar = new Radar(_chat);
                 _router.Radar = _radar;
+                _radar.Watched = () => _chat.Tab == ChatTab.Radar && _onDuty;
+                _chat.RadarScreen = rows => _radar.Screen(rows);
                 _computer = new Computer();
                 _router.Computer = _computer;
                 _chat.Computer = _computer;

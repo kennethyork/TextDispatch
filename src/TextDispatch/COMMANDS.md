@@ -1,6 +1,6 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.51, taken out of the router rather than remembered —
+The complete command surface of TextDispatch 1.0.52, taken out of the router rather than remembered —
 **221 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
@@ -210,18 +210,19 @@ so when something comes back - stolen, uninsured, a BOLO, a warrant.
 
 ## The box's tabs — new in 1.0.50
 
-The box has five tabs, so the radio does not bury a conversation and a text does not get lost in it:
+The box has six tabs, so the radio does not bury a conversation and a text does not get lost in it:
 
 | Tab | What is on it |
 |---|---|
 | **CHAT** | the scene: what you say and what people answer, `/me`, `/do`, `/ame`, and what your commands answer |
-| **RADIO** | dispatch, the other units, `/d` and the other departments, 911 calls, the sergeant, roll call, the radar |
+| **RADIO** | dispatch, the other units, `/d` and the other departments, 911 calls, the sergeant, roll call |
+| **RADAR** | the radar's head unit, live: patrol speed, both antennas, the lock, the alerts (`/radar`) |
 | **MDT** | the computer (below) |
 | **PHONE** | texts, calls, the inbox, tips |
 | **ALL** | everything mixed, as the box was before it had tabs |
 
 - **Ctrl+Tab** goes to the next tab and **Ctrl+Shift+Tab** back (Tab on its own still completes).
-  `/chat`, `/radio`, `/mdt`, `/phone` and `/all` jump straight to one - `/radio <text>` still transmits,
+  `/chat`, `/radio`, `/radar`, `/mdt`, `/phone` and `/all` jump straight to one - `/radio <text>` still transmits,
   and `/phone` shows your contacts as well.
 - **Urgent lines are on every tab**: a P1 call, a call for help or a 10-13, a panic, shots fired, a warrant,
   a stolen car or a suspended licence on your stop, a radar alert. On the MDT tab the latest one shows over
@@ -383,7 +384,7 @@ the detective on your case, Lucky with a name — or a plate, which becomes a BO
 
 | | |
 |---|---|
-| `/radar` `/speed` | read both antennas once: patrol speed, and the strongest target front and rear — speed, model, plate, distance, closing or going away |
+| `/radar` `/speed` | the box's **RADAR tab**: the head unit, live while you look at it — patrol speed, the front and rear targets (speed, model, plate, distance, closing or going away, OVER past the alert speed), the lock, what is watching, and the session's alerts |
 | `/radar front` · `/radar rear` | one antenna's reading on its own (`back` works for rear) |
 | `/radar lock [front\|rear]` | hold the reading - the front target, then the rear, unless an antenna is named. `/cite speeding` puts the locked speed on the ticket and into evidence |
 | `/radar on [front\|rear]` · `/radar off [front\|rear]` | both antennas watch (or just the one named), beep and fast-lock anything over the alert speed |
