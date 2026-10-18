@@ -200,7 +200,7 @@ namespace TextDispatch.Chat
         private static readonly string[] UrgentWords =
         {
             "P1,", "P1 ", "needs assistance", "10-13", "panic", "shots fired", "officer down", "send everyone",
-            "WARRANT", "STOLEN", "SUSPENDED", "be advised", "*beep*"
+            "WARRANT", "STOLEN", "SUSPENDED", "be advised", "*beep*", "*ding*"
         };
 
         /// <summary>A radio line that must be seen wherever the player is looking.</summary>
@@ -362,7 +362,7 @@ namespace TextDispatch.Chat
             var tab = TabOf(channel);
             // The radar's own lines go to its tab - unless the player asked for a reading on CHAT or RADIO, where
             // it is shown where they asked. Alerts are urgent, so they are on every tab anyway.
-            if (tag == "[RADAR]" && _tab != ChatTab.Chat && _tab != ChatTab.Radio) tab = ChatTab.Radar;
+            if ((tag == "[RADAR]" || tag == "[ALPR]") && _tab != ChatTab.Chat && _tab != ChatTab.Radio) tab = ChatTab.Radar;
             var urgent = IsUrgent(channel, (tag ?? "") + " " + text);
             if (_tab != ChatTab.All && tab != _tab && !(urgent && _tab != ChatTab.Mdt)) _unread[(int)tab]++;
 

@@ -41,7 +41,7 @@ namespace TextDispatch.Commands
             "board", "unitboard", "collision", "crash", "accident", "checks", "runall", "computer", "chat", "all", "?", "tutorial", "walkthrough",
             "settings", "options", "config", "vitals", "treat", "aid", "pcr", "patientreport",
             "officer", "whoami", "anim", "e", "emote", "gear", "belt", "inventory", "armory", "armoury",
-            "follow", "escort", "grab", "drag", "hold", "letgo", "drop", "stay", "wait", "patdown", "seat", "putincar", "incar", "unseat", "outofcar", "taxi", "sendoff"
+            "follow", "escort", "grab", "drag", "hold", "letgo", "drop", "stay", "wait", "patdown", "alpr", "platereader", "seat", "putincar", "incar", "unseat", "outofcar", "taxi", "sendoff"
         };
 
         /// <summary>
@@ -78,7 +78,8 @@ namespace TextDispatch.Commands
                 case "armory": case "armoury": return "out pistol|out taser|out baton|out flashlight|out shotgun|out rifle|out flares|out extinguisher|in all";
                 case "ems": return "vitals|treat|hospital|pcr|call";
                 case "fire": return "sizeup|attack|search|overhaul|report|call";
-                case "settings": case "options": case "config": return "autocalls|callseconds|autoaccept|chatter|traffic|warrants|tips|certs|key|typing";
+                case "alpr": case "platereader": return "on|off";
+                case "settings": case "options": case "config": return "autocalls|callseconds|autoaccept|chatter|traffic|warrants|tips|certs|alpr|key|typing";
                 case "treat": case "aid": return "bleeding|tourniquet|oxygen|splint|cpr|aed|narcan|collar|recovery|burns";
                 case "mdt": case "computer": case "terminal": return "home|person|vehicle|warrants|bolo|cad|units|reports|cases|flags|msg|next|back|chat";
                 case "fst": case "sobriety": return "hgn|walk|stand";

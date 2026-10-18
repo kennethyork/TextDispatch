@@ -18,6 +18,30 @@ namespace TextDispatch.Commands
         /// <summary>The traffic radar. Set by the plugin after it is built.</summary>
         internal Radar Radar;
 
+        /// <summary>The plate reader. Set by the plugin after it is built.</summary>
+        internal Alpr Alpr;
+
+        /// <summary>/alpr [on|off]: the plate reader - its hits, or switch it.</summary>
+        private void AlprCommand(string argument)
+        {
+            if (Alpr == null) { _chat.Error("The plate reader is not running."); return; }
+            var word = (argument ?? "").Trim().ToLowerInvariant();
+            if (word == "on" || word == "off")
+            {
+                Alpr.On = word == "on";
+                _settings.Alpr = Alpr.On;
+                _settings.Save();
+                _chat.Notice("Plate reader " + word + " - saved to TextDispatch.ini." + (Alpr.On ? " Hits show on the RADAR tab, urgent ones on every tab." : ""));
+                return;
+            }
+
+            var hits = Alpr.Hits;
+            _chat.Notice("Plate reader: " + (Alpr.On ? "on" : "off") + ", " + Alpr.PlatesRead + " plate(s) read this session, " + hits.Count + " hit(s).");
+            for (var i = Math.Max(0, hits.Count - 8); i < hits.Count; i++)
+                _chat.Notice("  " + hits[i].At.ToString("HH:mm") + "  " + hits[i].Plate + " " + hits[i].Model + " - " + hits[i].What);
+            _chat.Notice("  It reads the cars within 45 m of your patrol car and checks them against your records. /alpr on|off");
+        }
+
         // ------------------------------------------------------------------ roleplay
 
         /// <summary>/ame: an action shown over your head for a few seconds, and in the box.</summary>

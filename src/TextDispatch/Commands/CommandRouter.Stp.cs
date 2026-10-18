@@ -113,12 +113,9 @@ namespace TextDispatch.Commands
             return true;
         }
 
-        /// <summary>The registration's status, decided from the plate: valid most of the time.</summary>
         private static string Registration(VehicleRecord record)
         {
-            if (record.ReportedStolen) return "VALID, but the vehicle is REPORTED STOLEN";
-            var roll = new Random(unchecked(RecordsLedger.PlateKey(record.Plate).GetHashCode() * 19 + 1)).Next(100);
-            return roll < 85 ? "valid" : roll < 96 ? "EXPIRED" : "NOT REGISTERED";
+            return RecordsLedger.RegistrationStatus(record);
         }
 
         /// <summary>/drugs without StopThePed: a saliva swab, decided once per person, kept in evidence.</summary>

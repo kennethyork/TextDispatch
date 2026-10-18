@@ -35,6 +35,7 @@ namespace TextDispatch
         private static Fleet _fleet;
         private static PhoneService _phone;
         private static Radar _radar;
+        private static Alpr _alpr;
         private static Computer _computer;
         private static string _recordsPath;
         private static int _savedAt;
@@ -179,6 +180,23 @@ namespace TextDispatch
                 _router.Radar = _radar;
                 _radar.Watched = () => _chat.Tab == ChatTab.Radar && _onDuty;
                 _chat.RadarScreen = rows => _radar.Screen(rows);
+                _alpr = new Alpr(_chat, _records, _api) { On = _settings.Alpr };
+                _router.Alpr = _alpr;
+                var alpr = _alpr;
+                _radar.PlateReader = () =>
+                {
+                    var lines = new System.Collections.Generic.List<ChatLine>();
+                    var hits = alpr.Hits;
+                    lines.Add(new ChatLine { Channel = ChatChannel.Do, Text = "ALPR    " + (alpr.On ? "reading, " + alpr.PlatesRead + " plates so far" : "off - /alpr on") +
+                                                                               (hits.Count > 0 ? ", " + hits.Count + " hit(s)" : "") });
+                    for (var i = Math.Max(0, hits.Count - 3); i < hits.Count; i++)
+                    {
+                        var hit = hits[i];
+                        lines.Add(new ChatLine { Channel = hit.Urgent ? ChatChannel.Error : ChatChannel.Phone,
+                                                 Text = "  " + hit.At.ToString("HH:mm") + "  " + hit.Plate + " " + hit.Model + " - " + hit.What });
+                    }
+                    return lines;
+                };
                 _computer = new Computer();
                 _router.Computer = _computer;
                 _chat.Computer = _computer;
@@ -363,6 +381,7 @@ namespace TextDispatch
                     _dialogue.Update();
                     _phone.Update(here && _shift.Running);
                     if (here) _radar.Update();
+                    if (here) _alpr.Update();
                     Overhead.Update();
 
                     SaveRecords(false);

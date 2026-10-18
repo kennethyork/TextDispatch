@@ -397,6 +397,39 @@ namespace TextDispatch.Records
             return record;
         }
 
+        /// <summary>
+        /// What a plate would come back as, without putting it on file - for the plate reader, which reads every
+        /// car it passes and must not fill the records with them. Insurance and the stolen flag come out the
+        /// same as EnsureVehicle will give, from the same seed; only a hit is then filed, with EnsureVehicle.
+        /// </summary>
+        public VehicleRecord PeekVehicle(string plate, string model)
+        {
+            var key = PlateKey(plate);
+            if (key.Length == 0) return null;
+            VehicleRecord record;
+            if (_vehicles.TryGetValue(key, out record)) return record;
+
+            var rng = new Random(key.GetHashCode());
+            var owners = new List<PersonRecord>(_people.Values);
+            var owner = owners.Count > 0 ? owners[rng.Next(owners.Count)] : null;
+            return new VehicleRecord
+            {
+                Plate = key,
+                Model = string.IsNullOrEmpty(model) ? "Unknown model" : model,
+                OwnerName = owner != null ? owner.Name : "unknown",
+                Insured = rng.Next(100) >= 12,
+                ReportedStolen = rng.Next(100) < 7
+            };
+        }
+
+        /// <summary>The registration's status, decided from the plate: valid most of the time.</summary>
+        public static string RegistrationStatus(VehicleRecord record)
+        {
+            if (record.ReportedStolen) return "VALID, but the vehicle is REPORTED STOLEN";
+            var roll = new Random(unchecked(PlateKey(record.Plate).GetHashCode() * 19 + 1)).Next(100);
+            return roll < 85 ? "valid" : roll < 96 ? "EXPIRED" : "NOT REGISTERED";
+        }
+
         public void AddBolo(string subject, string reason)
         {
             Dirty = true;

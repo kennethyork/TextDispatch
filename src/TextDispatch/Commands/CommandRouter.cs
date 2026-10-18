@@ -357,6 +357,8 @@ namespace TextDispatch.Commands
                 case "messages": Inbox(argument); return;
                 case "radar":
                 case "speed": RadarCommand(argument); return;
+                case "alpr":
+                case "platereader": AlprCommand(argument); return;
                 case "units": ListUnits(); return;
                 case "warrants": Warrants(argument); return;
                 case "pursuit": StartPursuit(); return;
@@ -2988,6 +2990,7 @@ namespace TextDispatch.Commands
             _chat.Notice("  Records:  /flag <name or plate>: <warning>  /note ...  /notes [name]  /case [open|use|add|note|close|export]");
             _chat.Notice("  Career:   /rollcall  /rank  /certs     Phone: /phone  /text <who> <msg>  /call <who> <msg>  /inbox");
             _chat.Notice("  Radar:    /radar  read both antennas   /radar lock   /radar on|off   /radar alert <mph>");
+            _chat.Notice("  Plates:   /alpr  the plate reader's hits - it reads the cars around you as you drive   /alpr on|off");
             _chat.Notice("  Stops:    ask in plain words - 'where are you headed', 'been drinking', 'whose car', 'mind if I search'");
             _chat.Notice("            /checks  plate, driver, licence, insurance at once   /passengers  /id passenger   /fst  /pbt");
             _chat.Notice("  Station:  /book  at any station   CAD: /cad [number]  every call has an incident number   /board  the units out there");

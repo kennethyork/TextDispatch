@@ -58,6 +58,9 @@ namespace TextDispatch.Lspdfr
         /// <summary>Whether the box's RADAR tab is showing: then it reads both antennas live, on or off.</summary>
         public Func<bool> Watched;
 
+        /// <summary>The plate reader's status and latest hits, for the RADAR tab.</summary>
+        public Func<List<ChatLine>> PlateReader;
+
         // The latest scan, kept for the RADAR tab - drawn in the render callback, which may not scan itself.
         private readonly object _gate = new object();
         private Reading _front, _rear;
@@ -100,7 +103,8 @@ namespace TextDispatch.Lspdfr
                                       : "LOCK    none - /radar lock [front|rear]"
             });
             lines.Add(new ChatLine { Channel = ChatChannel.Do, Text = "WATCH   " + Watching + ", alert at " + AlertMph + " mph - /radar on|off [front|rear], /radar alert <mph>" });
-            lines.Add(new ChatLine { Channel = ChatChannel.Dispatch, Text = history.Count == 0 ? "No alerts yet this session." : "Alerts:" });
+            if (PlateReader != null) lines.AddRange(PlateReader());
+            lines.Add(new ChatLine { Channel = ChatChannel.Dispatch, Text = history.Count == 0 ? "No speed alerts yet this session." : "Speed alerts:" });
             var room = Math.Max(0, rows - lines.Count);
             for (var i = Math.Max(0, history.Count - room); i < history.Count; i++)
                 lines.Add(new ChatLine { Channel = ChatChannel.Radio, Text = "  " + history[i] });

@@ -1,7 +1,7 @@
 # Every text command
 
-The complete command surface of TextDispatch 1.0.57, taken out of the router rather than remembered —
-**256 command names and aliases**, plus the words that work without a slash. Every case label in the
+The complete command surface of TextDispatch 1.0.58, taken out of the router rather than remembered —
+**258 command names and aliases**, plus the words that work without a slash. Every case label in the
 router's command switch is here, and nothing here is not in the router.
 
 Anything with a `/` is a command. Anything without one is speech — except the status codes, the word
@@ -451,6 +451,20 @@ the detective on your case, Lucky with a name — or a plate, which becomes a BO
 | `/radar lock [front\|rear]` | hold the reading - the front target, then the rear, unless an antenna is named. `/cite speeding` puts the locked speed on the ticket and into evidence |
 | `/radar on [front\|rear]` · `/radar off [front\|rear]` | both antennas watch (or just the one named), beep and fast-lock anything over the alert speed |
 | `/radar alert <mph>` · `/radar clear` | set the alert speed (75 by default) · drop the lock |
+
+### The plate reader - new in 1.0.58
+
+While you drive, the plates of the cars within 45 m are read and checked against your own records - the
+same ones `/plate` and `/checks` read, so a hit is what the stop will find. No more ALPRLite needed.
+
+| | |
+|---|---|
+| *(automatic)* | **stolen**, a **BOLO**, a **flag**, or an owner who is **wanted**: `*ding*` and the plate, on every tab - at most once in 45 seconds. Uninsured cars, expired or missing registrations and owners with a suspended licence are listed quietly on the RADAR tab |
+| `/alpr` | its hits this session and how many plates it has read |
+| `/alpr on` · `/alpr off` | switch it (saved - `Alpr=` in the ini, or `/settings alpr on`) |
+
+Police cars are not read, and each plate is read once in two minutes. Only the serious hits are put on
+file, so the records do not fill with every car you pass.
 
 ---
 

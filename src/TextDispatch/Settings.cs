@@ -179,6 +179,9 @@ namespace TextDispatch
         /// <summary>Whether contacts text the player now and then on a shift - tips, a detective, the DA.</summary>
         public bool PhoneTips = true;
 
+        /// <summary>Whether the plate reader reads the cars around the patrol car (/alpr).</summary>
+        public bool Alpr = true;
+
         // ---------------------------------------------------------------- load
 
         /// <summary>
@@ -202,7 +205,7 @@ namespace TextDispatch
             "hidehardwarekeys", "chatposition", "chatmargin",
             "typingms", "dispatchms", "sayrange", "whisperrange", "shoutrange",
             "autocallouts", "autocalloutseconds", "autoaccept", "radiotraffic", "warrantcalls",
-            "requirecertifications", "phonetips"
+            "requirecertifications", "phonetips", "alpr"
         };
 
         public static Settings Load()
@@ -275,7 +278,8 @@ namespace TextDispatch
                         case "radiotraffic": settings.RadioTraffic = AsBool(value, settings.RadioTraffic); break;
                         case "warrantcalls": settings.WarrantCalls = AsBool(value, settings.WarrantCalls); break;
                         case "requirecertifications": settings.RequireCertifications = AsBool(value, settings.RequireCertifications); break;
-                        case "phonetips": settings.PhoneTips = AsBool(value, settings.PhoneTips); break;                    }
+                        case "phonetips": settings.PhoneTips = AsBool(value, settings.PhoneTips); break;
+                        case "alpr": settings.Alpr = AsBool(value, settings.Alpr); break;                    }
                 }
 
                 // A file written by an older version is missing whatever was added since, and answers
@@ -395,7 +399,10 @@ namespace TextDispatch
                     "; (/certs). 0 lets anybody use them, which is the default.",
                     "RequireCertifications=" + (settings.RequireCertifications ? "1" : "0"),
                     "; PhoneTips=1: contacts text you now and then on a shift - an informant, a detective, the DA.",
-                    "PhoneTips=" + (settings.PhoneTips ? "1" : "0")
+                    "PhoneTips=" + (settings.PhoneTips ? "1" : "0"),
+                    "; Alpr=1: the plate reader reads the cars around your patrol car and calls out stolen, wanted and",
+                    "; uninsured ones on the RADAR tab. /alpr on|off changes it while playing.",
+                    "Alpr=" + (settings.Alpr ? "1" : "0")
                 });
             }
             catch (Exception ex) { Log.Error("write settings", ex); }

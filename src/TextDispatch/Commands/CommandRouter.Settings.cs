@@ -51,6 +51,9 @@ namespace TextDispatch.Commands
                     case "tips": case "phonetips":
                         if (!on && !off) break;
                         _settings.PhoneTips = on; Saved("Texts from contacts", on ? "on" : "off"); return;
+                    case "alpr": case "platereader":
+                        if (!on && !off) break;
+                        _settings.Alpr = on; if (Alpr != null) Alpr.On = on; Saved("Plate reader", on ? "on" : "off"); return;
                     case "certs": case "requirecertifications":
                         if (!on && !off) break;
                         _settings.RequireCertifications = on; Saved("Certifications required", on ? "on" : "off"); return;
@@ -75,6 +78,7 @@ namespace TextDispatch.Commands
             Row("warrants", _settings.WarrantCalls ? "on" : "off", "dispatch sends you after people from your records");
             Row("tips", _settings.PhoneTips ? "on" : "off", "contacts text you on a shift");
             Row("certs", _settings.RequireCertifications ? "on" : "off", "K9 and air support need their certification");
+            Row("alpr", _settings.Alpr ? "on" : "off", "the plate reader reads the cars around you");
             Row("key", Plugin.OpenKeyDescription, "the key that opens the box - change it if another mod uses it");
             Row("typing", _settings.BlockOtherModsKeys ? "hidden" : "visible", "whether other plugins see what you type (/typing)");
             _chat.Notice("  The rest - the model, ranges, the box's look - is in Plugins\\LSPDFR\\TextDispatch.ini, or /pos /ui /font /lines.");
